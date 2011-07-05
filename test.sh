@@ -3,7 +3,7 @@ if [ -z $1 ]; then
   echo "Checking syntax... "
   rm -Rf /tmp/phpcs_stats "`dirname $0`/DOCS/" /tmp/testing_status
   mkdir "`dirname $0`/DOCS"
-  find . -name "*.php" -exec "$0" '{}' \;
+  find . -name "*.php" -not -wholename "*/EXTERNALS/*/*" -not -wholename "*/TEMPLATES/C*" -exec "$0" '{}' \;
   echo "Done."
   if [ ! -f /tmp/phpcs_stats ]; then
     echo -n "Generating Documentation... "
