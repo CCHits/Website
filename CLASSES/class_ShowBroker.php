@@ -45,8 +45,8 @@ class ShowBroker
             $query->execute(array($intShowID));
             return $query->fetchObject('ShowObject');
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log($e);
+            return false;
         }
     }
     /**
@@ -66,8 +66,8 @@ class ShowBroker
             $query->execute(array($strShowUrl));
             return $query->fetchObject('ShowObject');
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log($e);
+            return false;
         }
     }
 
@@ -97,15 +97,57 @@ class ShowBroker
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
-                while ($item = $query->fetchObject('ShowObject')) {
+                while ($item != false) {
                     $return[] = $item;
+                    $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
             }
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log($e);
+            return false;
+        }
+    }
+    
+    /**
+     * Get the most recent show of a specific type
+     *
+     * @param string  $enumShowType Type of show to look for
+     * @param integer $intQuantity  Number of shows to get
+     *
+     * @return object ShowObject
+     */
+    function getInternalShowByType($enumShowType = '', $intQuantity = 25)
+    {
+        switch ($enumShowType) {
+        case 'daily':
+        case 'weekly':
+        case 'monthly':
+            break;
+        default:
+            return false;
+        }
+        if ( ! is_integer($intQuantity) or $intQuantity < 1 or $intQuantity > 100) {
+            $intQuantity = 25;
+        }
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM shows WHERE enumShowType = ? ORDER BY intShowUrl DESC LIMIT ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($enumShowType, $intQuantity));
+            $item = $query->fetchObject('ShowObject');
+            if ($item == false) {
+                return false;
+            } else {
+                while ($item != false) {
+                    $return[] = $item;
+                    $item = $query->fetchObject('ShowObject');
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log($e);
+            return false;
         }
     }
 }
