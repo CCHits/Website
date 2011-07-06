@@ -38,9 +38,13 @@ class HTML
      */
     function __construct()
     {
+        $extLib = new ExternalLibraryLoader();
         $this->result = array(
             'ServiceName'=>ConfigBroker::getConfig('ServiceName', 'CCHits'),
-            'Slogan'=>ConfigBroker::getConfig('Slogan', 'Where you make the charts')
+            'Slogan'=>ConfigBroker::getConfig('Slogan', 'Where you make the charts'),
+            'baseURL'=>ConfigBroker::getConfig('Base URL', 'http://cchits.net'),
+            'jquery'=>$extLib->getVersion('JQUERY'),
+            'jplayer'=>$extLib->getVersion('JPLAYER')
         );
         $arrUri = UI::getUri();
 
@@ -168,10 +172,14 @@ class HTML
      */
     protected function front_page()
     {
-        $this->result['chart'] = ChartBroker::getChartByDate('', 0, 15);
-        $this->result['daily'] = end(ShowBroker::getInternalShowByType('daily', 1));
-        $this->result['weekly'] = end(ShowBroker::getInternalShowByType('weekly', 1));
-        $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1));
+        $chart = ChartBroker::getChartByDate('', 0, 15);
+        $counter = 0;
+        foreach ($chart as $objTrack) {
+            $this->result['chart'][++$counter] = $objTrack->getSelf();
+        }
+        $this->result['daily'] = end(ShowBroker::getInternalShowByType('daily', 1))->getSelf();
+        $this->result['weekly'] = end(ShowBroker::getInternalShowByType('weekly', 1))->getSelf();
+        $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1))->getSelf();
         if ($this->render()) {
             if ($this->format == 'html') {
                 UI::SmartyTemplate("frontpage.html", $this->result);

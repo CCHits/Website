@@ -499,6 +499,7 @@ class UI
         $baseSmarty = dirname(__FILE__) . '/../TEMPLATES/';
         include_once $libSmarty;
         $objSmarty = new Smarty();
+        $objSmarty->debugging = true;
         $objSmarty->setTemplateDir($baseSmarty . 'Source');
         $objSmarty->setCompileDir($baseSmarty . 'Compiled');
         $objSmarty->setCacheDir($baseSmarty . 'Cache');

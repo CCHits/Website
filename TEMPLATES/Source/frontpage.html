@@ -1,9 +1,94 @@
 <html>
 	<head>
+		<link href="{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
+		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.min.js"></script>
+		<script type="text/javascript">
+		{literal}
+		//<![CDATA[
+		$(document).ready(function(){
+		
+			$("#jquery_jplayer_1").jPlayer({
+				ready: function () {
+					$(this).jPlayer("setMedia", {
+						{/literal}
+						mp3: "http://www.jplayer.org/audio/mp3/Miaow-07-Bubble.mp3"
+						{literal}
+					});
+				},
+				{/literal}
+				swfPath: "{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/",
+				{literal}
+				supplied: "mp3"
+			});
+		
+			$("#jplayer_inspector").jPlayerInspector({jPlayer:$("#jquery_jplayer_1")});
+		});
+		//]]>
+		{/literal}
+		</script>
 		<title>{$ServiceName}</title>
 	</head>
 	<body>
 		<h1>Welcome to {$ServiceName}</h1>
 		<h2>{$Slogan}</h2>
+		<div id="chart">
+			<h3>The Chart</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Position</th>
+						<th>Track</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $chart as $position=>$track}
+					{strip}
+					<tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
+				    	<td>{$position}</td>
+				    	<td>"<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.objArtist.strArtistUrl}">{$track.objArtist.strArtistName}</a>"</td>
+				    	<td>{$track.long_enumTrackLicense}{if $track.isNSFW == true}, Not Work/Family Safe{/if}, <a href="{$track.localSource}">Downloadable</a></td>
+				    </tr>
+					{/strip}
+					{/foreach}
+				</tbody>
+			</table>
+		</div>
+		<div id="daily">
+			<h3>The most recent "Daily" show</h3>
+			<div class="jp-audio">
+				<div class="jp-type-single">
+					<div id="jp_interface_1" class="jp-interface">
+						<ul class="jp-controls">
+							<li><a href="#" class="jp-play" tabindex="1">play</a></li>
+							<li><a href="#" class="jp-pause" tabindex="1">pause</a></li>
+							<li><a href="#" class="jp-stop" tabindex="1">stop</a></li>
+							<li><a href="#" class="jp-mute" tabindex="1">mute</a></li>
+	
+							<li><a href="#" class="jp-unmute" tabindex="1">unmute</a></li>
+						</ul>
+						<div class="jp-progress">
+							<div class="jp-seek-bar">
+								<div class="jp-play-bar"></div>
+							</div>
+						</div>
+						<div class="jp-volume-bar">
+	
+							<div class="jp-volume-bar-value"></div>
+						</div>
+						<div class="jp-current-time"></div>
+						<div class="jp-duration"></div>
+					</div>
+					<div id="jp_playlist_1" class="jp-playlist">
+						<ul>
+							<li>Bubble</li>
+	
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+		</div>
 	</body>
 </html>

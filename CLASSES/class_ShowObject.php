@@ -83,11 +83,38 @@ class ShowObject extends GenericObject
                 $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
                 $this->strShowName .= substr($this->intShowUrl, 6, 2);
             }
+            switch($this->enumShowType) {
+            case 'weekly':
+            case 'monthly':
+                $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
+                break;
+            case 'daily':
+                $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
+                // FIXME: Transition to having the dailyshow entry in the showtracks table
+                if ($this->arrTracks == false) {
+                    $this->arrTracks = array(TrackBroker::getTrackByDailyShowDate($this->intShowUrl));
+                }
+            }
+        } else {
+            $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
         }
-
-        $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
     }
 
+    /**
+     * Add the collected tracks to the getSelf function
+     * 
+     * @return The amassed data from this function
+     */
+    function getSelf()
+    {
+        $return = parent::getSelf();
+        $counter = 0;
+        foreach ($this->arrTracks as $objTrack) {
+            $return['arrTracks'][++$counter] = $objTrack->getSelf();
+        }
+        return $return;
+    }
+    
     /**
      * Set the Show Name for external shows.
      *

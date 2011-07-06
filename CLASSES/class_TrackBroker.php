@@ -169,4 +169,28 @@ class TrackBroker
             die();
         }
     }
+    
+    /**
+     * Ideally, this will be removed from the code ASAP, however, for the meantime
+     * this function looks for the datDailyShow column and finds the track with
+     * this date.
+     * 
+     * @param integer $intDate The date to look for
+     * 
+     * @return object|false TrackObject or false if not existing
+     */
+    function getTrackByDailyShowDate($intDate = '')
+    {
+        Debug::Log(get_class() . "::getTrackByDailyShowDate($intDate)", "DEBUG");
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM tracks WHERE datDailyShow = ? LIMIT 1";
+            $query = $db->prepare($sql);
+            $query->execute(array($intDate));
+            return $query->fetchObject('TrackObject');
+        } catch(Exception $e) {
+            echo "SQL Died: " . $e->getMessage();;
+            die();
+        }
+    }
 }

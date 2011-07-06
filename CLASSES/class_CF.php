@@ -36,9 +36,7 @@ class CF
      */
     public static function getFactory()
     {
-        Debug::Log(get_class() . "::getFactory()", "VERBOSE");
         if (self::$factory == null) {
-            Debug::Log("Creating new Connection Factory (CF)", "VERBOSE");
             self::$factory = new CF();
         }
         return self::$factory;

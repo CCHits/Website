@@ -132,9 +132,9 @@ class ShowBroker
         }
         $db = CF::getFactory()->getConnection();
         try {
-            $sql = "SELECT * FROM shows WHERE enumShowType = ? ORDER BY intShowUrl DESC LIMIT ?";
+            $sql = "SELECT * FROM shows WHERE enumShowType = ? ORDER BY intShowUrl DESC LIMIT $intQuantity";
             $query = $db->prepare($sql);
-            $query->execute(array($enumShowType, $intQuantity));
+            $query->execute(array($enumShowType));
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {
                 return false;

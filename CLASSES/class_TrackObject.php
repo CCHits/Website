@@ -29,7 +29,7 @@
 class TrackObject extends GenericObject
 {
     // Inherited Properties
-    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'fileSource'=>true, 'md5FileHash'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
+    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'fileSource'=>true, 'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
     protected $strDBTable = "tracks";
     protected $strDBKeyCol = "intTrackID";
     // Local Properties
@@ -60,7 +60,6 @@ class TrackObject extends GenericObject
     function __construct()
     {
         if ($this->intDuplicateID != 0) {
-            Debug::Log(get_class() . " - isDuplicate - loading new object", "VERBOSE");
             $pointer = TrackBroker::getTrackByID($this->intDuplicateID);
             $this->intTrackID = $pointer->get_intTrackID();
             $this->intArtistID = $pointer->get_intArtistID();
@@ -83,6 +82,21 @@ class TrackObject extends GenericObject
         $this->verify_isApproved();
     }
 
+    /**
+     * Add the collected generated data to the getSelf function
+     * 
+     * @return The amassed data from this function
+     */
+    function getSelf()
+    {
+        $return = parent::getSelf();
+        $return['localSource'] = $this->get_fileUrl();
+        $return['objArtist'] = $this->objArtist->getSelf();
+        $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
+        $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
+        return $return;
+    }
+    
     /**
      * If we've only been given and intArtistID, pull in the true object value
      *
@@ -135,123 +149,6 @@ class TrackObject extends GenericObject
             $this->isApproved = true;
         }
         return true;
-    }
-
-    /**
-     * Return a string value for this class
-     *
-     * @return string A nicely formatted version of the textual version of this class.
-     */
-    function __toString()
-    {
-        $worksafe = "";
-        if (!$this->isNSFW) {
-            $worksafe = "It is not family or office friendly.";
-        }
-        $approved = "";
-        if (!$this->isApproved) {
-            $approved = " not";
-        }
-        return "<a href=\"{$this->strTrackUrl}\">" .
-                     "{$this->strTrackName}" .
-                     "</a> by " .
-                     "<a href=\"{$this->objArtist->get_strArtistUrl()}\">" .
-                     "{$this->objArtist->get_strArtistName()}" .
-                     "</a> is a " .
-                     $this->get_enumTrackLicenseFull() .
-                     " licensed track running for " .
-                     $this->timeLength .
-                     ". $worksafe" .
-                     " It has" . $approved .
-                     " been approved by site administrators.";
-    }
-
-    /**
-     * Return the non-abbreviated version of the license terms
-     *
-     * @return string The license terms in non-abbreviated language.
-     */
-    function get_enumTrackLicenseFull()
-    {
-        $cc = "Creative Commons";
-        $by = "By Attribution";
-        $sa = "Share Alike";
-        $nc = "Non-Commercial";
-        $nd = "No Derivatives";
-        $sp = "Sampling+";
-        $z  = "Zero";
-        return $this->get_enumTrackLicenseSolve($cc, $by, $sa, $nc, $nd, $sp, $z);
-    }
-
-    /**
-     * Return the spoken version of the license terms
-     *
-     * @return string The license terms, non-abbreviated, in spoken format.
-     */
-    function get_enumTrackLicensePronouncable()
-    {
-        $cc = "Creative Commons";
-        $by = "By Attribution";
-        $sa = "Share Alike";
-        $nc = "Non Commercial";
-        $nd = "No Derivatives";
-        $sp = "Sampling plus";
-        $z  = "Zero";
-        return $this->get_enumTrackLicenseSolve($cc, $by, $sa, $nc, $nd, $sp, $z);
-    }
-
-    /**
-     * A helper function to return the license terms using appropriate terminology for each of the signals
-     *
-     * @param string $cc The text to return, indicating Creative Commons.
-     * @param string $by The text to return, indicating By Attribution.
-     * @param string $sa The text to return, indicating Share Alike
-     * @param string $nc The text to return, indicating Non Commercial
-     * @param string $nd The text to return, indicating No Derivatives
-     * @param string $sp The text to return, indicating Sampling+
-     * @param string $z  The text to return, indicating Zero
-     *
-     * @return string License terms as per the function logic
-     */
-    protected function get_enumTrackLicenseSolve(
-        $cc = "Creative Commons",
-        $by = "By Attribution",
-        $sa = "Share Alike",
-        $nc = "Non-Commercial",
-        $nd = "No Derivatives",
-        $sp = "Sharing+",
-        $z  = "Zero"
-    ) {
-        switch($this->enumTrackLicense) {
-        case 'cc-by':
-            return "$cc, $by";
-        case 'cc-by-sa':
-            return "$cc, $by, $sa";
-        case 'cc-sa':
-            return "$cc, $sa";
-        case 'cc-by-nc':
-            return "$cc, $by, $nc";
-        case 'cc-nc':
-            return "$cc, $nc";
-        case 'cc-by-nd':
-            return "$cc, $by, $nd";
-        case 'cc-nd':
-            return "$cc, $nd";
-        case 'cc-by-nc-sa':
-            return "$cc, $by, $nc, $sa";
-        case 'cc-nc-sa':
-            return "$cc, $nc, $sa";
-        case 'cc-by-nc-nd':
-            return "$cc, $by, $nc, $nd";
-        case 'cc-nc-nd':
-            return "$cc, $nc, $nd";
-        case 'cc-sampling+':
-            return "$cc, $sp";
-        case 'cc-nc-sampling+':
-            return "$cc, $nc, $sp";
-        case 'cc-0':
-            return "$cc $z";
-        }
     }
 
     /**

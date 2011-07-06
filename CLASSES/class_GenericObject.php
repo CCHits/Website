@@ -96,4 +96,21 @@ class GenericObject
             return false;
         }
     }
+    
+    /**
+     * Return an array of the collected or created data.
+     *
+     * @return array A mixed array of these items
+     */
+    function getSelf()
+    {
+        if ($this->strDBKeyCol != '') {
+            $key = $this->strDBKeyCol;
+            $return[$key] = $this->$key;
+        }
+        foreach ($this->arrDBItems as $key=>$dummy) {
+            $return[$key] = $this->$key;
+        }
+        return $return;
+    }
 }
