@@ -18,7 +18,7 @@
  * This class handles all HTTP requirements
  *
  * @category Default
- * @package  API
+ * @package  UI
  * @author   Ian Selby <unknown-email-address-but-code-from@gen-x-design.com>
  * @license  http://www.gen-x-design.com All content Copyright � Gen X Design | Ian Selby
  * @link     http://www.gen-x-design.com/archives/create-a-rest-api-with-php/
@@ -499,7 +499,7 @@ class UI
         $baseSmarty = dirname(__FILE__) . '/../TEMPLATES/';
         include_once $libSmarty;
         $objSmarty = new Smarty();
-        $objSmarty->debugging = true;
+        $objSmarty->debugging = ConfigBroker::getAppConfig('smarty_debug', 'false');
         $objSmarty->setTemplateDir($baseSmarty . 'Source');
         $objSmarty->setCompileDir($baseSmarty . 'Compiled');
         $objSmarty->setCacheDir($baseSmarty . 'Cache');

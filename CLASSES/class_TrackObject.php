@@ -310,7 +310,7 @@ class TrackObject extends GenericObject
      */
     protected function wipe_fileSource()
     {
-        // unlink("/path/to/files/{$this->fileSource}");
+        unlink($this->get_localFileSource());
         $this->set_fileSource("");
     }
 
@@ -525,7 +525,7 @@ class TrackObject extends GenericObject
      */
     function get_fileUrl()
     {
-        return ConfigBroker::getConfig("Base Media URL", "http://cchits.net") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
+        return ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
     }
     /**
      * Local File Location
@@ -534,7 +534,7 @@ class TrackObject extends GenericObject
      */
     function get_localFileSource()
     {
-        return ConfigBroker::getConfig("fileBase", "http://cchits.net") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
+        return ConfigBroker::getConfig("fileBase", "/var/www/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
     }
     
     /**

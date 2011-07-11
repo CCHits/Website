@@ -56,14 +56,22 @@ class RemoteSourcesSectionz extends RemoteSources
         preg_match($regex_fileUrl, $file_contents, $arrFileUrl);
         preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense);
         var_dump(array('artistName'=>$arrArtistName, 'trackName'=>$arrTrackName, 'artistUrl'=>$arrArtistUrl, 'fileUrl'=>$arrFileUrl, 'trackLicense'=>$arrTrackLicense));
-        /*
-        $this->strArtistName = $arrArtistName[1];
-        $this->strTrackName = $arrTrackName[1];
-        $this->strArtistUrl = 'http://www.sectionz.com/' . $arrArtistUrl[1];
-        $this->fileUrl = $this->find_download('http://www.sectionz.com/' . $arrFileUrl[1]);
-        $this->enumTrackLicense = $arrTrackLicense[1];
+        if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
+            $this->strArtistName = $arrArtistName[1];
+        }
+        if (preg_match($regex_strTrackName, $file_contents, $arrTrackName) > 0) {
+            $this->strTrackName = $arrTrackName[1];
+        }
+        if (preg_match($regex_strArtistUrl, $file_contents, $arrArtistUrl) > 0) {
+            $this->strArtistUrl = $arrArtistUrl[1];
+        }
+        if (preg_match($regex_fileUrl, $file_contents, $arrFileUrl) > 0) {
+            $this->fileUrl = $this->find_download('http://www.sectionz.com/' . $arrFileUrl[1]);
+        }
+        if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
+            $this->enumTrackLicense = $arrTrackLicense[1];
+        }
         return $this->is_valid_cchits_submission();
-        */
     }
 
     /**

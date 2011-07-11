@@ -45,6 +45,8 @@ class ShowObject extends GenericObject
     protected $strCommentUrl = "";
     protected $jsonAudioLayout = "";
     protected $datDateAdded = "";
+    protected $strShowFileMP3 = "";
+    protected $strShowFileOGG = "";
 
     /**
      * Construct the object.
@@ -65,23 +67,34 @@ class ShowObject extends GenericObject
 
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
-                $this->strShowUrl = "http://cchits.net/" . $this->enumShowType . "/" . $this->intShowUrl;
+                $this->strShowUrl = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl;
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+                    $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                }
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
+                    $this->strShowFileOGG = ConfigBroker::getConfig("Base Media URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg';
+                }
             }
             if ($this->strShowName == "") {
                 switch($this->enumShowType) {
+                case 'monthly':
+                    $this->strShowName = "The CCHits Monthly Chart Show for ";
+                    $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
+                    $this->strShowName .= substr($this->intShowUrl, 4, 2);
+                    break;
                 case 'daily':
                     $this->strShowName = "The CCHits Daily Exposure Show for ";
+                    $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
+                    $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
+                    $this->strShowName .= substr($this->intShowUrl, 6, 2);
                     break;
                 case 'weekly':
                     $this->strShowName = "The CCHits Weekly Review Show for ";
-                    break;
-                case 'monthly':
-                    $this->strShowName = "The CCHits Monthly Chart Show for ";
+                    $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
+                    $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
+                    $this->strShowName .= substr($this->intShowUrl, 6, 2);
                     break;
                 }
-                $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
-                $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
-                $this->strShowName .= substr($this->intShowUrl, 6, 2);
             }
             switch($this->enumShowType) {
             case 'weekly':
@@ -102,19 +115,32 @@ class ShowObject extends GenericObject
 
     /**
      * Add the collected tracks to the getSelf function
-     * 
+     *
      * @return The amassed data from this function
      */
     function getSelf()
     {
         $return = parent::getSelf();
         $counter = 0;
+        $showname = $this->strShowName . ' featuring ';
+        $showname_tracks = '';
+        $first = true;
         foreach ($this->arrTracks as $objTrack) {
             $return['arrTracks'][++$counter] = $objTrack->getSelf();
+            if ($counter <= 5) {
+                if ($showname_tracks != '') {
+                    $showname_tracks .= ', ';
+                }
+                $showname_tracks .= $objTrack->get_strTrackName() . ' by ' . $objTrack->get_objArtist()->get_strArtistName();
+            } elseif ($first) {
+                $first = false;
+                $showname_tracks .= ' and more...';
+            }
         }
+        $return['player_data'] = array('name' => $showname . $showname_tracks, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'ogg' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
         return $return;
     }
-    
+
     /**
      * Set the Show Name for external shows.
      *
@@ -243,7 +269,7 @@ class ShowObject extends GenericObject
      * Set the jsonAudioLayout.
      *
      * Strictly speaking, it's just a string here, but as the only shows
-     * where it makes a difference are the internal ones, and we're the 
+     * where it makes a difference are the internal ones, and we're the
      * ones generating the show, it shouldn't matter.
      *
      * @param json $jsonAudioLayout The JSON layout of the show

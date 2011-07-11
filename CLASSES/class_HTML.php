@@ -18,7 +18,7 @@
  * This class handles all HTML requests
  *
  * @category Default
- * @package  HTML
+ * @package  UI
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
@@ -182,6 +182,9 @@ class HTML
         $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1))->getSelf();
         if ($this->render()) {
             if ($this->format == 'html') {
+                $this->result['daily_player_json'] = json_encode(array($this->result['daily']['player_data']));
+                $this->result['weekly_player_json'] = json_encode(array($this->result['weekly']['player_data']));
+                $this->result['monthly_player_json'] = json_encode(array($this->result['monthly']['player_data']));
                 UI::SmartyTemplate("frontpage.html", $this->result);
             } elseif ($this->format == 'rss') {
                 UI::SmartyTemplate("frontpage.rss", $this->result);

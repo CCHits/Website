@@ -37,3 +37,5 @@ if (!isset($DSN)) {
         'pass' => $PASS
     );
 }
+
+$APPCONFIG = array();

@@ -30,6 +30,7 @@ class ConfigBroker
 {
     protected static $config_handler = null;
     protected $arrConfig = array();
+    protected $arrLocalConfig = array();
 
     /**
      * An internal function to make this a singleton
@@ -55,7 +56,7 @@ class ConfigBroker
     public function getConfig($strKey = "", $strDefault = "")
     {
         $handler = self::getHandler();
-        if (is_array($handler->arrConfig) and count($handler->arrConfig) == 0) {
+        if (!is_array($handler->arrConfig) or (is_array($handler->arrConfig) and count($handler->arrConfig) == 0)) {
             $db = CF::getFactory()->getConnection();
             try {
                 $sql = "SELECT * FROM config";
@@ -68,6 +69,30 @@ class ConfigBroker
         }
         if (isset($handler->arrConfig[$strKey])) {
             return $handler->arrConfig[$strKey][0];
+        } else {
+            return $strDefault;
+        }
+    }
+
+    /**
+     * Return either the established application-level configuration item, or the default
+     *
+     * @param string $strKey     The key we're searching for
+     * @param string $strDefault The default response if it's not in the database
+     *
+     * @return string The value we're searching for, or the default if not found.
+     */
+    public function getAppConfig($strKey = "", $strDefault = "")
+    {
+        $handler = self::getHandler();
+        if (!is_array($handler->arrLocalConfig) or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)) {
+            include_once dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
+            if (isset($APPCONFIG)) {
+                $handler->arrLocalConfig = $APPCONFIG;
+            }
+        }
+        if (isset($handler->arrLocalConfig[$strKey])) {
+            return $handler->arrLocalConfig[$strKey][0];
         } else {
             return $strDefault;
         }
