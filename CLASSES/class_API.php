@@ -18,7 +18,7 @@
  * This class handles all API calls
  *
  * @category Default
- * @package  API
+ * @package  UI
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
@@ -31,7 +31,7 @@ class API
     protected $result_array = null;
     protected $response_code = 200;
     protected $format = 'json';
-    
+
     /**
      * The function which handles the API calls
      *
@@ -40,10 +40,10 @@ class API
     function __construct()
     {
         $arrUri = UI::getUri();
-        if (is_array($arrUri) 
-            and isset($arrUri['path_items']) 
-            and is_array($arrUri['path_items']) 
-            and count($arrUri['path_items']) > 0 
+        if (is_array($arrUri)
+            and isset($arrUri['path_items'])
+            and is_array($arrUri['path_items'])
+            and count($arrUri['path_items']) > 0
             and $arrUri['path_items'][0] != 'api'
         ) {
             throw new API_NotApiCall();
@@ -221,7 +221,7 @@ class API
                 $this->result_array = TrackBroker::getShowByPartialUrl($track_url, $page, $size);
                 $this->render();
                 break;
-                
+
                 // Direct Lookups
             case 'gettrack':
                 $this->result = TrackBroker::getTrackByID(UI::getLongNumber($arrUri['path_items'][2]));
@@ -282,7 +282,7 @@ class API
             }
         }
     }
-    
+
     /**
      * Render
      *
@@ -341,7 +341,7 @@ class API
                             if ($return != '') {
                                 $return .= " && ";
                             }
-                            $return .= "{$v_key}=\"$v_value\"";                            
+                            $return .= "{$v_key}=\"$v_value\"";
                         }
                     } else {
                         if ($return != '') {
@@ -362,7 +362,7 @@ class API
                                 if ($return != '') {
                                     $return .= " && ";
                                 }
-                                $return .= "{$v_key}_{$key_inc}=\"$v_value\"";                            
+                                $return .= "{$v_key}_{$key_inc}=\"$v_value\"";
                             }
                         } else {
                             if ($return != '') {
