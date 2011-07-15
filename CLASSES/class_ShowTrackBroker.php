@@ -37,12 +37,11 @@ class ShowTrackBroker
      */
     public function getShowTracksByShowID($intShowID = 0)
     {
-        Debug::Log(get_class() . "::getShowTrackByShowID($intShowID)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM showtracks WHERE intShowID = ? ORDER BY intPartID ASC";
             $query = $db->prepare($sql);
-            $query->execute(array($intTrackID));
+            $query->execute(array($intShowID));
             $item = $query->fetchObject('ShowTrackObject');
             if ($item == false) {
                 return false;
@@ -54,8 +53,30 @@ class ShowTrackBroker
                 return $return;
             }
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * getShowTracksByShowID returns confirmation about whether a track is in a show.
+     *
+     * @param integer $intShowID  The ShowID to get tracks linked to
+     * @param integer $intTrackID The TrackID to look for
+     *
+     * @return Object|boolean The ShowTrack object OR false
+     */
+    public function getShowTracksByShowTrackID($intShowID = 0, $intTrackID = 0)
+    {
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM showtracks WHERE intShowID = ?, intTrackID = ? ORDER BY intPartID ASC";
+            $query = $db->prepare($sql);
+            $query->execute(array($intShowID, $intTrackID));
+            return $query->fetchObject('ShowTrackObject');
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
 }

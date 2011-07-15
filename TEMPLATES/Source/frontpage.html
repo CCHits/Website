@@ -45,15 +45,18 @@
 		</div>
 		<div id="daily">
 			<h3>The most recent Daily Exposure show</h3>
-			{include file="player.html" player_id="1"}
+			{include file="player.html" player_id="1" playlist=$daily}
+			<p><a href="{$baseURL}/daily">More...</a> | <a href="{$baseURL}/daily/rss">Feed</a></p>
 		</div>
 		<div id="weekly">
 			<h3>The most recent Weekly Review show</h3>
-			{include file="player.html" player_id="2"}
+			{include file="player.html" player_id="2" playlist=$weekly}
+			<p><a href="{$baseURL}/weekly">More...</a> | <a href="{$baseURL}/weekly/rss">Feed</a></p>
 		</div>
 		<div id="daily">
 			<h3>The most recent Monthly Chart show</h3>
-			{include file="player.html" player_id="3"}
+			{include file="player.html" player_id="3" playlist=$monthly}
+			<p><a href="{$baseURL}/monthly">More...</a> | <a href="{$baseURL}/monthly/rss">Feed</a></p>
 		</div>
 	</body>
 </html>

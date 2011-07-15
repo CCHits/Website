@@ -13,5 +13,5 @@
                                                               $(this).jPlayer("pauseOthers");
                                                           },
                                                           {/literal}swfPath: "{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/",{literal}
-                                                          supplied: "ogg, mp3"
+                                                          supplied: "mp3,oga"
                                                       });{/literal}

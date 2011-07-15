@@ -113,4 +113,23 @@ class GenericObject
         }
         return $return;
     }
+    
+    /**
+     * Return boolean true for 1 and boolean false for 0
+     * 
+     * @param integer $check Value to check
+     * 
+     * @return boolean Result
+     */
+    function asBoolean($check)
+    {
+        switch($check) {
+        case '1':
+        case 'true':
+        case 'yes':
+            return true;
+        default:
+            return false;    
+        }
+    }
 }

@@ -207,7 +207,7 @@ class UserObject extends GenericObject
     function get_isAuthorized()
     {
         Debug::Log(get_class() . "::get_isAuthorized()", "NOISY");
-        return $this->isAuthorized;
+        return $this->asBoolean($this->isAuthorized);
     }
 
     /**
@@ -218,7 +218,7 @@ class UserObject extends GenericObject
     function get_isUploader()
     {
         Debug::Log(get_class() . "::get_isUploader()", "NOISY");
-        return $this->isUploader;
+        return $this->asBoolean($this->isUploader);
     }
 
     /**
@@ -229,7 +229,7 @@ class UserObject extends GenericObject
     function get_isAdmin()
     {
         Debug::Log(get_class() . "::get_isAdmin()", "NOISY");
-        return $this->isAdmin;
+        return $this->asBoolean($this->isAdmin);
     }
 
     /**

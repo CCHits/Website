@@ -137,7 +137,7 @@ class ShowObject extends GenericObject
                 $showname_tracks .= ' and more...';
             }
         }
-        $return['player_data'] = array('name' => $showname . $showname_tracks, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'ogg' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
+        $return['player_data'] = array('name' => $showname . $showname_tracks, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'oga' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
         return $return;
     }
 
