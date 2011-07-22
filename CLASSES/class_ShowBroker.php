@@ -82,7 +82,7 @@ class ShowBroker
      */
     public function getShowByPartialUrl
     (
-        $strShowUrl = "", 
+        $strShowUrl = "",
         $intStart = 0,
         $intSize = 25
     ) {
@@ -108,7 +108,7 @@ class ShowBroker
             return false;
         }
     }
-    
+
     /**
      * Get the most recent show of a specific type
      *
@@ -150,4 +150,35 @@ class ShowBroker
             return false;
         }
     }
+
+    /**
+     * Get the specifically dated show of a specific type
+     *
+     * @param string  $enumShowType Type of show to look for
+     * @param integer $intShowUrl   Show date to retrieve
+     *
+     * @return object ShowObject
+     */
+    function getInternalShowByDate($enumShowType = '', $intShowUrl = '')
+    {
+        switch ($enumShowType) {
+        case 'daily':
+        case 'weekly':
+        case 'monthly':
+            break;
+        default:
+            return false;
+        }
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM shows WHERE enumShowType = ? and intShowUrl = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($enumShowType, $intShowUrl));
+            return $query->fetchObject('ShowObject');
+        } catch(Exception $e) {
+            error_log($e);
+            return false;
+        }
+    }
+
 }

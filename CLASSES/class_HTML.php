@@ -39,14 +39,14 @@ class HTML
     function __construct()
     {
         $extLib = new ExternalLibraryLoader();
+        $arrUri = UI::getUri();
         $this->result = array(
             'ServiceName'=>ConfigBroker::getConfig('ServiceName', 'CCHits'),
             'Slogan'=>ConfigBroker::getConfig('Slogan', 'Where you make the charts'),
-            'baseURL'=>ConfigBroker::getConfig('Base URL', 'http://cchits.net'),
+            'baseURL'=>$arrUri['basePath'],
             'jquery'=>$extLib->getVersion('JQUERY'),
             'jplayer'=>$extLib->getVersion('JPLAYER')
         );
-        $arrUri = UI::getUri();
 
         if (is_array($arrUri)
             and isset($arrUri['path_items'])
@@ -104,18 +104,21 @@ class HTML
             case 'daily':
                 if (isset($arrUri['path_items'][1]) and $arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
+                    $arrUri['path_items'][1] = $arrUri['path_items'][2];
                 }
                 $this->daily($object[1]);
                 break;
             case 'weekly':
                 if (isset($arrUri['path_items'][1]) and $arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
+                    $arrUri['path_items'][1] = $arrUri['path_items'][2];
                 }
                 $this->weekly($object[1]);
                 break;
             case 'monthly':
                 if (isset($arrUri['path_items'][1]) and $arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
+                    $arrUri['path_items'][1] = $arrUri['path_items'][2];
                 }
                 $this->monthly($object[1]);
                 break;
@@ -135,16 +138,7 @@ class HTML
      */
     protected function reset_page()
     {
-        $arrUri = UI::getUri();
-        $redirect_url = "{$arrUri['scheme']}://{$arrUri['host']}";
-        if (isset($arrUri['port']) and $arrUri['port'] != '') {
-            $redirect_url .= ':' . $arrUri['port'];
-        }
-        if (isset($arrUri['site_path']) and $arrUri['site_path'] != '') {
-            $redirect_url .= '/' . $arrUri['site_path'];
-        }
-        $redirect_url .=  '/';
-        UI::SendHttpResponse(307, "Location: $redirect_url", '');
+        UI::Redirect('', false);
     }
 
     /**
@@ -169,6 +163,7 @@ class HTML
                 $this->result['monthly_player_json'] = json_encode(array($this->result['monthly']['player_data']));
                 UI::SmartyTemplate("frontpage.html", $this->result);
             } elseif ($this->format == 'rss') {
+                // TODO: Write this template
                 UI::SmartyTemplate("frontpage.rss", $this->result);
             }
         }
@@ -184,8 +179,9 @@ class HTML
     function track($track = 0)
     {
         if ($track != null and (0 + $track > 0)) {
-            $this->result['track'] = TrackBroker::getTrackByID($track);
+            $this->result['track'] = TrackBroker::getTrackByID(UI::getLongNumber($track));
             if ($this->render()) {
+                // TODO: Write this template
                 UI::SmartyTemplate("track.{$this->format}", $this->result);
             }
         } else {
@@ -203,14 +199,15 @@ class HTML
     function show($show = 0)
     {
         if ($show != null and (0 + $show > 0)) {
-            $this->result['show'] = ShowBroker::getShowByID($show);
+            $this->result['show'] = ShowBroker::getShowByID(UI::getLongNumber($show));
             switch($this->result['show']->get_enumShowType()) {
             case 'daily':
             case 'weekly':
             case 'monthly':
-                UI::redirect($this->result['show']->get_enumShowType() . '/' . $this->result['show']->get_intShowUrl());
+                UI::Redirect($this->result['show']->get_enumShowType() . '/' . $this->result['show']->get_intShowUrl());
             }
             if ($this->render()) {
+                // TODO: Write this template
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
             }
         } else {
@@ -231,9 +228,9 @@ class HTML
         $vote = false;
         $this->result['show'] = false;
         $arrUri = UI::getUri();
-        $this->result['track'] = TrackBroker::getTrackByID($track);
+        $this->result['track'] = TrackBroker::getTrackByID(UI::getLongNumber($track));
         if ($show != 0) {
-            $this->result['show'] = ShowBroker::getShowByID($show);
+            $this->result['show'] = ShowBroker::getShowByID(UI::getLongNumber($show));
         }
         if ($this->result['track'] != false) {
             if ($this->result['show'] == false or ShowTrackBroker::getShowTracksByShowTrackID($show, $track) == false) {
@@ -242,7 +239,7 @@ class HTML
         } else {
             UI::sendHttpResponse(404);
         }
-        if (isset($arrUri['parameters']['go']) and new NewVoteObject($track, $show)) {
+        if (isset($arrUri['parameters']['go']) and new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show))) {
             $this->result['vote'] = true;
             if ($this->render()) {
                 UI::SmartyTemplate("voted.html", $this->result);
@@ -250,6 +247,7 @@ class HTML
         } else {
             $this->result['vote_url'] = $arrUri['full'] . '?go';
             if ($this->render()) {
+                // TODO: Write this template
                 UI::SmartyTemplate("vote.{$this->format}", $this->result);
             }
         }
@@ -275,35 +273,105 @@ class HTML
         }
         $this->result['chart'] = ChartBroker::getChartByDate($date, $page, $size);
         if ($this->render()) {
+            // TODO: Write this template
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
         }
     }
 
     /**
-     * TODO: Write
+     * Either redirect from the daily page to the /show/showid or return an RSS feed.
+     *
+     * @param integer $showdate The date of the show to return. Leave blank for an RSS feed.
      *
      * @return void
      */
-    function daily()
+    function daily($showdate = '')
     {
+        if ($showdate == '') {
+            $show = ShowBroker::getInternalShowByDate('daily', $showdate);
+            if ($show != false) {
+                UI::Redirect('show/' . $show->get_intShowID());
+                exit(0);
+            }
+        }
+        $arrUri = UI::getUri();
+        $page = $arrUri['parameters']['page'];
+        if (0 + $page <= 0) {
+            $page = 0;
+        }
+        $size = $arrUri['parameters']['size'];
+        if (0 + $size <= 0 or $size > 100) {
+            $size = 25;
+        }
+        $this->result['shows'] = ShowBroker::getInternalShowByType('daily', $page, $size);
+        if ($this->render()) {
+            // TODO: Write this template
+            UI::SmartyTemplate("shows.{$this->format}", $this->result);
+        }
     }
 
     /**
-     * TODO: Write
+     * Either redirect from the weekly page to the /show/showid or return an RSS feed.
+     *
+     * @param integer $showdate The date of the show to return. Leave blank for an RSS feed.
      *
      * @return void
      */
-    function weekly()
+    function weekly($showdate = '')
     {
+        if ($showdate == '') {
+            $show = ShowBroker::getInternalShowByDate('weekly', $showdate);
+            if ($show != false) {
+                UI::Redirect('show/' . $show->get_intShowID());
+                exit(0);
+            }
+        }
+        $arrUri = UI::getUri();
+        $page = $arrUri['parameters']['page'];
+        if (0 + $page <= 0) {
+            $page = 0;
+        }
+        $size = $arrUri['parameters']['size'];
+        if (0 + $size <= 0 or $size > 100) {
+            $size = 25;
+        }
+        $this->result['shows'] = ShowBroker::getInternalShowByType('weekly', $page, $size);
+        if ($this->render()) {
+            // TODO: Write this template
+            UI::SmartyTemplate("shows.{$this->format}", $this->result);
+        }
     }
 
     /**
-     * TODO: Write
+     * Either redirect from the monthly page to the /show/showid or return an RSS feed.
+     *
+     * @param integer $showdate The date of the show to return. Leave blank for an RSS feed.
      *
      * @return void
      */
-    function monthly()
+    function monthly($showdate = '')
     {
+        if ($showdate == '') {
+            $show = ShowBroker::getInternalShowByDate('monthly', $showdate);
+            if ($show != false) {
+                UI::Redirect('show/' . $show->get_intShowID());
+                exit(0);
+            }
+        }
+        $arrUri = UI::getUri();
+        $page = $arrUri['parameters']['page'];
+        if (0 + $page <= 0) {
+            $page = 0;
+        }
+        $size = $arrUri['parameters']['size'];
+        if (0 + $size <= 0 or $size > 100) {
+            $size = 25;
+        }
+        $this->result['shows'] = ShowBroker::getInternalShowByType('monthly', $page, $size);
+        if ($this->render()) {
+            // TODO: Write this template
+            UI::SmartyTemplate("shows.{$this->format}", $this->result);
+        }
     }
 
     /**
@@ -316,23 +384,101 @@ class HTML
     function about($page = '')
     {
         switch($page) {
-        case 'faq':
-            UI::SmartyTemplate("about_faq.{$this->format}", $this->result);
         case 'goals':
+            UI::Redirect('about/#goals');
             break;
         case 'source':
+            UI::Redirect('about/#source');
             break;
         case 'database':
+            $arrUri = UI::getUri();
+            if (isset($arrUri['parameters']['go'])) {
+                $this->database_export();
+            } else {
+                UI::Redirect('about/#database');
+            }
             break;
         case 'api':
+            UI::Redirect('about/#api');
             break;
         case 'voteadjust':
+            UI::Redirect('about/#voteadjust');
             break;
         case 'theme':
+            UI::Redirect('about/#theme');
             break;
+        case 'faq':
         default:
+            // TODO: Write this template
+            UI::SmartyTemplate("about.{$this->format}", $this->result);
             break;
         }
+    }
+
+    /**
+     * Return an export of the whole database
+     * FIXME: Uses old function calls. Needs rewriting with PDO in mind.
+     *
+     * @return void
+     */
+    protected function database_export()
+    {
+        /* Removed for your own protection.
+        header('Content-type: text/plain');
+        header('Content-Disposition: attachment; filename="cchits.' . date("Y-m-d_Hi") . '.sql"');
+
+        echo " /* This DATABASE and it's DATA is made available under a Creative Commons Zero license: http://creativecommons.org/publicdomain/zero/1.0/ *" . "/\r\n\r\n";
+        $qryTables = sqlCommand("show tables");
+        if (mysql_errno() == 0) {
+            while ($arrTable = mysql_fetch_row($qryTables)) {
+                $qryCreate = sqlCommand("show create table `{$arrTable[0]}`");
+                if (mysql_errno() == 0) {
+                    if($arrCreate = mysql_fetch_assoc($qryCreate)) {
+                        echo $arrCreate['Create Table'] . ";\r\n";
+                    }
+                }
+                $qryData = sqlCommand("SELECT * FROM `{$arrTable[0]}`");
+                if (mysql_errno() == 0 and mysql_num_rows($qryData) > 0) {
+                    echo "INSERT INTO {$arrTable[0]} VALUES \r\n";
+                    $first_row = 1;
+                    while ($arrData = mysql_fetch_array($qryData, MYSQL_ASSOC)) {
+                        if ($first_row != 1) {
+                            echo ", \r\n";
+                        } else {
+                            $first_row = 0;
+                        }
+                        $first_col = 1;
+                        echo "(";
+                        foreach ($arrData as $key=>$value) {
+                            if ($first_col != 1) {
+                                echo ", ";
+                            } else {
+                                $first_col = 0;
+                            }
+                            if (is_null($value)) {
+                                echo "NULL";
+                            } else {
+                                if (($key == 'strOpenID' or $key == 'sha1Pass') and $value != '') {
+                                    echo "'" . mysql_real_escape_string(sha1($value)) . "'";
+                                } elseif ($key == 'value' and ($last_val == 'CronTab User' or $last_val == 'CronTab Pass')) {
+                                    echo "'" . mysql_real_escape_string(sha1($value)) . "'";
+                                } else {
+                                    echo "'" . mysql_real_escape_string($value) . "'";
+                                    if ($key=='key') {
+                                        $last_val = $value;
+                                    } else {
+                                        $last_val = '';
+                                    }
+                                }
+                            }
+                        }
+                        echo ")";
+                    }
+                    echo ";\r\n";
+                }
+            }
+        }
+        */
     }
 
     /**

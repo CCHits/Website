@@ -39,6 +39,14 @@ class NewVoteObject extends VoteObject
         $intTrackID = 0,
         $intShowID = 0
     ) {
+        $track = TrackBroker::getTrackByID($intTrackID);
+        $show = ShowBroker::getShowByID($intShowID);
+        if ($track == false) {
+            return false;
+        }
+        if ($show == false) {
+            $intShowID = 0;
+        }
         $this->set_intTrackID($intTrackID);
         $this->set_intShowID($intShowID);
         $this->set_intUserID(UserBroker::getUser());

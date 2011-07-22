@@ -47,5 +47,14 @@ class RemoteSourcesFile extends RemoteSources
         $this->strArtistName = $arrArtistName[1];
         $this->strTrackName = $arrTrackName[1];
         $this->fileName = $src;
+        try {
+            if ($this->is_valid_cchits_submission()) {
+                $this->create();
+                return true;
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+
     }
 }

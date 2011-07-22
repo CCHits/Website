@@ -72,10 +72,8 @@ class API
                 break;
             // User Calls
             case 'getstatus':
-                UI::requireAuth();
                 $objUser = UserBroker::getUser();
                 $this->result = array(
-                    'intUserID' => $objUser->get_intUserID(),
                     'isUploader' => $objUser->get_isUploader(),
                     'isAuthorized' => $objUser->get_isAuthorized(),
                     'isAdmin' => $objUser->get_isAdmin()
@@ -224,58 +222,126 @@ class API
 
                 // Direct Lookups
             case 'gettrack':
-                $this->result = TrackBroker::getTrackByID(UI::getLongNumber($arrUri['path_items'][2]));
+                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intTrackID = $arrUri['path_items'][2];
+                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                    $intTrackID = $arrUri['parameters']['intTrackID'];
+                } else {
+                    $intTrackID = 0;
+                }
+                $this->result = TrackBroker::getTrackByID(UI::getLongNumber($intTrackID));
                 $this->render();
                 break;
             case 'getshow':
-                $this->result = ShowBroker::getShowByID(UI::getLongNumber($arrUri['path_items'][2]));
+                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intShowID = $arrUri['path_items'][2];
+                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                    $intShowID = $arrUri['parameters']['intShowID'];
+                } else {
+                    $intShowID = 0;
+                }
+                $this->result = ShowBroker::getShowByID(UI::getLongNumber($intShowID));
                 $this->render();
                 break;
 
-            case 'getshowid':
+            // Upload Scripts
             case 'addtracktoshow':
+                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intTrackID = $arrUri['path_items'][2];
+                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                    $intTrackID = $arrUri['parameters']['intTrackID'];
+                } else {
+                    $intTrackID = 0;
+                }
+                if (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
+                    $intShowID = $arrUri['path_items'][3];
+                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                    $intShowID = $arrUri['parameters']['intShowID'];
+                } else {
+                    $intShowID = 0;
+                }
+                if ($intTrackID != 0 and $intShowID != 0) {
+                    $this->result = new NewShowTrackObject($intTrackID, $intShowID);
+                } else {
+                    $this->result = false;
+                }
+                $this->render();
+                break;
+            case 'newtrack':
+                // TODO: Import newtrack
+                break;
+            case 'getshowid':
+                // TODO: Import getshowid
+                break;
             case 'editshow':
+                // TODO: Import editshow
+                break;
+
+            // Get Statistical Information
             case 'gettrends':
-            case 'gettrend':
-            case 'gettrendsdata':
+                // TODO: Import gettrends
+                break;
             case 'getchart':
-            case 'getchartdata':
-            case 'getartist':
+                // TODO: Import getchart
+                break;
+
+            // Voting
             case 'vote':
-            case 'file':
+                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intTrackID = $arrUri['path_items'][2];
+                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                    $intTrackID = $arrUri['parameters']['intTrackID'];
+                } else {
+                    $intTrackID = 0;
+                }
+                if (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
+                    $intShowID = $arrUri['path_items'][3];
+                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                    $intShowID = $arrUri['parameters']['intShowID'];
+                } else {
+                    $intShowID = 0;
+                }
+                if ($intTrackID != 0) {
+                    $this->result = new NewVoteObject($intTrackID, $intShowID);
+                } else {
+                    $this->result = false;
+                }
+                $this->render();
+                break;
+
+            // Show generation scripts
             case 'trackprebumper':
+                // TODO: Import trackprebumper
+                break;
             case 'trackpostbumper':
+                // TODO: Import trackpostbumper
+                break;
             case 'showprebumper':
+                // TODO: Import showprebumper
+                break;
             case 'showmidbumper':
+                // TODO: Import showmidbumper
+                break;
             case 'showpostbumper':
-            case 'artist':
-            case 'artistsounds':
-            case 'title':
-            case 'titlesounds':
-            case 'license':
-            case 'isnsfw':
-            case 'votes':
-            case 'shows':
-            case 'votesadj':
-            case 'getnewdailytrack':
-            case 'getnewweeklytrack':
-            case 'getoldweeklytrack':
-            case 'getnewmonthlytrack':
+                // TODO: Import showpostbumper
+                break;
+
+            // Generate show information
+            // These functions are new
+            case 'generatedailyshow':
+                // TODO: create generatedailyshow
+                break;
+            case 'generateweeklyshow':
+                // TODO: create generateweeklyshow
+                break;
+            case 'generatemonthlyshow':
+                // TODO: create generatemonthlyshow
+                break;
+
+            // Finish the show generation
             case 'finalize':
             case 'finalise':
-            case 'showiddaily':
-            case 'showurldaily':
-            case 'spokenshowurldaily':
-            case 'shownamedaily':
-            case 'showidweekly':
-            case 'showurlweekly':
-            case 'spokenshowurlweekly':
-            case 'shownameweekly':
-            case 'showidmonthly':
-            case 'showurlmonthly':
-            case 'spokenshowurlmonthly':
-            case 'shownamemonthly':
-            case 'newtrack':
+                // TODO: Import finalise/finalize
                 break;
             default:
                 throw new API_NotApiCall();

@@ -36,7 +36,9 @@ class ShowObject extends GenericObject
     // Local Properties
     protected $intShowID = 0;
     protected $strShowName = "";
+    protected $strShowNameSpoken = "";
     protected $strShowUrl = "";
+    protected $strShowUrlSpoken = "";
     protected $intShowUrl = 0;
     protected $enumShowType = "";
     protected $intUserID = 0;
@@ -68,27 +70,34 @@ class ShowObject extends GenericObject
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
                 $this->strShowUrl = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl;
+                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits Dot Net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
-                    $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                    $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
-                    $this->strShowFileOGG = ConfigBroker::getConfig("Base Media URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg';
+                    $this->strShowFileOGG = ConfigBroker::getConfig("Base Media URL", "http://cchits.netmedia") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg';
                 }
             }
             if ($this->strShowName == "") {
                 switch($this->enumShowType) {
                 case 'monthly':
+                    // TODO: Make this string buildable from the ConfigBroker
+                    // TODO: Add Spoken Show Names here.
                     $this->strShowName = "The CCHits Monthly Chart Show for ";
                     $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
                     $this->strShowName .= substr($this->intShowUrl, 4, 2);
                     break;
                 case 'daily':
+                    // TODO: Make this string buildable from the ConfigBroker
+                    // TODO: Add Spoken Show Names here.
                     $this->strShowName = "The CCHits Daily Exposure Show for ";
                     $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
                     $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
                     $this->strShowName .= substr($this->intShowUrl, 6, 2);
                     break;
                 case 'weekly':
+                    // TODO: Make this string buildable from the ConfigBroker
+                    // TODO: Add Spoken Show Names here.
                     $this->strShowName = "The CCHits Weekly Review Show for ";
                     $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
                     $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
@@ -103,7 +112,7 @@ class ShowObject extends GenericObject
                 break;
             case 'daily':
                 $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
-                // FIXME: Transition to having the dailyshow entry in the showtracks table
+                // HACK: Transition to having the dailyshow entry in the showtracks table
                 if ($this->arrTracks == false) {
                     $this->arrTracks = array(TrackBroker::getTrackByDailyShowDate($this->intShowUrl));
                 }

@@ -21,35 +21,35 @@ $arrUri = UI::getUri();
 $content = null;
 
 try {
-    if (is_array($arrUri) 
-        and isset($arrUri['path_items']) 
-        and is_array($arrUri['path_items']) 
-        and count($arrUri['path_items']) > 0 
+    if (is_array($arrUri)
+        and isset($arrUri['path_items'])
+        and is_array($arrUri['path_items'])
+        and count($arrUri['path_items']) > 0
     ) {
         switch($arrUri['path_items'][0]) {
         case 'media':
             switch($arrUri['path_items'][1]) {
             case 'track':
                 $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseTrack', '/tracks') . "/";
-                break; 
+                break;
             case 'daily':
                 $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseDaily', '/daily') . "/";
-                break; 
+                break;
             case 'weekly':
                 $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseWeekly', '/weekly') . "/";
-                break; 
+                break;
             case 'monthly':
                 $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseMonthly', '/monthly') . "/";
-                break; 
+                break;
             default:
                 UI::sendHttpResponse(404);
             }
             $file .= $arrUri['path_items'][2] . '.' . $arrUri['format'];
-            if(!file_exists($file)) {
+            if (!file_exists($file)) {
                 error_log("Could not find $file");
                 UI::sendHttpResponse(404);
             } else {
-                if($arrUri['path_items'][1] == 'track' and TrackBroker::getTrackByID($arrUri['path_items'][2])->get_isApproved() == false and UserBroker::getUser()->isAdmin()) {
+                if ($arrUri['path_items'][1] == 'track' and TrackBroker::getTrackByID($arrUri['path_items'][2])->get_isApproved() == false and UserBroker::getUser()->isAdmin()) {
                     UI::sendHttpResponse(401);
                 } else {
                     UI::dl_file_resumable($file, TRUE);

@@ -190,6 +190,14 @@ class UI
         } else {
             $arrUrl['format'] = '';
         }
+        $arrUrl['basePath'] = "{$arrUrl['scheme']}://{$arrUrl['host']}";
+        if (isset($arrUrl['port']) and $arrUrl['port'] != '') {
+            $arrUrl['basePath'] .= ':' . $arrUrl['port'];
+        }
+        if (isset($arrUrl['site_path']) and $arrUrl['site_path'] != '') {
+            $arrUrl['basePath'] .= '/' . $arrUrl['site_path'];
+        }
+        $arrUrl['basePath'] .=  '/';
         return $arrUrl;
     }
 
@@ -311,14 +319,15 @@ class UI
     /**
      * Provide a downloadable file
      *
-     * @param string $file       File to send
+     * @param string  $file      File to send
      * @param boolean $is_resume Can we supply headers to make this file resumable?
      *
      * @return void
      *
      * @link http://www.php.net/manual/en/function.fread.php#84115
      */
-    function dl_file_resumable($file, $is_resume=TRUE) {
+    function dl_file_resumable($file, $is_resume=TRUE)
+    {
         //First, see if the file exists
         if (!is_file($file)) {
             self::sendHttpResponse(404);
@@ -338,16 +347,27 @@ class UI
 
         //This will set the Content-Type to the appropriate setting for the file
         switch($file_extension) {
-            case 'exe': $ctype='application/octet-stream'; break;
-            case 'zip': $ctype='application/zip'; break;
-            case 'mp3': $ctype='audio/mpeg'; break;
-            case 'mpg': $ctype='video/mpeg'; break;
-            case 'avi': $ctype='video/x-msvideo'; break;
-            default:    $ctype='application/force-download';
+        case 'exe':
+            $ctype='application/octet-stream';
+            break;
+        case 'zip':
+            $ctype='application/zip';
+            break;
+        case 'mp3':
+            $ctype='audio/mpeg';
+            break;
+        case 'mpg':
+            $ctype='video/mpeg';
+            break;
+        case 'avi':
+            $ctype='video/x-msvideo';
+            break;
+        default:
+            $ctype='application/force-download';
         }
 
         //check if http_range is sent by browser (or download manager)
-        if($is_resume && isset($_SERVER['HTTP_RANGE'])) {
+        if ($is_resume && isset($_SERVER['HTTP_RANGE'])) {
             list($size_unit, $range_orig) = explode('=', $_SERVER['HTTP_RANGE'], 2);
 
             if ($size_unit == 'bytes') {
@@ -394,8 +414,7 @@ class UI
         fseek($fp, $seek_start);
 
         //start buffered download
-        while(!feof($fp))
-        {
+        while (!feof($fp)) {
             //reset time limit for big files
             set_time_limit(0);
             print(fread($fp, 1024*8));
@@ -416,8 +435,11 @@ class UI
      *
      * @link http://www.php.net/manual/en/function.json-encode.php#99837
      */
-    function utf8element($array = array())
+    function utf8element($array = null)
     {
+        if ($array == null) {
+            $array = array();
+        }
         $newArray = array();
         if (is_object($array)) {
             $array = (array) $array;
@@ -576,6 +598,126 @@ class UI
     }
 
     /**
+     * Return the spoken version of the show date
+     *
+     * @param integer $date The date to be read in format YYYYMMDD
+     *
+     * @return string The date, in an easily parsible, spoken format.
+     */
+    function getPronouncableDate($date = '0')
+    {
+        if (preg_match('/(\d\d)(\d\d)(\d\d)(\d\d)|(\d\d)(\d\d)(\d\d)/', $date, $matches) == 1) {
+            foreach ($matches as $match) {
+                switch($match) {
+                case '01':
+                    $arrReturn[] = "zero One";
+                    break;
+                case '02':
+                    $arrReturn[] = "zero Two";
+                    break;
+                case '03':
+                    $arrReturn[] = "zero Three";
+                    break;
+                case '04':
+                    $arrReturn[] = "zero Four";
+                    break;
+                case '05':
+                    $arrReturn[] = "zero Five";
+                    break;
+                case '06':
+                    $arrReturn[] = "zero Six";
+                    break;
+                case '07':
+                    $arrReturn[] = "zero seven";
+                    break;
+                case '08':
+                    $arrReturn[] = "zero eight";
+                    break;
+                case '09':
+                    $arrReturn[] = "zero nine";
+                    break;
+                case '10':
+                    $arrReturn[] = "ten";
+                    break;
+                case '11':
+                    $arrReturn[] = "eleven";
+                    break;
+                case '12':
+                    $arrReturn[] = "twelve";
+                    break;
+                case '13':
+                    $arrReturn[] = "thirteen";
+                    break;
+                case '14':
+                    $arrReturn[] = "fourteen";
+                    break;
+                case '15':
+                    $arrReturn[] = "fifteen";
+                    break;
+                case '16':
+                    $arrReturn[] = "sixteen";
+                    break;
+                case '17':
+                    $arrReturn[] = "seventeen";
+                    break;
+                case '18':
+                    $arrReturn[] = "eighteen";
+                    break;
+                case '19':
+                    $arrReturn[] = "nineteen";
+                    break;
+                case '20':
+                    $arrReturn[] = "twenty";
+                    break;
+                case '21':
+                    $arrReturn[] = "twenty One";
+                    break;
+                case '22':
+                    $arrReturn[] = "twenty two";
+                    break;
+                case '23':
+                    $arrReturn[] = "twenty three";
+                    break;
+                case '24':
+                    $arrReturn[] = "twenty four";
+                    break;
+                case '25':
+                    $arrReturn[] = "twenty five";
+                    break;
+                case '26':
+                    $arrReturn[] = "twenty six";
+                    break;
+                case '27':
+                    $arrReturn[] = "twenty seven";
+                    break;
+                case '28':
+                    $arrReturn[] = "twenty eight";
+                    break;
+                case '29':
+                    $arrReturn[] = "twenty nine";
+                    break;
+                case '30':
+                    $arrReturn[] = "thirty";
+                    break;
+                case '31':
+                    $arrReturn[] = "Thirty one";
+                    break;
+                default:
+                    // You shouldn't really have anything in here!
+                }
+            }
+            $return = '';
+            foreach ($arrReturn as $arrRet) {
+                if ($return != '') {
+                    $return .= ', ';
+                }
+                $return .= $arrRet;
+            }
+        }
+        return $return;
+    }
+
+    /**
      * Do a redirection to the $new_page (relative to the base URI of the site)
      *
      * @param string  $new_page  New page to refer to
@@ -583,17 +725,10 @@ class UI
      *
      * @return void
      */
-    function redirect($new_page = '', $permanant = true)
+    function Redirect($new_page = '', $permanant = true)
     {
         $arrUri = self::getUri();
-        $redirect_url = "{$arrUri['scheme']}://{$arrUri['host']}";
-        if (isset($arrUri['port']) and $arrUri['port'] != '') {
-            $redirect_url .= ':' . $arrUri['port'];
-        }
-        if (isset($arrUri['site_path']) and $arrUri['site_path'] != '') {
-            $redirect_url .= '/' . $arrUri['site_path'];
-        }
-        $redirect_url .=  '/' . $new_page;
+        $redirect_url = $arrUri['basePath'] . '/' . $new_page;
         if ($permanant) {
             $code = 301;
         } else {

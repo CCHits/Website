@@ -39,6 +39,11 @@ class NewShowTrackObject extends ShowTrackObject
         $intTrackID = 0,
         $intShowID = 0
     ) {
+        $track = TrackBroker::getTrackByID($intTrackID);
+        $show = ShowBroker::getShowByID($intShowID);
+        if ($track == false or $show == false or $show->get_intUserID() != UserBroker::getUser()->get_intUserID()) {
+            return false;
+        }
         $this->set_intTrackID($intTrackID);
         $this->set_intShowID($intShowID);
         try {

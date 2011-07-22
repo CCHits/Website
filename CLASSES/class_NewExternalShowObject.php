@@ -39,7 +39,7 @@ class NewExternalShowObject extends ShowObject
      */
     public function __construct($strShowUrl = "", $strShowName = "")
     {
-        if ($strShowUrl != "") {
+        if ($strShowUrl != "" and UserBroker::getUser()->get_isAdmin()) {
             if ($strShowName == "") {
                 $strShowName = $strShowUrl;
             }
@@ -49,6 +49,8 @@ class NewExternalShowObject extends ShowObject
             $this->set_intUserID(UserBroker::getUser()->get_intUserID());
             $this->set_datDateAdded(date("Y-m-d H:i:s"));
             return $this->create();
+        } else {
+            return false;
         }
     }
 }

@@ -30,7 +30,6 @@ class NewTrackObject extends TrackObject
     /**
      * Establish the creation of the new item by setting the values and then calling the create function.
      *
-     * @param object  $objUser            UserObject
      * @param object  $objArtist          ArtistObject
      * @param string  $strTrackName       The name of the track
      * @param string  $strTrackNameSounds How to pronounce the name of the track
@@ -38,29 +37,25 @@ class NewTrackObject extends TrackObject
      * @param string  $enumTrackLicense   A string representing the license criteria
      * @param boolean $isNSFW             A value indicating the Work/Family Safe Status of the track
      * @param string  $fileSource         The file name in the media directory
-     * @param md5sum  $md5FileHash        A hash of the media file
      *
      * @return true|false The state of the creation act
      */
     public function __construct(
-        $objUser = null,
         $objArtist = null,
         $strTrackName = "",
         $strTrackNameSounds = "",
         $strTrackUrl = "",
         $enumTrackLicense = "",
         $isNSFW = false,
-        $fileSource = "",
-        $md5FileHash = ""
+        $fileSource = ""
     ) {
-        if ($objUser != null 
-            and $objArtist != null 
-            and $strTrackName != "" 
-            and $strTrackNameSounds != "" 
-            and $strTrackUrl != "" 
-            and $enumTrackLicense != "" 
-            and $fileSource != "" 
-            and $md5FileHash != ""
+        if (UserBroker::getUser()->get_isUploader()
+            and $objArtist != null
+            and $strTrackName != ""
+            and $strTrackNameSounds != ""
+            and $strTrackUrl != ""
+            and $enumTrackLicense != ""
+            and $fileSource != ""
         ) {
             $this->set_intArtistID($objArtist->get_intArtistID());
             $this->set_strTrackName($strTrackName);
@@ -69,8 +64,8 @@ class NewTrackObject extends TrackObject
             $this->set_enumTrackLicense($enumTrackLicense);
             $this->set_isNSFW($isNSFW);
             $this->set_fileSource($fileSource);
-            $this->set_md5FileHash($md5FileHash);
-            $this->set_isApproved($objUser->get_isAuthorized());
+            $this->set_md5FileHash('');
+            $this->set_isApproved(UserBroker::getUser()->get_isAuthorized());
             return $this->create();
         } else {
             return false;

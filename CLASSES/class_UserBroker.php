@@ -27,6 +27,24 @@
  */
 class UserBroker
 {
+    protected static $handler = null;
+    protected $thisUser = null;
+    protected $arrUsers = array();
+
+    /**
+     * An internal function to make this a singleton
+     *
+     * @return object This class by itself.
+     */
+    private static function getHandler()
+    {
+        if (self::$handler == null) {
+            self::$handler = new self();
+        }
+        return self::$handler;
+    }
+
+
     /**
      * This function gets any details about the acting User
      *
@@ -34,6 +52,10 @@ class UserBroker
      */
     function getUser()
     {
+        $objSelf = self::getHandler();
+        if ($objSelf->thisUser != null) {
+            return $objSelf->thisUser;
+        }
         if (session_id()==='') {
             $lifetime=604800; // 7 Days
             session_start();
@@ -58,7 +80,8 @@ class UserBroker
             $field = "sha1Password";
             $param = "{$username}:{$password}";
         } else {
-            return new NewUserObject();
+            $objSelf->thisUser = new NewUserObject();
+            return $objSelf->thisUser;
         }
 
         if (isset($field) and isset($param)) {
@@ -67,13 +90,14 @@ class UserBroker
                 $sql = "SELECT * FROM users WHERE $field = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($param));
-                $result = $query->fetchObject('UserObject');
-                if ($result == false) {
-                    return new NewUserObject($param);
+                $objSelf->thisUser = $query->fetchObject('UserObject');
+                if ($objSelf->thisUser == false) {
+                    $objSelf->thisUser = new NewUserObject($param);
+                    return $objSelf->thisUser;
                 } else {
-                    $result->set_datLastSeen(date("Y-m-d H:i:s"));
-                    $result->write();
-                    return $result;
+                    $objSelf->thisUser->set_datLastSeen(date("Y-m-d H:i:s"));
+                    $objSelf->thisUser->write();
+                    return $objSelf->thisUser;
                 }
             } catch(Exception $e) {
                 return false;
@@ -82,7 +106,7 @@ class UserBroker
             return false;
         }
     }
-    
+
     /**
      * Get the User object for the intUserID
      *
@@ -92,13 +116,18 @@ class UserBroker
      */
     function getUserByID($intUserID = 0)
     {
+        $objSelf = self::getHandler();
         if (0 + $intUserID > 0) {
+            if (isset($objSelf->arrUsers[$intUserID])) {
+                return $objSelf->arrUsers[$intUserID];
+            }
             try {
                 $db = CF::getFactory()->getConnection();
                 $sql = "SELECT * FROM users WHERE intUserID = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($intUserID));
                 $result = $query->fetchObject('UserObject');
+                $objSelf->arrUsers[$intUserID] = $result;
                 return $result;
             } catch(Exception $e) {
                 return false;

@@ -27,7 +27,20 @@
  */
 class RemoteSources extends GenericObject
 {
-    protected $arrDBItems = array('strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'enumTrackLicense'=>true, 'intArtistID'=>true, 'strArtistName'=>true, 'strArtistNameSounds'=>true, 'strArtistUrl'=>true, 'isNSFW'=>true, 'fileUrl'=>true, 'fileName'=>true, 'intUserID'=>true);
+    protected $arrDBItems = array(
+    	'strTrackName'=>true,
+    	'strTrackNameSounds'=>true,
+    	'strTrackUrl'=>true,
+    	'enumTrackLicense'=>true,
+    	'intArtistID'=>true,
+    	'strArtistName'=>true,
+    	'strArtistNameSounds'=>true,
+    	'strArtistUrl'=>true,
+    	'isNSFW'=>true,
+    	'fileUrl'=>true,
+    	'fileName'=>true,
+    	'intUserID'=>true
+    );
     protected $strDBTable = "processing";
     protected $strDBKeyCol = "intProcessingID";
     protected $arrChanges = array();
@@ -46,21 +59,6 @@ class RemoteSources extends GenericObject
     protected $fileUrl = "";
     protected $fileName = "";
     protected $intUserID = 0;
-
-    const NOTRACKNAME = -255;
-    const NOTRACKURL = -254;
-    const NOTRACKLIC = -253;
-    const NOARTISTNAME = -252;
-    const NOARTISTURL = -251;
-    const NONSFWFLAG = -250;
-    const NOFILEDL = -249;
-    const NOFILENAME = -248;
-    const NOFILEEXIST = -247;
-    const INVALIDLIC = -246;
-    const INVALIDSRC = -245;
-    const INVALIDAPICODE = -244;
-    const INVALIDCODE = -243;
-    const VALID = 0;
 
     /**
      * Set the track name in the class
@@ -91,7 +89,7 @@ class RemoteSources extends GenericObject
             $arrChanges['strTrackNameSounds'] = true;
         }
     }
-    
+
     /**
      * Set the track's information URL in the class
      *
@@ -106,7 +104,7 @@ class RemoteSources extends GenericObject
             $arrChanges['strTrackUrl'] = true;
         }
     }
-    
+
     /**
      * Set the track's license in the class
      *
@@ -121,7 +119,7 @@ class RemoteSources extends GenericObject
             $arrChanges['enumTrackLicense'] = true;
         }
     }
-    
+
     /**
      * Set the existing ArtistID information URL in the class
      *
@@ -136,7 +134,7 @@ class RemoteSources extends GenericObject
             $arrChanges['intArtistID'] = true;
         }
     }
-    
+
     /**
      * Set the Artist name in the class
      *
@@ -151,7 +149,7 @@ class RemoteSources extends GenericObject
             $arrChanges['strArtistName'] = true;
         }
     }
-    
+
     /**
      * Set the sound of the Artist name in the class
      *
@@ -166,7 +164,7 @@ class RemoteSources extends GenericObject
             $arrChanges['strArtistNameSounds'] = true;
         }
     }
-    
+
     /**
      * Set the artist's URL in the class
      *
@@ -181,7 +179,7 @@ class RemoteSources extends GenericObject
             $arrChanges['strArtistUrl'] = true;
         }
     }
-    
+
     /**
      * Set the worksafe status in the class
      *
@@ -211,7 +209,7 @@ class RemoteSources extends GenericObject
             $arrChanges['fileUrl'] = true;
         }
     }
-    
+
     /**
      * Set the internal location of the track. Not publically available.
      *
@@ -230,18 +228,15 @@ class RemoteSources extends GenericObject
     /**
      * Set the userID of the person uploading the track
      *
-     * @param integer $intUserID The userID uploading the track
-     *
      * @return void
      */
-    protected function set_intUserID($intUserID = 0)
+    protected function set_intUserID()
     {
-        if ($this->intUserID != $intUserID) {
-            $this->intUserID = $intUserID;
+        if ($this->intUserID != UserBroker::getUser()->get_intUserID()) {
+            $this->intUserID = UserBroker::getUser()->get_intUserID();
             $arrChanges['intUserID'] = true;
         }
     }
-
 
     /**
      * Continue processing the collected data
@@ -252,8 +247,8 @@ class RemoteSources extends GenericObject
     {
         if ($this->intArtistID == 0) {
             $this->intArtistID = addArtist(
-                $this->strArtistName, 
-                $this->strArtistNameSounds, 
+                $this->strArtistName,
+                $this->strArtistNameSounds,
                 $this->strArtistUrl
             );
         }
@@ -263,29 +258,28 @@ class RemoteSources extends GenericObject
                 $this->fileName = $get[0];
             } else {
                 unlink($get[0]);
-                return $this->NOFILEDL;
+                throw new RemoteSource_NoFileDl();
             }
         } elseif ($this->fileName == '') {
-            return $this->NOFILENAME;
+            throw new RemoteSource_NoFileName();
         } else {
             if ( ! file_exists($this->fileName)) {
-                return $this->NOFILEEXIST;
+                throw new RemoteSource_NoFileExist();
             }
         }
-        $this->intTrackID = addTrack(
-            $this->intArtistID, 
-            $this->strTrackName, 
-            $this->strTrackNameSounds, 
-            $this->strTrackUrl, 
-            $this->enumTrackLicense, 
-            $this->isNSFW, 
-            $this->intUserID, 
+        $this->intTrackID = new NewTrackObject(
+            $this->intArtistID,
+            $this->strTrackName,
+            $this->strTrackNameSounds,
+            $this->strTrackUrl,
+            $this->enumTrackLicense,
+            $this->isNSFW,
             $this->fileName
         );
         if ($this->fileUrl != '') {
             unlink($this->fileName);
         }
-        return $this->VALID;
+        return true;
     }
 
     /**
@@ -296,35 +290,35 @@ class RemoteSources extends GenericObject
     protected function is_valid_cchits_submission()
     {
         if (!isset($this->strTrackName) or '' == trim($this->strTrackName)) {
-            return $this->NOTRACKNAME;
+            throw new RemoteSource_NoTrackName();
         }
         if (!isset($this->strTrackUrl) or '' == trim($this->strTrackUrl)) {
-            return $this->NOTRACKURL;
+            throw new RemoteSource_NoTrackUrl();
         }
         if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense)) {
-            return $this->NOTRACKLIC;
+            throw new RemoteSource_NoTrackLicense();
         }
         if (!isset($this->strArtistName) or '' == trim($this->strArtistName)) {
-            return $this->NOARTISTNAME;
+            throw new RemoteSource_NoArtistName();
         }
         if (!isset($this->strArtistUrl) or '' == trim($this->strArtistUrl)) {
-            return $this->NOARTISTURL;
+            throw new RemoteSource_NoArtistUrl();
         }
         if (!isset($this->isNSFW) or trim($this->isNSFW)>1 or trim($this->isNSFW)<0) {
-            return $this->NONSFWFLAG;
+            throw new RemoteSource_NoNSFWFlag();
         }
         if (isset($this->fileUrl) and "" != $this->fileUrl) {
             if (isset($this->fileName) and false == $this->fileName) {
-                return $this->NOFILEDL;
+                throw new RemoteSource_NoFileDl();
             }
             if (!isset($this->fileName) or '' == trim($this->fileName)) {
-                return $this->NOFILENAME;
+                throw new RemoteSource_NoFileName();
             }
             if (isset($this->fileName) and !file_exists(trim($this->fileName))) {
-                return $this->NOFILEEXIST;
+                throw new RemoteSource_NoFileExist();
             }
         }
-        return $this->VALID;
+        return true;
     }
 
     /**
@@ -340,7 +334,7 @@ class RemoteSources extends GenericObject
      *
      * @link http://www.php.net/manual/en/ref.curl.php#93163
      */
-    protected function curl_get($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10) 
+    protected function curl_get($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10)
     {
         $url = str_replace("&amp;", "&", urldecode(trim($url)));
         $cookie = tempnam(sys_get_temp_dir(), "CURLCOOKIE_");
@@ -389,7 +383,7 @@ class RemoteSources extends GenericObject
             }
         }
 
-        if ($as_file == 0 
+        if ($as_file == 0
             and (preg_match("/>[[:space:]]+window\.location\.replace\('(.*)'\)/i", $content)
             or preg_match("/>[[:space:]]+window\.location\=\"(.*)\"/i", $content))
             and $javascript_loop < $max_loop
@@ -405,3 +399,206 @@ class RemoteSources extends GenericObject
     }
 }
 
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoTrackName extends CustomException
+{
+    protected $message = "This track has no name.";
+    protected $code = 255;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoTrackUrl extends CustomException
+{
+    protected $message = "This track has no URL.";
+    protected $code = 253;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoTrackLicense extends CustomException
+{
+    protected $message = "There is no valid license associated to this track.";
+    protected $code = 253;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoArtistName extends CustomException
+{
+    protected $message = "This Artist has no name.";
+    protected $code = 252;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoArtistUrl extends CustomException
+{
+    protected $message = "This Artist has no Url.";
+    protected $code = 251;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoNSFWFlag extends CustomException
+{
+    protected $message = "There is no NSFW flag associated with this track.";
+    protected $code = 250;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoFileDl extends CustomException
+{
+    protected $message = "Couldn't download this file.";
+    protected $code = 249;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoFileName extends CustomException
+{
+    protected $message = "You didn't specify a filename.";
+    protected $code = 248;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_NoFileExist extends CustomException
+{
+    protected $message = "You specified a filename which doesn't exist.";
+    protected $code = 247;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_InvalidLicense extends CustomException
+{
+    protected $message = "This license is not appropriate for this site.";
+    protected $code = 246;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_InvalidSource extends CustomException
+{
+    protected $message = "That source is not appropriate for this class.";
+    protected $code = 245;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_InvalidAPICode extends CustomException
+{
+    protected $message = "The supplied API code isn't suitable for that resource.";
+    protected $code = 244;
+}

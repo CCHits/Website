@@ -7,7 +7,7 @@ if [ -z $1 ]; then
   echo "Done."
   if [ ! -f /tmp/phpcs_stats ]; then
     echo -n "Generating Documentation... "
-    `which phpdoc` -o HTML:frames:earthli -d `dirname $0` -t `dirname $0`/DOCS > /dev/null
+#    `which phpdoc` -o HTML:frames:earthli -d `dirname $0` -t `dirname $0`/DOCS > /dev/null
     echo "Done."
   fi
   if [ -f /tmp/phpcs_stats ]; then

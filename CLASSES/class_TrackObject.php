@@ -52,7 +52,7 @@ class TrackObject extends GenericObject
     protected $arrChanges = array();
 
     /**
-     * Read the contents of the pre-created class (from the object broker) and, 
+     * Read the contents of the pre-created class (from the object broker) and,
      * if it's a duplicate, replace the class values with the values from the
      * duplicate, then ensure that the various true and false values are set.
      */
@@ -84,7 +84,7 @@ class TrackObject extends GenericObject
 
     /**
      * Add the collected generated data to the getSelf function
-     * 
+     *
      * @return The amassed data from this function
      */
     function getSelf()
@@ -96,7 +96,7 @@ class TrackObject extends GenericObject
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
         return $return;
     }
-    
+
     /**
      * If we've only been given and intArtistID, pull in the true object value
      *
@@ -251,6 +251,9 @@ class TrackObject extends GenericObject
      */
     function set_md5FileHash($md5FileHash = "")
     {
+        if ($md5FileHash == '') {
+            $md5FileHash = md5sum($this->get_localFileSource());
+        }
         if ($this->md5FileHash != $md5FileHash) {
             $this->md5FileHash = $md5FileHash;
             $this->arrChanges[] = 'md5FileHash';
@@ -536,7 +539,7 @@ class TrackObject extends GenericObject
     {
         return ConfigBroker::getConfig("fileBase", "/var/www/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
     }
-    
+
     /**
      * Length of the track
      *
