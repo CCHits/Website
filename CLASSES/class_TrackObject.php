@@ -55,8 +55,9 @@ class TrackObject extends GenericObject
      * Read the contents of the pre-created class (from the object broker) and,
      * if it's a duplicate, replace the class values with the values from the
      * duplicate, then ensure that the various true and false values are set.
+     *
+     * @return void
      */
-
     function __construct()
     {
         if ($this->intDuplicateID != 0) {
@@ -91,9 +92,21 @@ class TrackObject extends GenericObject
     {
         $return = parent::getSelf();
         $return['localSource'] = $this->get_fileUrl();
-        $return['objArtist'] = $this->objArtist->getSelf();
+        $return['strArtistName'] = $this->objArtist->get_strArtistName();
+        $return['strArtistNameSounds'] = $this->objArtist->get_strArtistNameSounds();
+        $return['strArtistUrl'] = $this->objArtist->get_strArtistUrl();
         $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
+        if ($this->booleanFull == true) {
+            $showtracks = ShowTrackBroker::getShowTracksByTrackID($this->intTrackID);
+            if ($showtracks != false) {
+                foreach ($showtracks as $showtrack) {
+                    $show = ShowBroker::getShowByID($showtrack->get_intShowID());
+                    $show->set_full(false);
+                    $return['shows'][] = $show->getSelf();
+                }
+            }
+        }
         return $return;
     }
 

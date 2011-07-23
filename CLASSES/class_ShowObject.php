@@ -49,6 +49,8 @@ class ShowObject extends GenericObject
     protected $datDateAdded = "";
     protected $strShowFileMP3 = "";
     protected $strShowFileOGG = "";
+    // Functional switches extending GenericObject
+    protected $booleanFull = true;
 
     /**
      * Construct the object.
@@ -131,22 +133,27 @@ class ShowObject extends GenericObject
     {
         $return = parent::getSelf();
         $counter = 0;
-        $showname = $this->strShowName . ' featuring ';
-        $showname_tracks = '';
+        $showname = $this->strShowName;
         $first = true;
-        foreach ($this->arrTracks as $objTrack) {
-            $return['arrTracks'][++$counter] = $objTrack->getSelf();
-            if ($counter <= 5) {
-                if ($showname_tracks != '') {
-                    $showname_tracks .= ', ';
+        if ($this->booleanFull == true) {
+            $showname .= ' featuring ';
+            $showname_tracks = '';
+            foreach ($this->arrTracks as $objTrack) {
+                $return['arrTracks'][++$counter] = $objTrack->getSelf();
+                if ($counter <= 5) {
+                    if ($showname_tracks != '') {
+                        $showname_tracks .= ', ';
+                    }
+                    $showname_tracks .= $objTrack->get_strTrackName() . ' by ' . $objTrack->get_objArtist()->get_strArtistName();
+                } elseif ($first) {
+                    $first = false;
+                    $showname_tracks .= ' and more...';
                 }
-                $showname_tracks .= $objTrack->get_strTrackName() . ' by ' . $objTrack->get_objArtist()->get_strArtistName();
-            } elseif ($first) {
-                $first = false;
-                $showname_tracks .= ' and more...';
             }
+            $showname .= $showname_tracks;
+            $return['player_data'] = array('name' => $showname, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'oga' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
+
         }
-        $return['player_data'] = array('name' => $showname . $showname_tracks, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'oga' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
         return $return;
     }
 
