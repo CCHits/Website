@@ -40,9 +40,9 @@ class ShowTrackObject extends GenericObject
     protected $intShowID = 0;
     protected $intPartID = 0;
     protected $objTrack = null;
-    
+
     /**
-     * The function to set the track ID 
+     * The function to set the track ID
      *
      * @param integer $intTrackID The intTrackID to set
      *
@@ -55,9 +55,9 @@ class ShowTrackObject extends GenericObject
             $this->arrChanges[] = 'intTrackID';
         }
     }
-    
+
     /**
-     * The function to set the Show ID 
+     * The function to set the Show ID
      *
      * @param integer $intShowID The intShowID to set
      *
@@ -93,7 +93,7 @@ class ShowTrackObject extends GenericObject
      */
     function get_intTrackID()
     {
-        return $this->intTrackID();
+        return $this->intTrackID;
     }
 
     /**
@@ -103,7 +103,7 @@ class ShowTrackObject extends GenericObject
      */
     function get_intPartID()
     {
-        return $this->intPartID();
+        return $this->intPartID;
     }
 
     /**
@@ -113,15 +113,15 @@ class ShowTrackObject extends GenericObject
      */
     function get_intShowID()
     {
-        return $this->intShowID();
+        return $this->intShowID;
     }
-    
+
     /**
      * A wrapper to the track broker
      *
      * @return object TrackObject
      */
-    function get_objTrack() 
+    function get_objTrack()
     {
         if ($this->intTrackID != 0) {
             if ($objTrack == null or ($this->intTrackID != $objTrack->get_intTrackID())) {
