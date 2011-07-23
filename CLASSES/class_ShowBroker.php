@@ -37,7 +37,6 @@ class ShowBroker
      */
     public function getShowByID($intShowID = 0)
     {
-        Debug::Log(get_class() . "::getShowByID($intShowID)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
