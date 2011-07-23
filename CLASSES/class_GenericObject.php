@@ -32,7 +32,31 @@ class GenericObject
     protected $strDBTable = "";
     protected $strDBKeyCol = "";
     protected $arrChanges = array();
-    
+    protected $booleanFull = false;
+
+    /**
+     * Set booleanFull to this value - expands the existing object to include it's
+     * component parts if true.
+     *
+     * @param boolean $full Set the booleanFull value to this
+     *
+     * @return void
+     */
+    function set_full($full)
+    {
+        $this->booleanFull = $this->asBoolean($full);
+    }
+
+    /**
+     * Get the value of $this->booleanFull
+     *
+     * @return boolean
+     */
+    function get_full()
+    {
+        return $this->full;
+    }
+
     /**
      * Commit any changes to the database
      *
@@ -63,7 +87,7 @@ class GenericObject
             }
         }
     }
-    
+
     /**
      * Create the object
      *
@@ -96,7 +120,7 @@ class GenericObject
             return false;
         }
     }
-    
+
     /**
      * Return an array of the collected or created data.
      *
@@ -113,12 +137,12 @@ class GenericObject
         }
         return $return;
     }
-    
+
     /**
      * Return boolean true for 1 and boolean false for 0
-     * 
+     *
      * @param integer $check Value to check
-     * 
+     *
      * @return boolean Result
      */
     function asBoolean($check)
@@ -129,7 +153,7 @@ class GenericObject
         case 'yes':
             return true;
         default:
-            return false;    
+            return false;
         }
     }
 }
