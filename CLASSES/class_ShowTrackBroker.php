@@ -79,4 +79,34 @@ class ShowTrackBroker
             return false;
         }
     }
+
+    /**
+     * Get shows by Track ID
+     *
+     * @param integer $intTrackID The TrackID to look for
+     *
+     * @return Array|false An array of showtrack items, or false
+     */
+    public function getShowTracksByTrackID($intTrackID = 0)
+    {
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM showtracks WHERE intTrackID = ? ORDER BY intShowID ASC";
+            $query = $db->prepare($sql);
+            $query->execute(array($intTrackID));
+            $item = $query->fetchObject('ShowTrackObject');
+            if ($item == false) {
+                return false;
+            } else {
+                $return[] = $item;
+                while ($item = $query->fetchObject('ShowTrackObject')) {
+                    $return[] = $item;
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
 }
