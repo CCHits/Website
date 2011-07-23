@@ -45,8 +45,8 @@ class TrackBroker
             $query->execute(array($intTrackID));
             return $query->fetchObject('TrackObject');
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -94,13 +94,13 @@ class TrackBroker
                 return $return;
             }
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
 
     /**
-     * This function finds a track by it's name.
+     * This function finds a track by its name.
      * This search removes all spaces and then checks for the name
      * including any spaces
      *
@@ -143,11 +143,49 @@ class TrackBroker
                 return $return;
             }
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
-    
+
+    /**
+     * This function finds a track by its url.
+     * This search removes all spaces and then checks for the name
+     * including any spaces
+     *
+     * @param string $strTrackUrl The part of the Track name to search for
+     * @param int    $intStart    The start "page" number
+     * @param int    $intSize     The size of each page
+     *
+     * @return array|false An array of TrackObject or false if the item doesn't exist
+     */
+    public function getTrackByPartialUrl(
+        $strTrackUrl = "",
+        $intStart = 0,
+        $intSize = 25
+    ) {
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ?";
+            $pagestart = ($intStart*$intSize);
+            $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
+            $query->execute(array("$strTrackUrl%"));
+            $item = $query->fetchObject('TrackObject');
+            if ($item == false) {
+                return false;
+            } else {
+                $return[] = $item;
+                while ($item = $query->fetchObject('TrackObject')) {
+                    $return[] = $item;
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
+
     /**
      * This function finds a track by it's md5 sum.
      *
@@ -165,18 +203,18 @@ class TrackBroker
             $query->execute(array($md5FileHash));
             return $query->fetchObject('TrackObject');
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
-    
+
     /**
      * Ideally, this will be removed from the code ASAP, however, for the meantime
      * this function looks for the datDailyShow column and finds the track with
      * this date.
-     * 
+     *
      * @param integer $intDate The date to look for
-     * 
+     *
      * @return object|false TrackObject or false if not existing
      */
     function getTrackByDailyShowDate($intDate = '')
@@ -189,8 +227,8 @@ class TrackBroker
             $query->execute(array($intDate));
             return $query->fetchObject('TrackObject');
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
 }
