@@ -159,13 +159,13 @@ class UI
     function getUri()
     {
         list($uri, $data) = self::getPath();
-        $arrUrl = parse_url($arrUrl['full']);
+        $arrUrl = parse_url($uri);
         $arrUrl['full'] = $uri;
         $arrUrl['parameters'] = $data;
         if (substr($arrUrl['path'], -1) == '/') {
             $arrUrl['path'] = substr($arrUrl['path'], 0, -1);
         }
-        $match = preg_match('%/(.*)$%', $arrUrl['path'], $matches);
+        $match = preg_match('/\/(.*)/', $arrUrl['path'], $matches);
         if ($match > 0) {
             $arrUrl['path'] = $matches[1];
         }
@@ -184,9 +184,18 @@ class UI
         }
         $arrUrl['path_items'] = explode('/', $arrUrl['router_path']);
         $arrLastUrlItem = explode('.', $arrUrl['path_items'][count($arrUrl['path_items'])-1]);
-        $arrUrl['path_items'][count($arrUrl['path_items'])-1] = $arrLastUrlItem[0];
-        if (isset($arrLastUrlItem[1])) {
-            $arrUrl['format'] = $arrLastUrlItem[1];
+        if (count($arrLastUrlItem) > 1) {
+            $arrUrl['path_items'][count($arrUrl['path_items'])-1] = '';
+            foreach ($arrLastUrlItem as $key=>$UrlItem) {
+                if ($key + 1 == count($arrLastUrlItem)) {
+                    $arrUrl['format'] = $UrlItem;
+                } else {
+                    if ($arrUrl['path_items'][count($arrUrl['path_items'])-1] != '') {
+                        $arrUrl['path_items'][count($arrUrl['path_items'])-1] .= '.';
+                    }
+                    $arrUrl['path_items'][count($arrUrl['path_items'])-1] .= $UrlItem;
+                }
+            }
         } else {
             $arrUrl['format'] = '';
         }
@@ -533,10 +542,10 @@ class UI
     {
         $cc = "Creative Commons";
         $by = "By Attribution";
-        $sa = "Share Alike";
+        $sa = "Share Ae-like";
         $nc = "Non Commercial";
-        $nd = "No Derivatives";
-        $sp = "Sampling plus";
+        $nd = "No Der-i-vat-ives";
+        $sp = "Samp-ling plus";
         $z  = "Zero";
         return self::get_enumTrackLicenseSolve($license, $cc, $by, $sa, $nc, $nd, $sp, $z);
     }
