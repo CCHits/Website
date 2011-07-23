@@ -35,7 +35,7 @@ class ArtistBroker
      *
      * @return object|false ArtistObject or false if not existing
      */
-    public function getArtistByID($intArtistID = 0) 
+    public function getArtistByID($intArtistID = 0)
     {
         Debug::Log(get_class() . "::getArtistByID($intArtistID)", "DEBUG");
         $db = CF::getFactory()->getConnection();
@@ -118,11 +118,6 @@ class ArtistBroker
         $intStart = 0,
         $intSize = 25
     ) {
-        Debug::Log(
-            get_class() . "::getArtistByPartialName($strArtistName, " .
-            "$intStart, $intSize)",
-            "DEBUG"
-        );
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
@@ -138,9 +133,10 @@ class ArtistBroker
                     $strArtistName .= "[:space:]*$chrArtistName";
                 }
             }
-            $query->execute(array("*.{$strArtistName}[:space:]*.*"));
+            $query->execute(array(".*{$strArtistName}[:space:]*.*"));
             $item = $query->fetchObject('ArtistObject');
             if ($item == false) {
+                error_log("SQL error: " . print_r($query->errorInfo(), TRUE));
                 return false;
             } else {
                 $return[] = $item;
@@ -154,4 +150,41 @@ class ArtistBroker
             die();
         }
     }
+
+    /**
+     * This function finds a artist by its url.
+     *
+     * @param string $strArtistUrl The part of the Track name to search for
+     * @param int    $intStart     The start "page" number
+     * @param int    $intSize      The size of each page
+     *
+     * @return array|false An array of ArtistObject or false if the item doesn't exist
+     */
+    public function getArtistByPartialUrl(
+        $strArtistUrl = "",
+        $intStart = 0,
+        $intSize = 25
+    ) {
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ?";
+            $pagestart = ($intStart*$intSize);
+            $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
+            $query->execute(array("$strArtistUrl%"));
+            $item = $query->fetchObject('ArtistObject');
+            if ($item == false) {
+                return false;
+            } else {
+                $return[] = $item;
+                while ($item = $query->fetchObject('ArtistObject')) {
+                    $return[] = $item;
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
+
 }
