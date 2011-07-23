@@ -109,7 +109,15 @@ class API
             case 'searchartistbyurl':
             case 'searchartistsbyurl':
                 if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $artist_url = $arrUri['path_items'][2];
+                    $artist_url = '';
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($artist_url != '') {
+                                $artist_url .= '/';
+                            }
+                            $artist_url .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
                 } else {
                     $this->render();
                     break;
@@ -124,7 +132,7 @@ class API
                 } else {
                     $size = 25;
                 }
-                $this->result_array = ArtistBroker::getArtistByUrl($artist_url, $page, $size);
+                $this->result_array = ArtistBroker::getArtistByPartialUrl($artist_url, $page, $size);
                 $this->render();
                 break;
             case 'searchtrackbyname':
@@ -149,13 +157,25 @@ class API
                 } else {
                     $size = 25;
                 }
-                $this->result_array = TrackBroker::getTrackByPartialName($track_name, $page, $size);
+                $result_array = TrackBroker::getTrackByPartialName($track_name, $page, $size);
+                foreach ($result_array as $result) {
+                    $result->set_full(true);
+                    $this->result_array[] = $result;
+                }
                 $this->render();
                 break;
             case 'searchtrackbyurl':
             case 'searchtracksbyurl':
                 if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $track_url = $arrUri['path_items'][2];
+                    $track_url = '';
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($track_url != '') {
+                                $track_url .= '/';
+                            }
+                            $track_url .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
                 } else {
                     $this->render();
                     break;
@@ -170,7 +190,11 @@ class API
                 } else {
                     $size = 25;
                 }
-                $this->result_array = TrackBroker::getTrackByUrl($track_url, $page, $size);
+                $result_array = TrackBroker::getTrackByPartialUrl($track_url, $page, $size);
+                foreach ($result_array as $result) {
+                    $result->set_full(true);
+                    $this->result_array[] = $result;
+                }
                 $this->render();
                 break;
             case 'searchshowbyname':
@@ -230,6 +254,7 @@ class API
                     $intTrackID = 0;
                 }
                 $this->result = TrackBroker::getTrackByID(UI::getLongNumber($intTrackID));
+                $this->result->set_full(true);
                 $this->render();
                 break;
             case 'getshow':
