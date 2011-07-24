@@ -37,7 +37,6 @@ class ArtistBroker
      */
     public function getArtistByID($intArtistID = 0)
     {
-        Debug::Log(get_class() . "::getArtistByID($intArtistID)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE intArtistID = ? LIMIT 1";
@@ -68,7 +67,6 @@ class ArtistBroker
         $intStart = 0,
         $intSize = 25
     ) {
-        Debug::Log(get_class() . "::getArtistByExactName($strArtistName)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";

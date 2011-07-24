@@ -37,7 +37,6 @@ class TracksBroker
      */
     function getTracksByShowID($intShowID = 0)
     {
-        Debug::Log(get_class() . "::getTracksByShowID($intShowID)", "DEBUG");
         $return = array();
         $db = CF::getFactory()->getConnection();
         try {
@@ -56,7 +55,7 @@ class TracksBroker
             return $return;
         } catch(Exception $e) {
             return false;
-        }        
+        }
     }
 }
 

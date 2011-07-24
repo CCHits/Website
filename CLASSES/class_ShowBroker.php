@@ -57,7 +57,6 @@ class ShowBroker
      */
     public function getShowByExactUrl($strShowUrl = "")
     {
-        Debug::Log(get_class() . "::getShowByExactUrl($strShowUrl)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE strShowUrl LIKE ? LIMIT 1";
@@ -85,7 +84,6 @@ class ShowBroker
         $intStart = 0,
         $intSize = 25
     ) {
-        Debug::Log(get_class() . "::getShowByPartialUrl($strShowUrl)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE strShowUrl LIKE ?";

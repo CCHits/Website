@@ -154,18 +154,17 @@ class UserObject extends GenericObject
             $this->arrChanges[] = 'datLastSeen';
         }
     }
-    
+
     /**
      * Return the intUserID
      *
      * @return integer The user ID
      */
-    function get_intUserID() 
+    function get_intUserID()
     {
-        Debug::Log(get_class() . "::get_intUserID()", "NOISY");
         return $this->intUserID;
     }
-    
+
     /**
      * Return the strOpenID
      *
@@ -173,18 +172,16 @@ class UserObject extends GenericObject
      */
     function get_strOpenID()
     {
-        Debug::Log(get_class() . "::get_strOpenID()", "NOISY");
         return $this->strOpenID;
     }
 
     /**
      * Return the strCookieID
      *
-     * @return string The Cookie string being used by this session/user 
+     * @return string The Cookie string being used by this session/user
      */
     function get_strCookieID()
     {
-        Debug::Log(get_class() . "::get_strCookieID()", "NOISY");
         return $this->strCookieID;
     }
 
@@ -195,7 +192,6 @@ class UserObject extends GenericObject
      */
     function get_sha1Pass()
     {
-        Debug::Log(get_class() . "::get_sha1Pass()", "NOISY");
         return $this->sha1Pass;
     }
 
@@ -206,7 +202,6 @@ class UserObject extends GenericObject
      */
     function get_isAuthorized()
     {
-        Debug::Log(get_class() . "::get_isAuthorized()", "NOISY");
         return $this->asBoolean($this->isAuthorized);
     }
 
@@ -217,7 +212,6 @@ class UserObject extends GenericObject
      */
     function get_isUploader()
     {
-        Debug::Log(get_class() . "::get_isUploader()", "NOISY");
         return $this->asBoolean($this->isUploader);
     }
 
@@ -228,7 +222,6 @@ class UserObject extends GenericObject
      */
     function get_isAdmin()
     {
-        Debug::Log(get_class() . "::get_isAdmin()", "NOISY");
         return $this->asBoolean($this->isAdmin);
     }
 
@@ -239,7 +232,6 @@ class UserObject extends GenericObject
      */
     function get_datLastSeen()
     {
-        Debug::Log(get_class() . "::get_datLastSeen()", "NOISY");
         return $this->datLastSeen;
     }
 }

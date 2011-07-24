@@ -37,7 +37,6 @@ class TrackBroker
      */
     public function getTrackByID($intTrackID = 0)
     {
-        Debug::Log(get_class() . "::getTrackByID($intTrackID)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE intTrackID = ? LIMIT 1";
@@ -66,7 +65,6 @@ class TrackBroker
         $intStart = 0,
         $intSize = 25
     ) {
-        Debug::Log(get_class() . "::getTrackByExactName($strTrackName)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
@@ -115,7 +113,6 @@ class TrackBroker
         $intStart = 0,
         $intSize = 25
     ) {
-        Debug::Log(get_class() . "::getTrackByPartialName($strTrackName)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
@@ -195,7 +192,6 @@ class TrackBroker
      */
     public function getTrackByMD5($md5FileHash = "")
     {
-        Debug::Log(get_class() . "::getTrackByMD5($md5FileHash)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE md5FileHash = ? LIMIT 1";
@@ -219,7 +215,6 @@ class TrackBroker
      */
     function getTrackByDailyShowDate($intDate = '')
     {
-        Debug::Log(get_class() . "::getTrackByDailyShowDate($intDate)", "DEBUG");
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE datDailyShow = ? LIMIT 1";

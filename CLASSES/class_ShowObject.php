@@ -63,8 +63,6 @@ class ShowObject extends GenericObject
      */
     function __construct()
     {
-        Debug::Log(get_class() . "::__construct()", "DEBUG");
-
         if ($this->intShowID > 0) {
             $intShowID = $this->intShowID;
         }
