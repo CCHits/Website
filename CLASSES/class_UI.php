@@ -780,6 +780,6 @@ class UI
                 $objSmarty->assign($key, $value);
             }
         }
-        $objSmarty->display($template);
+        $objSmarty->display($template . '.tpl');
     }
 }
