@@ -44,27 +44,21 @@ class ChartObject
         $sql = "SELECT datChart FROM chart WHERE datChart = ? LIMIT 0, 1";
         $query = $db->prepare($sql);
         $query->execute(array($date));
-        if ($query->fetch()) {
+        if ($query->fetch() or 0 + date < 20000000) {
             return false;
         }
-        if ($date != '' and 0 + $date > 20000000) {
-            $sql_v = "LEFT JOIN (SELECT vt.intTrackID FROM votes as vt WHERE vt.datTimeStamp <= $date) as v on v.intTrackID = t.intTrackID ";
-            $sql_st = "and ((s.intShowUrl <= '$date' and s.intShowUrl > '20000000') or (s.intShowUrl <= '" . substr($date, 0, 6) . "' and s.intShowUrl > '200000'))";
-            $chartdate = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
-            $trenddate = date("Y-m-d", strtotime("-1 day", strtotime($chartdate)));
-        } else {
-            $sql_v = "JOIN votes AS v ON v.intTrackID = t.intTrackID ";
-            $sql_st = '';
-            $chartdate = date("Y-m-d");
-            $trenddate = date("Y-m-d", strtotime("-1 day"));
-        }
+        $chartdate = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
+        $trenddate = date("Y-m-d", strtotime("-1 day", strtotime($chartdate)));
         $sql = "SELECT t.intTrackID, t.intChartPlace, count(t.intTrackID) * ((100-(IFNULL(MAX(intShowCount),0)*5))/100) AS decVotes
                 FROM tracks AS t
-    	        $sql_v
+    	        LEFT JOIN (SELECT vt.intTrackID FROM votes as vt WHERE vt.datTimeStamp <= $date) as v on v.intTrackID = t.intTrackID
         	    LEFT JOIN (
             	    SELECT st.intTrackID, count(st.intTrackID) AS intShowCount
                     FROM showtracks as st, shows AS s
-                    WHERE (s.enumShowType = 'weekly' OR s.enumShowType = 'monthly') $sql_st AND s.intShowID = st.intShowID
+                    WHERE (
+        					(s.enumShowType = 'weekly' AND s.intShowUrl <= '$date' AND s.intShowUrl > '20000000') OR
+        					(s.enumShowType = 'monthly' AND s.intShowUrl <= '" . substr($date, 0, 6) . "' AND s.intShowUrl > '200000')
+    					  ) AND s.intShowID = st.intShowID
                     GROUP BY intTrackID
 	            ) AS s ON s.intTrackID = t.intTrackID
     	        WHERE t.isApproved = 1
