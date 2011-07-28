@@ -38,13 +38,14 @@ class ChartObject
     function __construct($date = '')
     {
         $db = CF::getFactory()->getConnection();
-        if ($strChartDate == '') {
-            $sql = "SELECT datChart FROM chart WHERE datChart = ? LIMIT 0, 1";
-            $query = $db->prepare($sql);
-            $query->execute(array($date));
-            if ($query->fetch()) {
-                return false;
-            }
+        if ($date != '') {
+            $date = date("Ymd");
+        }
+        $sql = "SELECT datChart FROM chart WHERE datChart = ? LIMIT 0, 1";
+        $query = $db->prepare($sql);
+        $query->execute(array($date));
+        if ($query->fetch()) {
+            return false;
         }
         if ($date != '' and 0 + $date > 20000000) {
             $sql_v = "LEFT JOIN (SELECT vt.intTrackID FROM votes as vt WHERE vt.datTimeStamp <= $date) as v on v.intTrackID = t.intTrackID ";
