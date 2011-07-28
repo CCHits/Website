@@ -49,6 +49,7 @@ class ShowObject extends GenericObject
     protected $datDateAdded = "";
     protected $strShowFileMP3 = "";
     protected $strShowFileOGG = "";
+    protected $arrTracks = array();
     // Functional switches extending GenericObject
     protected $booleanFull = true;
 

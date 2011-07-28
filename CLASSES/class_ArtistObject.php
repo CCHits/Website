@@ -127,16 +127,6 @@ class ArtistObject extends GenericObject
     }
 
     /**
-     * Output a nicely formatted version of the data we hold for this object
-     *
-     * @return string Response
-     */
-    function __toString()
-    {
-        return "<a href=\"{$this->strArtistUrl}\">{$this->strArtistName}</a>";
-    }
-
-    /**
      * Return an array of the tracks associated to this artist
      *
      * @return array TrackObjects

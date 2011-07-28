@@ -607,6 +607,47 @@ class UI
     }
 
     /**
+     * Return the date in Y-m-d format from Ymd format
+     *
+     * @param integer $date The date in Ymd format
+     *
+     * @return string the date in Y-m-d format
+     */
+    function makeLongDate($date)
+    {
+        if (preg_match('/(\d\d\d\d)(\d\d)(\d\d)|(\d\d\d\d)(\d\d)/', $date, $matches) == 1) {
+            if (isset($matches[3])) {
+                return $matches[1] . '-' . $matches[2] . '-' . $matches[3];
+            } else {
+                return $matches[1] . '-' . $matches[2];
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Return the date in Ymd format from Y-m-d format
+     *
+     * @param string $date The date in Y-m-d format
+     *
+     * @return integer The date in Ymd format
+     */
+    function makeShortDate($date)
+    {
+        if (preg_match('/(\d\d\d\d)-(\d\d)-(\d\d)|(\d\d\d\d)-(\d\d)/', $date, $matches) == 1) {
+            if (isset($matches[3])) {
+                return $matches[1] . $matches[2] . $matches[3];
+            } else {
+                return $matches[1] . $matches[2];
+            }
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
      * Return the spoken version of the show date
      *
      * @param integer $date The date to be read in format YYYYMMDD

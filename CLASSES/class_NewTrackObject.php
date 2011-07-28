@@ -49,7 +49,8 @@ class NewTrackObject extends TrackObject
         $isNSFW = false,
         $fileSource = ""
     ) {
-        if (UserBroker::getUser()->get_isUploader()
+        if ((UserBroker::getUser()->get_isUploader()
+            or UserBroker::getUser()->get_isAdmin())
             and $objArtist != null
             and $strTrackName != ""
             and $strTrackNameSounds != ""

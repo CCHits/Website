@@ -156,4 +156,16 @@ class GenericObject
             return false;
         }
     }
+
+    /**
+     * Debugging Function!
+     * @param string $method The name of the function that is being called
+     * @param array  $args   The values being passed to the function
+     *
+     * @return void
+     */
+    function __call($method, $args)
+    {
+      error_log(get_class($this) . ' ' . $method . '(' . print_r($args, TRUE) . ')');
+    }
 }

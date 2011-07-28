@@ -60,7 +60,8 @@ class NewShowTrackObject extends ShowTrackObject
         } catch(Exception $e) {
             return false;
         }
-        return $this->create();
+        $this->create();
+        return true;
     }
 
 }

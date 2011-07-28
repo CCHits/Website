@@ -83,8 +83,18 @@ class API
             // Searches
             case 'searchartistbyname':
             case 'searchartistsbyname':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $artist_name = $arrUri['path_items'][2];
+                if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] = '') {
+                    $artist_name = $arrUri['parameters']['strArtistName'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $artist_name = '';
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($artist_name != '') {
+                                $artist_name .= '/';
+                            }
+                            $artist_name .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
                 } else {
                     $artist_name = '';
                 }
@@ -137,8 +147,18 @@ class API
                 break;
             case 'searchtrackbyname':
             case 'searchtracksbyname':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $track_name = $arrUri['path_items'][2];
+                if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] = '') {
+                    $track_name = $arrUri['parameters']['strTrackName'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $track_name = '';
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($track_name != '') {
+                                $track_name .= '/';
+                            }
+                            $track_name .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
                 } else {
                     $track_name = '';
                 }
@@ -166,7 +186,9 @@ class API
                 break;
             case 'searchtrackbyurl':
             case 'searchtracksbyurl':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] = '') {
+                    $track_url = $arrUri['parameters']['strTrackUrl'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $track_url = '';
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
@@ -199,8 +221,18 @@ class API
                 break;
             case 'searchshowbyname':
             case 'searchshowsbyname':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $show_name = $arrUri['path_items'][2];
+                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] = '') {
+                    $show_name = $arrUri['parameters']['strShowName'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $show_name = '';
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($show_name != '') {
+                                $show_name .= '/';
+                            }
+                            $show_name .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
                 } else {
                     $show_name = '';
                 }
@@ -219,13 +251,23 @@ class API
                 } else {
                     $size = 25;
                 }
-                $this->result_array = ShowBroker::getShowByPartialName($track_name, $page, $size);
+                $this->result_array = ShowBroker::getShowByPartialName($show_name, $page, $size);
                 $this->render();
                 break;
             case 'searchshowbyurl':
             case 'searchshowsbyurl':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $show_url = $arrUri['path_items'][2];
+                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] = '') {
+                    $show_url = $arrUri['parameters']['strShowUrl'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $show_url = '';
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($show_url != '') {
+                                $show_url .= '/';
+                            }
+                            $show_url .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
                 } else {
                     $this->render();
                     break;
@@ -240,16 +282,15 @@ class API
                 } else {
                     $size = 25;
                 }
-                $this->result_array = TrackBroker::getShowByPartialUrl($track_url, $page, $size);
+                $this->result_array = TrackBroker::getShowByPartialUrl($show_url, $page, $size);
                 $this->render();
                 break;
-
-                // Direct Lookups
+            // Direct Lookups
             case 'gettrack':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intTrackID = $arrUri['path_items'][2];
-                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
                     $intTrackID = $arrUri['parameters']['intTrackID'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intTrackID = $arrUri['path_items'][2];
                 } else {
                     $intTrackID = 0;
                 }
@@ -258,10 +299,10 @@ class API
                 $this->render();
                 break;
             case 'getshow':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intShowID = $arrUri['path_items'][2];
-                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
                     $intShowID = $arrUri['parameters']['intShowID'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intShowID = $arrUri['path_items'][2];
                 } else {
                     $intShowID = 0;
                 }
@@ -271,17 +312,17 @@ class API
 
             // Upload Scripts
             case 'addtracktoshow':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intTrackID = $arrUri['path_items'][2];
-                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
                     $intTrackID = $arrUri['parameters']['intTrackID'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intTrackID = $arrUri['path_items'][2];
                 } else {
                     $intTrackID = 0;
                 }
-                if (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
-                    $intShowID = $arrUri['path_items'][3];
-                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
                     $intShowID = $arrUri['parameters']['intShowID'];
+                } elseif (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
+                    $intShowID = $arrUri['path_items'][3];
                 } else {
                     $intShowID = 0;
                 }
@@ -296,10 +337,48 @@ class API
                 // TODO: Import newtrack
                 break;
             case 'getshowid':
-                // TODO: Import getshowid
+                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] = '') {
+                    $show_url = $arrUri['parameters']['strShowUrl'];
+                } else {
+                    $this->render();
+                    break;
+                }
+                $this->result = ShowBroker::getShowByExactUrl($show_url);
+                if ($this->result == false) {
+                    if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] = '') {
+                        $show_name = $arrUri['parameters']['strShowName'];
+                    } else {
+                        $this->render();
+                        break;
+                    }
+                    $this->result = new NewExternalShowObject($show_url, $show_name);
+                }
+                $this->render();
                 break;
             case 'editshow':
-                // TODO: Import editshow
+                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] = '') {
+                    $show_url = $arrUri['parameters']['strShowUrl'];
+                } else {
+                    $this->render();
+                    break;
+                }
+                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] = '') {
+                    $show_name = $arrUri['parameters']['strShowName'];
+                } else {
+                    $this->render();
+                    break;
+                }
+                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                    $show = ShowBroker::getShowByID($arrUri['parameters']['intShowID']);
+                    $show->set_strShowUrl($show_url);
+                    $show->set_strShowName($show_name);
+                    $show->write();
+                    UI::sendHttpResponseNote(200);
+                    break;
+                } else {
+                    $this->render();
+                    break;
+                }
                 break;
 
             // Get Statistical Information
@@ -353,6 +432,24 @@ class API
 
             // Generate show information
             // These functions are new
+            case 'runshows':
+                // Generate Chart
+                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $date = $arrUri['path_items'][2];
+                } else {
+                    $date = '';
+                }
+                $this->result['chart'] = new ChartObject($date);
+                if ($date == '') {
+                    $date = date('Ymd');
+                }
+                $this->result['daily'] = new NewDailyShowObject($date, 'daily');
+                if (7 == date('N', strtotime(makeLongDate($date) . ' 12:00:00'))) {
+                    $this->result['weekly'] = new NewWeeklyShowObject($date, 'weekly');
+                }
+                if (1 == date('d', strtotime(makeLongDate($date) . ' 12:00:00 + 1 day'))) {
+                    $this->result['monthly'] = new NewMShowObject($date, 'monthly');
+                }
             case 'generatedailyshow':
                 // TODO: create generatedailyshow
                 break;
