@@ -49,7 +49,7 @@ class ShowObject extends GenericObject
     protected $datDateAdded = "";
     protected $strShowFileMP3 = "";
     protected $strShowFileOGG = "";
-    protected $arrTracks = array();
+    protected $arrTracks = null;
     // Functional switches extending GenericObject
     protected $booleanFull = true;
 
@@ -76,51 +76,70 @@ class ShowObject extends GenericObject
                     $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
-                    $this->strShowFileOGG = ConfigBroker::getConfig("Base Media URL", "http://cchits.netmedia") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg';
+                    $this->strShowFileOGG = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg';
                 }
             }
             if ($this->strShowName == "") {
                 switch($this->enumShowType) {
                 case 'monthly':
-                    // TODO: Make this string buildable from the ConfigBroker
-                    // TODO: Add Spoken Show Names here.
-                    $this->strShowName = "The CCHits Monthly Chart Show for ";
-                    $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
-                    $this->strShowName .= substr($this->intShowUrl, 4, 2);
+                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
+                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Top Tracks Show');
+                    $this->strShowName .= ' for ';
+                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
+                    $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
+                    $this->strShowNameSpoken .= ' for ';
+                    $this->strShowNameSpoken .= date("F", strtotime(UI::getLongDate($this->intShowUrl) . '-01'));
+                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
                     break;
                 case 'daily':
-                    // TODO: Make this string buildable from the ConfigBroker
-                    // TODO: Add Spoken Show Names here.
-                    $this->strShowName = "The CCHits Daily Exposure Show for ";
-                    $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
-                    $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
-                    $this->strShowName .= substr($this->intShowUrl, 6, 2);
+                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
+                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
+                    $this->strShowName .= ' for ';
+                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
+                    $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Daily Show Name', 'Daily Exposure Show');
+                    $this->strShowNameSpoken .= ' for ';
+                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
+                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
                     break;
                 case 'weekly':
-                    // TODO: Make this string buildable from the ConfigBroker
-                    // TODO: Add Spoken Show Names here.
-                    $this->strShowName = "The CCHits Weekly Review Show for ";
-                    $this->strShowName .= substr($this->intShowUrl, 0, 4) . "-";
-                    $this->strShowName .= substr($this->intShowUrl, 4, 2) . "-";
-                    $this->strShowName .= substr($this->intShowUrl, 6, 2);
+                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
+                    $this->strShowName .= ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+                    $this->strShowName .= ' for ';
+                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
+                    $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Weekly Show Name', 'Weekly Review Show');
+                    $this->strShowNameSpoken .= ' for ';
+                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
+                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Return an array of the associated tracks
+     *
+     * @return false|array Associated tracks
+     */
+    function get_arrTracks()
+    {
+        if (is_null($this->arrTracks)) {
             switch($this->enumShowType) {
-            case 'weekly':
-            case 'monthly':
-                $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
-                break;
             case 'daily':
                 $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
                 // HACK: Transition to having the dailyshow entry in the showtracks table
                 if ($this->arrTracks == false) {
                     $this->arrTracks = array(TrackBroker::getTrackByDailyShowDate($this->intShowUrl));
                 }
+            default:
+                $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
+                break;
             }
-        } else {
-            $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
         }
+        return $this->arrTracks;
     }
 
     /**
@@ -137,7 +156,7 @@ class ShowObject extends GenericObject
         if ($this->booleanFull == true) {
             $showname .= ' featuring ';
             $showname_tracks = '';
-            foreach ($this->arrTracks as $objTrack) {
+            foreach ($this->get_arrTracks() as $objTrack) {
                 $return['arrTracks'][++$counter] = $objTrack->getSelf();
                 if ($counter <= 5) {
                     if ($showname_tracks != '') {
@@ -151,8 +170,9 @@ class ShowObject extends GenericObject
             }
             $showname .= $showname_tracks;
             $return['player_data'] = array('name' => $showname, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'oga' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
-
         }
+        $return['strShowNameSpoken'] = $this->strShowNameSpoken;
+        $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
         return $return;
     }
 
@@ -422,5 +442,15 @@ class ShowObject extends GenericObject
     function get_datDateAdded()
     {
         return $this->datDateAdded;
+    }
+
+    /**
+     * Return an array of tracks in this show
+     *
+     * @return array Tracks
+     */
+    function get_arrTracks()
+    {
+        return $this->arrTracks;
     }
 }

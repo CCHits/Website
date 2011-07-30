@@ -61,7 +61,7 @@ class NewShowTrackObject extends ShowTrackObject
             return false;
         }
         $this->create();
-        return true;
+        return $this;
     }
 
 }

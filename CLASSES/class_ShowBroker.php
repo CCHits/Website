@@ -41,13 +41,45 @@ class ShowBroker
         try {
             $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
             $query = $db->prepare($sql);
-            $query->execute(array($intShowID));
-            return $query->fetchObject('ShowObject');
+            $show = $query->execute(array($intShowID));
+            return $show->fetchObject('ShowObject');
         } catch(Exception $e) {
             error_log($e);
             return false;
         }
     }
+
+    /**
+     * This function finds a collection of shows by an array of intShowIDs.
+     *
+     * @param arr $arrShowIDs Show ID to search for
+     *
+     * @return false|array of ShowObjects
+     */
+    public function getShowsByIDs($arrShowIDs = array())
+    {
+        if (is_array($arrShowIDs) and count($arrShowIDs) > 0) {
+            $db = CF::getFactory()->getConnection();
+            try {
+                $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
+                $query = $db->prepare($sql);
+                foreach ($arrShowIDs as $intShowID) {
+                    if (is_object($intShowID)) {
+                        $intShowID = $intShowID->get_intShowID();
+                    }
+                    $show = $query->execute(array($intShowID));
+                    $return[$intShowID] = $show->fetchObject('ShowObject');
+                }
+                return $return;
+            } catch(Exception $e) {
+                error_log($e);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     /**
      * This function finds a show by it's exact (but case insensitive) URL.
      *

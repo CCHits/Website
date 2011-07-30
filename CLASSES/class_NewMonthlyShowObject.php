@@ -15,7 +15,7 @@
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
 /**
- * This class extends internal show object class to create daily shows.
+ * This class extends internal show object class to create weekly shows.
  *
  * @category Default
  * @package  Objects
@@ -25,30 +25,24 @@
  * @link     http://code.cchits.net Developers Web Site
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
-class NewDailyShowObject extends NewInternalShowObject
+class NewMonthlyShowObject extends NewInternalShowObject
 {
     /**
      * Establish the creation of the new item by setting the values and then calling the create function.
      *
-     * @param integer $intShowUrl The date of the show in YYYYMMDD format
+     * @param integer $intShowUrl The date of the show in YYYYMM format
      *
      * @return boolean Creation status
      */
     public function __construct($intShowUrl = 0)
     {
-        $db = CF::getFactory()->getConnection();
-        // FIXME: This doesn't work!
-        //$query = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID = NULL OR tracks.intTrackID = NULL LIMIT 0, 1 ORDER BY RAND()";
-        $query = "SELECT tracks.intTrackID FROM tracks WHERE tracks.datDailyShow IS NULL ORDER BY RAND() LIMIT 0 , 1";
-        $track = $db->query($query);
-        if ($track != false) {
-            $status = parent::__construct($intShowUrl, 'daily');
-            if ($status) {
-                $this->arrTracks[] = new NewShowTrackObject($track['intTrackID'], $this->intShowID);
-            }
-            return $this;
-        } else {
-            return false;
+        $datShowUrl = date("Y-m-d", strtotime(date("Y-m-d", strtotime(UI::getLongDate($intShowUrl) . '-01 + 1 month')) . ' - 1 day'));
+        $status = parent::__construct($intShowUrl, 'monthly');
+        $arrTracks = ChartBroker::getChartByDate($datShowUrl, 0, 40);
+        krsort($arrTracks);
+        foreach ($arrTracks as $track) {
+            $this->arrTracks[] = new NewShowTrackObject($track->get_intTrackID(), $this->intShowID);
         }
+        return $this;
     }
 }

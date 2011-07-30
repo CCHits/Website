@@ -38,6 +38,7 @@ class VoteBroker
     {
         $db = CF::getFactory()->getConnection();
         try {
+            $voteadj = 0;
             $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID";
             $query->execute(array($intTrackID));
             $item = $query->fetchObject('VoteObject');
@@ -51,7 +52,15 @@ class VoteBroker
                 foreach ($return as $object) {
                     $count = $count + $object->get_intCount();
                 }
-                return array('total'=>$count, 'shows'=>$return);
+                $shows = ShowBroker::getShowsByIDs($return);
+                foreach ($shows as $show) {
+                    switch($show->get_enumShowType) {
+                        case 'weekly':
+                        case 'monthly':
+                            $voteadj++;
+                    }
+                }
+                return array('total'=>$count, 'adjusted'=>$count * ((100 - ($voteadj * 5)) / 100), 'shows'=>$return);
             }
         } catch(Exception $e) {
             echo "SQL Died: " . $e->getMessage();;

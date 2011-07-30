@@ -433,30 +433,34 @@ class API
             // Generate show information
             // These functions are new
             case 'runshows':
-                // Generate Chart
                 if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $date = $arrUri['path_items'][2];
                 } else {
                     $date = '';
                 }
-                $this->result['chart'] = new ChartObject($date);
+                $temp = new ChartObject($date);
                 if ($date == '') {
                     $date = date('Ymd');
                 }
-                $this->result['daily'] = new NewDailyShowObject($date, 'daily');
+                $temp = new NewDailyShowObject($date);
+                $response = 'DAILY_SHOW=' . $date;
                 if (7 == date('N', strtotime(makeLongDate($date) . ' 12:00:00'))) {
-                    $this->result['weekly'] = new NewWeeklyShowObject($date, 'weekly');
+                    $temp = new NewWeeklyShowObject($date);
+                    $response .= ' && WEEKLY_SHOW=' . $date;
                 }
                 if (1 == date('d', strtotime(makeLongDate($date) . ' 12:00:00 + 1 day'))) {
-                    $this->result['monthly'] = new NewMShowObject($date, 'monthly');
+                    $temp = new NewMonthlyShowObject(substr($date, 0, 6));
+                    $response .= ' && MONTHLY_SHOW=' . substr($date, 0, 6);
                 }
-            case 'generatedailyshow':
+                UI::sendHttpResponse(200, $response, 'text/plain');
+                exit(0);
+            case 'dailyshow':
                 // TODO: create generatedailyshow
                 break;
-            case 'generateweeklyshow':
+            case 'weeklyshow':
                 // TODO: create generateweeklyshow
                 break;
-            case 'generatemonthlyshow':
+            case 'monthlyshow':
                 // TODO: create generatemonthlyshow
                 break;
 
@@ -492,9 +496,12 @@ class API
                 UI::sendHttpResponse(200, null, 'text/html', $content);
             } elseif (is_array($this->result_array)) {
                 $content = '';
-                foreach ($this->result_array as $result) {
+                foreach ($this->result_array as $result_item) {
                     $content .= "<table>";
-                    foreach ($result->getSelf() as $key=>$value) {
+                    if (is_object($result_item)) {
+                        $result_item = $result_item->getSelf();
+                    }
+                    foreach ($result_item as $key=>$value) {
                         if (is_array($value)) {
                             $value = UI::utf8json($value);
                         }
@@ -512,7 +519,10 @@ class API
                 UI::sendHttpResponse(200, UI::utf8json($this->result->getSelf()), 'application/json');
             } elseif (is_array($this->result_array)) {
                 foreach ($this->result_array as $result_item) {
-                    $result[] = $result_item->getSelf();
+                    if (is_object($result_item)) {
+                        $result_item = $result_item->getSelf();
+                    }
+                    $result[] = $result_item;
                 }
                 UI::sendHttpResponse(200, UI::utf8json($result), 'application/json');
             } else {
@@ -544,7 +554,10 @@ class API
                 $key_inc = 0;
                 foreach ($this->result_array as $result_item) {
                     $key_inc++;
-                    foreach ($result_item->getSelf() as $key=>$value) {
+                    if (is_object($result_item)) {
+                        $result_item = $result_item->getSelf();
+                    }
+                    foreach ($result_item as $key=>$value) {
                         if (is_array($value)) {
                             foreach ($value as $v_key=>$v_value) {
                                 if ($return != '') {
