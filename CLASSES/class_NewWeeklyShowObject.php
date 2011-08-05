@@ -36,17 +36,17 @@ class NewWeeklyShowObject extends NewInternalShowObject
      */
     public function __construct($intShowUrl = 0)
     {
-        $datShowUrl = UI::getLongDate($intShowUrl);
+        $datShowUrl = UI::makeLongDate($intShowUrl);
         $datLastWeekShowsUrl = date("Ymd", strtotime($datShowUrl . ' - 7 days'));
         $datOldShowsUrl = date("Ymd", strtotime($datShowUrl . ' -14 days'));
         $arrLastWeekShows = array();
         $arrOldShows = array();
         $arrLastWeekTracks = array();
         $arrOldTracks = array();
-        for ($date = $datLastWeekShowsUrl; $date <= $intShowUrl; $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))) {
+        for ($date = $datLastWeekShowsUrl; $date <= $intShowUrl; $date = date("Ymd", strtotime(UI::makeLongDate($date) . ' + 1 days'))) {
             $arrLastWeekShows[$date] = ShowBroker::getInternalShowByDate('daily', $date);
         }
-        for ($date = $datOldShowsUrl; $date <= $datLastWeekShowsUrl ; $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))) {
+        for ($date = $datOldShowsUrl; $date <= $datLastWeekShowsUrl ; $date = date("Ymd", strtotime(UI::makeLongDate($date) . ' + 1 days'))) {
             $arrOldShows[$date] = ShowBroker::getInternalShowByDate('daily', $date);
         }
         $status = parent::__construct($intShowUrl, 'weekly');

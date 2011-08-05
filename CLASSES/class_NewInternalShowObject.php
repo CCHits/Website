@@ -39,7 +39,7 @@ class NewInternalShowObject extends ShowObject
      */
     public function __construct($intShowUrl = 0, $enumShowType = "")
     {
-        if ($intShowDate != 0 and $enumShowType != "") {
+        if ($intShowUrl != 0 and $enumShowType != "") {
             $this->set_enumShowType($enumShowType);
             $this->set_intShowUrl($intShowUrl);
             $this->set_intUserID(UserBroker::getUser()->get_intUserID());

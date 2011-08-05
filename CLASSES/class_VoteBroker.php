@@ -55,9 +55,9 @@ class VoteBroker
                 $shows = ShowBroker::getShowsByIDs($return);
                 foreach ($shows as $show) {
                     switch($show->get_enumShowType) {
-                        case 'weekly':
-                        case 'monthly':
-                            $voteadj++;
+                    case 'weekly':
+                    case 'monthly':
+                        $voteadj++;
                     }
                 }
                 return array('total'=>$count, 'adjusted'=>$count * ((100 - ($voteadj * 5)) / 100), 'shows'=>$return);

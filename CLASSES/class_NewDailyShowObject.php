@@ -32,15 +32,17 @@ class NewDailyShowObject extends NewInternalShowObject
      *
      * @param integer $intShowUrl The date of the show in YYYYMMDD format
      *
-     * @return boolean Creation status
+     * @return object This show object
      */
     public function __construct($intShowUrl = 0)
     {
         $db = CF::getFactory()->getConnection();
-        // FIXME: This doesn't work!
-        //$query = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID = NULL OR tracks.intTrackID = NULL LIMIT 0, 1 ORDER BY RAND()";
-        $query = "SELECT tracks.intTrackID FROM tracks WHERE tracks.datDailyShow IS NULL ORDER BY RAND() LIMIT 0 , 1";
-        $track = $db->query($query);
+        // FIXME: The query to look for tracks which haven't already been used in shows doesn't work! The uncommented SQL query does work, but uses the old style of identifying daily shows.
+        // $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID = NULL OR tracks.intTrackID = NULL LIMIT 0, 1 ORDER BY RAND()";
+        $sql = "SELECT intTrackID FROM tracks WHERE datDailyShow IS NULL ORDER BY RAND() LIMIT 1";
+        $query = $db->prepare($sql);
+        $query->execute(array());
+        $track = $query->fetch(PDO::FETCH_ASSOC);
         if ($track != false) {
             $status = parent::__construct($intShowUrl, 'daily');
             if ($status) {

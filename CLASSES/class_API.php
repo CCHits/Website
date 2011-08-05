@@ -413,6 +413,17 @@ class API
                 $this->render();
                 break;
 
+            case 'runbumpers':
+                UI::requireAuth();
+                if (UserAuth::getUser()->get_isAdmin()) {
+                    $db = CF::getFactory()->getConnection();
+                    // Get all the bumpers
+                    // Delete all the bumpers
+                    // Create new bumpers
+                } else {
+                    $this->render();
+                }
+                break;
             // Show generation scripts
             case 'trackprebumper':
                 // TODO: Import trackprebumper
@@ -433,27 +444,32 @@ class API
             // Generate show information
             // These functions are new
             case 'runshows':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $date = $arrUri['path_items'][2];
+                UI::requireAuth();
+                if (UserAuth::getUser()->get_isAdmin()) {
+                    if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                        $date = $arrUri['path_items'][2];
+                    } else {
+                        $date = '';
+                    }
+                    $temp = new ChartObject($date);
+                    if ($date == '') {
+                        $date = date('Ymd');
+                    }
+                    $temp = new NewDailyShowObject($date);
+                    $response = 'DAILY_SHOW=' . $temp->get_intShowID();
+                    if (7 == date('N', strtotime(UI::makeLongDate($date) . ' 12:00:00'))) {
+                        $temp = new NewWeeklyShowObject($date);
+                        $response .= ' && WEEKLY_SHOW=' . $temp->get_intShowID();
+                    }
+                    if (1 == date('d', strtotime(UI::makeLongDate($date) . ' 12:00:00 + 1 day'))) {
+                        $temp = new NewMonthlyShowObject(substr($date, 0, 6));
+                        $response .= ' && MONTHLY_SHOW=' . $temp->get_intShowID();
+                    }
+                    UI::sendHttpResponse(200, $response, 'text/plain');
+                    exit(0);
                 } else {
-                    $date = '';
+                    $this->render();
                 }
-                $temp = new ChartObject($date);
-                if ($date == '') {
-                    $date = date('Ymd');
-                }
-                $temp = new NewDailyShowObject($date);
-                $response = 'DAILY_SHOW=' . $date;
-                if (7 == date('N', strtotime(makeLongDate($date) . ' 12:00:00'))) {
-                    $temp = new NewWeeklyShowObject($date);
-                    $response .= ' && WEEKLY_SHOW=' . $date;
-                }
-                if (1 == date('d', strtotime(makeLongDate($date) . ' 12:00:00 + 1 day'))) {
-                    $temp = new NewMonthlyShowObject(substr($date, 0, 6));
-                    $response .= ' && MONTHLY_SHOW=' . substr($date, 0, 6);
-                }
-                UI::sendHttpResponse(200, $response, 'text/plain');
-                exit(0);
             case 'dailyshow':
                 // TODO: create generatedailyshow
                 break;
@@ -467,7 +483,31 @@ class API
             // Finish the show generation
             case 'finalize':
             case 'finalise':
-                // TODO: Import finalise/finalize
+                if (isset($arrUri['path_items'][2]) and 0 + $arrUri['path_items'][2] > 0) {
+                    $this->result = false;
+                    $show = ShowBroker::getShowByID($arrUri['path_items'][2]);
+                    if ($show == false) {
+                        $this->render();
+                    }
+                    if (isset($arrUri['parameters']['hash']) and $arrUri['parameters']['hash'] != '') {
+                        $this->result = true;
+                        $show->set_shaHash($arrUri['parameters']['hash']);
+                    }
+                    if (isset($arrUri['parameters']['time']) and $arrUri['parameters']['time'] != '') {
+                        $this->result = true;
+                        $show->set_timeLength($arrUri['parameters']['time']);
+                    }
+                    if (isset($arrUri['parameters']['comment']) and $arrUri['parameters']['comment'] != '') {
+                        $this->result = true;
+                        $show->set_strCommentUrl($arrUri['parameters']['comment']);
+                    }
+                    if ($this->result == true) {
+                        $show->write();
+                    } else {
+                        UI::sendHttpResponse(417);
+                    }
+                    $this->render();
+                }
                 break;
             default:
                 throw new API_NotApiCall();
@@ -510,6 +550,8 @@ class API
                     $content .= "</table><br />";
                 }
                 UI::sendHttpResponse(200, null, 'text/html', $content);
+            } elseif ($this->result == true) {
+                UI::sendHttpResponse(200, "OK");
             } else {
                 UI::sendHttpResponse(404);
             }
@@ -525,6 +567,8 @@ class API
                     $result[] = $result_item;
                 }
                 UI::sendHttpResponse(200, UI::utf8json($result), 'application/json');
+            } elseif ($this->result == true) {
+                UI::sendHttpResponse(200, json_encode("OK"), 'application/json');
             } else {
                 list($uri, $data) = UI::getPath();
                 UI::sendHttpResponse(404, json_encode(array('Error'=>'The requested URL ' . $uri . ' was not found.')), 'application/json');
@@ -574,6 +618,8 @@ class API
                     }
                 }
                 UI::sendHttpResponse(200, $return, 'text/plain');
+            } elseif ($this->result == true) {
+                UI::sendHttpResponse(200, "state=OK");
             } else {
                 list($uri, $data) = UI::getPath();
                 UI::sendHttpResponse(404, "Error=\"The requested URL ' . $uri . ' was not found.\"", 'text/plain');

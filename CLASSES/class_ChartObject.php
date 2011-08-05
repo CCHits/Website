@@ -44,7 +44,7 @@ class ChartObject
         $sql = "SELECT datChart FROM chart WHERE datChart = ? LIMIT 0, 1";
         $query = $db->prepare($sql);
         $query->execute(array($date));
-        if ($query->fetch() or 0 + date < 20000000) {
+        if ($query->fetch() or 0 + $date < 20000000) {
             return false;
         }
         $chartdate = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);

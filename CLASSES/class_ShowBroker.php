@@ -41,8 +41,8 @@ class ShowBroker
         try {
             $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
             $query = $db->prepare($sql);
-            $show = $query->execute(array($intShowID));
-            return $show->fetchObject('ShowObject');
+            $query->execute(array($intShowID));
+            return $query->fetchObject('ShowObject');
         } catch(Exception $e) {
             error_log($e);
             return false;
@@ -67,8 +67,8 @@ class ShowBroker
                     if (is_object($intShowID)) {
                         $intShowID = $intShowID->get_intShowID();
                     }
-                    $show = $query->execute(array($intShowID));
-                    $return[$intShowID] = $show->fetchObject('ShowObject');
+                    $query->execute(array($intShowID));
+                    $return[$intShowID] = $query->fetchObject('ShowObject');
                 }
                 return $return;
             } catch(Exception $e) {
@@ -136,6 +136,25 @@ class ShowBroker
             error_log($e);
             return false;
         }
+    }
+
+    /**
+     * This function finds a show by it's partial Name.
+     *
+     * @param string $strShowName The start of the Show Name
+     * @param int    $intStart    The start "page" number
+     * @param int    $intSize     The size of each page
+     *
+     * @return array|false An array of ShowObject or false if not existing
+     */
+    public function getShowByPartialName
+    (
+        $strShowName = "",
+        $intStart = 0,
+        $intSize = 25
+    ) {
+        // TODO: Write me!
+        return false;
     }
 
     /**

@@ -85,33 +85,33 @@ class ShowObject extends GenericObject
                     $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
                     $this->strShowName .= ' ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Top Tracks Show');
                     $this->strShowName .= ' for ';
-                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowName .= UI::makeLongDate($this->intShowUrl);
                     $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
                     $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
                     $this->strShowNameSpoken .= ' for ';
-                    $this->strShowNameSpoken .= date("F", strtotime(UI::getLongDate($this->intShowUrl) . '-01'));
+                    $this->strShowNameSpoken .= date("F", strtotime(UI::makeLongDate($this->intShowUrl) . '-01'));
                     $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
                     break;
                 case 'daily':
                     $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
                     $this->strShowName .= ' ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                     $this->strShowName .= ' for ';
-                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowName .= UI::makeLongDate($this->intShowUrl);
                     $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
                     $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Daily Show Name', 'Daily Exposure Show');
                     $this->strShowNameSpoken .= ' for ';
-                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
+                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::makeLongDate($this->intShowUrl)));
                     $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
                     break;
                 case 'weekly':
                     $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
                     $this->strShowName .= ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                     $this->strShowName .= ' for ';
-                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowName .= UI::makeLongDate($this->intShowUrl);
                     $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
                     $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Weekly Show Name', 'Weekly Review Show');
                     $this->strShowNameSpoken .= ' for ';
-                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
+                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::makeLongDate($this->intShowUrl)));
                     $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
                     break;
                 }
@@ -442,15 +442,5 @@ class ShowObject extends GenericObject
     function get_datDateAdded()
     {
         return $this->datDateAdded;
-    }
-
-    /**
-     * Return an array of tracks in this show
-     *
-     * @return array Tracks
-     */
-    function get_arrTracks()
-    {
-        return $this->arrTracks;
     }
 }
