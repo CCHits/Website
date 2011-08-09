@@ -75,7 +75,7 @@ class ChartObject
         }
         $sql = "SELECT intTrackID, count(intVoteID) AS intVoteCount
                 FROM votes
-                WHERE datTimestamp>='$trenddate 00:00:00' AND datTimestamp<='$trenddate 25:59:59'
+                WHERE datTimestamp>='$trenddate 00:00:00' AND datTimestamp<='$trenddate 23:59:59'
                 GROUP BY intTrackID";
         $trend = $db->prepare("INSERT INTO trends (datTrendDay, intTrackID, intVotes) VALUES (?, ?, ?)");
         foreach ($db->query($sql) as $data) {
