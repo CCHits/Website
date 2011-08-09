@@ -28,6 +28,22 @@
 
 class TrackBroker
 {
+    protected static $handler = null;
+    protected $arrTracks = array();
+
+    /**
+     * An internal function to make this a singleton
+     *
+     * @return object This class by itself.
+     */
+    private static function getHandler()
+    {
+        if (self::$handler == null) {
+            self::$handler = new self();
+        }
+        return self::$handler;
+    }
+
     /**
      * This function finds a track by it's intTrackID.
      *
@@ -37,12 +53,17 @@ class TrackBroker
      */
     public function getTrackByID($intTrackID = 0)
     {
+        $th = self::getHandler();
+        if (isset($th->arrTracks[$intTrackID]) and $th->arrTracks[$intTrackID] != false) {
+            return $th->arrTracks[$intTrackID];
+        }
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE intTrackID = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
-            return $query->fetchObject('TrackObject');
+            $th->arrTracks[$intTrackID] = $query->fetchObject('TrackObject');
+            return $th->arrTracks[$intTrackID];
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
