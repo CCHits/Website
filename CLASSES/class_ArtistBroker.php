@@ -1,4 +1,5 @@
 <?php
+// TODO: Use intPage, intSize and make these null by default, using parameters to set them
 /**
  * CCHits.net is a website designed to promote Creative Commons Music,
  * the artists who produce it and anyone or anywhere that plays it.
@@ -56,7 +57,7 @@ class ArtistBroker
      * This is in response to an issue with multiple instances of "TenPenny Joke"
      *
      * @param string  $strArtistName The exact artist name to search for
-     * @param integer $intStart      The start "page" number
+     * @param integer $intPage       The start "page" number
      * @param integer $intSize       The size of each page
      *
      * @return array|false An array of ArtistObject or false if the item doesn't
@@ -64,13 +65,25 @@ class ArtistBroker
      */
     public function getArtistByExactName(
         $strArtistName = "",
-        $intStart = 0,
-        $intSize = 25
+        $intPage = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
             preg_match_all('`.`u', $strArtistName, $arr);

@@ -103,16 +103,9 @@ class API
                 if (!isset($artist_name)) {
                     $artist_name = '';
                 }
-                if (isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-                    $page = $arrUri['parameters']['page'];
-                } else {
-                    $page = 0;
-                }
-                if (isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-                    $size = $arrUri['parameters']['size'];
-                } else {
-                    $size = 25;
-                }
+
+                // FIXME: The page sizes here need to be set in the function below, not in the API caller
+
                 $this->result_array = ArtistBroker::getArtistByPartialName($artist_name, $page, $size);
                 $this->render();
                 break;
@@ -132,16 +125,9 @@ class API
                     $this->render();
                     break;
                 }
-                if (isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-                    $page = $arrUri['parameters']['page'];
-                } else {
-                    $page = 0;
-                }
-                if (isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-                    $size = $arrUri['parameters']['size'];
-                } else {
-                    $size = 25;
-                }
+
+                // FIXME: The page sizes here need to be set in the function below, not in the API caller
+
                 $this->result_array = ArtistBroker::getArtistByPartialUrl($artist_url, $page, $size);
                 $this->render();
                 break;
@@ -167,16 +153,9 @@ class API
                 if (!isset($track_name)) {
                     $track_name = '';
                 }
-                if (isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-                    $page = $arrUri['parameters']['page'];
-                } else {
-                    $page = 0;
-                }
-                if (isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-                    $size = $arrUri['parameters']['size'];
-                } else {
-                    $size = 25;
-                }
+
+                // FIXME: The page sizes here need to be set in the function below, not in the API caller
+
                 $result_array = TrackBroker::getTrackByPartialName($track_name, $page, $size);
                 foreach ($result_array as $result) {
                     $result->set_full(true);
@@ -202,16 +181,9 @@ class API
                     $this->render();
                     break;
                 }
-                if (isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-                    $page = $arrUri['parameters']['page'];
-                } else {
-                    $page = 0;
-                }
-                if (isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-                    $size = $arrUri['parameters']['size'];
-                } else {
-                    $size = 25;
-                }
+
+                // FIXME: The page sizes here need to be set in the function below, not in the API caller
+
                 $result_array = TrackBroker::getTrackByPartialUrl($track_url, $page, $size);
                 foreach ($result_array as $result) {
                     $result->set_full(true);
@@ -241,16 +213,9 @@ class API
                 if (!isset($show_name)) {
                     $show_name = '';
                 }
-                if (isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-                    $page = $arrUri['parameters']['page'];
-                } else {
-                    $page = 0;
-                }
-                if (isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-                    $size = $arrUri['parameters']['size'];
-                } else {
-                    $size = 25;
-                }
+
+                // FIXME: The page sizes here need to be set in the function below, not in the API caller
+
                 $this->result_array = ShowBroker::getShowByPartialName($show_name, $page, $size);
                 $this->render();
                 break;
@@ -272,16 +237,9 @@ class API
                     $this->render();
                     break;
                 }
-                if (isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-                    $page = $arrUri['parameters']['page'];
-                } else {
-                    $page = 0;
-                }
-                if (isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-                    $size = $arrUri['parameters']['size'];
-                } else {
-                    $size = 25;
-                }
+
+                // FIXME: The page sizes here need to be set in the function below, not in the API caller
+
                 $this->result_array = TrackBroker::getShowByPartialUrl($show_url, $page, $size);
                 $this->render();
                 break;
@@ -386,7 +344,16 @@ class API
                 // TODO: Import gettrends
                 break;
             case 'getchart':
-                // TODO: Import getchart
+                if (isset($arrUri['parameters']['strChartDate']) and $arrUri['parameters']['strChartDate'] = '') {
+                    $strChartDate = $arrUri['parameters']['strChartDate'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $strChartDate = $arrUri['path_items'][2];
+                } else {
+                    $this->render();
+                    break;
+                }
+                $this->result_array = ChartBroker::getChartByDate($strChartDate);
+                $this->render();
                 break;
 
             // Voting
@@ -470,15 +437,6 @@ class API
                 } else {
                     $this->render();
                 }
-            case 'dailyshow':
-                // TODO: create generatedailyshow
-                break;
-            case 'weeklyshow':
-                // TODO: create generateweeklyshow
-                break;
-            case 'monthlyshow':
-                // TODO: create generatemonthlyshow
-                break;
 
             // Finish the show generation
             case 'finalize':
