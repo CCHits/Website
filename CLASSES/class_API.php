@@ -341,7 +341,16 @@ class API
 
             // Get Statistical Information
             case 'gettrends':
-                // TODO: Import gettrends
+                if (isset($arrUri['parameters']['strTrendDate']) and $arrUri['parameters']['strTrendDate'] = '') {
+                    $strTrendDate = $arrUri['parameters']['strTrendDate'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $strTrendDate = $arrUri['path_items'][2];
+                } else {
+                    $this->render();
+                    break;
+                }
+                $this->result_array = TrendBroker::getTrendByDate($strTrendDate);
+                $this->render();
                 break;
             case 'getchart':
                 if (isset($arrUri['parameters']['strChartDate']) and $arrUri['parameters']['strChartDate'] = '') {
@@ -438,7 +447,7 @@ class API
                     $this->render();
                 }
 
-            // Finish the show generation
+                // Finish the show generation
             case 'finalize':
             case 'finalise':
                 if (isset($arrUri['path_items'][2]) and 0 + $arrUri['path_items'][2] > 0) {

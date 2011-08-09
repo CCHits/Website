@@ -1,0 +1,119 @@
+<?php
+/**
+ * CCHits.net is a website designed to promote Creative Commons Music,
+ * the artists who produce it and anyone or anywhere that plays it.
+ * These files are used to generate the site.
+ *
+ * PHP version 5
+ *
+ * @category Default
+ * @package  CCHitsClass
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+/**
+ * This class knows all the ways to get collections of tracks
+ *
+ * @category Default
+ * @package  Brokers
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+
+class TrendBroker
+{
+    /**
+     * A function to retrieve all the tracks associated to the last 7 days of trending data.
+     *
+     * @param date    $strTrendDate The date of the chart in Y-m-d format
+     * @param integer $intPage      The start "page" number
+     * @param integer $intSize      The size of each page
+     *
+     * @return array|false An array of the Tracks, or false if the operation fails.
+     */
+    function getTrendByDate(
+        $strTrendDate = '',
+        $intPage = null,
+        $intSize = null
+    ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
+        $return = array();
+        $db = CF::getFactory()->getConnection();
+        try {
+            if ($strTrendDate == '') {
+                $sql = "SELECT max(datTrendDay) as max_datTrendDay FROM trends LIMIT 0, 1";
+                $query = $db->prepare($sql);
+                $query->execute();
+                $strTrendDate = $query->fetchColumn();
+            } else {
+                $strTrendDate = makeLongDate($strTrendDate);
+            }
+
+            $start_date = date('Y-m-d', strtotime('-7 days', strtotime($strTrendDate)));
+            $end_date = date('Y-m-d', strtotime($strTrendDate));
+
+            $sql = "SELECT intTrackID, datTrendDay, intVotes FROM trends WHERE datTrendDay => ? AND datTrendDay <= ?";
+            $pagestart = ($intPage * $intSize);
+            $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
+            $query->execute(array($start_date, $end_date));
+            $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+            if ($tracks != false and count($tracks)>0) {
+                $data = array();
+                $return = array();
+                foreach ($tracks as $track) {
+                    $temp = TrackBroker::getTrackByID($track['intTrackID']);
+                    if ($temp != false) {
+                        $return[$track['intTrackID']] = $temp;
+                        $data[$track['datTrendDay']][$track['intTrackID']] = $track['intVotes'];
+                    }
+                }
+                if (is_array($data) and count($data) > 0) {
+                    ksort($data);
+                    $mod = 0;
+                    for ($date = makeShortDate($start_date);
+                        $date <= makeShortDate($end_date);
+                        $date = date("Ymd", strtotime("+1 day", strtotime(makeLongDate($date))))) {
+                        $mod++;
+                        $realdate = makeLongDate($date);
+                        if (isset($data[$realdate]) and is_array($data[$realdate]) and count($data[$realdate]) > 0) {
+                            $track_data = $data[$realdate];
+                            ksort($track_data);
+                            foreach ($track_data as $track=>$votes) {
+                                if (isset($return[$track])) {
+                                    $return[$track]->set_intTrend($return[$track]->get_intTrend() + ($votes * $mod));
+                                } else {
+                                    $return[$track]->set_intTrend($votes * $mod);
+                                }
+                            }
+                        }
+                    }
+                }
+                arsort($return);
+                return $return;
+            }
+            return $return;
+        } catch(Exception $e) {
+            error_log("SQL error: " . $e);
+            return false;
+        }
+    }
+
+    // TODO: Write getTrendByTrackID
+}

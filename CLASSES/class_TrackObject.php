@@ -50,6 +50,8 @@ class TrackObject extends GenericObject
     protected $intChartPlace = 0;
     protected $intDuplicateID = 0;
     protected $arrChanges = array();
+    // External variables - only called from elsewhere
+    protected $intTrend = 0;
 
     /**
      * Read the contents of the pre-created class (from the object broker) and,
@@ -444,6 +446,30 @@ class TrackObject extends GenericObject
             return false;
         }
         return true;
+    }
+
+    /**
+     * Set the value of intTrend (used in TrendBroker only)
+     *
+     * @param integer $intTrend Value to set
+     *
+     * @return void
+     */
+    function set_intTrend($intTrend)
+    {
+        if ($this->intTrend != $intTrend) {
+            $this->intTrend = $intTrend;
+        }
+    }
+
+    /**
+     * Return the intTrend
+     *
+     * @return integer The intTrend
+     */
+    function get_intTrend()
+    {
+        return $this->intTrend;
     }
 
     /**
