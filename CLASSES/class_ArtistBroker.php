@@ -1,5 +1,4 @@
 <?php
-// TODO: Use intPage, intSize and make these null by default, using parameters to set them
 /**
  * CCHits.net is a website designed to promote Creative Commons Music,
  * the artists who produce it and anyone or anywhere that plays it.
@@ -71,12 +70,12 @@ class ArtistBroker
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
             $page = $arrUri['parameters']['page'];
-        } elseif($intPage == null) {
+        } elseif ($intPage == null) {
             $page = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
             $size = $arrUri['parameters']['size'];
-        } elseif($intSize == null) {
+        } elseif ($intSize == null) {
             $size = 25;
         }
 
@@ -126,9 +125,21 @@ class ArtistBroker
      */
     public function getArtistByPartialName(
         $strArtistName = "",
-        $intStart = 0,
-        $intSize = 25
+        $intStart = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
@@ -173,9 +184,21 @@ class ArtistBroker
      */
     public function getArtistByPartialUrl(
         $strArtistUrl = "",
-        $intStart = 0,
-        $intSize = 25
+        $intStart = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ?";
@@ -197,5 +220,4 @@ class ArtistBroker
             return false;
         }
     }
-
 }

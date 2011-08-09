@@ -45,12 +45,12 @@ class ChartBroker
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
             $page = $arrUri['parameters']['page'];
-        } elseif($intPage == null) {
+        } elseif ($intPage == null) {
             $page = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
             $size = $arrUri['parameters']['size'];
-        } elseif($intSize == null) {
+        } elseif ($intSize == null) {
             $size = 25;
         }
 
