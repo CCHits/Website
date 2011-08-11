@@ -129,9 +129,6 @@ class TrackBroker
             return false;
         }
     }
-
-    // TODO: Use intPage, intSize and make these null by default, using parameters to set them
-
     /**
      * This function finds a track by its name.
      * This search removes all spaces and then checks for the name
@@ -191,9 +188,6 @@ class TrackBroker
             return false;
         }
     }
-
-    // TODO: Use intPage, intSize and make these null by default, using parameters to set them
-
     /**
      * This function finds a track by its url.
      * This search removes all spaces and then checks for the name

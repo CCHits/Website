@@ -100,9 +100,6 @@ class ShowBroker
             return false;
         }
     }
-
-    // TODO: Use intPage, intSize and make these null by default, using parameters to set them
-
     /**
      * This function finds a show by it's partial URL.
      *
