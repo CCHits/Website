@@ -103,10 +103,7 @@ class API
                 if (!isset($artist_name)) {
                     $artist_name = '';
                 }
-
-                // FIXME: The page sizes here need to be set in the function below, not in the API caller
-
-                $this->result_array = ArtistBroker::getArtistByPartialName($artist_name, $page, $size);
+                $this->result_array = ArtistBroker::getArtistByPartialName($artist_name);
                 $this->render();
                 break;
             case 'searchartistbyurl':
@@ -125,10 +122,7 @@ class API
                     $this->render();
                     break;
                 }
-
-                // FIXME: The page sizes here need to be set in the function below, not in the API caller
-
-                $this->result_array = ArtistBroker::getArtistByPartialUrl($artist_url, $page, $size);
+                $this->result_array = ArtistBroker::getArtistByPartialUrl($artist_url);
                 $this->render();
                 break;
             case 'searchtrackbyname':
@@ -153,10 +147,7 @@ class API
                 if (!isset($track_name)) {
                     $track_name = '';
                 }
-
-                // FIXME: The page sizes here need to be set in the function below, not in the API caller
-
-                $result_array = TrackBroker::getTrackByPartialName($track_name, $page, $size);
+                $result_array = TrackBroker::getTrackByPartialName($track_name);
                 foreach ($result_array as $result) {
                     $result->set_full(true);
                     $this->result_array[] = $result;
@@ -181,10 +172,7 @@ class API
                     $this->render();
                     break;
                 }
-
-                // FIXME: The page sizes here need to be set in the function below, not in the API caller
-
-                $result_array = TrackBroker::getTrackByPartialUrl($track_url, $page, $size);
+                $result_array = TrackBroker::getTrackByPartialUrl($track_url);
                 foreach ($result_array as $result) {
                     $result->set_full(true);
                     $this->result_array[] = $result;
@@ -213,10 +201,7 @@ class API
                 if (!isset($show_name)) {
                     $show_name = '';
                 }
-
-                // FIXME: The page sizes here need to be set in the function below, not in the API caller
-
-                $this->result_array = ShowBroker::getShowByPartialName($show_name, $page, $size);
+                $this->result_array = ShowBroker::getShowByPartialName($show_name);
                 $this->render();
                 break;
             case 'searchshowbyurl':
@@ -237,10 +222,7 @@ class API
                     $this->render();
                     break;
                 }
-
-                // FIXME: The page sizes here need to be set in the function below, not in the API caller
-
-                $this->result_array = TrackBroker::getShowByPartialUrl($show_url, $page, $size);
+                $this->result_array = TrackBroker::getShowByPartialUrl($show_url);
                 $this->render();
                 break;
             // Direct Lookups
@@ -433,11 +415,11 @@ class API
                     }
                     $temp = new NewDailyShowObject($date);
                     $response = 'DAILY_SHOW=' . $temp->get_intShowID();
-                    if (7 == date('N', strtotime(UI::makeLongDate($date) . ' 12:00:00'))) {
+                    if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
                         $temp = new NewWeeklyShowObject($date);
                         $response .= ' && WEEKLY_SHOW=' . $temp->get_intShowID();
                     }
-                    if (1 == date('d', strtotime(UI::makeLongDate($date) . ' 12:00:00 + 1 day'))) {
+                    if (1 == date('d', strtotime(UI::getLongDate($date) . ' 12:00:00 + 1 day'))) {
                         $temp = new NewMonthlyShowObject(substr($date, 0, 6));
                         $response .= ' && MONTHLY_SHOW=' . $temp->get_intShowID();
                     }

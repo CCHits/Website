@@ -106,22 +106,34 @@ class ShowBroker
     /**
      * This function finds a show by it's partial URL.
      *
-     * @param string $strShowUrl The start of the URL
-     * @param int    $intStart   The start "page" number
-     * @param int    $intSize    The size of each page
+     * @param string  $strShowUrl The start of the URL
+     * @param integer $intPage    The start "page" number
+     * @param integer $intSize    The size of each page
      *
      * @return array|false An array of ShowObject or false if not existing
      */
     public function getShowByPartialUrl
     (
         $strShowUrl = "",
-        $intStart = 0,
-        $intSize = 25
+        $intPage = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE strShowUrl LIKE ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("{$strShowUrl}%"));
             $item = $query->fetchObject('ShowObject');
@@ -140,25 +152,62 @@ class ShowBroker
         }
     }
 
-    // TODO: Use intPage, intSize and make these null by default, using parameters to set them
-
     /**
      * This function finds a show by it's partial Name.
      *
-     * @param string $strShowName The start of the Show Name
-     * @param int    $intStart    The start "page" number
-     * @param int    $intSize     The size of each page
+     * @param string  $strShowName The start of the Show Name
+     * @param integer $intPage     The start "page" number
+     * @param integer $intSize     The size of each page
      *
      * @return array|false An array of ShowObject or false if not existing
      */
     public function getShowByPartialName
     (
         $strShowName = "",
-        $intStart = 0,
-        $intSize = 25
+        $intPage = null,
+        $intSize = null
     ) {
-        // TODO: Write me!
-        return false;
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+        $db = CF::getFactory()->getConnection();
+        try {
+            $sql = "SELECT * FROM shows WHERE strShowName LIKE ?";
+            $pagestart = ($intPage*$intSize);
+            $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
+            // This snippet from http://www.php.net/manual/en/function.str-split.php
+            preg_match_all('`.`u', $strShowName, $arr);
+            $arr = array_chunk($arr[0], 1);
+            $arr = array_map('implode', $arr);
+            $strShowName = "";
+            foreach ($arr as $chrShowName) {
+                if (trim($chrShowName) != '') {
+                    $strShowName .= "[:space:]*$chrShowName";
+                }
+            }
+            $query->execute(array(".*{$strShowName}[:space:]*.*"));
+            $item = $query->fetchObject('ShowObject');
+            if ($item == false) {
+                return false;
+            } else {
+                $return[] = $item;
+                while ($item = $query->fetchObject('ShowObject')) {
+                    $return[] = $item;
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**

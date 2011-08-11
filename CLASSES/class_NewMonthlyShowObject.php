@@ -36,7 +36,7 @@ class NewMonthlyShowObject extends NewInternalShowObject
      */
     public function __construct($intShowUrl = 0)
     {
-        $datShowUrl = date("Y-m-d", strtotime(date("Y-m-d", strtotime(UI::makeLongDate($intShowUrl) . '-01 + 1 month')) . ' - 1 day'));
+        $datShowUrl = date("Y-m-d", strtotime(date("Y-m-d", strtotime(UI::getLongDate($intShowUrl) . '-01 + 1 month')) . ' - 1 day'));
         $status = parent::__construct($intShowUrl, 'monthly');
         $arrTracks = ChartBroker::getChartByDate($datShowUrl, 0, 40);
         krsort($arrTracks);

@@ -613,7 +613,7 @@ class UI
      *
      * @return string the date in Y-m-d format
      */
-    function makeLongDate($date)
+    function getLongDate($date)
     {
         if (preg_match('/(\d\d\d\d)(\d\d)(\d\d)|(\d\d\d\d)(\d\d)/', $date, $matches) == 1) {
             if (isset($matches[3])) {
@@ -633,7 +633,7 @@ class UI
      *
      * @return integer The date in Ymd format
      */
-    function makeShortDate($date)
+    function getShortDate($date)
     {
         if (preg_match('/(\d\d\d\d)-(\d\d)-(\d\d)|(\d\d\d\d)-(\d\d)/', $date, $matches) == 1) {
             if (isset($matches[3])) {

@@ -262,16 +262,7 @@ class HTML
      */
     function chart($date = null)
     {
-        $arrUri = UI::getUri();
-        $page = $arrUri['parameters']['page'];
-        if (0 + $page <= 0) {
-            $page = 0;
-        }
-        $size = $arrUri['parameters']['size'];
-        if (0 + $size <= 0 or $size > 100) {
-            $size = 25;
-        }
-        $this->result['chart'] = ChartBroker::getChartByDate($date, $page, $size);
+        $this->result['chart'] = ChartBroker::getChartByDate($date);
         if ($this->render()) {
             // TODO: Write this template
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
@@ -287,23 +278,14 @@ class HTML
      */
     function daily($showdate = '')
     {
-        if ($showdate == '') {
+        if ($showdate != '') {
             $show = ShowBroker::getInternalShowByDate('daily', $showdate);
             if ($show != false) {
                 UI::Redirect('show/' . $show->get_intShowID());
                 exit(0);
             }
         }
-        $arrUri = UI::getUri();
-        $page = $arrUri['parameters']['page'];
-        if (0 + $page <= 0) {
-            $page = 0;
-        }
-        $size = $arrUri['parameters']['size'];
-        if (0 + $size <= 0 or $size > 100) {
-            $size = 25;
-        }
-        $this->result['shows'] = ShowBroker::getInternalShowByType('daily', $page, $size);
+        $this->result['shows'] = ShowBroker::getInternalShowByType('daily');
         if ($this->render()) {
             // TODO: Write this template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
@@ -319,23 +301,14 @@ class HTML
      */
     function weekly($showdate = '')
     {
-        if ($showdate == '') {
+        if ($showdate != '') {
             $show = ShowBroker::getInternalShowByDate('weekly', $showdate);
             if ($show != false) {
                 UI::Redirect('show/' . $show->get_intShowID());
                 exit(0);
             }
         }
-        $arrUri = UI::getUri();
-        $page = $arrUri['parameters']['page'];
-        if (0 + $page <= 0) {
-            $page = 0;
-        }
-        $size = $arrUri['parameters']['size'];
-        if (0 + $size <= 0 or $size > 100) {
-            $size = 25;
-        }
-        $this->result['shows'] = ShowBroker::getInternalShowByType('weekly', $page, $size);
+        $this->result['shows'] = ShowBroker::getInternalShowByType('weekly');
         if ($this->render()) {
             // TODO: Write this template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
@@ -351,23 +324,14 @@ class HTML
      */
     function monthly($showdate = '')
     {
-        if ($showdate == '') {
+        if ($showdate != '') {
             $show = ShowBroker::getInternalShowByDate('monthly', $showdate);
             if ($show != false) {
                 UI::Redirect('show/' . $show->get_intShowID());
                 exit(0);
             }
         }
-        $arrUri = UI::getUri();
-        $page = $arrUri['parameters']['page'];
-        if (0 + $page <= 0) {
-            $page = 0;
-        }
-        $size = $arrUri['parameters']['size'];
-        if (0 + $size <= 0 or $size > 100) {
-            $size = 25;
-        }
-        $this->result['shows'] = ShowBroker::getInternalShowByType('monthly', $page, $size);
+        $this->result['shows'] = ShowBroker::getInternalShowByType('monthly');
         if ($this->render()) {
             // TODO: Write this template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);

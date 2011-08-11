@@ -63,7 +63,7 @@ class TrendBroker
                 $query->execute();
                 $strTrendDate = $query->fetchColumn();
             } else {
-                $strTrendDate = makeLongDate($strTrendDate);
+                $strTrendDate = getLongDate($strTrendDate);
             }
 
             $start_date = date('Y-m-d', strtotime('-7 days', strtotime($strTrendDate)));
@@ -87,11 +87,11 @@ class TrendBroker
                 if (is_array($data) and count($data) > 0) {
                     ksort($data);
                     $mod = 0;
-                    for ($date = makeShortDate($start_date);
-                        $date <= makeShortDate($end_date);
-                        $date = date("Ymd", strtotime("+1 day", strtotime(makeLongDate($date))))) {
+                    for ($date = getShortDate($start_date);
+                        $date <= getShortDate($end_date);
+                        $date = date("Ymd", strtotime("+1 day", strtotime(getLongDate($date))))) {
                         $mod++;
-                        $realdate = makeLongDate($date);
+                        $realdate = getLongDate($date);
                         if (isset($data[$realdate]) and is_array($data[$realdate]) and count($data[$realdate]) > 0) {
                             $track_data = $data[$realdate];
                             ksort($track_data);

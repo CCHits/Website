@@ -118,14 +118,14 @@ class ArtistBroker
      * This is in response to an issue with multiple instances of "TenPenny Joke"
      *
      * @param string  $strArtistName The artist name to search for
-     * @param integer $intStart      The start "page" number
+     * @param integer $intPage      The start "page" number
      * @param integer $intSize       The size of each page
      *
      * @return array|false An array of ArtistObject or false if not existing
      */
     public function getArtistByPartialName(
         $strArtistName = "",
-        $intStart = null,
+        $intPage = null,
         $intSize = null
     ) {
         $arrUri = UI::getUri();
@@ -143,7 +143,7 @@ class ArtistBroker
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
             preg_match_all('`.`u', $strArtistName, $arr);
@@ -176,15 +176,15 @@ class ArtistBroker
     /**
      * This function finds a artist by its url.
      *
-     * @param string $strArtistUrl The part of the Track name to search for
-     * @param int    $intStart     The start "page" number
-     * @param int    $intSize      The size of each page
+     * @param string  $strArtistUrl The part of the Track name to search for
+     * @param integer $intPage      The start "page" number
+     * @param integer $intSize      The size of each page
      *
      * @return array|false An array of ArtistObject or false if the item doesn't exist
      */
     public function getArtistByPartialUrl(
         $strArtistUrl = "",
-        $intStart = null,
+        $intPage = null,
         $intSize = null
     ) {
         $arrUri = UI::getUri();
@@ -202,7 +202,7 @@ class ArtistBroker
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("$strArtistUrl%"));
             $item = $query->fetchObject('ArtistObject');

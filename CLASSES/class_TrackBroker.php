@@ -47,7 +47,7 @@ class TrackBroker
     /**
      * This function finds a track by it's intTrackID.
      *
-     * @param int $intTrackID Track ID to search for
+     * @param integer $intTrackID Track ID to search for
      *
      * @return object|false TrackObject or false if not existing
      */
@@ -70,28 +70,38 @@ class TrackBroker
         }
     }
 
-    // TODO: Use intPage, intSize and make these null by default, using parameters to set them
-
     /**
      * This function finds a track by it's name.
      * This search removes all spaces and then checks for the name
      * including any spaces
      *
-     * @param string $strTrackName The exact Track name to search for
-     * @param int    $intStart     The start "page" number
-     * @param int    $intSize      The size of each page
+     * @param string  $strTrackName The exact Track name to search for
+     * @param integer $intPage      The start "page" number
+     * @param integer $intSize      The size of each page
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist
      */
     public function getTrackByExactName(
         $strTrackName = "",
-        $intStart = 0,
-        $intSize = 25
+        $intPage = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
             preg_match_all('`.`u', $strTrackName, $arr);
@@ -127,21 +137,33 @@ class TrackBroker
      * This search removes all spaces and then checks for the name
      * including any spaces
      *
-     * @param string $strTrackName The part of the Track name to search for
-     * @param int    $intStart     The start "page" number
-     * @param int    $intSize      The size of each page
+     * @param string  $strTrackName The part of the Track name to search for
+     * @param integer $intPage      The start "page" number
+     * @param integer $intSize      The size of each page
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist
      */
     public function getTrackByPartialName(
         $strTrackName = "",
-        $intStart = 0,
-        $intSize = 25
+        $intPage = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
             preg_match_all('`.`u', $strTrackName, $arr);
@@ -177,21 +199,33 @@ class TrackBroker
      * This search removes all spaces and then checks for the name
      * including any spaces
      *
-     * @param string $strTrackUrl The part of the Track name to search for
-     * @param int    $intStart    The start "page" number
-     * @param int    $intSize     The size of each page
+     * @param string  $strTrackUrl The part of the Track name to search for
+     * @param integer $intPage    The start "page" number
+     * @param integer $intSize     The size of each page
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist
      */
     public function getTrackByPartialUrl(
         $strTrackUrl = "",
-        $intStart = 0,
-        $intSize = 25
+        $intPage = null,
+        $intSize = null
     ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
         $db = CF::getFactory()->getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ?";
-            $pagestart = ($intStart*$intSize);
+            $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("$strTrackUrl%"));
             $item = $query->fetchObject('TrackObject');
