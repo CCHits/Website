@@ -115,5 +115,92 @@ class TrendBroker
         }
     }
 
-    // TODO: Write getTrendByTrackID
+    /**
+     * A function to retrieve all the tracks associated to the last 7 days of trending data for one track.
+     *
+     * @param integer $intTrackID   The track to search for
+     * @param date    $strTrendDate The date to end the trending information on
+     * @param integer $intPage      The start "page" number
+     * @param integer $intSize      The size of each page
+     *
+     * @return array|false An array of the Tracks, or false if the operation fails.
+     */
+    function getTrendByTrackID(
+        $intTrackID = 0,
+        $strTrendDate = '',
+        $intPage = null,
+        $intSize = null
+    ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
+        $return = array();
+        $db = CF::getFactory()->getConnection();
+        try {
+            if ($strTrendDate == '') {
+                $sql = "SELECT max(datTrendDay) as max_datTrendDay FROM trends LIMIT 0, 1";
+                $query = $db->prepare($sql);
+                $query->execute();
+                $strTrendDate = $query->fetchColumn();
+            } else {
+                $strTrendDate = getLongDate($strTrendDate);
+            }
+
+            $start_date = date('Y-m-d', strtotime('-7 days', strtotime($strTrendDate)));
+            $end_date = date('Y-m-d', strtotime($strTrendDate));
+
+            $sql = "SELECT intTrackID, datTrendDay, intVotes FROM trends WHERE intTrackID = ? and datTrendDay => ? AND datTrendDay <= ?";
+            $pagestart = ($intPage * $intSize);
+            $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
+            $query->execute(array($intTrackID, $start_date, $end_date));
+            $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+            if ($tracks != false and count($tracks)>0) {
+                $data = array();
+                $return = array();
+                foreach ($tracks as $track) {
+                    $temp = TrackBroker::getTrackByID($track['intTrackID']);
+                    if ($temp != false) {
+                        $return[$track['intTrackID']] = $temp;
+                        $data[$track['datTrendDay']][$track['intTrackID']] = $track['intVotes'];
+                    }
+                }
+                if (is_array($data) and count($data) > 0) {
+                    ksort($data);
+                    $mod = 0;
+                    for ($date = getShortDate($start_date);
+                        $date <= getShortDate($end_date);
+                        $date = date("Ymd", strtotime("+1 day", strtotime(getLongDate($date))))) {
+                        $mod++;
+                        $realdate = getLongDate($date);
+                        if (isset($data[$realdate]) and is_array($data[$realdate]) and count($data[$realdate]) > 0) {
+                            $track_data = $data[$realdate];
+                            ksort($track_data);
+                            foreach ($track_data as $track=>$votes) {
+                                if (isset($return[$track])) {
+                                    $return[$track]->set_intTrend($return[$track]->get_intTrend() + ($votes * $mod));
+                                } else {
+                                    $return[$track]->set_intTrend($votes * $mod);
+                                }
+                            }
+                        }
+                    }
+                }
+                arsort($return);
+                return $return;
+            }
+            return $return;
+        } catch(Exception $e) {
+            error_log("SQL error: " . $e);
+            return false;
+        }
+    }
 }
