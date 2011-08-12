@@ -161,11 +161,8 @@ class HTML
                 $this->result['daily_player_json'] = json_encode(array($this->result['daily']['player_data']));
                 $this->result['weekly_player_json'] = json_encode(array($this->result['weekly']['player_data']));
                 $this->result['monthly_player_json'] = json_encode(array($this->result['monthly']['player_data']));
-                UI::SmartyTemplate("frontpage.html", $this->result);
-            } elseif ($this->format == 'rss') {
-                // TODO: Write this template
-                UI::SmartyTemplate("frontpage.rss", $this->result);
             }
+            UI::SmartyTemplate("frontpage.{$this->format}", $this->result);
         }
     }
 
@@ -181,7 +178,7 @@ class HTML
         if ($track != null and (0 + $track > 0)) {
             $this->result['track'] = TrackBroker::getTrackByID(UI::getLongNumber($track));
             if ($this->render()) {
-                // TODO: Write this template
+                // TODO: Write the track template
                 UI::SmartyTemplate("track.{$this->format}", $this->result);
             }
         } else {
@@ -207,7 +204,7 @@ class HTML
                 UI::Redirect($this->result['show']->get_enumShowType() . '/' . $this->result['show']->get_intShowUrl());
             }
             if ($this->render()) {
-                // TODO: Write this template
+                // TODO: Write the show template
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
             }
         } else {
@@ -242,12 +239,13 @@ class HTML
         if (isset($arrUri['parameters']['go']) and new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show))) {
             $this->result['vote'] = true;
             if ($this->render()) {
+                // TODO: Write the voted template
                 UI::SmartyTemplate("voted.html", $this->result);
             }
         } else {
             $this->result['vote_url'] = $arrUri['full'] . '?go';
             if ($this->render()) {
-                // TODO: Write this template
+                // TODO: Write them vote template
                 UI::SmartyTemplate("vote.{$this->format}", $this->result);
             }
         }
@@ -264,7 +262,7 @@ class HTML
     {
         $this->result['chart'] = ChartBroker::getChartByDate($date);
         if ($this->render()) {
-            // TODO: Write this template
+            // TODO: Write the chart template
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
         }
     }
@@ -287,7 +285,7 @@ class HTML
         }
         $this->result['shows'] = ShowBroker::getInternalShowByType('daily');
         if ($this->render()) {
-            // TODO: Write this template
+            // TODO: Write the Show template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -310,7 +308,7 @@ class HTML
         }
         $this->result['shows'] = ShowBroker::getInternalShowByType('weekly');
         if ($this->render()) {
-            // TODO: Write this template
+            // TODO: Write the Show template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -333,7 +331,7 @@ class HTML
         }
         $this->result['shows'] = ShowBroker::getInternalShowByType('monthly');
         if ($this->render()) {
-            // TODO: Write this template
+            // TODO: Write the Show template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -373,7 +371,7 @@ class HTML
             break;
         case 'faq':
         default:
-            // TODO: Write this template
+            // TODO: Write the "about" template
             UI::SmartyTemplate("about.{$this->format}", $this->result);
             break;
         }
