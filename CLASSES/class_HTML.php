@@ -197,12 +197,6 @@ class HTML
     {
         if ($show != null and (0 + $show > 0)) {
             $this->result['show'] = ShowBroker::getShowByID(UI::getLongNumber($show));
-            switch($this->result['show']->get_enumShowType()) {
-            case 'daily':
-            case 'weekly':
-            case 'monthly':
-                UI::Redirect($this->result['show']->get_enumShowType() . '/' . $this->result['show']->get_intShowUrl());
-            }
             if ($this->render()) {
                 // TODO: Write the show template
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
