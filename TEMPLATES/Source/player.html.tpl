@@ -28,13 +28,13 @@
 				
 					<div id="jp_playlist_{$player_id}" class="jp-playlist">
 						<ul>
-                                                        {if isset($playlist.player_data)}
-                                                        <li>{$playlist.player_data.name} ({if $playlist.player_data.mp3 neq ''}<a href="{$playlist.player_data.mp3}">mp3</a> | {/if}{if $playlist.player_data.oga neq ''}<a href="{$playlist.player_data.mp3}">ogg</a> | {/if}<a href="{$playlist.player_data.link}">link</a>)</li>
-                                                        {elseif is_array($playlist)}
-                                                        {foreach $playlist as $listitem}
-                                                        <li>{$listitem.player_data.name} ({if $listitem.player_data.mp3 neq ''}<a href="{$listitem.player_data.mp3}">mp3</a> | {/if}{if $listitem.player_data.oga neq ''}<a href="{$listitem.player_data.mp3}">ogg</a> | {/if}<a href="{$listitem.player_data.link}">link</a>)</li>
-                                                        {/foreach}
-                                                        {/if}
+                            {if isset($playlist.player_data)}
+                            <li>{$playlist.player_data.name} ({if $playlist.player_data.mp3 neq ''}<a href="{$playlist.player_data.mp3}">mp3</a> | {/if}{if $playlist.player_data.oga neq ''}<a href="{$playlist.player_data.mp3}">ogg</a> | {/if}<a href="{$playlist.player_data.link}">link</a>)</li>
+                            {elseif is_array($playlist)}
+                            {foreach $playlist as $listitem}
+                            <li>{$listitem.player_data.name} ({if $listitem.player_data.mp3 neq ''}<a href="{$listitem.player_data.mp3}">mp3</a> | {/if}{if $listitem.player_data.oga neq ''}<a href="{$listitem.player_data.mp3}">ogg</a> | {/if}<a href="{$listitem.player_data.link}">link</a>)</li>
+                            {/foreach}
+                            {/if}
 						</ul>
 					</div>
 				</div>
