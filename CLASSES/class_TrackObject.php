@@ -109,6 +109,9 @@ class TrackObject extends GenericObject
                 }
             }
         }
+        if ($this->intTrend > 0) {
+            $return['intTrend'] = $this->intTrend;
+        }
         return $return;
     }
 

@@ -371,7 +371,6 @@ class HTML
             break;
         case 'faq':
         default:
-            // TODO: Write the "about" template
             UI::SmartyTemplate("about.{$this->format}", $this->result);
             break;
         }

@@ -775,16 +775,15 @@ class UI
      *
      * @return void
      */
-    function Redirect($new_page = '', $permanant = true)
+    function Redirect($new_page = '')
     {
         $arrUri = self::getUri();
-        $redirect_url = $arrUri['basePath'] . '/' . $new_page;
-        if ($permanant) {
-            $code = 301;
-        } else {
-            $code = 307;
+        if (substr($new_page, 0, 1) != '/') {
+            $new_page = '/' . $new_page;
         }
-        self::SendHttpResponse($code, "Location: $redirect_url", '');
+        $redirect_url = $arrUri['basePath'] . $new_page;
+        header("Location: $redirect_url");
+        exit(0);
     }
 
     /**
