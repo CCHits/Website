@@ -194,7 +194,7 @@ class TrackBroker
      * including any spaces
      *
      * @param string  $strTrackUrl The part of the Track name to search for
-     * @param integer $intPage    The start "page" number
+     * @param integer $intPage     The start "page" number
      * @param integer $intSize     The size of each page
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist

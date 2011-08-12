@@ -118,7 +118,7 @@ class ArtistBroker
      * This is in response to an issue with multiple instances of "TenPenny Joke"
      *
      * @param string  $strArtistName The artist name to search for
-     * @param integer $intPage      The start "page" number
+     * @param integer $intPage       The start "page" number
      * @param integer $intSize       The size of each page
      *
      * @return array|false An array of ArtistObject or false if not existing
