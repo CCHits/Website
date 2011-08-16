@@ -37,7 +37,7 @@ class ArtistBroker
      */
     public function getArtistByID($intArtistID = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE intArtistID = ? LIMIT 1";
             $query = $db->prepare($sql);
@@ -79,7 +79,7 @@ class ArtistBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
             $pagestart = ($intPage*$intSize);
@@ -140,7 +140,7 @@ class ArtistBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
             $pagestart = ($intPage*$intSize);
@@ -199,7 +199,7 @@ class ArtistBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ?";
             $pagestart = ($intPage*$intSize);

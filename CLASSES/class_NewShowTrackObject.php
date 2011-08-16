@@ -47,7 +47,7 @@ class NewShowTrackObject extends ShowTrackObject
         $this->set_intTrackID($intTrackID);
         $this->set_intShowID($intShowID);
         try {
-            $db = CF::getFactory()->getConnection();
+            $db = Database::getConnection();
             $sql = "SELECT max(intPartID) FROM showtracks WHERE intShowID = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID));

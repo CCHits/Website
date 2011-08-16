@@ -57,7 +57,7 @@ class TrackBroker
         if (isset($th->arrTracks[$intTrackID]) and $th->arrTracks[$intTrackID] != false) {
             return $th->arrTracks[$intTrackID];
         }
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE intTrackID = ? LIMIT 1";
             $query = $db->prepare($sql);
@@ -98,7 +98,7 @@ class TrackBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
             $pagestart = ($intPage*$intSize);
@@ -157,7 +157,7 @@ class TrackBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
             $pagestart = ($intPage*$intSize);
@@ -216,7 +216,7 @@ class TrackBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ?";
             $pagestart = ($intPage*$intSize);
@@ -247,7 +247,7 @@ class TrackBroker
      */
     public function getTrackByMD5($md5FileHash = "")
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE md5FileHash = ? LIMIT 1";
             $query = $db->prepare($sql);
@@ -272,7 +272,7 @@ class TrackBroker
      */
     function getTrackByDailyShowDate($intDate = '')
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE datDailyShow = ? LIMIT 1";
             $query = $db->prepare($sql);

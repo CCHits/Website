@@ -78,7 +78,7 @@ class GenericObject
             }
             $full_sql = "UPDATE {$this->strDBTable} SET $sql WHERE {$this->strDBKeyCol} = :{$this->strDBKeyCol}";
             try {
-                $db = CF::getFactory()->getConnection();
+                $db = Database::getConnection(true);
                 $query = $db->prepare($full_sql);
                 $query->execute($values);
                 return true;
@@ -108,7 +108,7 @@ class GenericObject
         }
         $full_sql = "INSERT INTO {$this->strDBTable} ($keys) VALUES ($key_place)";
         try {
-            $db = CF::getFactory()->getConnection();
+            $db = Database::getConnection(true);
             $query = $db->prepare($full_sql);
             $query->execute($values);
             if ($this->strDBKeyCol != '') {

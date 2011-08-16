@@ -55,7 +55,7 @@ class ChartBroker
         }
 
         $return = array();
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             if ($strChartDate == '') {
                 $sql = "SELECT max(datChart) as max_datChart FROM chart LIMIT 0, 1";

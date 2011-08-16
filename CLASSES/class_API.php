@@ -374,7 +374,7 @@ class API
             case 'runbumpers':
                 UI::requireAuth();
                 if (UserAuth::getUser()->get_isAdmin()) {
-                    $db = CF::getFactory()->getConnection();
+                    $db = Database::getConnection();
                     // Get all the bumpers
                     // Delete all the bumpers
                     // Create new bumpers

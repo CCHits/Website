@@ -55,7 +55,7 @@ class TrendBroker
         }
 
         $return = array();
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             if ($strTrendDate == '') {
                 $sql = "SELECT max(datTrendDay) as max_datTrendDay FROM trends LIMIT 0, 1";
@@ -144,7 +144,7 @@ class TrendBroker
         }
 
         $return = array();
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             if ($strTrendDate == '') {
                 $sql = "SELECT max(datTrendDay) as max_datTrendDay FROM trends LIMIT 0, 1";

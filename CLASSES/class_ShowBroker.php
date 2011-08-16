@@ -37,7 +37,7 @@ class ShowBroker
      */
     public function getShowByID($intShowID = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
             $query = $db->prepare($sql);
@@ -59,7 +59,7 @@ class ShowBroker
     public function getShowsByIDs($arrShowIDs = array())
     {
         if (is_array($arrShowIDs) and count($arrShowIDs) > 0) {
-            $db = CF::getFactory()->getConnection();
+            $db = Database::getConnection();
             try {
                 $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
                 $query = $db->prepare($sql);
@@ -89,7 +89,7 @@ class ShowBroker
      */
     public function getShowByExactUrl($strShowUrl = "")
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE strShowUrl LIKE ? LIMIT 1";
             $query = $db->prepare($sql);
@@ -127,7 +127,7 @@ class ShowBroker
             $size = 25;
         }
 
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE strShowUrl LIKE ?";
             $pagestart = ($intPage*$intSize);
@@ -175,7 +175,7 @@ class ShowBroker
         } elseif ($intSize == null) {
             $size = 25;
         }
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE strShowName LIKE ?";
             $pagestart = ($intPage*$intSize);
@@ -228,7 +228,7 @@ class ShowBroker
         if ( ! is_integer($intQuantity) or $intQuantity < 1 or $intQuantity > 100) {
             $intQuantity = 25;
         }
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE enumShowType = ? ORDER BY intShowUrl DESC LIMIT $intQuantity";
             $query = $db->prepare($sql);
@@ -267,7 +267,7 @@ class ShowBroker
         default:
             return false;
         }
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE enumShowType = ? and intShowUrl = ?";
             $query = $db->prepare($sql);

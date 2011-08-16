@@ -57,7 +57,7 @@ class ConfigBroker
     {
         $handler = self::getHandler();
         if (!is_array($handler->arrConfig) or (is_array($handler->arrConfig) and count($handler->arrConfig) == 0)) {
-            $db = CF::getFactory()->getConnection();
+            $db = Database::getConnection();
             try {
                 $sql = "SELECT * FROM config";
                 $query = $db->prepare($sql);

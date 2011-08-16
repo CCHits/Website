@@ -36,7 +36,7 @@ class VoteBroker
      */
     function getVotesForTrackByShow($intTrackID = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $voteadj = 0;
             $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID";

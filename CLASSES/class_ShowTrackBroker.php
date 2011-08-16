@@ -37,7 +37,7 @@ class ShowTrackBroker
      */
     public function getShowTracksByShowID($intShowID = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM showtracks WHERE intShowID = ? ORDER BY intPartID ASC";
             $query = $db->prepare($sql);
@@ -68,7 +68,7 @@ class ShowTrackBroker
      */
     public function getShowTracksByShowTrackID($intShowID = 0, $intTrackID = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM showtracks WHERE intShowID = ?, intTrackID = ? ORDER BY intPartID ASC";
             $query = $db->prepare($sql);
@@ -89,7 +89,7 @@ class ShowTrackBroker
      */
     public function getShowTracksByTrackID($intTrackID = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM showtracks WHERE intTrackID = ? ORDER BY intShowID ASC";
             $query = $db->prepare($sql);

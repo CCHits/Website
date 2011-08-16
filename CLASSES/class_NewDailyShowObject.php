@@ -36,7 +36,7 @@ class NewDailyShowObject extends NewInternalShowObject
      */
     public function __construct($intShowUrl = 0)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         // FIXME: The query to look for tracks which haven't already been used in shows doesn't work! The uncommented SQL query does work, but uses the old style of identifying daily shows.
         // $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID = NULL OR tracks.intTrackID = NULL LIMIT 0, 1 ORDER BY RAND()";
         $sql = "SELECT intTrackID FROM tracks WHERE datDailyShow IS NULL ORDER BY RAND() LIMIT 1";

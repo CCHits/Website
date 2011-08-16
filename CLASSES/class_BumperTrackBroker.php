@@ -35,7 +35,7 @@ class BumperTrackBroker
      */
     public function getTrackBumpers()
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM bumpers_tracks";
             $query = $db->prepare($sql);
@@ -67,7 +67,7 @@ class BumperTrackBroker
      */
     public function getTrackBumperByTrack($intTrackID = 0, $position = '', $boolRandom = false)
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             if ($position != '') {
                 if ($boolRandom == true) {

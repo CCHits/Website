@@ -39,7 +39,7 @@ class TracksBroker
     function getTracksByShowID($intShowID = 0)
     {
         $return = array();
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection();
         try {
             $sql = "SELECT intTrackID FROM showtracks WHERE intShowID = ?";
             $query = $db->prepare($sql);

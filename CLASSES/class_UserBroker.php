@@ -86,7 +86,7 @@ class UserBroker
 
         if (isset($field) and isset($param)) {
             try {
-                $db = CF::getFactory()->getConnection();
+                $db = Database::getConnection();
                 $sql = "SELECT * FROM users WHERE $field = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($param));
@@ -122,7 +122,7 @@ class UserBroker
                 return $objSelf->arrUsers[$intUserID];
             }
             try {
-                $db = CF::getFactory()->getConnection();
+                $db = Database::getConnection();
                 $sql = "SELECT * FROM users WHERE intUserID = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($intUserID));

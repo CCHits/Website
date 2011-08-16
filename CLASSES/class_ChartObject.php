@@ -37,7 +37,7 @@ class ChartObject
      */
     function __construct($date = '')
     {
-        $db = CF::getFactory()->getConnection();
+        $db = Database::getConnection(true);
         if ($date != '') {
             $date = date("Ymd");
         }
