@@ -771,7 +771,6 @@ class UI
      * Do a redirection to the $new_page (relative to the base URI of the site)
      *
      * @param string  $new_page  New page to refer to
-     * @param boolean $permanant Is this redirection permanant or not?
      *
      * @return void
      */
