@@ -382,22 +382,6 @@ class API
                     $this->render();
                 }
                 break;
-            // Show generation scripts
-            case 'trackprebumper':
-                // TODO: Import trackprebumper
-                break;
-            case 'trackpostbumper':
-                // TODO: Import trackpostbumper
-                break;
-            case 'showprebumper':
-                // TODO: Import showprebumper
-                break;
-            case 'showmidbumper':
-                // TODO: Import showmidbumper
-                break;
-            case 'showpostbumper':
-                // TODO: Import showpostbumper
-                break;
 
             // Generate show information
             // These functions are new
