@@ -222,7 +222,7 @@ class API
                     $this->render();
                     break;
                 }
-                $this->result_array = TrackBroker::getShowByPartialUrl($show_url);
+                $this->result_array = ShowBroker::getShowByPartialUrl($show_url);
                 $this->render();
                 break;
             // Direct Lookups
