@@ -7,16 +7,13 @@ if [ -z $1 ]; then
   find "$BASE_DIR/.." -name "*.php" -not -wholename "*/EXTERNALS/*/*" -not -wholename "*/TEMPLATES/C*" -exec "$0" '{}' \;
   echo "Done."
   echo "Checking classes... "
-  php "$BASE_DIR/missing_function_finder.php" "$BASE_DIR/CLASSES" >/tmp/testing_status
-  if [ -s /tmp/testing_status ]; then
-    cat /tmp/testing_status >> /tmp/phpcs_stats
-  fi
-  if [ ! -f /tmp/phpcs_stats ]; then
+  php "$BASE_DIR/missing_function_finder.php" "$BASE_DIR/../CLASSES" >> /tmp/phpcs_stats
+  if [ ! -s /tmp/phpcs_stats ]; then
     echo -n "Generating Documentation... "
     `which phpdoc` -o HTML:frames:earthli -d "$BASE_DIR/.." -t "$BASE_DIR/../DOCS" > /dev/null
     echo "Done."
   fi
-  if [ -f /tmp/phpcs_stats ]; then
+  if [ -s /tmp/phpcs_stats ]; then
     mv /tmp/phpcs_stats "$BASE_DIR/../DOCS/phpcs_failures.txt"
     less "$BASE_DIR/../DOCS/phpcs_failures.txt"
   fi
