@@ -109,8 +109,7 @@ class ShowBroker
      *
      * @return array|false An array of ShowObject or false if not existing
      */
-    public function getShowByPartialUrl
-    (
+    public function getShowByPartialUrl(
         $strShowUrl = "",
         $intPage = null,
         $intSize = null
@@ -158,8 +157,7 @@ class ShowBroker
      *
      * @return array|false An array of ShowObject or false if not existing
      */
-    public function getShowByPartialName
-    (
+    public function getShowByPartialName(
         $strShowName = "",
         $intPage = null,
         $intSize = null

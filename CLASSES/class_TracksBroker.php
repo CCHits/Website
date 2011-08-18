@@ -28,7 +28,36 @@
 
 class TracksBroker
 {
-    // TODO: getTracksByArtistID($intArtistID)
+    /**
+     * A function to retrieve all the tracks associated to an artist.
+     *
+     * @param integer $intArtistID The Artist we're looking for
+     *
+     * @return array|false An array of the Tracks, or false if the operation fails.
+     */
+    function getTracksByArtistID($intArtistID = 0)
+    {
+        $return = array();
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT intTrackID FROM tracks WHERE intArtistID = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($intShowID));
+            $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+            if ($tracks != false and count($tracks)>0) {
+                foreach ($tracks as $track) {
+                    $temp = TrackBroker::getTrackByID($track['intTrackID']);
+                    if ($temp != false) {
+                        $return[] = $temp;
+                    }
+                }
+            }
+            return $return;
+        } catch(Exception $e) {
+            return false;
+        }
+    }
+
     /**
      * A function to retrieve all the tracks associated to a show.
      *

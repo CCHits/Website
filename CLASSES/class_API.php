@@ -373,7 +373,7 @@ class API
 
             case 'runbumpers':
                 UI::requireAuth();
-                if (UserAuth::getUser()->get_isAdmin()) {
+                if (UserBroker::getUser()->get_isAdmin()) {
                     $db = Database::getConnection();
                     // Get all the bumpers
                     // Delete all the bumpers
@@ -387,7 +387,7 @@ class API
             // These functions are new
             case 'runshows':
                 UI::requireAuth();
-                if (UserAuth::getUser()->get_isAdmin()) {
+                if (UserBroker::getUser()->get_isAdmin()) {
                     if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                         $date = $arrUri['path_items'][2];
                     } else {

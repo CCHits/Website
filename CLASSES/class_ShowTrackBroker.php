@@ -109,4 +109,26 @@ class ShowTrackBroker
             return false;
         }
     }
+
+    /**
+     * This function changes any show which contains a duplicate ID and replaces it with the new track number.
+     *
+     * @param integer $intOldTrackID The Duplicated Track
+     * @param integer $intNewTrackID The Original Track
+     *
+     * @return boolean Worked or it didn't
+     */
+    public function ChangeTrackID($intOldTrackID = 0, $intNewTrackID = 0)
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "UPDATE showtracks SET intTrackID = ? WHERE intTrackID = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($intNewTrackID, $intOldTrackID));
+            return true;
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
 }

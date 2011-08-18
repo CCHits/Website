@@ -475,11 +475,25 @@ class UI
      *
      * @param Array|object $array Incoming data
      *
-     * @return json UTF8 encoded JSON string
+     * @return string UTF8 encoded JSON string
      */
     function utf8json($array = array())
     {
         return json_encode(self::utf8element($array));
+    }
+
+    /**
+     * Return utf8 encoded XML respons
+     *
+     * @param Array $array Incoming data
+     *
+     * @return string UTF8 encoded XML string
+     *
+     * TODO: Write this function
+     */
+    function utf8xml($array = array())
+    {
+        return '';
     }
 
     /**

@@ -67,4 +67,26 @@ class VoteBroker
             return false;
         }
     }
+
+    /**
+     * This function ensures that there are no duplicated votes for a track which has been duplicated.
+     *
+     * @param integer $intOldTrackID The Duplicated Track
+     * @param integer $intNewTrackID The Original Track
+     *
+     * @return boolean Worked or it didn't
+     */
+    public function MergeVotes($intOldTrackID = 0, $intNewTrackID = 0)
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "UPDATE IGNORE votes SET intTrackID = ? WHERE intTrackID = ?; DELETE FROM votes WHERE intTrackID = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($intNewTrackID, $intOldTrackID, $intOldTrackID));
+            return true;
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
 }
