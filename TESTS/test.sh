@@ -1,18 +1,24 @@
 #! /bin/bash
+BASE_DIR="`dirname $0`"
 if [ -z $1 ]; then
   echo "Checking syntax... "
-  rm -Rf /tmp/phpcs_stats "`dirname $0`/DOCS/" /tmp/testing_status
-  mkdir "`dirname $0`/DOCS"
-  find . -name "*.php" -not -wholename "*/EXTERNALS/*/*" -not -wholename "*/TEMPLATES/C*" -exec "$0" '{}' \;
+  rm -Rf /tmp/phpcs_stats "$BASE_DIR/../DOCS/" /tmp/testing_status
+  mkdir "$BASE_DIR/../DOCS"
+  find "$BASE_DIR/.." -name "*.php" -not -wholename "*/EXTERNALS/*/*" -not -wholename "*/TEMPLATES/C*" -exec "$0" '{}' \;
   echo "Done."
+  echo "Checking classes... "
+  php "$BASE_DIR/missing_function_finder.php" "$BASE_DIR/CLASSES" >/tmp/testing_status
+  if [ -s /tmp/testing_status ]; then
+    cat /tmp/testing_status >> /tmp/phpcs_stats
+  fi
   if [ ! -f /tmp/phpcs_stats ]; then
     echo -n "Generating Documentation... "
-#    `which phpdoc` -o HTML:frames:earthli -d `dirname $0` -t `dirname $0`/DOCS > /dev/null
+    `which phpdoc` -o HTML:frames:earthli -d "$BASE_DIR/.." -t "$BASE_DIR/../DOCS" > /dev/null
     echo "Done."
   fi
   if [ -f /tmp/phpcs_stats ]; then
-    mv /tmp/phpcs_stats `dirname $0`/DOCS/phpcs_failures.txt
-    less `dirname $0`/DOCS/phpcs_failures.txt
+    mv /tmp/phpcs_stats "$BASE_DIR/../DOCS/phpcs_failures.txt"
+    less "$BASE_DIR/../DOCS/phpcs_failures.txt"
   fi
 else
   rm /tmp/phpcs_test
