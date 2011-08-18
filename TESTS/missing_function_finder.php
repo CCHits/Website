@@ -148,16 +148,19 @@ function parseFile($filename = '')
     $singletonmatches = array();
     $classmatches = array();
     $classes = array();
+    $extends = '';
     foreach ($arrfile as $line=>$file) {
-        preg_match_all('/^class (\S+)|class (\S+) extends (\S+)/', $file, $arrclassname, PREG_SET_ORDER);
+        preg_match_all('/(^|abstract)\s*class (\S+)(.*)/', $file, $arrclassname, PREG_SET_ORDER);
         if (count($arrclassname) > 0) {
-            $arrclassname = $arrclassname[0];
-            if (isset($arrclassname[2])) {
-                $extends = $arrclassname[2];
-            } else {
-                $extends = '';
+            $arrclassname = end($arrclassname);
+            if ($arrclassname[3] != '') {
+                preg_match_all('/\s*extends (\S+)/', $arrclassname[3], $arrparentclassname, PREG_SET_ORDER);
+                if (count($arrparentclassname) > 0) {
+                    $arrparentclassname = end($arrparentclassname);
+                    $extends = $arrparentclassname[1];
+                }
             }
-            $classname = $arrclassname[1];
+            $classname = $arrclassname[2];
             $return['function'][$filename][$classname]['__construct'] = $line;
         }
         preg_match_all('/function ([^\(]+)\(/', $file, $functions, PREG_SET_ORDER);
@@ -173,7 +176,7 @@ function parseFile($filename = '')
                 } elseif ($match[1] == 'parent') {
                     $match[1] = $extends;
                 }
-                if ($match[1] != 'PDO' and $match[1] != 'Smarty') {
+                if ($match[1] != 'PDO' and $match[1] != 'Smarty' and $match[1] != 'Exception') {
                     $return['class'][$filename][$match[1]][$match[2]] = $line;
                 }
             }
@@ -188,7 +191,7 @@ function parseFile($filename = '')
                     $classmatch[2] = $extends;
                 }
                 $classes[$classmatch[1]] = $classmatch[2];
-                if ($classmatch[2] != 'PDO' and $classmatch[2] != 'Smarty') {
+                if ($classmatch[2] != 'PDO' and $classmatch[2] != 'Smarty' and $classmatch[2] != 'Exception') {
                     $return['class'][$filename][$classmatch[2]]['__construct'] = $line;
                 }
             }
