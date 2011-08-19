@@ -66,7 +66,6 @@ class GenericObject
     {
         if (count($this->arrChanges) > 0) {
             $sql = '';
-            $values = array('intUserID'=>$this->intUserID);
             foreach ($this->arrChanges as $change) {
                 if ($sql != '') {
                     $sql .= ", ";
