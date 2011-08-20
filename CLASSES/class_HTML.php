@@ -219,27 +219,33 @@ class HTML
         $vote = false;
         $this->result['show'] = false;
         $arrUri = UI::getUri();
-        $this->result['track'] = TrackBroker::getTrackByID(UI::getLongNumber($track));
+        $objTrack = TrackBroker::getTrackByID(UI::getLongNumber($track));
         if ($show != 0) {
-            $this->result['show'] = ShowBroker::getShowByID(UI::getLongNumber($show));
+            $objShow = ShowBroker::getShowByID(UI::getLongNumber($show));
         }
-        if ($this->result['track'] != false) {
-            if ($this->result['show'] == false or ShowTrackBroker::getShowTracksByShowTrackID($show, $track) == false) {
+        if ($objTrack != false) {
+            if ($objShow == true) {
+                $objShowTrack = ShowTrackBroker::getShowTracksByShowTrackID($show, $track);
+            }
+            if ($objShow == false or $objShowTrack == false) {
                 $show = 0;
+            } else {
+                $this->result['show'] = $objShow->getSelf();
             }
         } else {
             UI::sendHttpResponse(404);
         }
-        if (isset($arrUri['parameters']['go']) and new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show))) {
-            $this->result['vote'] = true;
+        if (isset($arrUri['parameters']['go']) or VoteBroker::hasMyUserIDVotedForThisTrack($track)) {
+            new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show));
             if ($this->render()) {
-                // TODO: Write the voted template
+                $objTrack->set_full(true);
+                $this->result['track'] = $objTrack->getSelf();
                 UI::SmartyTemplate("voted.html", $this->result);
             }
         } else {
             $this->result['vote_url'] = $arrUri['full'] . '?go';
             if ($this->render()) {
-                // TODO: Write them vote template
+                $this->result['track'] = $objTrack->getSelf();
                 UI::SmartyTemplate("vote.{$this->format}", $this->result);
             }
         }

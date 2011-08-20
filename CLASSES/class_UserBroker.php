@@ -61,10 +61,10 @@ class UserBroker
             session_start();
             setcookie(session_name(),session_id(),time()+$lifetime);
         }
-        if ($_SESSION['cookie'] != '') {
+        if (isset($_SESSION['cookie']) AND $_SESSION['cookie'] != '') {
             $field = "strCookieID";
             $param = $_SESSION['cookie'];
-        } elseif ($_SESSION['openid'] != '') {
+        } elseif (isset($_SESSION['openid']) AND $_SESSION['openid'] != '') {
             $field = "strOpenID";
             $param = $_SESSION['openid'];
         } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {

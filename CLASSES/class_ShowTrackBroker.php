@@ -70,7 +70,7 @@ class ShowTrackBroker
     {
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM showtracks WHERE intShowID = ?, intTrackID = ? ORDER BY intPartID ASC";
+            $sql = "SELECT * FROM showtracks WHERE intShowID = ? AND intTrackID = ? ORDER BY intPartID ASC";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID, $intTrackID));
             return $query->fetchObject('ShowTrackObject');

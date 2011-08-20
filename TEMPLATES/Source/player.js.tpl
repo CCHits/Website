@@ -12,6 +12,6 @@
                                                           play: function() {
                                                               $(this).jPlayer("pauseOthers");
                                                           },
-                                                          {/literal}swfPath: "{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/",{literal}
+                                                          {/literal}swfPath: "{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/",{literal}
                                                           supplied: "mp3,oga"
                                                       });{/literal}

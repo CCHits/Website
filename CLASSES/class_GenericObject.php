@@ -112,7 +112,7 @@ class GenericObject
             $query->execute($values);
             if ($this->strDBKeyCol != '') {
                 $key = $this->strDBKeyCol;
-                $this->$key = $query->lastInsertId();
+                $this->$key = $db->lastInsertId();
             }
             return true;
         } catch(Exception $e) {

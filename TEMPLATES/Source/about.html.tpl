@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<title>{$ServiceName}</title>
 	</head>
 	<body>

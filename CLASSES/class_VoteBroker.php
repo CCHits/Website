@@ -40,6 +40,7 @@ class VoteBroker
         try {
             $voteadj = 0;
             $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID";
+            $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
             $item = $query->fetchObject('VoteObject');
             if ($item == false) {
@@ -61,6 +62,32 @@ class VoteBroker
                     }
                 }
                 return array('total'=>$count, 'adjusted'=>$count * ((100 - ($voteadj * 5)) / 100), 'shows'=>$return);
+            }
+        } catch(Exception $e) {
+            echo "SQL Died: " . $e->getMessage();;
+            return false;
+        }
+    }
+
+    /**
+     * This function checks whether this user has voted for this track before.
+     *
+     * @param integer $intTrackID The track being voted upon
+     *
+     * @return boolean True if they've voted, false if they haven't.
+     */
+    function hasMyUserIDVotedForThisTrack($intTrackID = 0)
+    {
+        $db = Database::getConnection();
+        try {
+            $voteadj = 0;
+            $sql = "SELECT intVoteID FROM votes WHERE intTrackID = ? AND intUserID = ? LIMIT 1";
+            $query = $db->prepare($sql);
+            $query->execute(array($intTrackID, UserBroker::getUser()->get_intUserID()));
+            if ($query->fetch()) {
+                return true;
+            } else {
+                return false;
             }
         } catch(Exception $e) {
             echo "SQL Died: " . $e->getMessage();;

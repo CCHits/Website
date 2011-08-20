@@ -629,12 +629,10 @@ class UI
      */
     function getLongDate($date)
     {
-        if (preg_match('/(\d\d\d\d)(\d\d)(\d\d)|(\d\d\d\d)(\d\d)/', $date, $matches) == 1) {
-            if (isset($matches[3])) {
-                return $matches[1] . '-' . $matches[2] . '-' . $matches[3];
-            } else {
-                return $matches[1] . '-' . $matches[2];
-            }
+        if (preg_match('/(\d\d\d\d)(\d\d)(\d\d)/', $date, $matches) == 1) {
+            return $matches[1] . '-' . $matches[2] . '-' . $matches[3];
+        } elseif (preg_match('/(\d\d\d\d)(\d\d)/', $date, $matches) == 1) {
+            return $matches[1] . '-' . $matches[2];
         } else {
             return false;
         }
@@ -649,12 +647,10 @@ class UI
      */
     function getShortDate($date)
     {
-        if (preg_match('/(\d\d\d\d)-(\d\d)-(\d\d)|(\d\d\d\d)-(\d\d)/', $date, $matches) == 1) {
-            if (isset($matches[3])) {
-                return $matches[1] . $matches[2] . $matches[3];
-            } else {
-                return $matches[1] . $matches[2];
-            }
+        if (preg_match('/(\d\d\d\d)-(\d\d)-(\d\d)/', $date, $matches) == 1) {
+            return $matches[1] . $matches[2] . $matches[3];
+        } elseif (preg_match('/(\d\d\d\d)-(\d\d)/', $date, $matches) == 1) {
+            return $matches[1] . $matches[2];
         } else {
             return false;
         }

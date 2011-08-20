@@ -1,10 +1,10 @@
 <html>
 	<head>
-		<link href="{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
-		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.js"></script>
-		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.inspector.js"></script>
-		<script type="text/javascript" src="{$baseURL}/EXTERNALS/JPLAYER/{$jplayer}/playlist.js"></script>
+		<link href="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.js"></script>
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.inspector.js"></script>
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/playlist.js"></script>
 		<script type="text/javascript">{literal}//<![CDATA[
 		$(document).ready(function() {{/literal}
 			{include file="player.js.tpl" player_id="1" playlist=$daily_player_json}
@@ -38,7 +38,7 @@
 					{/strip}
 					{/foreach}
 					<tr>
-						<td colspan="3"><a href="{$baseURL}/chart">More...</a></td>
+						<td colspan="3"><a href="{$baseURL}chart">More...</a></td>
 					</tr>
 				</tbody>
 			</table>
