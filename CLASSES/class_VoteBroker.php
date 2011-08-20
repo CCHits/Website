@@ -39,29 +39,32 @@ class VoteBroker
         $db = Database::getConnection();
         try {
             $voteadj = 0;
-            $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID";
+            $count = 0;
+            $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID ORDER BY intShowID";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
             $item = $query->fetchObject('VoteObject');
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
+                $return[$item->get_intShowID()] = $item;
                 while ($item = $query->fetchObject('VoteObject')) {
-                    $return[] = $item;
+                    $return[$item->get_intShowID()] = $item;
                 }
                 foreach ($return as $object) {
                     $count = $count + $object->get_intCount();
                 }
                 $shows = ShowBroker::getShowsByIDs($return);
                 foreach ($shows as $show) {
-                    switch($show->get_enumShowType) {
-                    case 'weekly':
-                    case 'monthly':
-                        $voteadj++;
+                    if ($show != false) {
+                        switch($show->get_enumShowType()) {
+                        case 'weekly':
+                        case 'monthly':
+                            $voteadj++;
+                        }
                     }
                 }
-                return array('total'=>$count, 'adjusted'=>$count * ((100 - ($voteadj * 5)) / 100), 'shows'=>$return);
+                return array('total'=>$count, 'adjust'=>(100 - ($voteadj * 5)) / 100, 'breakdown'=>$return, 'shows'=>$shows);
             }
         } catch(Exception $e) {
             echo "SQL Died: " . $e->getMessage();;

@@ -12,6 +12,9 @@
                                                           play: function() {
                                                               $(this).jPlayer("pauseOthers");
                                                           },
+                                                          timeupdate: function(event) {
+                                                          	  currentTime=event.jPlayer.status.currentTime*1000; 
+                                                          },
                                                           {/literal}swfPath: "{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/",{literal}
                                                           supplied: "mp3,oga"
                                                       });{/literal}
