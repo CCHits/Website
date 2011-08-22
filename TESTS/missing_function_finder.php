@@ -176,7 +176,7 @@ function parseFile($filename = '')
                 } elseif ($match[1] == 'parent') {
                     $match[1] = $extends;
                 }
-                if ($match[1] != 'PDO' and $match[1] != 'Smarty' and $match[1] != 'Exception') {
+                if ($match[1] != 'PDO' and $match[1] != 'Smarty' and $match[1] != 'Exception' and $match[1] != 'QRcode') {
                     $return['class'][$filename][$match[1]][$match[2]] = $line;
                 }
             }
@@ -191,7 +191,7 @@ function parseFile($filename = '')
                     $classmatch[2] = $extends;
                 }
                 $classes[$classmatch[1]] = $classmatch[2];
-                if ($classmatch[2] != 'PDO' and $classmatch[2] != 'Smarty' and $classmatch[2] != 'Exception') {
+                if ($classmatch[2] != 'PDO' and $classmatch[2] != 'Smarty' and $classmatch[2] != 'Exception' and $classmatch[2] != 'QRcode') {
                     $return['class'][$filename][$classmatch[2]]['__construct'] = $line;
                 }
             }

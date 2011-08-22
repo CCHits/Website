@@ -1,0 +1,5 @@
+jQuery: http://jquery.com
+jPlayer: http://www.jplayer.org
+jQuery.Sparkline: http://omnipotent.net/jquery.sparkline/
+Smarty: http://www.smarty.net
+phpqrcode: http://sourceforge.net/projects/phpqrcode/

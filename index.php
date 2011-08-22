@@ -30,16 +30,17 @@ try {
         case 'media':
             switch($arrUri['path_items'][1]) {
             case 'track':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseTrack', '/tracks') . "/";
+            case 'tracks':
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseTrack', '/tracks') . "/";
                 break;
             case 'daily':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseDaily', '/daily') . "/";
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseDaily', '/daily') . "/";
                 break;
             case 'weekly':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseWeekly', '/weekly') . "/";
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseWeekly', '/weekly') . "/";
                 break;
             case 'monthly':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www') . ConfigBroker::getConfig('fileBaseMonthly', '/monthly') . "/";
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseMonthly', '/monthly') . "/";
                 break;
             default:
                 UI::sendHttpResponse(404);

@@ -40,7 +40,7 @@ class ShowObject extends GenericObject
     protected $strShowUrl = "";
     protected $strShowUrlSpoken = "";
     protected $intShowUrl = 0;
-    protected $enumShowType = "";
+    protected $enumShowType = null;
     protected $intUserID = 0;
     protected $timeLength = "";
     protected $shaHash = "";
@@ -173,6 +173,7 @@ class ShowObject extends GenericObject
         }
         $return['strShowNameSpoken'] = $this->strShowNameSpoken;
         $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
+        $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseShow', '/shows') . '/' . $this->intShowID);
         return $return;
     }
 

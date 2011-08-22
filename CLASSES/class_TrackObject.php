@@ -104,14 +104,24 @@ class TrackObject extends GenericObject
         $return['strArtistUrl'] = $this->objArtist->get_strArtistUrl();
         $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
-        $return['arrChartData'] = $this->arrChartData;
+        $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseTrack', '/tracks') . '/' . $this->intTrackID);
         if (isset($this->arrChartData[1])) {
-            if ($this->arrChartData[0] > $this->arrChartData[1]) {
+            if ($this->arrChartData[0]['intPositionID'] > $this->arrChartData[1]['intPositionID']) {
                 $return['strPositionYesterday'] = 'down';
-            } elseif ($this->arrChartData[0] < $this->arrChartData[1]) {
+            } elseif ($this->arrChartData[0]['intPositionID'] < $this->arrChartData[1]['intPositionID']) {
                 $return['strPositionYesterday'] = 'up';
             } else {
                 $return['strPositionYesterday'] = 'equal';
+            }
+            $return['30dayhighest'] = TrackBroker::getTotalTracks();
+            $return['30daylowest'] = 0;
+            foreach ($this->arrChartData as $arrChartObject) {
+                if ($arrChartObject['intPositionID'] < $return['30dayhighest']) {
+                    $return['30dayhighest'] = $arrChartObject['intPositionID'];
+                }
+                if ($arrChartObject['intPositionID'] > $return['30daylowest']) {
+                    $return['30daylowest'] = $arrChartObject['intPositionID'];
+                }
             }
             if (isset($this->arrChartData[13])) {
                 $averageThisWeek = (
@@ -139,6 +149,9 @@ class TrackObject extends GenericObject
                 }
             }
         }
+        $arrChartData = $this->arrChartData;
+        krsort($arrChartData);
+        $return['arrChartData'] = $arrChartData;
         if ($this->booleanFull == true) {
             if ($this->intChartPlace <= 40) {
                 $return['generalPosition'] = 'top40';
@@ -165,6 +178,7 @@ class TrackObject extends GenericObject
                     $return['arrShows'][0] = array(
                     	'strShowName' => "Non-show votes",
                         'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . ConfigBroker::getConfig('fileBaseTrack', '/track') . '/' . $this->intTrackID,
+                        'enumShowType' => 'none'
                     );
                 } else {
                     $intShowID = $show->get_intShowID();

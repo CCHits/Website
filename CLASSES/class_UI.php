@@ -831,4 +831,39 @@ class UI
         }
         $objSmarty->display($template . '.tpl');
     }
+
+    /**
+     * Generate and return the URL for the QRCode for this page
+     *
+     * @param string $file The path from the Base Path to the page we are referring to
+     *
+     * @return string The URL of the QR Code to return
+     */
+    function InsertQRCode($file = '')
+    {
+        $fileURL = ConfigBroker::getConfig("Base URL", 'http://cchits.net') . $file;
+        $imageURL = ConfigBroker::getConfig("Base Media URL", 'http://cchits.net/media') . $file . '.png';
+        $fileName = ConfigBroker::getConfig("fileBase", '/var/www/media') . $file . '.png';
+        if (! file_exists($fileName)) {
+            $handler = self::getHandler();
+            if ($handler->arrLibs == null) {
+                $handler->arrLibs = new ExternalLibraryLoader();
+            }
+            $PHPQRCODEVersion = $handler->arrLibs->getVersion("PHPQRCODE");
+            if ($PHPQRCODEVersion == false) {
+                var_dump($handler);
+                die("Failed to load PHP QR Code");
+            }
+            $qrcodelib = dirname(__FILE__) . '/../EXTERNALS/PHPQRCODE/' . $PHPQRCODEVersion . '/phpqrcode.php';
+            if (file_exists($qrcodelib)) {
+                include_once $qrcodelib;
+                QRcode::png($fileURL, $fileName, 'M', 2, 1);
+                return $imageURL;
+            } else {
+                return '';
+            }
+        } else {
+            return $imageURL;
+        }
+    }
 }

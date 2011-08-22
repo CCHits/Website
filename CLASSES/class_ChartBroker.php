@@ -42,7 +42,15 @@ class ChartBroker
             $sql = "SELECT intPositionID, datChart FROM chart WHERE intTrackID = ? ORDER BY datChart DESC LIMIT 0, 30";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
-            return $query->fetchAll(PDO::FETCH_ASSOC);
+            $return = $query->fetchAll(PDO::FETCH_ASSOC);
+            if ($return != false and count($return) < 30) {
+                $date = $return[count($return) - 1]['datChart'];
+                for ($count = count($return); $count < 30; $count++) {
+                    $date = date('-1 day', strtotime($date));
+                    $return[$count] = array('intPositionID' => "null", 'datChart'=>$date);
+                }
+            }
+            return $return;
         } catch(Exception $e) {
             error_log("SQL error: " . $e);
             return false;

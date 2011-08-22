@@ -45,7 +45,8 @@ class HTML
             'Slogan'=>ConfigBroker::getConfig('Slogan', 'Where you make the charts'),
             'baseURL'=>$arrUri['basePath'],
             'jquery'=>$extLib->getVersion('JQUERY'),
-            'jplayer'=>$extLib->getVersion('JPLAYER')
+            'jplayer'=>$extLib->getVersion('JPLAYER'),
+            'jquerysparkline'=>$extLib->getVersion('JQUERY.SPARKLINE')
         );
 
         if (is_array($arrUri)
