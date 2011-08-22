@@ -28,6 +28,5 @@
 				{/foreach}
 			</tbody>
 		</table>
-	 
 	</body>
 </html>

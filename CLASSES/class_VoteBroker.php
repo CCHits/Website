@@ -36,7 +36,14 @@ class VoteBroker
      */
     function getVotesForTrackByShow($intTrackID = 0)
     {
+        $showTracks = ShowTrackBroker::getShowTracksByTrackID($intTrackID);
+        // FIXME: The following 4 lines are only required until we create ShowTrack lines for each Daily show.
+        $dailyTrack = ShowBroker::getInternalShowByDate('daily', TrackBroker::getTrackByID($intTrackID)->get_datDailyShow());
+        if ($dailyTrack != false) {
+            $showTracks[$dailyTrack->get_intShowID()] = $dailyTrack;
+        }
         $db = Database::getConnection();
+        $return = array(0=>new VoteObject());
         try {
             $voteadj = 0;
             $count = 0;
@@ -47,9 +54,17 @@ class VoteBroker
             if ($item == false) {
                 return false;
             } else {
-                $return[$item->get_intShowID()] = $item;
-                while ($item = $query->fetchObject('VoteObject')) {
+                if (isset($showTracks[$item->get_intShowID()])) {
                     $return[$item->get_intShowID()] = $item;
+                } else {
+                    $return[0]->inc_intCount($item->get_intCount());
+                }
+                while ($item = $query->fetchObject('VoteObject')) {
+                    if (isset($showTracks[$item->get_intShowID()])) {
+                        $return[$item->get_intShowID()] = $item;
+                    } else {
+                        $return[0]->inc_intCount($item->get_intCount());
+                    }
                 }
                 foreach ($return as $object) {
                     $count = $count + $object->get_intCount();
@@ -64,7 +79,11 @@ class VoteBroker
                         }
                     }
                 }
-                return array('total'=>$count, 'adjust'=>(100 - ($voteadj * 5)) / 100, 'breakdown'=>$return, 'shows'=>$shows);
+                $adjust = (100 - ($voteadj * 5)) / 100;
+                if ($adjust < 0) {
+                    $adjust = 0;
+                }
+                return array('total'=>$count, 'adjust'=>$adjust, 'breakdown'=>$return, 'shows'=>$shows);
             }
         } catch(Exception $e) {
             echo "SQL Died: " . $e->getMessage();;

@@ -50,6 +50,7 @@ class TrackObject extends GenericObject
     protected $intChartPlace = 0;
     protected $intDuplicateID = 0;
     protected $arrChanges = array();
+    protected $arrChartData = array();
     // External variables - only called from elsewhere
     protected $intTrend = 0;
 
@@ -83,6 +84,10 @@ class TrackObject extends GenericObject
         $this->verify_objArtist();
         $this->verify_isNSFW();
         $this->verify_isApproved();
+        $arrChartData = ChartBroker::getLastThirtyDaysOfChartDataForOneTrack($this->intTrackID);
+        if ($arrChartData != false) {
+            $this->arrChartData = $arrChartData;
+        }
     }
 
     /**
@@ -99,7 +104,49 @@ class TrackObject extends GenericObject
         $return['strArtistUrl'] = $this->objArtist->get_strArtistUrl();
         $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
+        $return['arrChartData'] = $this->arrChartData;
+        if (isset($this->arrChartData[1])) {
+            if ($this->arrChartData[0] > $this->arrChartData[1]) {
+                $return['strPositionYesterday'] = 'down';
+            } elseif ($this->arrChartData[0] < $this->arrChartData[1]) {
+                $return['strPositionYesterday'] = 'up';
+            } else {
+                $return['strPositionYesterday'] = 'equal';
+            }
+            if (isset($this->arrChartData[13])) {
+                $averageThisWeek = (
+                    $this->arrChartData[0]['intPositionID'] +
+                    $this->arrChartData[1]['intPositionID'] +
+                    $this->arrChartData[2]['intPositionID'] +
+                    $this->arrChartData[3]['intPositionID'] +
+                    $this->arrChartData[4]['intPositionID'] +
+                    $this->arrChartData[5]['intPositionID'] +
+                    $this->arrChartData[6]['intPositionID']) / 7;
+                $averageLastWeek = (
+                    $this->arrChartData[7]['intPositionID'] +
+                    $this->arrChartData[8]['intPositionID'] +
+                    $this->arrChartData[9]['intPositionID'] +
+                    $this->arrChartData[10]['intPositionID'] +
+                    $this->arrChartData[11]['intPositionID'] +
+                    $this->arrChartData[12]['intPositionID'] +
+                    $this->arrChartData[13]['intPositionID']) / 7;
+                if ($averageThisWeek > $averageLastWeek) {
+                    $return['strPositionLastWeek'] = 'down';
+                } elseif ($averageThisWeek < $averageLastWeek) {
+                    $return['strPositionLastWeek'] = 'up';
+                } else {
+                    $return['strPositionLastWeek'] = 'equal';
+                }
+            }
+        }
         if ($this->booleanFull == true) {
+            if ($this->intChartPlace <= 40) {
+                $return['generalPosition'] = 'top40';
+            } elseif ($this->intChartPlace < (TrackBroker::getTotalTracks() /2)) {
+                $return['generalPosition'] = 'top';
+            } else {
+                $return['generalPosition'] = 'bottom';
+            }
             $showtracks = ShowTrackBroker::getShowTracksByTrackID($this->intTrackID);
             if ($showtracks != false) {
                 foreach ($showtracks as $showtrack) {

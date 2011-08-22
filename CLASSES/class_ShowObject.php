@@ -105,7 +105,7 @@ class ShowObject extends GenericObject
                     break;
                 case 'weekly':
                     $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
-                    $this->strShowName .= ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                     $this->strShowName .= ' for ';
                     $this->strShowName .= UI::getLongDate($this->intShowUrl);
                     $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');

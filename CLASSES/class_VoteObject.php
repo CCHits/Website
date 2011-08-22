@@ -40,14 +40,14 @@ class VoteObject extends GenericObject
     protected $intTrackID = 0;
     protected $intShowID = 0;
     protected $intUserID = 0;
-    
+
     protected $intCount = 0; // Only used in Vote Counters
 
     /**
      * Return the track ID
      *
      * @return integer The track ID
-     */         
+     */
     function get_intTrackID()
     {
         return $this->intTrackID;
@@ -72,7 +72,7 @@ class VoteObject extends GenericObject
     {
         return $this->intUserID;
     }
-    
+
     /**
      * Return the user object linked to this vote
      *
@@ -92,8 +92,8 @@ class VoteObject extends GenericObject
     {
         return $this->intCount;
     }
-    
-    
+
+
     /**
      * Set the TrackID
      *
@@ -123,7 +123,7 @@ class VoteObject extends GenericObject
             $arrChanges[] = 'intShowID';
         }
     }
-    
+
     /**
      * Set the UserID from the User Object
      *
@@ -136,6 +136,21 @@ class VoteObject extends GenericObject
         if ($objUser != null and $objUser != false and is_object($objUser)) {
             $this->intUserID = $objUser->get_intUserID();
             $arrChanges[] = 'intUserID';
+        }
+    }
+
+    /**
+     * While, it shouldn't be needed, if a track has been voted for on a show which doesn't exist,
+     * increment the "show" 0 (aka not a show) counter.
+     *
+     * @param integer $intCount The value to be added to the counter
+     *
+     * @return void
+     */
+    function inc_intCount($intCount = 0)
+    {
+        if ($intCount > 0) {
+            $this->intCount = $this->intCount + $intCount;
         }
     }
 }

@@ -29,6 +29,27 @@
 class ChartBroker
 {
     /**
+     * Get the last thirty days of chart data for the track number
+     *
+     * @param integer $intTrackID The track number
+     *
+     * @return Array|false Data from the cart or false because there is no data
+     */
+    function getLastThirtyDaysOfChartDataForOneTrack($intTrackID = 0)
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT intPositionID, datChart FROM chart WHERE intTrackID = ? ORDER BY datChart DESC LIMIT 0, 30";
+            $query = $db->prepare($sql);
+            $query->execute(array($intTrackID));
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch(Exception $e) {
+            error_log("SQL error: " . $e);
+            return false;
+        }
+    }
+
+    /**
      * A function to retrieve all the tracks associated to a day's chart.
      *
      * @param date    $strChartDate The date of the chart in Y-m-d format

@@ -28,6 +28,21 @@
 
 class ShowTrackBroker
 {
+    protected static $handler = null;
+
+    /**
+     * An internal function to make this a singleton
+     *
+     * @return object This class by itself.
+     */
+    private static function getHandler()
+    {
+        if (self::$handler == null) {
+            self::$handler = new self();
+        }
+        return self::$handler;
+    }
+
     /**
      * getShowTracksByShowID returns a collection of show tracks.
      *
@@ -89,6 +104,10 @@ class ShowTrackBroker
      */
     public function getShowTracksByTrackID($intTrackID = 0)
     {
+        $stb = self::getHandler();
+        if (isset($stb->arrShowTracksByTrack[$intTrackID])) {
+            return $stb->arrShowTracksByTrack[$intTrackID];
+        }
         $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM showtracks WHERE intTrackID = ? ORDER BY intShowID ASC";
@@ -98,11 +117,12 @@ class ShowTrackBroker
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
+                $return[$item->get_intShowID()] = $item;
                 while ($item = $query->fetchObject('ShowTrackObject')) {
-                    $return[] = $item;
+                    $return[$item->get_intShowID()] = $item;
                 }
-                return $return;
+                $stb->arrShowTracksByTrack[$intTrackID] = $return;
+                return $stb->arrShowTracksByTrack[$intTrackID];
             }
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());

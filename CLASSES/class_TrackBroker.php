@@ -30,6 +30,7 @@ class TrackBroker
 {
     protected static $handler = null;
     protected $arrTracks = array();
+    protected $intTotalTracks = 0;
 
     /**
      * An internal function to make this a singleton
@@ -42,6 +43,30 @@ class TrackBroker
             self::$handler = new self();
         }
         return self::$handler;
+    }
+
+    /**
+     * Return the total number of tracks in the system
+     *
+     * @return integer Total number of tracks
+     */
+    function getTotalTracks()
+    {
+        $th = self::getHandler();
+        if (isset($th->intTotalTracks) and $th->intTotalTracks != 0) {
+            return $th->intTotalTracks;
+        }
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT COUNT(intTrackID) as totalTracks FROM tracks";
+            $query = $db->prepare($sql);
+            $query->execute();
+            $th->intTotalTracks = $query->fetchColumn();
+            return $th->intTotalTracks;
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**

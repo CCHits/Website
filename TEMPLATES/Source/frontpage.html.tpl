@@ -4,7 +4,7 @@
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.js"></script>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.inspector.js"></script>
-		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/playlist.js"></script>
+		<script type="text/javascript" src="{$baseURL}JAVASCRIPT/playlist.js"></script>
 		<script type="text/javascript">{literal}//<![CDATA[
 		$(document).ready(function() {{/literal}
 			{include file="player.js.tpl" player_id="1" playlist=$daily_player_json}

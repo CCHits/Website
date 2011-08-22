@@ -176,10 +176,16 @@ class HTML
     function track($track = 0)
     {
         if ($track != null and (0 + $track > 0)) {
-            $this->result['track'] = TrackBroker::getTrackByID(UI::getLongNumber($track));
-            if ($this->render()) {
-                // TODO: Write the track template
-                UI::SmartyTemplate("track.{$this->format}", $this->result);
+            $track = TrackBroker::getTrackByID(UI::getLongNumber($track));
+            if ($track != false) {
+                $track->set_full(true);
+                $this->result['track'] = $track->getSelf();
+                if ($this->render()) {
+                    // TODO: Write the track template
+                    UI::SmartyTemplate("track.{$this->format}", $this->result);
+                }
+            } else {
+                UI::sendHttpResponse(404);
             }
         } else {
             UI::sendHttpResponse(404);
@@ -196,7 +202,10 @@ class HTML
     function show($show = 0)
     {
         if ($show != null and (0 + $show > 0)) {
-            $this->result['show'] = ShowBroker::getShowByID(UI::getLongNumber($show));
+            $show = ShowBroker::getShowByID(UI::getLongNumber($show));
+            if ($show != false) {
+                $this->result['show'] = $show->getSelf();
+            }
             if ($this->render()) {
                 // TODO: Write the show template
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
