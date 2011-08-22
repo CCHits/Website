@@ -16,7 +16,7 @@
  */
 /**
  * This class scrapes appropriate data from www.riffworld.com
- * TODO Incomplete import from Riffworld.com
+ * TODO: Incomplete Import from Macjams.com
  *
  * @category Default
  * @package  MusicSources
@@ -26,7 +26,7 @@
  * @link     http://code.cchits.net Developers Web Site
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
-class RemoteSourcesRiffworld extends RemoteSources
+class RemoteSourcesMacjams extends RemoteSources
 {
     /**
     * Get all the source data we can pull from the source.
@@ -37,7 +37,7 @@ class RemoteSourcesRiffworld extends RemoteSources
     */
     function __construct($src)
     {
-        if (preg_match('/http[s]*:\/\/.*riffworld.com\/[Mm]embers\/[^\/]+\/[^\/]+/', $src) == 0) {
+        if (preg_match('/http[s]*:\/\/.*macjams.com\/song\/(\d+)/', $src) == 0) {
             throw new RemoteSource_INVALIDSRC();
         }
         $file_contents = file_get_contents($src);
@@ -45,9 +45,9 @@ class RemoteSourcesRiffworld extends RemoteSources
             throw new RemoteSource_INVALIDSRC();
         }
         //var_dump($file_contents);
-        $regex_strArtistName = '/<strong>Artist:<\/strong> <span>([^<]*)<\/span>/';
-        $regex_strTrackName = '/<strong>Title:<\/strong> <span>([^<]*)<\/span>/';
-        $regex_strArtistUrl = '/(http[s]*:\/\/.*riffworld.com\/[Mm]embers\/[^\/]+)/';
+        $regex_strArtistName = '/<a href="\/artist\/[\"]+">([^<]*)<\/a>/';
+        $regex_strTrackName = '/<h1 style="[^"]+">([^<]*)<\/h1>/';
+        $regex_strArtistUrl = '/<a href="(\/artist\/[\"]+)">[^<]*<\/a>/';
         $regex_enumTrackLicense = '/licenses\/(.*)\/[0-9]/';
         $this->strTrackUrl = $src;
         preg_match($regex_strArtistName, $file_contents, $arrArtistName);
