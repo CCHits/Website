@@ -2,7 +2,7 @@
 	<head>
 		<link href="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
-		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.js"></script>
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.min.js"></script>
 		<script type="text/javascript" src="{$baseURL}JAVASCRIPT/playlist.js"></script>
 		<script type="text/javascript">{literal}//<![CDATA[
 		$(document).ready(function() {{/literal}

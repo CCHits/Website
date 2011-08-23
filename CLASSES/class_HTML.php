@@ -182,7 +182,6 @@ class HTML
                 $track->set_full(true);
                 $this->result['track'] = $track->getSelf();
                 if ($this->render()) {
-                    // TODO: Write the track template
                     UI::SmartyTemplate("track.{$this->format}", $this->result);
                 }
             } else {
@@ -208,7 +207,6 @@ class HTML
                 $this->result['show'] = $show->getSelf();
             }
             if ($this->render()) {
-                // TODO: Write the show template
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
             }
         } else {
@@ -272,7 +270,6 @@ class HTML
     {
         $this->result['chart'] = ChartBroker::getChartByDate($date);
         if ($this->render()) {
-            // TODO: Write the chart template
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
         }
     }
@@ -295,7 +292,6 @@ class HTML
         }
         $this->result['shows'] = ShowBroker::getInternalShowByType('daily');
         if ($this->render()) {
-            // TODO: Write the Show template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -318,7 +314,6 @@ class HTML
         }
         $this->result['shows'] = ShowBroker::getInternalShowByType('weekly');
         if ($this->render()) {
-            // TODO: Write the Show template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -341,7 +336,6 @@ class HTML
         }
         $this->result['shows'] = ShowBroker::getInternalShowByType('monthly');
         if ($this->render()) {
-            // TODO: Write the Show template
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }

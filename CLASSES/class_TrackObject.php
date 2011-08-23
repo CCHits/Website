@@ -104,6 +104,7 @@ class TrackObject extends GenericObject
         $return['strArtistUrl'] = $this->objArtist->get_strArtistUrl();
         $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
+        $return['dtsAdded'] = date("Y-m-d", strtotime($this->dtsAdded));
         $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseTrack', '/tracks') . '/' . $this->intTrackID);
         if (isset($this->arrChartData[1])) {
             if ($this->arrChartData[0]['intPositionID'] > $this->arrChartData[1]['intPositionID']) {
@@ -140,6 +141,8 @@ class TrackObject extends GenericObject
                     $this->arrChartData[11]['intPositionID'] +
                     $this->arrChartData[12]['intPositionID'] +
                     $this->arrChartData[13]['intPositionID']) / 7;
+                $return['averageLastWeek'] = $averageLastWeek;
+                $return['averageThisWeek'] = $averageThisWeek;
                 if ($averageThisWeek > $averageLastWeek) {
                     $return['strPositionLastWeek'] = 'down';
                 } elseif ($averageThisWeek < $averageLastWeek) {
