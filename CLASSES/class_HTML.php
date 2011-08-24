@@ -27,9 +27,11 @@
  */
 class HTML
 {
-    protected $result = null;
+    protected $result = array();
     protected $response_code = 200;
     protected $format = 'html';
+    protected $arrUri = array();
+    protected $extLib = null;
 
     /**
      * The function which handles the routing
@@ -38,25 +40,17 @@ class HTML
      */
     function __construct()
     {
-        $extLib = new ExternalLibraryLoader();
-        $arrUri = UI::getUri();
-        $this->result = array(
-            'ServiceName'=>ConfigBroker::getConfig('ServiceName', 'CCHits'),
-            'Slogan'=>ConfigBroker::getConfig('Slogan', 'Where you make the charts'),
-            'baseURL'=>$arrUri['basePath'],
-            'jquery'=>$extLib->getVersion('JQUERY'),
-            'jplayer'=>$extLib->getVersion('JPLAYER'),
-            'jquerysparkline'=>$extLib->getVersion('JQUERY.SPARKLINE')
-        );
+        $this->extLib = new ExternalLibraryLoader();
+        $this->arrUri = UI::getUri();
 
-        if (is_array($arrUri)
-            and isset($arrUri['path_items'])
-            and is_array($arrUri['path_items'])
-            and count($arrUri['path_items']) == 0
+        if (is_array($this->arrUri)
+            and isset($this->arrUri['path_items'])
+            and is_array($this->arrUri['path_items'])
+            and count($this->arrUri['path_items']) == 0
         ) {
             $this->front_page();
         } else {
-            switch($arrUri['format']) {
+            switch($this->arrUri['format']) {
             case 'xml':
                 $this->format = 'xml';
                 break;
@@ -64,7 +58,7 @@ class HTML
                 $this->format = 'json';
                 break;
             case 'rss':
-                switch($arrUri['path_items'][0]) {
+                switch($this->arrUri['path_items'][0]) {
                 case 'daily':
                     $this->format = 'rss';
                     break;
@@ -76,18 +70,18 @@ class HTML
                     break;
                 }
             }
-            if (count($arrUri['path_items']) == 1 and $arrUri['path_items'][0] == '') {
+            if (count($this->arrUri['path_items']) == 1 and $this->arrUri['path_items'][0] == '') {
                 $this->front_page();
                 exit(0);
             }
             $object = array(1 => null, 2 => null);
-            if (isset($arrUri['path_items'][1])) {
-                $object[1] = $arrUri['path_items'][1];
+            if (isset($this->arrUri['path_items'][1])) {
+                $object[1] = $this->arrUri['path_items'][1];
             }
-            if (isset($arrUri['path_items'][2])) {
-                $object[2] = $arrUri['path_items'][2];
+            if (isset($this->arrUri['path_items'][2])) {
+                $object[2] = $this->arrUri['path_items'][2];
             }
-            switch($arrUri['path_items'][0]) {
+            switch($this->arrUri['path_items'][0]) {
             case 'track':
             case 't':
                 $this->track($object[1]);
@@ -103,23 +97,23 @@ class HTML
                 $this->chart($object[1]);
                 break;
             case 'daily':
-                if (isset($arrUri['path_items'][1]) and $arrUri['path_items'][1] == 'rss') {
+                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
-                    $arrUri['path_items'][1] = $arrUri['path_items'][2];
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                 }
                 $this->daily($object[1]);
                 break;
             case 'weekly':
-                if (isset($arrUri['path_items'][1]) and $arrUri['path_items'][1] == 'rss') {
+                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
-                    $arrUri['path_items'][1] = $arrUri['path_items'][2];
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                 }
                 $this->weekly($object[1]);
                 break;
             case 'monthly':
-                if (isset($arrUri['path_items'][1]) and $arrUri['path_items'][1] == 'rss') {
+                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
-                    $arrUri['path_items'][1] = $arrUri['path_items'][2];
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                 }
                 $this->monthly($object[1]);
                 break;
@@ -226,8 +220,9 @@ class HTML
     {
         $vote = false;
         $this->result['show'] = false;
-        $arrUri = UI::getUri();
+        $this->arrUri = UI::getUri();
         $objTrack = TrackBroker::getTrackByID(UI::getLongNumber($track));
+        $objShow = false;
         if ($show != 0) {
             $objShow = ShowBroker::getShowByID(UI::getLongNumber($show));
         }
@@ -243,7 +238,7 @@ class HTML
         } else {
             UI::sendHttpResponse(404);
         }
-        if (isset($arrUri['parameters']['go']) or VoteBroker::hasMyUserIDVotedForThisTrack($track)) {
+        if (isset($this->arrUri['parameters']['go']) or VoteBroker::hasMyUserIDVotedForThisTrack($track)) {
             new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show));
             if ($this->render()) {
                 $objTrack->set_full(true);
@@ -251,7 +246,7 @@ class HTML
                 UI::SmartyTemplate("voted.html", $this->result);
             }
         } else {
-            $this->result['vote_url'] = $arrUri['full'] . '?go';
+            $this->result['vote_url'] = $this->arrUri['full'] . '?go';
             if ($this->render()) {
                 $this->result['track'] = $objTrack->getSelf();
                 UI::SmartyTemplate("vote.{$this->format}", $this->result);
@@ -270,6 +265,12 @@ class HTML
     {
         $this->result['chart'] = ChartBroker::getChartByDate($date);
         if ($this->render()) {
+            if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
+                $this->result['previous_page'] = true;
+            }
+            if ( ! array_key_exists(TrackBroker::getTotalTracks(), $this->result['chart'])) {
+                $this->result['next_page'] = true;
+            }
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
         }
     }
@@ -357,8 +358,8 @@ class HTML
             UI::Redirect('about/#source');
             break;
         case 'database':
-            $arrUri = UI::getUri();
-            if (isset($arrUri['parameters']['go'])) {
+            $this->arrUri = UI::getUri();
+            if (isset($this->arrUri['parameters']['go'])) {
                 $this->database_export();
             } else {
                 UI::Redirect('about/#database');
@@ -471,6 +472,18 @@ class HTML
                 UI::sendHttpResponse(500);
             }
         case 'html':
+            $this->result['ServiceName'] = ConfigBroker::getConfig('ServiceName', 'CCHits');
+            $this->result['Slogan'] = ConfigBroker::getConfig('Slogan', 'Where you make the charts');
+            $this->result['baseURL'] = $this->arrUri['basePath'];
+            $this->result['arrUri'] = $this->arrUri;
+            $this->result['jquery'] = $this->extLib->getVersion('JQUERY');
+            $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
+            $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
+            $this->result['previous_page'] = false;
+            if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
+                $this->result['previous_page'] = true;
+            }
+            $this->result['next_page'] = false;
         case 'rss':
             return true;
         default:

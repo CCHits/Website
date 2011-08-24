@@ -67,7 +67,7 @@ class UserBroker
         } elseif (isset($_SESSION['openid']) AND $_SESSION['openid'] != '') {
             $field = "strOpenID";
             $param = $_SESSION['openid'];
-        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        } elseif (isset($_SERVER['HTTP_AUTHORIZATION']) and $_SERVER['HTTP_AUTHORIZATION'] != '') {
             $auth_params = explode(":" , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
             $username = $auth_params[0];
             unset($auth_params[0]);

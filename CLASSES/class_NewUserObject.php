@@ -30,7 +30,7 @@ class NewUserObject extends UserObject
     /**
      * Establish the creation of the new item by setting the values and then calling the create function.
      *
-     * @param string $data OpenID authentication typically is an http://url or an https://url, 
+     * @param string $data OpenID authentication typically is an http://url or an https://url,
      *                     whereas basic authentication, should, by this point be username:hash(password)
      *                     Anything else should be a cookie, and thus not set here. In case some rogue
      *                     code appears down the line, the construct function hands off these auth
@@ -45,9 +45,20 @@ class NewUserObject extends UserObject
             $this->set_strOpenID($data);
         } elseif ($data != "") {
             $this->set_sha1Pass($data);
-        } else {        
-            $this->set_strCookieID(sha1(strtotime("now")));
+        } else {
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $cookie_string = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $cookie_string = $_SERVER['REMOTE_ADDR'];
+            }
+            $cookie_string .= $_SERVER['HTTP_USER_AGENT'];
+            $cookie_string .= $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+            $cookie_string .= $_SERVER['HTTP_ACCEPT_ENCODING'];
+            $cookie_string .= $_SERVER['HTTP_ACCEPT_CHARSET'];
+            $this->set_strCookieID(sha1($cookie_string));
+            $_SESSION['cookie'] = sha1($cookie_string);
         }
+        $this->datLastSeen = date("Y-m-d H:i:s");
         return $this->create();
     }
 }

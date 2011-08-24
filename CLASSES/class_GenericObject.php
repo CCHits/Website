@@ -66,6 +66,8 @@ class GenericObject
     {
         if (count($this->arrChanges) > 0) {
             $sql = '';
+            $strDBKeyCol = $this->strDBKeyCol;
+            $values[$strDBKeyCol] = $this->$strDBKeyCol;
             foreach ($this->arrChanges as $change) {
                 if ($sql != '') {
                     $sql .= ", ";

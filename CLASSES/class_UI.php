@@ -161,6 +161,12 @@ class UI
         list($uri, $data) = self::getPath();
         $arrUrl = parse_url($uri);
         $arrUrl['full'] = $uri;
+        $match = preg_match('/^([^\?]+)/', $arrUrl['full'], $matches);
+        if ($match > 0) {
+            $arrUrl['no_params'] = $matches[1];
+        } else {
+            $arrUrl['no_params'] = $arrUrl['full'];
+        }
         $arrUrl['parameters'] = $data;
         if (substr($arrUrl['path'], -1) == '/') {
             $arrUrl['path'] = substr($arrUrl['path'], 0, -1);

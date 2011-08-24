@@ -29,23 +29,44 @@
 class ChartBroker
 {
     /**
+     * Return the highest point in the chart this track has reached
+     *
+     * @param integer $intTrackID The track to find
+     *
+     * @return integer The peak
+     */
+    function getTrackPeak($intTrackID = 0)
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT min(intPositionID) as intPeak FROM chart WHERE intTrackID = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($intTrackID));
+            return $query->fetchColumn();
+        } catch(Exception $e) {
+            error_log("SQL error: " . $e);
+            return false;
+        }
+    }
+
+    /**
      * Get the last thirty days of chart data for the track number
      *
      * @param integer $intTrackID The track number
      *
      * @return Array|false Data from the cart or false because there is no data
      */
-    function getLastThirtyDaysOfChartDataForOneTrack($intTrackID = 0)
+    function getLastSixtyDaysOfChartDataForOneTrack($intTrackID = 0)
     {
         $db = Database::getConnection();
         try {
-            $sql = "SELECT intPositionID, datChart FROM chart WHERE intTrackID = ? ORDER BY datChart DESC LIMIT 0, 30";
+            $sql = "SELECT intPositionID, datChart FROM chart WHERE intTrackID = ? ORDER BY datChart DESC LIMIT 0, 60";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
             $return = $query->fetchAll(PDO::FETCH_ASSOC);
-            if ($return != false and count($return) < 30) {
+            if ($return != false and count($return) < 60) {
                 $date = $return[count($return) - 1]['datChart'];
-                for ($count = count($return); $count < 30; $count++) {
+                for ($count = count($return); $count < 60; $count++) {
                     $date = date('-1 day', strtotime($date));
                     $return[$count] = array('intPositionID' => "null", 'datChart'=>$date);
                 }
@@ -73,14 +94,14 @@ class ChartBroker
     ) {
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-            $page = $arrUri['parameters']['page'];
+            $intPage = $arrUri['parameters']['page'];
         } elseif ($intPage == null) {
-            $page = 0;
+            $intPage = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-            $size = $arrUri['parameters']['size'];
+            $intSize = $arrUri['parameters']['size'];
         } elseif ($intSize == null) {
-            $size = 25;
+            $intSize = 25;
         }
 
         $return = array();
@@ -101,7 +122,7 @@ class ChartBroker
                 foreach ($tracks as $track) {
                     $temp = TrackBroker::getTrackByID($track['intTrackID']);
                     if ($temp != false) {
-                        $return[$track['intPositionID']] = $temp;
+                        $return[$track['intPositionID']] = $temp->getSelf();
                     }
                 }
             }

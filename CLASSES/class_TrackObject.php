@@ -84,7 +84,7 @@ class TrackObject extends GenericObject
         $this->verify_objArtist();
         $this->verify_isNSFW();
         $this->verify_isApproved();
-        $arrChartData = ChartBroker::getLastThirtyDaysOfChartDataForOneTrack($this->intTrackID);
+        $arrChartData = ChartBroker::getLastSixtyDaysOfChartDataForOneTrack($this->intTrackID);
         if ($arrChartData != false) {
             $this->arrChartData = $arrChartData;
         }
@@ -114,15 +114,18 @@ class TrackObject extends GenericObject
             } else {
                 $return['strPositionYesterday'] = 'equal';
             }
-            $return['30dayhighest'] = TrackBroker::getTotalTracks();
-            $return['30daylowest'] = 0;
+            $return['60dayhighest'] = TrackBroker::getTotalTracks();
+            $return['60daylowest'] = 0;
             foreach ($this->arrChartData as $arrChartObject) {
-                if ($arrChartObject['intPositionID'] < $return['30dayhighest']) {
-                    $return['30dayhighest'] = $arrChartObject['intPositionID'];
+                if ($arrChartObject['intPositionID'] < $return['60dayhighest']) {
+                    $return['60dayhighest'] = $arrChartObject['intPositionID'];
                 }
-                if ($arrChartObject['intPositionID'] > $return['30daylowest']) {
-                    $return['30daylowest'] = $arrChartObject['intPositionID'];
+                if ($arrChartObject['intPositionID'] > $return['60daylowest']) {
+                    $return['60daylowest'] = $arrChartObject['intPositionID'];
                 }
+            }
+            if ($return['60daylowest'] == 'null') {
+                $return['60daylowest'] = TrackBroker::getTotalTracks();
             }
             if (isset($this->arrChartData[13])) {
                 $averageThisWeek = (
@@ -154,6 +157,7 @@ class TrackObject extends GenericObject
         }
         $arrChartData = $this->arrChartData;
         krsort($arrChartData);
+        $return['intChartPeak'] = ChartBroker::getTrackPeak($this->intTrackID);
         $return['arrChartData'] = $arrChartData;
         if ($this->booleanFull == true) {
             if ($this->intChartPlace <= 40) {
