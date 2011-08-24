@@ -841,8 +841,10 @@ class UI
      */
     function InsertQRCode($file = '')
     {
-        $fileURL = ConfigBroker::getConfig("Base URL", 'http://cchits.net') . $file;
-        $imageURL = ConfigBroker::getConfig("Base Media URL", 'http://cchits.net/media') . $file . '.png';
+        $arrUri = UI::getUri();
+        $basePath = $arrUri['basePath'];
+        $fileURL = ConfigBroker::getConfig("baseURL", "http://cchits.net") . $file;
+        $imageURL = $arrUri['basePath'] . 'media' . $file . '.png';
         $fileName = ConfigBroker::getConfig("fileBase", '/var/www/media') . $file . '.png';
         if (! file_exists($fileName)) {
             $handler = self::getHandler();
