@@ -143,11 +143,7 @@ class HTML
      */
     protected function front_page()
     {
-        $chart = ChartBroker::getChartByDate('', 0, 15);
-        $counter = 0;
-        foreach ($chart as $objTrack) {
-            $this->result['chart'][++$counter] = $objTrack->getSelf();
-        }
+        $this->result['chart'] = ChartBroker::getChartByDate('', 0, 15);
         $this->result['daily'] = end(ShowBroker::getInternalShowByType('daily', 1))->getSelf();
         $this->result['weekly'] = end(ShowBroker::getInternalShowByType('weekly', 1))->getSelf();
         $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1))->getSelf();
@@ -376,34 +372,51 @@ class HTML
             break;
         case 'faq':
         default:
+            $this->result['ServiceName'] = ConfigBroker::getConfig('ServiceName', 'CCHits');
+            $this->result['Slogan'] = ConfigBroker::getConfig('Slogan', 'Where you make the charts');
+            $this->result['baseURL'] = $this->arrUri['basePath'];
+            $this->result['arrUri'] = $this->arrUri;
+            $this->result['jquery'] = $this->extLib->getVersion('JQUERY');
+            $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
+            $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
+            $this->result['previous_page'] = false;
             UI::SmartyTemplate("about.{$this->format}", $this->result);
             break;
         }
     }
 
     /**
-     * Return an export of the whole database
-     * FIXME: Uses old function calls. Needs rewriting with PDO in mind.
+     * Return an export of the whole database. Yehr, I know it's using MySQL libraries, rather than PDO, but frankly, I couldn't figure out how to do this in PDO.
      *
      * @return void
      */
     protected function database_export()
     {
-        /* Removed for your own protection.
+        set_time_limit(0);
         header('Content-type: text/plain');
         header('Content-Disposition: attachment; filename="cchits.' . date("Y-m-d_Hi") . '.sql"');
 
-        echo " /* This DATABASE and it's DATA is made available under a Creative Commons Zero license: http://creativecommons.org/publicdomain/zero/1.0/ *" . "/\r\n\r\n";
-        $qryTables = sqlCommand("show tables");
+        echo "/* This DATABASE and it's DATA is made available under a Creative Commons Zero license: http://creativecommons.org/publicdomain/zero/1.0/ */". "\r\n\r\n";
+
+        include dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
+        if ($SPLIT_RO_RW == false) {
+            mysql_connect($RW_HOST, $RW_USER, $RW_PASS);
+            mysql_select_db($RW_BASE);
+        } else {
+            mysql_connect($RO_HOST, $RO_USER, $RO_PASS);
+            mysql_select_db($RO_BASE);
+        }
+
+        $qryTables = mysql_query("show tables");
         if (mysql_errno() == 0) {
             while ($arrTable = mysql_fetch_row($qryTables)) {
-                $qryCreate = sqlCommand("show create table `{$arrTable[0]}`");
+                $qryCreate = mysql_query("show create table `{$arrTable[0]}`");
                 if (mysql_errno() == 0) {
                     if($arrCreate = mysql_fetch_assoc($qryCreate)) {
-                        echo $arrCreate['Create Table'] . ";\r\n";
+                        echo $arrCreate['Create Table'] . ";\r\n\r\n";
                     }
                 }
-                $qryData = sqlCommand("SELECT * FROM `{$arrTable[0]}`");
+                $qryData = mysql_query("SELECT * FROM `{$arrTable[0]}`");
                 if (mysql_errno() == 0 and mysql_num_rows($qryData) > 0) {
                     echo "INSERT INTO {$arrTable[0]} VALUES \r\n";
                     $first_row = 1;
@@ -440,11 +453,10 @@ class HTML
                         }
                         echo ")";
                     }
-                    echo ";\r\n";
+                    echo ";\r\n\r\n";
                 }
             }
         }
-        */
     }
 
     /**

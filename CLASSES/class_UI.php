@@ -796,6 +796,9 @@ class UI
         if (substr($new_page, 0, 1) != '/') {
             $new_page = '/' . $new_page;
         }
+        if (substr($arrUri['basePath'], -1) == '/') {
+            $arrUri['basePath'] = substr($arrUri['basePath'], 0, -1);
+        }
         $redirect_url = $arrUri['basePath'] . $new_page;
         header("Location: $redirect_url");
         exit(0);
@@ -823,9 +826,10 @@ class UI
         }
         $libSmarty = dirname(__FILE__) . '/../EXTERNALS/SMARTY/' . $SmartyVersion . '/libs/Smarty.class.php';
         $baseSmarty = dirname(__FILE__) . '/../TEMPLATES/';
+        $smarty_debugging = ConfigBroker::getAppConfig('smarty_debug', 'false');
         include_once $libSmarty;
         $objSmarty = new Smarty();
-        $objSmarty->debugging = ConfigBroker::getAppConfig('smarty_debug', 'false');
+        $objSmarty->debugging = $smarty_debugging;
         $objSmarty->setTemplateDir($baseSmarty . 'Source');
         $objSmarty->setCompileDir($baseSmarty . 'Compiled');
         $objSmarty->setCacheDir($baseSmarty . 'Cache');

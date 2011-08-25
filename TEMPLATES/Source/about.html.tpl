@@ -55,7 +55,9 @@
 			<a name="database"></a>
 			<h3>Database</h3>
 			<p>I was inspired by the <a href="http://ur1.ca">ur1.ca</a> folk, that giving away access to your database is almost as powerful as the service you're already providing. To try and achieve what they do, from this page, you can request an export of the database, albeit with one factor sanitized... the users table. There are two columns, containing the OpenID Claimed Identity page, and the Username and Password hash used to perform API calls. Both of these will be hashed before sending, to help keep user records secure.</p>
-			<p><a href="export" rel="nofollow">Click here to get the data!</a></p>
+			<form action="{$baseURL}about/database" method="post">
+	  			<input type="submit" name="go" value="Give me the database!" />
+			</form>
 			<p><b>This DATABASE and it's DATA is made available under the <a href="http://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero license</a>.</b></p>
 		</div>
 		<div class="FAQItem">

@@ -4,8 +4,10 @@
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.min.js"></script>
 		<script type="text/javascript" src="{$baseURL}JAVASCRIPT/playlist.js"></script>
+		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY.SPARKLINE/{$jquerysparkline}/jquery.sparkline.min.js"></script>
 		<script type="text/javascript">{literal}//<![CDATA[
 		$(document).ready(function() {{/literal}
+			$('.inlinesparkline').sparkline();
 			{include file="player.js.tpl" player_id="1" playlist=$daily_player_json}
 			{include file="player.js.tpl" player_id="2" playlist=$weekly_player_json}
 			{include file="player.js.tpl" player_id="3" playlist=$monthly_player_json}
@@ -30,9 +32,7 @@
 					{foreach $chart as $position=>$track}
 					{strip} 
 					<tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
-				    	<td>{$position}</td>
-				    	<td>"<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</td>
-				    	<td>{$track.long_enumTrackLicense}{if $track.isNSFW == true}, Not Work/Family Safe{/if}, <a href="{$track.localSource}">Downloadable</a></td>
+						{include file="show_track_data.tpl"}
 				    </tr>
 					{/strip}
 					{/foreach}
