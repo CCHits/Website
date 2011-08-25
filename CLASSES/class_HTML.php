@@ -412,7 +412,7 @@ class HTML
             while ($arrTable = mysql_fetch_row($qryTables)) {
                 $qryCreate = mysql_query("show create table `{$arrTable[0]}`");
                 if (mysql_errno() == 0) {
-                    if($arrCreate = mysql_fetch_assoc($qryCreate)) {
+                    if ($arrCreate = mysql_fetch_assoc($qryCreate)) {
                         echo $arrCreate['Create Table'] . ";\r\n\r\n";
                     }
                 }
