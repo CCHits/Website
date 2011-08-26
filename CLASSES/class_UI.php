@@ -358,7 +358,7 @@ class UI
                       preg_replace('/\./', '%2e', $fileinfo['basename'], substr_count($fileinfo['basename'], '.') - 1) :
                       $fileinfo['basename'];
 
-        $file_extension = strtolower($path_info['extension']);
+        $file_extension = strtolower($fileinfo['extension']);
 
         //This will set the Content-Type to the appropriate setting for the file
         switch($file_extension) {
@@ -397,7 +397,17 @@ class UI
         }
 
         //figure out download piece from range (if set)
-        list($seek_start, $seek_end) = explode('-', $range, 2);
+        $seek = explode('-', $range, 2);
+        if (isset($seek[0])) {
+            $seek_start = $seek[0];
+        } else {
+            $seek_start = '';
+        }
+        if (isset($seek[1])) {
+            $seek_end = $seek[1];
+        } else {
+            $seek_end = '';
+        }
 
         //set start and end based on range (if set), else set defaults
         //also check for invalid ranges.
@@ -826,10 +836,12 @@ class UI
         }
         $libSmarty = dirname(__FILE__) . '/../EXTERNALS/SMARTY/' . $SmartyVersion . '/libs/Smarty.class.php';
         $baseSmarty = dirname(__FILE__) . '/../TEMPLATES/';
-        $smarty_debugging = ConfigBroker::getAppConfig('smarty_debug', 'false');
+        $smarty_debugging = GenericObject::asBoolean(ConfigBroker::getAppConfig('smarty_debug', 'false'));
         include_once $libSmarty;
         $objSmarty = new Smarty();
-        $objSmarty->debugging = $smarty_debugging;
+        if ($smarty_debugging) {
+            $objSmarty->debugging = true;
+        }
         $objSmarty->setTemplateDir($baseSmarty . 'Source');
         $objSmarty->setCompileDir($baseSmarty . 'Compiled');
         $objSmarty->setCacheDir($baseSmarty . 'Cache');

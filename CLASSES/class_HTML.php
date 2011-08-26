@@ -287,7 +287,10 @@ class HTML
                 exit(0);
             }
         }
-        $this->result['shows'] = ShowBroker::getInternalShowByType('daily');
+        $shows = ShowBroker::getInternalShowByType('daily');
+        foreach ($shows as $intShowID=>$show) {
+            $this->result['shows'][$intShowID] = $show->getSelf();
+        }
         if ($this->render()) {
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
@@ -309,8 +312,15 @@ class HTML
                 exit(0);
             }
         }
-        $this->result['shows'] = ShowBroker::getInternalShowByType('weekly');
+        $shows = ShowBroker::getInternalShowByType('weekly');
+        foreach ($shows as $intShowID=>$show) {
+            $this->result['shows'][$intShowID] = $show->getSelf();
+        }
         if ($this->render()) {
+            // FIXME: This keeps returning array instead of a playlist.
+            foreach ($this->result['shows'] as $intShowID=>$show) {
+                $this->result['show_playlists'][$intShowID] = json_encode(array($show['player_data']));
+            }
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -331,7 +341,10 @@ class HTML
                 exit(0);
             }
         }
-        $this->result['shows'] = ShowBroker::getInternalShowByType('monthly');
+        $shows = ShowBroker::getInternalShowByType('monthly');
+        foreach ($shows as $intShowID=>$show) {
+            $this->result['shows'][$intShowID] = $show->getSelf();
+        }
         if ($this->render()) {
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }

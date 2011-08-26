@@ -39,5 +39,3 @@
 					</div>
 				</div>
 			</div>
-			
-			<div id="jplayer_inspector_{$player_id}"></div>

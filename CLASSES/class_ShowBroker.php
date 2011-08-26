@@ -213,7 +213,7 @@ class ShowBroker
      *
      * @return object ShowObject
      */
-    function getInternalShowByType($enumShowType = '', $intQuantity = 25)
+    function getInternalShowByType($enumShowType = '', $intQuantity = 5)
     {
         switch ($enumShowType) {
         case 'daily':
