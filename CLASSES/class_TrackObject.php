@@ -98,10 +98,13 @@ class TrackObject extends GenericObject
     function getSelf()
     {
         $return = parent::getSelf();
+        $return['strTrackUrl'] = $this->preferredJson($this->get_strTrackUrl());
+        $return['arrTrackUrl'] = $this->getJson($this->get_strTrackUrl());
         $return['localSource'] = $this->get_fileUrl();
         $return['strArtistName'] = $this->objArtist->get_strArtistName();
         $return['strArtistNameSounds'] = $this->objArtist->get_strArtistNameSounds();
-        $return['strArtistUrl'] = $this->objArtist->get_strArtistUrl();
+        $return['strArtistUrl'] = $this->preferredJson($this->objArtist->get_strArtistUrl());
+        $return['arrArtistUrl'] = $this->getJson($this->objArtist->get_strArtistUrl());
         $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
         $return['dtsAdded'] = date("Y-m-d", strtotime($this->dtsAdded));
@@ -310,8 +313,23 @@ class TrackObject extends GenericObject
      */
     function set_strTrackUrl($strTrackUrl = "")
     {
-        if ($this->strTrackUrl != $strTrackUrl) {
-            $this->strTrackUrl = $strTrackUrl;
+        if ( ! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
+            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
+            $this->arrChanges[] = 'strTrackUrl';
+        }
+    }
+
+    /**
+     * Set the preferred URL to find more details about the track
+     *
+     * @param string $strTrackUrl The preferred place to find out more about the track
+     *
+     * @return void
+     */
+    function setpreferred_strTrackUrl($strTrackUrl = '')
+    {
+        if ($this->preferredJson($this->strTrackUrl) != $strTrackUrl) {
+            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl, true);
             $this->arrChanges[] = 'strTrackUrl';
         }
     }

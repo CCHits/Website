@@ -83,7 +83,7 @@ class ArtistObject extends GenericObject
      *
      * @param string $strArtistName The new artist name
      *
-     * @return true This will always return true
+     * @return void
      */
     function set_strArtistName($strArtistName = "")
     {
@@ -91,7 +91,6 @@ class ArtistObject extends GenericObject
             $this->strArtistName = $strArtistName;
             $this->arrChanges[] = 'strArtistName';
         }
-        return true;
     }
 
     /**
@@ -99,7 +98,7 @@ class ArtistObject extends GenericObject
      *
      * @param string $strArtistNameSounds The new way to pronounce the artist name
      *
-     * @return true This will always return true
+     * @return void
      */
     function set_strArtistNameSounds($strArtistNameSounds = "")
     {
@@ -107,7 +106,6 @@ class ArtistObject extends GenericObject
             $this->strArtistNameSounds = $strArtistNameSounds;
             $this->arrChanges[] = 'strArtistNameSounds';
         }
-        return true;
     }
 
     /**
@@ -115,16 +113,31 @@ class ArtistObject extends GenericObject
      *
      * @param string $strArtistUrl The new URL for the artist
      *
-     * @return true This will always return true
+     * @return void
      */
     function set_strArtistUrl($strArtistUrl = "")
     {
-        if ($this->strArtistUrl != $strArtistUrl) {
-            $this->strArtistUrl = $strArtistUrl;
+        if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
+            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
             $this->arrChanges[] = 'strArtistUrl';
         }
-        return true;
     }
+
+    /**
+     * Set the preferred URL to find more details about the Artist
+     *
+     * @param string $strArtistUrl The preferred place to find out more about the Artist
+     *
+     * @return void
+     */
+    function setpreferred_strArtistUrl($strArtistUrl = '')
+    {
+        if ($this->preferredJson($this->strArtistUrl) != $strArtistUrl) {
+            $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl, true);
+            $this->arrChanges[] = 'strArtistUrl';
+        }
+    }
+
 
     /**
      * Return an array of the tracks associated to this artist
