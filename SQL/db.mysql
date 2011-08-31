@@ -1,0 +1,95 @@
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+CREATE TABLE IF NOT EXISTS `artists` (
+  `intArtistID` int(11) NOT NULL AUTO_INCREMENT,
+  `strArtistName` text NOT NULL,
+  `strArtistNameSounds` text NOT NULL,
+  `strArtistUrl` text NOT NULL,
+  PRIMARY KEY (`intArtistID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `chart` (
+  `intChartID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `datChart` date NOT NULL,
+  `intPositionID` int(11) NOT NULL,
+  `intTrackID` int(11) NOT NULL,
+  PRIMARY KEY (`intChartID`),
+  UNIQUE KEY `UniqueDateAndPosition` (`datChart`,`intPositionID`),
+  KEY `datChart` (`datChart`,`intPositionID`,`intTrackID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `config` (
+  `key` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `shows` (
+  `intShowID` int(11) NOT NULL AUTO_INCREMENT,
+  `intShowUrl` int(11) NOT NULL,
+  `enumShowType` enum('daily','weekly','monthly','external') NOT NULL,
+  `strShowName` text NOT NULL,
+  `strShowUrl` text NOT NULL,
+  `intUserID` int(11) NOT NULL,
+  `timeLength` time NOT NULL DEFAULT '00:00:00',
+  `shaHash` varchar(140) NOT NULL,
+  `strCommentUrl` text NOT NULL,
+  `jsonAudioLayout` text NOT NULL,
+  `datDateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`intShowID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `showtracks` (
+  `intShowID` int(11) NOT NULL,
+  `intPartID` int(11) NOT NULL,
+  `intTrackID` int(11) NOT NULL,
+  UNIQUE KEY `intShowID` (`intShowID`,`intPartID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `tracks` (
+  `intTrackID` int(11) NOT NULL AUTO_INCREMENT,
+  `intArtistID` int(11) NOT NULL,
+  `strTrackName` text NOT NULL,
+  `strTrackNameSounds` text NOT NULL,
+  `strTrackUrl` text NOT NULL,
+  `enumTrackLicense` enum('cc-by','cc-by-sa','cc-by-nd','cc-by-nc','cc-by-nc-sa','cc-by-nc-nd','cc-0','none specified','cc-nc-sampling+','cc-sampling+','cc-sa','cc-nc','cc-nd','cc-nc-sa','cc-nc-nd') NOT NULL DEFAULT 'none specified',
+  `isNSFW` tinyint(1) NOT NULL DEFAULT '0',
+  `fileSource` text NOT NULL,
+  `timeLength` time NOT NULL,
+  `md5FileHash` varchar(32) NOT NULL,
+  `dtsAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `isApproved` tinyint(1) NOT NULL DEFAULT '0',
+  `datDailyShow` int(11) DEFAULT NULL,
+  `intChartPlace` int(11) NOT NULL,
+  PRIMARY KEY (`intTrackID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `trends` (
+  `intTrendID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `datTrendDay` date NOT NULL,
+  `intTrackID` int(11) NOT NULL,
+  `intVotes` int(11) NOT NULL,
+  PRIMARY KEY (`intTrendID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `intUserID` int(11) NOT NULL AUTO_INCREMENT,
+  `strOpenID` text NOT NULL,
+  `strCookieID` varchar(255) NOT NULL,
+  `sha1Pass` varchar(255) NOT NULL,
+  `isAuthorized` tinyint(1) NOT NULL DEFAULT '1',
+  `isUploader` tinyint(1) NOT NULL DEFAULT '0',
+  `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
+  `datLastSeen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`intUserID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `votes` (
+  `intVoteID` int(11) NOT NULL AUTO_INCREMENT,
+  `intTrackID` int(11) NOT NULL,
+  `intUserID` int(11) NOT NULL,
+  `intShowID` int(11) NOT NULL,
+  `datTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`intVoteID`),
+  UNIQUE KEY `intTrackID` (`intTrackID`,`intUserID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
