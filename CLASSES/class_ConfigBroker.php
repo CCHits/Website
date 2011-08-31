@@ -86,13 +86,13 @@ class ConfigBroker
     {
         $handler = self::getHandler();
         if (!is_array($handler->arrLocalConfig) or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)) {
-            include_once dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
+            include dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
             if (isset($APPCONFIG)) {
                 $handler->arrLocalConfig = $APPCONFIG;
             }
         }
         if (isset($handler->arrLocalConfig[$strKey])) {
-            return $handler->arrLocalConfig[$strKey][0];
+            return $handler->arrLocalConfig[$strKey];
         } else {
             return $strDefault;
         }

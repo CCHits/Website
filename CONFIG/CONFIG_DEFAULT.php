@@ -35,6 +35,8 @@ $RO_BASE = '';
 $RO_USER = '';
 $RO_PASS = '';
 
+$APPCONFIG = array();
+
 if (file_exists(dirname(__FILE__) . "/LOCAL_CONFIG.php")) {
     include dirname(__FILE__) . "/LOCAL_CONFIG.php";
 }
@@ -54,5 +56,3 @@ if (!isset($RO_DSN) and $SPLIT_RO_RW == true) {
         'pass' => $RO_PASS
     );
 }
-
-$APPCONFIG = array();
