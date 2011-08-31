@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!DOCTYPE ruleset [
+  <!ELEMENT ruleset (description?)>
+  <!ELEMENT description (#PCDATA)>
+  	<!ATTLIST ruleset name CDATA "default">
+]>
 <ruleset name="CCHits">
  <description>Coding standard for CCHits.net.</description>
 </ruleset>
