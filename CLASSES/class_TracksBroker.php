@@ -78,7 +78,7 @@ class TracksBroker
                 foreach ($tracks as $track) {
                     $temp = TrackBroker::getTrackByID($track['intTrackID']);
                     if ($temp != false) {
-                        $return[] = $temp;
+                        $return[$temp->get_intTrackID()] = $temp;
                     }
                 }
             }

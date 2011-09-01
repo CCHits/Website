@@ -636,6 +636,31 @@ class UI
         }
     }
 
+    function resolveLicenseUrl($license = '')
+    {
+        switch($license) {
+        case 'cc-sa':
+        case 'cc-nc':
+        case 'cc-nd':
+        case 'cc-nc-sa':
+        case 'cc-nc-nd':
+            return 'http://creativecommons.org/licenses/' . $license . '/1.0/';
+        case 'cc-by':
+        case 'cc-by-sa':
+        case 'cc-by-nc':
+        case 'cc-by-nd':
+        case 'cc-by-nc-sa':
+        case 'cc-by-nc-nd':
+        case 'cc-sampling+':
+        case 'cc-nc-sampling+':
+            return 'http://creativecommons.org/licenses/' . $license . '/3.0/';
+        case 'cc-0':
+            return 'http://creativecommons.org/publicdomain/zero/1.0/';
+        default:
+            return '';
+        }
+    }
+
     /**
      * Return the date in Y-m-d format from Ymd format
      *

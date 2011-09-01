@@ -130,7 +130,7 @@ class ShowObject extends GenericObject
             switch($this->enumShowType) {
             case 'daily':
                 $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
-                // HACK: Transition to having the dailyshow entry in the showtracks table
+                // FIXME: Transition to having the dailyshow entry in the showtracks table
                 if ($this->arrTracks == false) {
                     $this->arrTracks = array(TrackBroker::getTrackByDailyShowDate($this->intShowUrl));
                 }
@@ -154,10 +154,16 @@ class ShowObject extends GenericObject
         $showname = $this->strShowName;
         $first = true;
         if ($this->booleanFull == true) {
+            $this->get_arrTracks();
             $showname .= ' featuring ';
             $showname_tracks = '';
-            foreach ($this->get_arrTracks() as $objTrack) {
+            $return['isNSFW'] = false;
+            $this->get_arrTracks();
+            foreach ($this->arrTracks as $objTrack) {
                 $return['arrTracks'][++$counter] = $objTrack->getSelf();
+                if ($this->asBoolean($objTrack->get_isNSFW())) {
+                    $return['isNSFW'] = true;
+                }
                 if ($counter <= 5) {
                     if ($showname_tracks != '') {
                         $showname_tracks .= ', ';
@@ -169,8 +175,35 @@ class ShowObject extends GenericObject
                 }
             }
             $showname .= $showname_tracks;
-            $return['player_data'] = array('name' => $showname, 'free'=>'true', 'mp3' => $this->strShowFileMP3, 'oga' => $this->strShowFileOGG, 'link' => $this->strShowUrl);
+            $return['player_data'] = array(
+            	'name' => $showname,
+            	'free'=>'true',
+            	'mp3' => $this->strShowFileMP3,
+            	'oga' => $this->strShowFileOGG,
+            	'link' => $this->strShowUrl
+            );
+            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+                $return['player_data']['mp3_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3');
+            } else {
+                $return['player_data']['mp3_len'] = 0;
+            }
+            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
+                $return['player_data']['oga_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg');
+            } else {
+                $return['player_data']['oga_len'] = 0;
+            }
+            $arrShowLayout = (array) json_decode($this->jsonAudioLayout);
+            if (count($arrShowLayout) > 0) {
+                foreach ($arrShowLayout as $track=>$arrPositions) {
+                    $arrPositions = (array) $arrPositions;
+                    $showLayout[$track] = $this->arrTracks[$track]->getSelf();
+                    $showLayout[$track]['start'] = $arrPositions['start'];
+                    $showLayout[$track]['stop'] = $arrPositions['stop'];
+                }
+                $return['arrShowLayout'] = $showLayout;
+            }
         }
+        $return['datDateAdded'] = date('r', strtotime($this->datDateAdded));
         $return['strShowNameSpoken'] = $this->strShowNameSpoken;
         $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
         $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseShow', '/shows') . '/' . $this->intShowID);

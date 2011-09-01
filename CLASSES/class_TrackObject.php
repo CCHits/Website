@@ -98,6 +98,8 @@ class TrackObject extends GenericObject
     function getSelf()
     {
         $return = parent::getSelf();
+        $return['strLicenseUrl'] = UI::resolveLicenseUrl($this->get_enumTrackLicense());
+        $return['strLicenseName'] = UI::get_enumTrackLicenseFull($this->get_enumTrackLicense());
         $return['strTrackUrl'] = $this->preferredJson($this->get_strTrackUrl());
         $return['arrTrackUrl'] = $this->getJson($this->get_strTrackUrl());
         $return['localSource'] = $this->get_fileUrl();
