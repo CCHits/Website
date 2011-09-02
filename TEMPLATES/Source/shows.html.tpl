@@ -8,18 +8,16 @@
 		<script type="text/javascript">{literal}//<![CDATA[
 		$(document).ready(function() {{/literal}
 			$('.inlinesparkline').sparkline();
-			{foreach from=$shows key=id item=show}
-{include file="player.js.tpl" player_id=$show.intShowID playlist=$show_playlists}
-			{/foreach}
+{include file="player.js.tpl" player_id=1 playlist=$playlist_json}
 		{literal}});{/literal}//]]></script>
 		<title>{$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
 		<h1>Welcome to {$ServiceName}</h1>
 		<h2>{$Slogan}</h2>
+{include file="player.html.tpl" player_id=1 playlist=$shows}
 		{foreach from=$shows key=id item=show}
 		<h3><a href="{$baseURL}show/{$show.intShowID}">{$show.strShowName}</a></h3>
-{include file="player.html.tpl" player_id=$show.intShowID playlist=$show}
 		{foreach from=$show.arrTracks item=track}
 		<form action="{$baseURL}vote/{$track.intTrackID}?go" method="post">
 			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>

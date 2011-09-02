@@ -134,6 +134,7 @@ class ShowObject extends GenericObject
                 if ($this->arrTracks == false) {
                     $this->arrTracks = array(TrackBroker::getTrackByDailyShowDate($this->intShowUrl));
                 }
+                break;
             default:
                 $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
                 break;
@@ -178,16 +179,16 @@ class ShowObject extends GenericObject
             $return['player_data'] = array(
             	'name' => $showname,
             	'free'=>'true',
-            	'mp3' => $this->strShowFileMP3,
-            	'oga' => $this->strShowFileOGG,
             	'link' => $this->strShowUrl
             );
             if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+                $return['player_data']['mp3'] = $this->strShowFileMP3;
                 $return['player_data']['mp3_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3');
             } else {
                 $return['player_data']['mp3_len'] = 0;
             }
             if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
+                $return['player_data']['oga'] = $this->strShowFileOGG;
                 $return['player_data']['oga_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg');
             } else {
                 $return['player_data']['oga_len'] = 0;

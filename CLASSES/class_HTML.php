@@ -200,6 +200,7 @@ class HTML
                 $this->result['show'] = $show->getSelf();
             }
             if ($this->render()) {
+                $this->result['playlist_json'] = json_encode(array($this->result['show']['player_data']));
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
             }
         } else {
@@ -293,8 +294,10 @@ class HTML
         $shows = ShowBroker::getInternalShowByType('daily');
         foreach ($shows as $intShowID=>$show) {
             $this->result['shows'][$intShowID] = $show->getSelf();
+            $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
         }
         if ($this->render()) {
+            $this->result['playlist_json'] = json_encode($playlist);
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -318,12 +321,10 @@ class HTML
         $shows = ShowBroker::getInternalShowByType('weekly');
         foreach ($shows as $intShowID=>$show) {
             $this->result['shows'][$intShowID] = $show->getSelf();
+            $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
         }
         if ($this->render()) {
-            // FIXME: This keeps returning array instead of a playlist.
-            foreach ($this->result['shows'] as $intShowID=>$show) {
-                $this->result['show_playlists'][$intShowID] = json_encode($show['player_data']);
-            }
+            $this->result['playlist_json'] = json_encode($playlist);
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -347,8 +348,10 @@ class HTML
         $shows = ShowBroker::getInternalShowByType('monthly');
         foreach ($shows as $intShowID=>$show) {
             $this->result['shows'][$intShowID] = $show->getSelf();
+            $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
         }
         if ($this->render()) {
+            $this->result['playlist_json'] = json_encode($playlist);
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
