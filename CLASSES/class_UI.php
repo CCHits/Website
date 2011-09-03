@@ -635,6 +635,15 @@ class UI
         }
     }
 
+    /**
+     * Take a given CC license and resolve the appropriate license URL from there.
+     *
+     * Note, this is not the "accurate" license the track is licensed under, but just an approximation.
+     *
+     * @param string $license The license to resolve
+     *
+     * @return string The most appropriate license URL
+     */
     function resolveLicenseUrl($license = '')
     {
         switch($license) {
