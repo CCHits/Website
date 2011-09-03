@@ -175,6 +175,7 @@ class HTML
                 $track->set_full(true);
                 $this->result['track'] = $track->getSelf();
                 if ($this->render()) {
+                    // TODO: Write track.rss.tpl
                     UI::SmartyTemplate("track.{$this->format}", $this->result);
                 }
             } else {
@@ -201,6 +202,7 @@ class HTML
             }
             if ($this->render()) {
                 $this->result['playlist_json'] = json_encode(array($this->result['show']['player_data']));
+                // TODO: Write show.rss.tpl
                 UI::SmartyTemplate("show.{$this->format}", $this->result);
             }
         } else {
@@ -249,7 +251,7 @@ class HTML
             $this->result['vote_url'] = $this->arrUri['full'] . '?go';
             if ($this->render()) {
                 $this->result['track'] = $objTrack->getSelf();
-                UI::SmartyTemplate("vote.{$this->format}", $this->result);
+                UI::SmartyTemplate("vote.html", $this->result);
             }
         }
     }
@@ -263,7 +265,11 @@ class HTML
      */
     function chart($date = null)
     {
-        $this->result['chart'] = ChartBroker::getChartByDate($date);
+        if ($this->format == 'rss') {
+            $this->result['chart'] = ChartBroker::getChartByDate($date, 0, TrackBroker::getTotalTracks());
+        } else {
+            $this->result['chart'] = ChartBroker::getChartByDate($date);
+        }
         if ($this->render()) {
             if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
                 $this->result['previous_page'] = true;
@@ -271,6 +277,7 @@ class HTML
             if ( ! array_key_exists(TrackBroker::getTotalTracks(), $this->result['chart'])) {
                 $this->result['next_page'] = true;
             }
+            // TODO: Write chart.rss.tpl
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
         }
     }
@@ -399,7 +406,7 @@ class HTML
             $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
             $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
             $this->result['previous_page'] = false;
-            UI::SmartyTemplate("about.{$this->format}", $this->result);
+            UI::SmartyTemplate("about.html", $this->result);
             break;
         }
     }
@@ -515,6 +522,9 @@ class HTML
                 $this->result['previous_page'] = true;
             }
             $this->result['next_page'] = false;
+            $this->result['ShowDaily'] = ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
+            $this->result['ShowWeekly'] = ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+            $this->result['ShowMonthly'] = ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
             return true;
         case 'rss':
             $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net');

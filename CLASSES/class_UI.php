@@ -499,13 +499,12 @@ class UI
     }
 
     /**
-     * Return utf8 encoded XML respons
+     * Return utf8 encoded XML response
+     * TODO: Write utf8xml function
      *
      * @param Array $array Incoming data
      *
      * @return string UTF8 encoded XML string
-     *
-     * TODO: Write this function
      */
     function utf8xml($array = array())
     {

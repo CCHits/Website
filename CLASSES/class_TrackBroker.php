@@ -289,11 +289,11 @@ class TrackBroker
      * this function looks for the datDailyShow column and finds the track with
      * this date.
      *
+     * FIXME: Transition to having the dailyshow entry in the showtracks table
+     *
      * @param integer $intDate The date to look for
      *
      * @return object|false TrackObject or false if not existing
-     *
-     * @TODO: Remove ASAP - Migrate to show objects
      */
     function getTrackByDailyShowDate($intDate = '')
     {

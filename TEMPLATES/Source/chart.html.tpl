@@ -22,13 +22,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					{foreach $chart as $position=>$track}
-					{strip} 
+{foreach $chart as $position=>$track}{strip} 
 					<tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
 						{include file="show_track_data.tpl"}
 				    </tr>
-					{/strip}
-					{/foreach}
+{/strip}{/foreach}
 					<tr>
 						<td colspan="3"><a href="{$baseURL}chart">More...</a></td>
 					</tr>
