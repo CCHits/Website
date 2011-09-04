@@ -123,6 +123,7 @@ class ChartBroker
                     $temp = TrackBroker::getTrackByID($track['intTrackID']);
                     if ($temp != false) {
                         $return[$track['intPositionID']] = $temp->getSelf();
+                        $return[$track['intPositionID']]['intChartPosition'] = $track['intPositionID'];
                     }
                 }
             }
