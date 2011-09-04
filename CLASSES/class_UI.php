@@ -247,7 +247,7 @@ class UI
     {
         list($username, $password) = self::getAuth();
         if ($username == null) {
-            $this->sendHttpResponse(401);
+            self::sendHttpResponse(401);
         }
     }
 

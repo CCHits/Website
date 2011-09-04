@@ -371,18 +371,6 @@ class API
                 $this->render();
                 break;
 
-            case 'runbumpers':
-                UI::requireAuth();
-                if (UserBroker::getUser()->get_isAdmin()) {
-                    $db = Database::getConnection();
-                    // Get all the bumpers
-                    // Delete all the bumpers
-                    // Create new bumpers
-                } else {
-                    $this->render();
-                }
-                break;
-
             // Generate show information
             // These functions are new
             case 'runshows':
@@ -397,14 +385,23 @@ class API
                     if ($date == '') {
                         $date = date('Ymd');
                     }
-                    $temp = new NewDailyShowObject($date);
+                    $temp = ShowBroker::getInternalShowByDate('daily', $date);
+                    if ($temp == false) {
+                        $temp = new NewDailyShowObject($date);
+                    }
                     $response = 'DAILY_SHOW=' . $temp->get_intShowID();
                     if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
-                        $temp = new NewWeeklyShowObject($date);
+                        $temp = ShowBroker::getInternalShowByDate('weekly', $date);
+                        if ($temp == false) {
+                            $temp = new NewWeeklyShowObject($date);
+                        }
                         $response .= ' && WEEKLY_SHOW=' . $temp->get_intShowID();
                     }
                     if (1 == date('d', strtotime(UI::getLongDate($date) . ' 12:00:00 + 1 day'))) {
-                        $temp = new NewMonthlyShowObject(substr($date, 0, 6));
+                        $temp = ShowBroker::getInternalShowByDate('monthly', substr($date, 0, 6));
+                        if ($temp == false) {
+                            $temp = new NewMonthlyShowObject(substr($date, 0, 6));
+                        }
                         $response .= ' && MONTHLY_SHOW=' . $temp->get_intShowID();
                     }
                     UI::sendHttpResponse(200, $response, 'text/plain');
