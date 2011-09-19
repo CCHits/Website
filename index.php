@@ -15,6 +15,8 @@
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
 
+require_once dirname(__FILE__) . '/CLASSES/autoloader.php';
+
 $generator = microtime(true);
 
 $arrUri = UI::getUri();
@@ -59,6 +61,15 @@ try {
         case 'api':
             $content = new API();
             break;
+        case 'openid':
+            if (isset($_POST['id'])) {
+                $content = OpenID::request($_POST['id'], $arrUri['basePath'] . 'openid', $arrUri['basePath'] . 'logged_in.php', $arrUri['basePath'] . 'login.html');
+            } elseif (isset($_REQUEST['return'])) {
+                $content = OpenID::response($arrUri['basePath'] . 'openid');
+            } else {
+                UI::redirect('/login.html');
+            }
+            break;
         default:
             $content = new HTML();
         }
@@ -68,20 +79,4 @@ try {
 } catch(Exception $e) {
     error_log($e);
     die("An error occurred - we are looking into it.");
-}
-
-/**
- * A basic autoloader
- *
- * @param string $className The name of the class we're trying to load
- *
- * @return true|false Whether we were able to load the class.
- */
-function __autoload($className)
-{
-    if (is_file(dirname(__FILE__) . '/CLASSES/class_' . $className . '.php')) {
-        include_once dirname(__FILE__) . '/CLASSES/class_' . $className . '.php';
-        return true;
-    }
-    return false;
 }

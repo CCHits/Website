@@ -182,7 +182,7 @@ class UI
             $match = preg_match('%/(.*)$%', $_SERVER['SCRIPT_NAME'], $matches);
             $script_elements = str_split($matches[1]);
             $char = 0;
-            while ($char <= count($path_elements) and $path_elements[$char] == $script_elements[$char]) {
+            while (isset($path_elements[$char]) and $path_elements[$char] == $script_elements[$char]) {
                 $char++;
             }
             $arrUrl['site_path'] = substr($arrUrl['path'], 0, $char);

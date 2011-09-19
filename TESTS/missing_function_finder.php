@@ -176,13 +176,25 @@ function parseFile($filename = '')
                 } elseif ($match[1] == 'parent') {
                     $match[1] = $extends;
                 }
-                if ($match[1] != 'PDO' and $match[1] != 'Smarty' and $match[1] != 'Exception' and $match[1] != 'QRcode') {
+                switch($match[1]) {
+                case 'PDO':
+                case 'Smarty':
+                case 'Exception':
+                case 'QRcode':
+                case 'Auth_OpenID_Consumer':
+                case 'Auth_OpenID_FileStore':
+                case 'Auth_OpenID_AX_AttrInfo':
+                case 'Auth_OpenID_SRegRequest':
+                case 'Auth_OpenID_SRegResponse':
+                case 'Auth_OpenID_AX_FetchResponse':
+                    break;
+                default:
                     $return['class'][$filename][$match[1]][$match[2]] = $line;
                 }
             }
         }
-        preg_match_all('/(\$\S+)\s*=\s*new ([^\(]+)\(/', $file, $classmatches, PREG_SET_ORDER);
-        preg_match_all('/(\$\S+)\s*->([^\$^\(]*)\(/', $file, $functionmatches, PREG_SET_ORDER);
+        preg_match_all('/(\$\S+)\s*=\s*new ([^\(^\s]+)\(/', $file, $classmatches, PREG_SET_ORDER);
+        preg_match_all('/(\$\S+)\s*->([^\$^\(^\s]*)\(/', $file, $functionmatches, PREG_SET_ORDER);
         if (count($classmatches) > 0) {
             foreach ($classmatches as $classmatch) {
                 if ($classmatch[2] == 'self') {
@@ -191,7 +203,19 @@ function parseFile($filename = '')
                     $classmatch[2] = $extends;
                 }
                 $classes[$classmatch[1]] = $classmatch[2];
-                if ($classmatch[2] != 'PDO' and $classmatch[2] != 'Smarty' and $classmatch[2] != 'Exception' and $classmatch[2] != 'QRcode') {
+                switch($classmatch[2]) {
+                case 'PDO':
+                case 'Smarty':
+                case 'Exception':
+                case 'QRcode':
+                case 'Auth_OpenID_Consumer':
+                case 'Auth_OpenID_FileStore':
+                case 'Auth_OpenID_AX_AttrInfo':
+                case 'Auth_OpenID_SRegRequest':
+                case 'Auth_OpenID_SRegResponse':
+                case 'Auth_OpenID_AX_FetchResponse':
+                    break;
+                default:
                     $return['class'][$filename][$classmatch[2]]['__construct'] = $line;
                 }
             }

@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<link rel="alternate" type="application/rss+xml" href="{$baseURL}/daily/rss" title="The {$ShowDaily}" />
-		<link rel="alternate" type="application/rss+xml" href="{$baseURL}/weekly/rss" title="The {$ShowWeekly}" />
-		<link rel="alternate" type="application/rss+xml" href="{$baseURL}/monthly/rss" title="The {$ShowMonthly}" />
+		<link rel="alternate" type="application/rss+xml" href="{$baseURL}daily/rss" title="The {$ShowDaily}" />
+		<link rel="alternate" type="application/rss+xml" href="{$baseURL}weekly/rss" title="The {$ShowWeekly}" />
+		<link rel="alternate" type="application/rss+xml" href="{$baseURL}monthly/rss" title="The {$ShowMonthly}" />
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<link href="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.min.js"></script>
