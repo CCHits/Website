@@ -16,8 +16,7 @@
  */
 /**
  * This class scrapes appropriate data from alonetone.com
- * TODO Needs re-writing from RiffWorld basis
- * TODO Use http://alonetone.com/pasha/tracks/cross-the-line as scrapeable template
+ * Used http://alonetone.com/pasha/tracks/cross-the-line as scrapeable template
  *
  * @category Default
  * @package  MusicSources
@@ -38,31 +37,34 @@ class RemoteSourcesAlonetone extends RemoteSources
     */
     function __construct($src)
     {
-        if (preg_match('/http[s]*:\/\/.*riffworld.com\/[Mm]embers\/[^\/]+\/[^\/]+/', $src) == 0) {
-            throw new RemoteSource_INVALIDSRC();
+        if (preg_match('/http[s]*:\/\/.*alonetone.com\/[^\/]+/tracks\/[^\/]+/', $src) == 0) {
+            return 406;
         }
         $file_contents = file_get_contents($src);
         if ($file_contents == FALSE or $file_contents == '') {
-            throw new RemoteSource_INVALIDSRC();
+            return 406;
         }
-        //var_dump($file_contents);
-        $regex_strArtistName = '/<strong>Artist:<\/strong> <span>([^<]*)<\/span>/';
-        $regex_strTrackName = '/<strong>Title:<\/strong> <span>([^<]*)<\/span>/';
-        $regex_strArtistUrl = '/(http[s]*:\/\/.*riffworld.com\/[Mm]embers\/[^\/]+)/';
-        $regex_enumTrackLicense = '/licenses\/(.*)\/[0-9]/';
+        $regex_strArtistName = '/<h1 class="user">([^<]*)<\/h1>/';
+        $regex_strTrackName = '/<a href="[^"]*" class="track_link" title="[^"]*">([^<]*)<\/a>/';
+        $regex_strArtistUrl = '/<a href="[^"]*" class="artist"/';
+        $regex_strFileUrl = '/<a href="([^"]*)" class="download button"/';
+        $regex_enumTrackLicense = '/licenses\/([^\/]*)\//';
         $this->strTrackUrl = $src;
-        preg_match($regex_strArtistName, $file_contents, $arrArtistName);
-        preg_match($regex_strTrackName, $file_contents, $arrTrackName);
-        preg_match($regex_strArtistUrl, $src, $arrArtistUrl);
-        preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense);
-        var_dump(array('artistName'=>$arrArtistName, 'trackName'=>$arrTrackName, 'artistUrl'=>$arrArtistUrl, 'fileUrl'=>$arrFileUrl, 'trackLicense'=>$arrTrackLicense));
-        /*
-        $this->strArtistName = $arrArtistName[1];
-        $this->strTrackName = $arrTrackName[1];
-        $this->strArtistUrl = $arrArtistUrl[1];
-        $this->fileUrl = $src . '/mp3file.mp3';
-        $this->enumTrackLicense = $arrTrackLicense[1];
-        return $this->is_valid_cchits_submission();
-        */
+        if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
+            $this->strArtistName = $arrArtistName[1];
+        }
+        if (preg_match($regex_strTrackName, $file_contents, $arrTrackName) > 0) {
+            $this->strTrackName = $arrTrackName[1];
+        }
+        if (preg_match($regex_strArtistUrl, $src, $arrArtistUrl) > 0) {
+            $this->strArtistUrl = 'http://alonetone.com' . $arrArtistUrl[1];
+        }
+        if (preg_match($regex_strFileUrl, $src, $arrFileUrl) > 0) {
+            $this->fileUrl = 'http://alonetone.com' . $arrFileUrl[1];
+        }
+        if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
+            $this->enumTrackLicense = $arrTrackLicense[1];
+        }
+        return $this->create_pull_entry();
     }
 }

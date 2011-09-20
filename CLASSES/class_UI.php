@@ -332,6 +332,22 @@ class UI
     }
 
     /**
+     * Return the string associated to an HTTP status code or false if it's wrong
+     *
+     * @param integer $status HTTP status code
+     *
+     * @return string|false The string associated to this code, or false if the code doesn't exist.
+     */
+    function returnHttpResponseString($status = 200)
+    {
+        if (isset(self::$http_status_codes[$status])) {
+            return self::$http_status_codes[$status];
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Provide a downloadable file
      *
      * @param string  $file      File to send

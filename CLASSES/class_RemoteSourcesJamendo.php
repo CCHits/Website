@@ -37,7 +37,7 @@ class RemoteSourcesJamendo extends RemoteSources
     function __construct($src)
     {
         if (preg_match('/(\d+)|track\/(\d+)', $src, $match) == 0) {
-            return $this->INVALIDSRC;
+            return 406;
         }
         if ($match[1] == "" and isset($match[2]) and $match[2] != "") {
             $match[1] = $match[2];
@@ -45,23 +45,20 @@ class RemoteSourcesJamendo extends RemoteSources
         $url_base = "http://api.jamendo.com/get2/track_name+track_url+track_stream+license_url+artist_id+artist_name+artist_url/track/json/track_album+album_artist/track/?streamencoding=mp31&track_id=";
         $file_contents = file_get_contents($url_base . $match[1]);
         if ($file_contents == FALSE) {
-            return $this->INVALIDSRC;
+            return 406;
         }
         $json_contents = json_decode($file_contents);
         if ($json_contents == FALSE) {
-            return $this->INVALIDSRC;
+            return 406;
         }
         preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);
-        if (!isset($matches[1])) {
-            return $this->INVALIDLIC;
-        }
         $this->strTrackName = $json_contents[0]->track_name;
         $this->strArtistName = $json_contents[0]->artist_name;
         $this->strTrackUrl = $json_contents[0]->track_url;
         $this->strArtistUrl = $json_contents[0]->artist_url;
         $this->enumTrackLicense = $matches[1];
         $this->fileUrl = find_download($track);
-        return is_valid_cchits_submission();
+        return $this->create_pull_entry();
     }
 
     /**

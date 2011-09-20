@@ -83,7 +83,7 @@ class API
             // Searches
             case 'searchartistbyname':
             case 'searchartistsbyname':
-                if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] = '') {
+                if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] == '') {
                     $artist_name = $arrUri['parameters']['strArtistName'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $artist_name = '';
@@ -127,7 +127,7 @@ class API
                 break;
             case 'searchtrackbyname':
             case 'searchtracksbyname':
-                if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] = '') {
+                if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] == '') {
                     $track_name = $arrUri['parameters']['strTrackName'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $track_name = '';
@@ -156,7 +156,7 @@ class API
                 break;
             case 'searchtrackbyurl':
             case 'searchtracksbyurl':
-                if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] = '') {
+                if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] == '') {
                     $track_url = $arrUri['parameters']['strTrackUrl'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $track_url = '';
@@ -181,7 +181,7 @@ class API
                 break;
             case 'searchshowbyname':
             case 'searchshowsbyname':
-                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] = '') {
+                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] == '') {
                     $show_name = $arrUri['parameters']['strShowName'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $show_name = '';
@@ -206,7 +206,7 @@ class API
                 break;
             case 'searchshowbyurl':
             case 'searchshowsbyurl':
-                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] = '') {
+                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
                     $show_url = $arrUri['parameters']['strShowUrl'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $show_url = '';
@@ -227,7 +227,7 @@ class API
                 break;
             // Direct Lookups
             case 'gettrack':
-                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
                     $intTrackID = $arrUri['parameters']['intTrackID'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $intTrackID = $arrUri['path_items'][2];
@@ -239,7 +239,7 @@ class API
                 $this->render();
                 break;
             case 'getshow':
-                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
                     $intShowID = $arrUri['parameters']['intShowID'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $intShowID = $arrUri['path_items'][2];
@@ -252,14 +252,14 @@ class API
 
             // Upload Scripts
             case 'addtracktoshow':
-                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
                     $intTrackID = $arrUri['parameters']['intTrackID'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $intTrackID = $arrUri['path_items'][2];
                 } else {
                     $intTrackID = 0;
                 }
-                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
                     $intShowID = $arrUri['parameters']['intShowID'];
                 } elseif (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
                     $intShowID = $arrUri['path_items'][3];
@@ -273,11 +273,72 @@ class API
                 }
                 $this->render();
                 break;
+            case 'pulltrack':
+                if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] != '') {
+                    if (preg_match('/^http[s]*:\/\/([^\/])/', $arrUri['parameters']['strTrackUrl'], $matches) > 0) {
+                        switch (strtolower($matches[1])) {
+                        case 'alonetone.com':
+                        case 'www.alonetone.com':
+                            $this->result = new RemoteSourcesAlonetone($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'ccmixter.org':
+                        case 'www.ccmixter.org':
+                            $this->result = new RemoteSourcesCCMixter($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'freemusicarchive.org':
+                        case 'www.freemusicarchive.org':
+                            $this->result = new RemoteSourcesFMA($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'jamendo.com':
+                        case 'www.jamendo.com':
+                            $this->result = new RemoteSourcesJamendo($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'macjams.com':
+                        case 'www.macjams.com':
+                            $this->result = new RemoteSourcesMacjams($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'riffworld.com':
+                        case 'www.riffworld.com':
+                            $this->result = new RemoteSourcesRiffworld($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'sectionz.com':
+                        case 'www.sectionz.com':
+                            $this->result = new RemoteSourcesSectionz($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'soundcloud.com':
+                        case 'www.soundcloud.com':
+                            $this->result = new RemoteSourcesSoundcloud($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        case 'sutros.com':
+                        case 'www.sutros.com':
+                            $this->result = new RemoteSourcesSutros($arrUri['parameters']['strTrackUrl']);
+                            break;
+                        }
+                    }
+                }
+                $this->render();
+                break;
+            case 'completetrack':
+                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
+                    $intTrackID = $arrUri['parameters']['intTrackID'];
+                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
+                    $intTrackID = $arrUri['path_items'][2];
+                } else {
+                    $intTrackID = 0;
+                }
+                $objSource = RemoteSourcesBroker::getRemoteSourceByID($intTrackID);
+                if ($objSource == false) {
+                    $this->render();
+                    break;
+                }
+
+                // TODO: Correct invalid data here
+                break;
             case 'newtrack':
-                // TODO: Import newtrack
+                // TODO: Handles file uploads which are not from the recognised sources list above.
                 break;
             case 'getshowid':
-                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] = '') {
+                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
                     $show_url = $arrUri['parameters']['strShowUrl'];
                 } else {
                     $this->render();
@@ -285,7 +346,7 @@ class API
                 }
                 $this->result = ShowBroker::getShowByExactUrl($show_url);
                 if ($this->result == false) {
-                    if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] = '') {
+                    if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] == '') {
                         $show_name = $arrUri['parameters']['strShowName'];
                     } else {
                         $this->render();
@@ -296,19 +357,19 @@ class API
                 $this->render();
                 break;
             case 'editshow':
-                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] = '') {
+                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
                     $show_url = $arrUri['parameters']['strShowUrl'];
                 } else {
                     $this->render();
                     break;
                 }
-                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] = '') {
+                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] == '') {
                     $show_name = $arrUri['parameters']['strShowName'];
                 } else {
                     $this->render();
                     break;
                 }
-                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
                     $show = ShowBroker::getShowByID($arrUri['parameters']['intShowID']);
                     $show->set_strShowUrl($show_url);
                     $show->set_strShowName($show_name);
@@ -323,7 +384,7 @@ class API
 
             // Get Statistical Information
             case 'gettrends':
-                if (isset($arrUri['parameters']['strTrendDate']) and $arrUri['parameters']['strTrendDate'] = '') {
+                if (isset($arrUri['parameters']['strTrendDate']) and $arrUri['parameters']['strTrendDate'] == '') {
                     $strTrendDate = $arrUri['parameters']['strTrendDate'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $strTrendDate = $arrUri['path_items'][2];
@@ -335,7 +396,7 @@ class API
                 $this->render();
                 break;
             case 'getchart':
-                if (isset($arrUri['parameters']['strChartDate']) and $arrUri['parameters']['strChartDate'] = '') {
+                if (isset($arrUri['parameters']['strChartDate']) and $arrUri['parameters']['strChartDate'] == '') {
                     $strChartDate = $arrUri['parameters']['strChartDate'];
                 } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $strChartDate = $arrUri['path_items'][2];
@@ -351,14 +412,14 @@ class API
             case 'vote':
                 if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
                     $intTrackID = $arrUri['path_items'][2];
-                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] = '') {
+                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
                     $intTrackID = $arrUri['parameters']['intTrackID'];
                 } else {
                     $intTrackID = 0;
                 }
                 if (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
                     $intShowID = $arrUri['path_items'][3];
-                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] = '') {
+                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
                     $intShowID = $arrUri['parameters']['intShowID'];
                 } else {
                     $intShowID = 0;
@@ -482,6 +543,8 @@ class API
                 UI::sendHttpResponse(200, null, 'text/html', $content);
             } elseif ($this->result == true) {
                 UI::sendHttpResponse(200, "OK");
+            } elseif (0 + $this->result > 0) {
+                UI::sendHttpResponse($this->result);
             } else {
                 UI::sendHttpResponse(404);
             }
@@ -499,6 +562,8 @@ class API
                 UI::sendHttpResponse(200, UI::utf8json($result), 'application/json');
             } elseif ($this->result == true) {
                 UI::sendHttpResponse(200, json_encode("OK"), 'application/json');
+            } elseif (0 + $this->result > 0 and UI::returnHttpResponseString($this->result) != false) {
+                UI::sendHttpResponse($this->result, json_encode(array('Status'=>UI::returnHttpResponseString($this->result))), 'application/json');
             } else {
                 list($uri, $data) = UI::getPath();
                 UI::sendHttpResponse(404, json_encode(array('Error'=>'The requested URL ' . $uri . ' was not found.')), 'application/json');
@@ -550,6 +615,8 @@ class API
                 UI::sendHttpResponse(200, $return, 'text/plain');
             } elseif ($this->result == true) {
                 UI::sendHttpResponse(200, "state=OK");
+            } elseif (0 + $this->result > 0) {
+                UI::sendHttpResponse($this->result, "Status=\"" . UI::returnHttpResponseString($this->result) . "\"", 'text/plain');
             } else {
                 list($uri, $data) = UI::getPath();
                 UI::sendHttpResponse(404, "Error=\"The requested URL ' . $uri . ' was not found.\"", 'text/plain');

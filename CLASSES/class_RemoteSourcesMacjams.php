@@ -15,8 +15,8 @@
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
 /**
- * This class scrapes appropriate data from www.riffworld.com
- * TODO: Incomplete Import from Macjams.com
+ * This class scrapes appropriate data from Macjams.com
+ * Used http://www.macjams.com/song/69976 as scrapable template
  *
  * @category Default
  * @package  MusicSources
@@ -38,30 +38,38 @@ class RemoteSourcesMacjams extends RemoteSources
     function __construct($src)
     {
         if (preg_match('/http[s]*:\/\/.*macjams.com\/song\/(\d+)/', $src) == 0) {
-            throw new RemoteSource_INVALIDSRC();
+            return 406;
         }
         $file_contents = file_get_contents($src);
         if ($file_contents == FALSE or $file_contents == '') {
-            throw new RemoteSource_INVALIDSRC();
+            return 406;
         }
-        //var_dump($file_contents);
-        $regex_strArtistName = '/<a href="\/artist\/[\"]+">([^<]*)<\/a>/';
-        $regex_strTrackName = '/<h1 style="[^"]+">([^<]*)<\/h1>/';
-        $regex_strArtistUrl = '/<a href="(\/artist\/[\"]+)">[^<]*<\/a>/';
-        $regex_enumTrackLicense = '/licenses\/(.*)\/[0-9]/';
+        $regex_strArtistName = '/<h2 style="[^"]*"><a href="[^"]*">([^<]*)<\/a><\/h2>/';
+        $regex_strTrackName = '/<h1 style="[^"]*">([^<]*)<\/h1>/';
+        $regex_strArtistUrl = '/<h2 style="[^"]*"><a href="([^"]*)">[^<]*<\/a><\/h2>/';
+        $regex_strFileUrl = '/so.addVariable\("file","([^"]*)\);/';
+        $regex_enumTrackLicense = '/licenses\/([^\/]*)\//';
         $this->strTrackUrl = $src;
         preg_match($regex_strArtistName, $file_contents, $arrArtistName);
         preg_match($regex_strTrackName, $file_contents, $arrTrackName);
         preg_match($regex_strArtistUrl, $src, $arrArtistUrl);
+        preg_match($regex_strFileUrl, $src, $arrFileUrl);
         preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense);
-        var_dump(array('artistName'=>$arrArtistName, 'trackName'=>$arrTrackName, 'artistUrl'=>$arrArtistUrl, 'fileUrl'=>$arrFileUrl, 'trackLicense'=>$arrTrackLicense));
-        /*
-        $this->strArtistName = $arrArtistName[1];
-        $this->strTrackName = $arrTrackName[1];
-        $this->strArtistUrl = $arrArtistUrl[1];
-        $this->fileUrl = $src . '/mp3file.mp3';
-        $this->enumTrackLicense = $arrTrackLicense[1];
-        return $this->is_valid_cchits_submission();
-        */
+        if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
+            $this->strArtistName = $arrArtistName[1];
+        }
+        if (preg_match($regex_strTrackName, $file_contents, $arrTrackName) > 0) {
+            $this->strTrackName = $arrTrackName[1];
+        }
+        if (preg_match($regex_strArtistUrl, $src, $arrArtistUrl) > 0) {
+            $this->strArtistUrl = 'http://macjams.com' . $arrArtistUrl[1];
+        }
+        if (preg_match($regex_strFileUrl, $src, $arrFileUrl) > 0) {
+            $this->fileUrl = $arrFileUrl[1];
+        }
+        if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
+            $this->enumTrackLicense = $arrTrackLicense[1];
+        }
+        return $this->create_pull_entry();
     }
 }

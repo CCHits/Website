@@ -16,6 +16,7 @@
  */
 /**
  * This class scrapes appropriate data from Sutros.com
+ * Use http://sutros.com/songs/16558 as scraping template.
  *
  * @category Default
  * @package  MusicSources
@@ -37,17 +38,17 @@ class RemoteSourcesSutros extends RemoteSources
     function __construct($src)
     {
         if (preg_match('/http[s]*:\/\/sutros.com\/songs\/[^\/]+', $src, $match) == 0) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         $file_contents = file_get_contents($src);
         if ($file_contents == FALSE or $file_contents = '') {
-            throw new RemoteSource_InvalidSource();
+            return 404;
         }
-        $regex_strArtistName = '/\s*<meta name="audio_artist" content="[^"]+" \/>/';
-        $regex_strTrackName = '/\s*<meta name="audio_title" content="[^"]+" \/>/';
-        $regex_strArtistUrl = '/\s*<div class="username"><b><a href="[^"]+">The Warloc</a></b></div>/';
+        $regex_strArtistName = '/\s*<meta name="audio_artist" content="([^"]+)" \/>/';
+        $regex_strTrackName = '/\s*<meta name="audio_title" content="([^"]+)" \/>/';
+        $regex_strArtistUrl = '/\s*<div class="username"><b><a href="[^"]+">([^<]+)<\/a><\/b><\/div>/';
         $regex_fileUrl = '/\s*<div id="details" class="song" about="([^"]+)">/';
-        $regex_enumTrackLicense = '/licenses\/(.*)\/[0-9].*>\S/';
+        $regex_enumTrackLicense = '/licenses\/([^\/]*)\//';
         $this->strTrackUrl = $src;
         if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
             $this->strArtistName = $arrArtistName[1];
@@ -64,6 +65,6 @@ class RemoteSourcesSutros extends RemoteSources
         if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
             $this->enumTrackLicense = $arrTrackLicense[1];
         }
-        return $this->is_valid_cchits_submission();
+        return $this->create_pull_entry();
     }
 }

@@ -37,11 +37,11 @@ class RemoteSourcesFMA extends RemoteSources
     function __construct($src)
     {
         if (preg_match('/http:\/\/freemusicarchive.org\/music\/[^\/]+\/[^\/]+\/.+/', $src, $match) == 0) {
-            return $this->INVALIDSRC;
+            return 406;
         }
         $file_contents = file_get_contents($src);
         if ($file_contents == FALSE or $file_contents = '') {
-            return $this->INVALIDSRC;
+            return 406;
         }
         $regex_strArtistName = '/\s+<span class="subh1">\(by <a href="\S+">(.*)<\/a>\)<\/span>/';
         $regex_strTrackName = '/&ldquo;(.*)&rdquo;/';
@@ -68,6 +68,6 @@ class RemoteSourcesFMA extends RemoteSources
         if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
             $this->enumTrackLicense = $arrTrackLicense[1];
         }
-        return $this->is_valid_cchits_submission();
+        return $this->create_pull_entry();
     }
 }

@@ -37,22 +37,22 @@ class RemoteSourcesSoundcloud extends RemoteSources
     function __construct($src)
     {
         if (ConfigBroker::getConfig('Soundcloud API') == '') {
-            throw new RemoteSource_InvalidAPICode();
+            return 412;
         }
         if (preg_match('/http:\/\/soundcloud.com\/[^\/]+/.*/', $src) == 0) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         $url_base = "https://api.soundcloud.com/resolve.json?consumer_key={ConfigBroker::getConfig('Soundcloud API')}&url=";
         $file_contents = file_get_contents($url_base . $src);
         if ($file_contents == FALSE) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         $json_contents = json_decode($file_contents);
         if ($json_contents == FALSE) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         if ($json_contents->downloadable != TRUE) {
-            throw new RemoteSource_NoFileDl();
+            return 417;
         }
         $this->strTrackName = $json_contents->title;
         $this->strArtistName = $json_contents->user->username;
@@ -60,7 +60,7 @@ class RemoteSourcesSoundcloud extends RemoteSources
         $this->strArtistUrl = $json_contents->user->permalink_url;
         $this->enumTrackLicense = $json_contents->license;
         $this->fileUrl = $json_contents->download_url . "?consumer_key={$soundcloud_api}";
-        return $this->is_valid_cchits_submission();
+        return $this->create_pull_entry();
     }
 }
 

@@ -37,7 +37,7 @@ class RemoteSourcesFile extends RemoteSources
     function __construct($src)
     {
         if ( ! file_exists($src)) {
-            throw new RemoteSource_NOFILEEXIST();
+            return 400;
         }
         $soxi = ConfigBroker::getAppConfig('soxi', '/usr/bin/soxi');
         $exec_command = "$soxi -a \"$src\"";
@@ -47,14 +47,6 @@ class RemoteSourcesFile extends RemoteSources
         $this->strArtistName = $arrArtistName[1];
         $this->strTrackName = $arrTrackName[1];
         $this->fileName = $src;
-        try {
-            if ($this->is_valid_cchits_submission()) {
-                $this->create();
-                return true;
-            }
-        } catch (Exception $e) {
-            throw $e;
-        }
-
+        return $this->create_pull_entry();
     }
 }

@@ -37,7 +37,7 @@ class RemoteSourcesCCMixter extends RemoteSources
     function __construct($src)
     {
         if (preg_match('/(^\d+)|http:\/\/ccmixter.org\/files\/[^\/]+/(\d+)/', $src, $match) == 0) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         if ($match[1] == "" and isset($match[2]) and $match[2] != "") {
             $match[1] = $match[2];
@@ -46,16 +46,13 @@ class RemoteSourcesCCMixter extends RemoteSources
         $url_base = 'http://ccmixter.org/api/query?f=json&ids=';
         $file_contents = file_get_contents($url_base . $match[1]);
         if ($file_contents == FALSE) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         $json_contents = json_decode($file_contents);
         if ($json_contents == FALSE) {
-            throw new RemoteSource_InvalidSource();
+            return 406;
         }
         preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);
-        if (!isset($matches[1])) {
-            throw new RemoteSource_InvalidLicense();
-        }
         $this->strTrackName = $json_contents[0]->upload_name;
         $this->strArtistName = $json_contents[0]->user_real_name;
         $this->strTrackUrl = $json_contents[0]->file_page_url;
@@ -67,14 +64,7 @@ class RemoteSourcesCCMixter extends RemoteSources
             $this->isNSFW = 1;
         }
         $this->fileUrl = $json_contents[0]->files[0]->download_url;
-        try {
-            if ($this->is_valid_cchits_submission()) {
-                $this->create();
-                return true;
-            }
-        } catch (Exception $e) {
-            throw $e;
-        }
+        return $this->create_pull_entry();
     }
 }
 

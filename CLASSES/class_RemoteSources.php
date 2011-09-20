@@ -239,6 +239,40 @@ class RemoteSources extends GenericObject
     }
 
     /**
+     * This function creates an entry in the "processing" table, unless there is sufficient detail to process it.
+     *
+     * @return array(integer, boolean) The Track or ProcessingID and the state.
+     */
+    function create_pull_entry()
+    {
+        try {
+            $this->is_valid_cchits_submission();
+            return array($this->approveProcessing()=>true);
+        } catch (exception $e) {
+            $this->set_intUserID();
+            $this->create();
+            return array($this->intProcessingID=>false);
+        }
+    }
+
+    /**
+     * Override the Write action by checking it against the validity check
+     *
+     * @return boolean Did this action result in a completed submission?
+     */
+    function write()
+    {
+        try {
+            $this->is_valid_cchits_submission();
+            $this->approveProcessing();
+            return true;
+        } catch (exception $e) {
+            parent::write();
+            return false;
+        }
+    }
+
+    /**
      * Continue processing the collected data
      *
      * @return const Internal response codes
@@ -279,7 +313,7 @@ class RemoteSources extends GenericObject
         if ($this->fileUrl != '') {
             unlink($this->fileName);
         }
-        return true;
+        return $this->intTrackID;
     }
 
     /**

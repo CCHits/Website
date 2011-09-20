@@ -16,6 +16,7 @@
  */
 /**
  * This class scrapes appropriate data from SectionZ.com
+ * Use http://www.sectionz.com/detail.asp?rType=mp3&SZID=34527 for template scraping
  *
  * @category Default
  * @package  MusicSources
@@ -37,25 +38,23 @@ class RemoteSourcesSectionz extends RemoteSources
     function __construct($src)
     {
         if (preg_match('/http:\/\/.*sectionz.com\/detail.asp.*/', $src) == 0) {
-            throw new RemoteSource_INVALIDSRC();
+            return 406;
         }
         $file_contents = file_get_contents($src);
         if ($file_contents == FALSE or $file_contents == '') {
-            throw new RemoteSource_INVALIDSRC();
+            return 406;
         }
-        //var_dump($file_contents);
-        $regex_strArtistName = '/<strong>[^<]*<\/strong>\s+by\s+:\s+<STRONG><A\s+HREF=".*">([^<]*)/';
-        $regex_strTrackName = '/<strong>([^<]*)<\/strong>\s+by\s+:\s+<STRONG><A\s+HREF=".*">[^<]*/';
-        $regex_strArtistUrl = '/<strong>[^<]*<\/strong>\s+by\s+:\s+<STRONG><A\s+HREF="(.*)">[^<]*/';
+        $regex_strArtistName = '/<strong>[^<]*<\/strong>\s+by\s+:\s+<STRONG><A\s+HREF="[^"]*">([^<]*)/';
+        $regex_strTrackName = '/<strong>([^<]*)<\/strong>\s+by\s+:\s+<STRONG><A\s+HREF="[^"]*">[^<]*/';
+        $regex_strArtistUrl = '/<strong>[^<]*<\/strong>\s+by\s+:\s+<STRONG><A\s+HREF="([^"]*)">[^<]*/';
         $regex_fileUrl = "/MM_openBrWindow\('(download[^']*)/";
-        $regex_enumTrackLicense = '/licenses\/(.*)\/[0-9]/';
+        $regex_enumTrackLicense = '/licenses\/([^\/]*)\//';
         $this->strTrackUrl = $src;
         preg_match($regex_strArtistName, $file_contents, $arrArtistName);
         preg_match($regex_strTrackName, $file_contents, $arrTrackName);
         preg_match($regex_strArtistUrl, $file_contents, $arrArtistUrl);
         preg_match($regex_fileUrl, $file_contents, $arrFileUrl);
         preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense);
-        var_dump(array('artistName'=>$arrArtistName, 'trackName'=>$arrTrackName, 'artistUrl'=>$arrArtistUrl, 'fileUrl'=>$arrFileUrl, 'trackLicense'=>$arrTrackLicense));
         if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
             $this->strArtistName = $arrArtistName[1];
         }
@@ -71,7 +70,7 @@ class RemoteSourcesSectionz extends RemoteSources
         if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
             $this->enumTrackLicense = $arrTrackLicense[1];
         }
-        return $this->is_valid_cchits_submission();
+        return $this->create_pull_entry();
     }
 
     /**
