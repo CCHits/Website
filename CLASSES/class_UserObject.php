@@ -198,7 +198,7 @@ class UserObject extends GenericObject
     /**
      * Return the state of this user
      *
-     * @return boolean Is Authorized
+     * @return boolean Is Authorized to submit tracks directly into the system without being pre-vetted
      */
     function get_isAuthorized()
     {

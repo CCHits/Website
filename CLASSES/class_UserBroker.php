@@ -64,9 +64,9 @@ class UserBroker
         if (isset($_SESSION['cookie']) AND $_SESSION['cookie'] != '') {
             $field = "strCookieID";
             $param = $_SESSION['cookie'];
-        } elseif (isset($_SESSION['openid']) AND $_SESSION['openid'] != '') {
+        } elseif (isset($_SESSION['OPENID_AUTH']) AND $_SESSION['OPENID_AUTH'] != false) {
             $field = "strOpenID";
-            $param = $_SESSION['openid'];
+            $param = $_SESSION['openid']['url'];
         } elseif (isset($_SERVER['HTTP_AUTHORIZATION']) and $_SERVER['HTTP_AUTHORIZATION'] != '') {
             $auth_params = explode(":" , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
             $username = $auth_params[0];

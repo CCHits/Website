@@ -63,11 +63,15 @@ try {
             break;
         case 'openid':
             if (isset($_POST['id'])) {
-                $content = OpenID::request($_POST['id'], $arrUri['basePath'] . 'openid', $arrUri['basePath'] . 'logged_in.php', $arrUri['basePath'] . 'login.html');
+                $content = OpenID::request($_POST['id'], $arrUri['basePath'] . 'openid', $arrUri['basePath'] . 'admin', $arrUri['basePath'] . 'admin');
             } elseif (isset($_REQUEST['return'])) {
                 $content = OpenID::response($arrUri['basePath'] . 'openid');
+            } elseif (isset($_GET['logout'])) {
+                session_start();
+                unset($_SESSION['OPENID_AUTH']);
+                UI::redirect($arrUri['basePath'] . 'admin');
             } else {
-                UI::redirect('/login.html');
+                UI::redirect($arrUri['basePath'] . 'admin');
             }
             break;
         default:

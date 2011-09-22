@@ -120,6 +120,70 @@ class HTML
                 }
                 $this->monthly($object[1]);
                 break;
+            case 'admin':
+                $this->format = "html";
+                session_start();
+                if (isset($_SESSION['OPENID_AUTH']) and isset($_SESSION['cookie'])) {
+                    unset($_SESSION['cookie']);
+                }
+                switch ($object[1]) {
+                case 'track':
+                    $objTrack = TrackBroker::getTrackByID($object[2]);
+                    if ($objTrack != false and (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized())) {
+                        $this->editTrack($objTrack);
+                    } elseif ($objTrack == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        // TODO: Create login.html.tpl
+                        UI::SmartyTemplate("login.html", array('notuploader'=>true));
+                    }
+                    break;
+                case 'show':
+                    $objShow = ShowBroker::getShowByID($object[2]);
+                    if ($objShow != false and UserBroker::getUser()->get_isAdmin() and $objShow->get_intUserID() == UserBroker::getUser()->get_intUserID()) {
+                        $this->editShow($objShow);
+                    } elseif ($objShow->get_intUserID() != UserBroker::getUser()->get_intUserID()) {
+                        UI::SmartyTemplate("login.html", array('notyourshow'=>true));
+                    } elseif ($objShow == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        UI::SmartyTemplate("login.html", array('notadmin'=>true));
+                    }
+                    break;
+                case 'addtrack':
+                    $objTrack = RemoteSourceBroker::getRemoteSourceByID($object[2]);
+                    if (($object[2] == '' or $objTrack != false) and (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized())) {
+                        $this->addTrack($objTrack);
+                    } elseif ($objTrack->get_intUserID() != UserBroker::getUser()->get_intUserID()) {
+                        UI::SmartyTemplate("login.html", array('notyourtrack'=>true));
+                    } elseif ($objTrack == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        UI::SmartyTemplate("login.html", array('notuploader'=>true));
+                    }
+                    break;
+                case 'addshow':
+                    if (UserBroker::getUser()->get_isAdmin()) {
+                        $this->addShow();
+                    } else {
+                        UI::SmartyTemplate("login.html", array('notadmin'=>true));
+                    }
+                    break;
+                case 'listtracks':
+                    $this->listtracks(RemoteSourcesBroker::getRemoteSourcesByUserID());
+                    break;
+                case 'listshows':
+                    $this->listshows(ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID()));
+                    break;
+                default:
+                    if (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized()) {
+                        UI::SmartyTemplate('admin.html');
+                    } else {
+                        UI::SmartyTemplate("login.html");
+                    }
+                    break;
+                }
+                break;
             case 'about':
                 $this->about($object[1]);
                 break;
@@ -128,6 +192,61 @@ class HTML
             }
         }
     }
+
+    /**
+     * Begin or complete a RemoteSources process for a new track
+     * TODO: Write HTML::addTrack() function
+     *
+     * @param false|object $objTrack False for an empty new track, or RemoteSources object for a track in-progress
+     *
+     * @return void
+     */
+    protected function addTrack($objTrack = null)
+    {
+        if ($objTrack == false) {
+            // New Track
+        } else {
+            //
+        }
+    }
+
+    /**
+     * Begin a New Show process. This will redirect to editShow once the new show process has been started.
+     * TODO: Write HTML::addShow() function
+     *
+     * @return void
+     */
+    protected function addShow()
+    {
+
+    }
+
+    /**
+     * Edit an existing track.
+     * TODO: Write HTML::editTrack() function
+     *
+     * @param object $objTrack The track object
+     *
+     * @return void
+     */
+    protected function editTrack($objTrack = null)
+    {
+
+    }
+
+    /**
+     * Edit an existing Show.
+     * TODO: Write HTML::editShow() function
+     *
+     * @param object $objShow The show object
+     *
+     * @return void
+     */
+    protected function editShow($objShow = null)
+    {
+
+    }
+
 
     /**
      * Force the user back to the home page

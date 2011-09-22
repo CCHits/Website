@@ -48,4 +48,31 @@ class RemoteSourcesBroker
             die();
         }
     }
+
+    /**
+     * Get a list of all non-completed tracks for processing
+     *
+     * @return false|array False if there's an error or no entries, array of RemoteSources if there is data to process.
+     */
+    public function getRemoteSourcesByUserID() {
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT * FROM processing WHERE intUserID = ? LIMIT 1";
+            $query = $db->prepare($sql);
+            $query->execute(array(UserBroker::getUser()->get_intUserID()));
+            $item = $query->fetchObject('RemoteSources');
+            if ($item == false) {
+                return false;
+            } else {
+                $return[] = $item;
+                while ($item = $query->fetchObject('RemoteSources')) {
+                    $return[] = $item;
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log($e);
+            return false;
+        }
+    }
 }

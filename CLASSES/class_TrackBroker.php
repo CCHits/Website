@@ -78,9 +78,9 @@ class TrackBroker
      */
     public function getTrackByID($intTrackID = 0)
     {
-        $th = self::getHandler();
-        if (isset($th->arrTracks[$intTrackID]) and $th->arrTracks[$intTrackID] != false) {
-            return $th->arrTracks[$intTrackID];
+        $handler = self::getHandler();
+        if (isset($handler->arrTracks[$intTrackID]) and $handler->arrTracks[$intTrackID] != false) {
+            return $handler->arrTracks[$intTrackID];
         }
         $db = Database::getConnection();
         try {
@@ -139,13 +139,15 @@ class TrackBroker
                 }
             }
             $query->execute(array("{$strTrackName}[:space:]*"));
+            $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
-                while ($item = $query->fetchObject('TrackObject')) {
+                while ($item != false) {
                     $return[] = $item;
+                    $handler->arrTracks[$item->get_intTrackID()] = $item;
+                    $item = $query->fetchObject('TrackObject');
                 }
                 return $return;
             }
@@ -198,13 +200,15 @@ class TrackBroker
                 }
             }
             $query->execute(array(".*{$strTrackName}[:space:]*.*"));
+            $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
-                while ($item = $query->fetchObject('TrackObject')) {
+                while ($item != false) {
                     $return[] = $item;
+                    $handler->arrTracks[$item->get_intTrackID()] = $item;
+                    $item = $query->fetchObject('TrackObject');
                 }
                 return $return;
             }
@@ -247,13 +251,15 @@ class TrackBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("$strTrackUrl%"));
+            $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
-                while ($item = $query->fetchObject('TrackObject')) {
+                while ($item != false) {
                     $return[] = $item;
+                    $handler->arrTracks[$item->get_intTrackID()] = $item;
+                    $item = $query->fetchObject('TrackObject');
                 }
                 return $return;
             }
@@ -277,7 +283,10 @@ class TrackBroker
             $sql = "SELECT * FROM tracks WHERE md5FileHash = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($md5FileHash));
-            return $query->fetchObject('TrackObject');
+            $handler = self::getHandler();
+            $item = $query->fetchObject('TrackObject');
+            $handler->arrShows[$item->get_intTrackID()] = $item;
+            return $item;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
@@ -302,7 +311,10 @@ class TrackBroker
             $sql = "SELECT * FROM tracks WHERE datDailyShow = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($intDate));
-            return $query->fetchObject('TrackObject');
+            $handler = self::getHandler();
+            $item = $query->fetchObject('TrackObject');
+            $handler->arrShows[$item->get_intTrackID()] = $item;
+            return $item;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;

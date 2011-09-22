@@ -28,6 +28,22 @@
 
 class ShowBroker
 {
+    protected static $handler = null;
+    protected $arrShows = array();
+
+    /**
+     * An internal function to make this a singleton
+     *
+     * @return object This class by itself.
+     */
+    private static function getHandler()
+    {
+        if (self::$handler == null) {
+            self::$handler = new self();
+        }
+        return self::$handler;
+    }
+
     /**
      * This function finds a show by it's intShowID.
      *
@@ -37,15 +53,21 @@ class ShowBroker
      */
     public function getShowByID($intShowID = 0)
     {
-        $db = Database::getConnection();
-        try {
-            $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
-            $query = $db->prepare($sql);
-            $query->execute(array($intShowID));
-            return $query->fetchObject('ShowObject');
-        } catch(Exception $e) {
-            error_log($e);
-            return false;
+        $handler = self::getHandler();
+        if (isset($handler->arrShows[$intShowID]) and $handler->arrShows[$intShowID] != false) {
+            return $handler->arrShows[$intShowID];
+        } else {
+            $db = Database::getConnection();
+            try {
+                $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
+                $query = $db->prepare($sql);
+                $query->execute(array($intShowID));
+                $handler->arrShows[$intShowID] = $query->fetchObject('ShowObject');
+                return $handler->arrShows[$intShowID];
+            } catch(Exception $e) {
+                error_log($e);
+                return false;
+            }
         }
     }
 
@@ -59,6 +81,21 @@ class ShowBroker
     public function getShowsByIDs($arrShowIDs = array())
     {
         if (is_array($arrShowIDs) and count($arrShowIDs) > 0) {
+            $handler = self::getHandler();
+            $gotall = true;
+            foreach ($arrShowIDs as $intShowID) {
+                if (is_object($intShowID)) {
+                    $intShowID = $intShowID->get_intShowID();
+                }
+                if (!isset($handler->arrShows[$intShowID]) or $handler->arrShows[$intShowID] == false) {
+                    $gotall = false;
+                } else {
+                    $return[$intShowID] = $handler->arrShows[$intShowID];
+                }
+            }
+            if ($gotall == true) {
+                return $return;
+            }
             $db = Database::getConnection();
             try {
                 $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
@@ -67,8 +104,11 @@ class ShowBroker
                     if (is_object($intShowID)) {
                         $intShowID = $intShowID->get_intShowID();
                     }
-                    $query->execute(array($intShowID));
-                    $return[$intShowID] = $query->fetchObject('ShowObject');
+                    if (!isset($handler->arrShows[$intShowID])) {
+                        $query->execute(array($intShowID));
+                        $handler->arrShows[$intShowID] = $query->fetchObject('ShowObject');
+                        $return[$intShowID] = $handler->arrShows[$intShowID];
+                    }
                 }
                 return $return;
             } catch(Exception $e) {
@@ -76,6 +116,56 @@ class ShowBroker
                 return false;
             }
         } else {
+            return false;
+        }
+    }
+
+    /**
+     * This function finds a show by it's UserID.
+     *
+     * @param integer $intUserID The start of the URL
+     * @param integer $intPage   The start "page" number
+     * @param integer $intSize   The size of each page
+     *
+     * @return array|false An array of ShowObject or false if not existing
+     */
+    public function getShowByUserID(
+        $intUserID = 0,
+        $intPage = null,
+        $intSize = null
+    ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $page = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $page = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $size = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $size = 25;
+        }
+
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT * FROM shows WHERE intUserID = ?";
+            $pagestart = ($intPage*$intSize);
+            $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
+            $query->execute(array($intUserID));
+            $handler = self::getHandler();
+            $item = $query->fetchObject('ShowObject');
+            if ($item == false) {
+                return false;
+            } else {
+                while ($item != false) {
+                    $return[] = $item;
+                    $handler->arrShows[$item->get_intShowID()] = $item;
+                    $item = $query->fetchObject('ShowObject');
+                }
+                return $return;
+            }
+        } catch(Exception $e) {
+            error_log($e);
             return false;
         }
     }
@@ -94,7 +184,10 @@ class ShowBroker
             $sql = "SELECT * FROM shows WHERE strShowUrl LIKE ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($strShowUrl));
-            return $query->fetchObject('ShowObject');
+            $item = $query->fetchObject('ShowObject');
+            $handler = self::getHandler();
+            $handler->arrShows[$temp->get_intShowID()] = $item;
+            return $item;
         } catch(Exception $e) {
             error_log($e);
             return false;
@@ -132,12 +225,14 @@ class ShowBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("{$strShowUrl}%"));
+            $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {
                 return false;
             } else {
                 while ($item != false) {
                     $return[] = $item;
+                    $handler->arrShows[$item->get_intShowID()] = $item;
                     $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
@@ -189,13 +284,15 @@ class ShowBroker
                 }
             }
             $query->execute(array(".*{$strShowName}[:space:]*.*"));
+            $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
-                while ($item = $query->fetchObject('ShowObject')) {
+                while ($item != false) {
                     $return[] = $item;
+                    $handler->arrShows[$item->get_intShowID()] = $item;
+                    $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
             }
@@ -231,12 +328,14 @@ class ShowBroker
             $sql = "SELECT * FROM shows WHERE enumShowType = ? ORDER BY intShowUrl DESC LIMIT $intQuantity";
             $query = $db->prepare($sql);
             $query->execute(array($enumShowType));
+            $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {
                 return false;
             } else {
                 while ($item != false) {
                     $return[] = $item;
+                    $handler->arrShows[$item->get_intShowID()] = $item;
                     $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
@@ -270,7 +369,10 @@ class ShowBroker
             $sql = "SELECT * FROM shows WHERE enumShowType = ? and intShowUrl = ?";
             $query = $db->prepare($sql);
             $query->execute(array($enumShowType, $intShowUrl));
-            return $query->fetchObject('ShowObject');
+            $handler = self::getHandler();
+            $item = $query->fetchObject('ShowObject');
+            $handler->arrShows[$item->get_intShowID()] = $item;
+            return $item;
         } catch(Exception $e) {
             error_log($e);
             return false;
