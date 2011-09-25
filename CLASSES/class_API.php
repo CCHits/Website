@@ -273,47 +273,21 @@ class API
                 }
                 $this->render();
                 break;
+            case 'newtrack':
             case 'pulltrack':
-                if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] != '') {
-                    if (preg_match('/^http[s]*:\/\/([^\/])/', $arrUri['parameters']['strTrackUrl'], $matches) > 0) {
-                        switch (strtolower($matches[1])) {
-                        case 'alonetone.com':
-                        case 'www.alonetone.com':
-                            $this->result = new RemoteSourcesAlonetone($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'ccmixter.org':
-                        case 'www.ccmixter.org':
-                            $this->result = new RemoteSourcesCCMixter($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'freemusicarchive.org':
-                        case 'www.freemusicarchive.org':
-                            $this->result = new RemoteSourcesFMA($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'jamendo.com':
-                        case 'www.jamendo.com':
-                            $this->result = new RemoteSourcesJamendo($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'macjams.com':
-                        case 'www.macjams.com':
-                            $this->result = new RemoteSourcesMacjams($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'riffworld.com':
-                        case 'www.riffworld.com':
-                            $this->result = new RemoteSourcesRiffworld($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'sectionz.com':
-                        case 'www.sectionz.com':
-                            $this->result = new RemoteSourcesSectionz($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'soundcloud.com':
-                        case 'www.soundcloud.com':
-                            $this->result = new RemoteSourcesSoundcloud($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        case 'sutros.com':
-                        case 'www.sutros.com':
-                            $this->result = new RemoteSourcesSutros($arrUri['parameters']['strTrackUrl']);
-                            break;
-                        }
+                $this->result = RemoteSourcesBroker::newTrackRouter($arrUri['parameters']['strTrackUrl']);
+                if (is_array($this->result) and count($this->result) == 1) {
+                    foreach ($this->result as $key=>$value) {}
+                    if ($value == true) {
+                        $track = TrackBroker::getTrackByID($key);
+                        $track->amendRecord();
+                        $artist = ArtistBroker::getArtistByID($track->get_intArtistID());
+                        $artist->amendRecord();
+                        $this->result = array('intTrackID' => $key);
+                    } else {
+                        $track = RemoteSourcesBroker::getRemoteSourceByID($key);
+                        $track->amendRecord();
+                        $this->result = array('intProcessingID' => $key);
                     }
                 }
                 $this->render();
@@ -331,10 +305,8 @@ class API
                     $this->render();
                     break;
                 }
-
-                // TODO: Correct invalid data here
+                $objSource->amendRecord();
                 break;
-            case 'newtrack':
                 // TODO: Handles file uploads which are not from the recognised sources list above.
                 break;
             case 'getshowid':

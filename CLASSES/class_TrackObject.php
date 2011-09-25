@@ -91,6 +91,36 @@ class TrackObject extends GenericObject
     }
 
     /**
+     * This function amends data supplied by the API or HTML forms to provide additional data to update a track
+     *
+     * @return void
+     */
+    public function amendRecord()
+    {
+        $arrUri = UI::getUri();
+        if (isset($arrUri['parameters']['strTrackName'])) {
+            $this->addJson($this->strTrackName, $arrUri['parameters']['strTrackName'], true);
+        }
+        if (isset($arrUri['parameters']['strTrackNameSounds'])) {
+            $this->strTrackNameSounds = $arrUri['parameters']['strTrackNameSounds'];
+        }
+        if (isset($arrUri['parameters']['strTrackUrl'])) {
+            $this->addJson($this->strTrackUrl, $arrUri['parameters']['strTrackUrl'], true);
+        }
+        if (isset($arrUri['parameters']['enumTrackLicense'])) {
+            $this->enumTrackLicense = $arrUri['parameters']['enumTrackLicense'];
+        }
+        if (isset($arrUri['parameters']['intArtistID'])) {
+            $this->intArtistID = $arrUri['parameters']['intArtistID'];
+        }
+        if (isset($arrUri['parameters']['isNSFW'])) {
+            $this->isNSFW = $arrUri['parameters']['isNSFW'];
+        }
+        $this->write();
+    }
+
+
+    /**
      * Add the collected generated data to the getSelf function
      *
      * @return The amassed data from this function

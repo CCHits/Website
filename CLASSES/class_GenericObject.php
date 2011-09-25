@@ -84,6 +84,7 @@ class GenericObject
                 $query->execute($values);
                 return true;
             } catch(Exception $e) {
+                error_log("Error writing: " . $e->getMessage());
                 return false;
             }
         }
@@ -118,6 +119,7 @@ class GenericObject
             }
             return true;
         } catch(Exception $e) {
+            error_log("Error creating: " . $e->getMessage());
             return false;
         }
     }

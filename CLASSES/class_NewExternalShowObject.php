@@ -27,8 +27,14 @@
  */
 class NewExternalShowObject extends ShowObject
 {
-    protected $arrDBItems = array('strShowName'=>true, 'strShowUrl'=>true, 'enumShowType'=>true, 'intUserID'=>true, 'datDateAdded'=>true);
-    
+    protected $arrDBItems = array(
+        'strShowName'=>true,
+        'strShowUrl'=>true,
+        'enumShowType'=>true,
+        'intUserID'=>true,
+        'datDateAdded'=>true
+    );
+
     /**
      * Establish the creation of the new item by setting the values and then calling the create function.
      *
@@ -48,7 +54,11 @@ class NewExternalShowObject extends ShowObject
             $this->set_strShowUrl($strShowUrl);
             $this->set_intUserID(UserBroker::getUser()->get_intUserID());
             $this->set_datDateAdded(date("Y-m-d H:i:s"));
-            return $this->create();
+            if ($this->create()) {
+                return $this->get_intShowID();
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

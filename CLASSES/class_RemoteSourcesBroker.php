@@ -44,8 +44,8 @@ class RemoteSourcesBroker
             $query->execute(array($intSourceID));
             return $query->fetchObject('RemoteSources');
         } catch(Exception $e) {
-            echo "SQL Died: " . $e->getMessage();;
-            die();
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -54,7 +54,8 @@ class RemoteSourcesBroker
      *
      * @return false|array False if there's an error or no entries, array of RemoteSources if there is data to process.
      */
-    public function getRemoteSourcesByUserID() {
+    public function getRemoteSourcesByUserID()
+    {
         $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM processing WHERE intUserID = ? LIMIT 1";
@@ -73,6 +74,68 @@ class RemoteSourcesBroker
         } catch(Exception $e) {
             error_log($e);
             return false;
+        }
+    }
+
+    /**
+     * A router for the newTrack requests used by the API and HTML classes
+     *
+     * @param String $url The track to be used by the site
+     *
+     * @return Array|Integer|False One of the following, an array of the
+     * TrackID and the boolean value true if there was enough data to create a
+     * new track object from it, an array of the ProcessingID and the boolean
+     * value false if there wasn't enough data to create a new track object
+     * from the supplied data, an integer if there was a specific error with
+     * the supplied data (to be used as an HTTP Error Status), or false if
+     * no URL was supplied.
+     */
+    public function newTrackRouter($url = '')
+    {
+        if ($url != '') {
+            if (preg_match('/^http[s]*:\/\/([^\/])/', $url, $matches) > 0) {
+                switch (strtolower($matches[1])) {
+                case 'alonetone.com':
+                case 'www.alonetone.com':
+                    return new RemoteSourcesAlonetone($url);
+                case 'ccmixter.org':
+                case 'www.ccmixter.org':
+                    return new RemoteSourcesCCMixter($url);
+                case 'freemusicarchive.org':
+                case 'www.freemusicarchive.org':
+                    return new RemoteSourcesFMA($url);
+                case 'jamendo.com':
+                case 'www.jamendo.com':
+                    return new RemoteSourcesJamendo($url);
+                case 'macjams.com':
+                case 'www.macjams.com':
+                    return new RemoteSourcesMacjams($url);
+                case 'riffworld.com':
+                case 'www.riffworld.com':
+                    return new RemoteSourcesRiffworld($url);
+                case 'sectionz.com':
+                case 'www.sectionz.com':
+                    return new RemoteSourcesSectionz($url);
+                case 'soundcloud.com':
+                case 'www.soundcloud.com':
+                    return new RemoteSourcesSoundcloud($url);
+                case 'sutros.com':
+                case 'www.sutros.com':
+                    return new RemoteSourcesSutros($url);
+                }
+            } else {
+                $remoteSource = new RemoteSources();
+                $remoteSource->set_strTrackUrl($url);
+                return $remoteSource->create_pull_entry();
+            }
+        } else {
+            $arrUri = UI::getUri();
+            if (isset($arrUri['parameters']['_FILES'])) {
+                // TODO: Handle file uploads
+                return false;
+            } else {
+                return false;
+            }
         }
     }
 }

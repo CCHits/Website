@@ -126,28 +126,35 @@ class HTML
                 if (isset($_SESSION['OPENID_AUTH']) and isset($_SESSION['cookie'])) {
                     unset($_SESSION['cookie']);
                 }
+                $user = UserBroker::getUser();
+                if (preg_match('/(.*):/', $user->get_sha1Pass(), $match) > 0) {
+                    $this->result['user'] = $match[1];
+                }
                 switch ($object[1]) {
                 case 'track':
                     $objTrack = TrackBroker::getTrackByID($object[2]);
-                    if ($objTrack != false and (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized())) {
+                    if ($objTrack != false and ($user->get_isUploader() or $user->get_isAdmin() or $user->get_isAuthorized())) {
                         $this->editTrack($objTrack);
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
                     } else {
-                        // TODO: Create login.html.tpl
-                        UI::SmartyTemplate("login.html", array('notuploader'=>true));
+                        $this->result['notuploader'] = true;
+                        // TODO: Create login.html.tpl (keys: notuploader, notyourshow, notadmin, notyourtrack)
+                        UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
                 case 'show':
                     $objShow = ShowBroker::getShowByID($object[2]);
-                    if ($objShow != false and UserBroker::getUser()->get_isAdmin() and $objShow->get_intUserID() == UserBroker::getUser()->get_intUserID()) {
+                    if ($objShow != false and $user->get_isAdmin() and $objShow->get_intUserID() == $user->get_intUserID()) {
                         $this->editShow($objShow);
-                    } elseif ($objShow->get_intUserID() != UserBroker::getUser()->get_intUserID()) {
-                        UI::SmartyTemplate("login.html", array('notyourshow'=>true));
+                    } elseif ($objShow->get_intUserID() != $user->get_intUserID()) {
+                        $this->result['notyourshow'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
                     } elseif ($objShow == false) {
                         UI::sendHttpResponse(404);
                     } else {
-                        UI::SmartyTemplate("login.html", array('notadmin'=>true));
+                        $this->result['notadmin'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
                 case 'addtrack':
@@ -155,18 +162,21 @@ class HTML
                     if (($object[2] == '' or $objTrack != false) and (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized())) {
                         $this->addTrack($objTrack);
                     } elseif ($objTrack->get_intUserID() != UserBroker::getUser()->get_intUserID()) {
-                        UI::SmartyTemplate("login.html", array('notyourtrack'=>true));
+                        $this->result['notyourtrack'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
                     } else {
-                        UI::SmartyTemplate("login.html", array('notuploader'=>true));
+                        $this->result['notuploader'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
                 case 'addshow':
                     if (UserBroker::getUser()->get_isAdmin()) {
                         $this->addShow();
                     } else {
-                        UI::SmartyTemplate("login.html", array('notadmin'=>true));
+                        $this->result['notadmin'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
                 case 'listtracks':
@@ -175,9 +185,12 @@ class HTML
                 case 'listshows':
                     $this->listshows(ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID()));
                     break;
+                case 'basicauth':
+                    $this->basicAuth();
+                    break;
                 default:
                     if (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized()) {
-                        UI::SmartyTemplate('admin.html');
+                        UI::SmartyTemplate('admin.html', $this->result);
                     } else {
                         UI::SmartyTemplate("login.html");
                     }
@@ -204,21 +217,64 @@ class HTML
     protected function addTrack($objTrack = null)
     {
         if ($objTrack == false) {
-            // New Track
+            $arrData = RemoteSourcesBroker::newTrackRouter($this->arrUri['parameters']['trackurl']);
+            if (is_array($arrData) and count($arrData) == 1) {
+                foreach ($arrData as $key=>$value) {}
+                if ($value == true) {
+                    $this->result['track'] = TrackBroker::getTrackByID($key);
+                    $this->result['postimport'] = true;
+                    // TODO: Create trackeditor.html.tpl
+                    UI::SmartyTemplate('trackeditor.html', $this->result);
+                } else {
+                    $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key);
+                    // TODO: Create trackimporter.html.tpl
+                    UI::SmartyTemplate('trackimporter.html', $this->result);
+                }
+            } elseif (is_integer($arrData)) {
+                // Improve these!
+                switch ($arrData) {
+                case 406:
+                    $this->result['error'] = 406;
+                    break;
+                case 400:
+                    $this->result['error'] = 400;
+                    break;
+                case 404:
+                    $this->result['error'] = 404;
+                    break;
+                case 412:
+                    $this->result['error'] = 412;
+                    break;
+                case 417:
+                    $this->result['error'] = 417;
+                    break;
+                }
+                UI::SmartyTemplate("error_with_track.html", $this->result);
+            } else {
+                UI::SmartyTemplate('admin.html', $this->result);
+            }
         } else {
-            //
+            $this->result['track'] = $objTrack;
+            UI::SmartyTemplate('trackimporter.html', $this->result);
         }
     }
 
     /**
      * Begin a New Show process. This will redirect to editShow once the new show process has been started.
-     * TODO: Write HTML::addShow() function
      *
      * @return void
      */
     protected function addShow()
     {
-
+        if (isset($this->arrUri['parameters']['strShowUrl']) and $this->arrUri['parameters']['strShowUrl'] != '') {
+            $showUrl = $this->arrUri['parameters']['strShowUrl'];
+            $showName = $this->arrUri['parameters']['strShowUrl'];
+            if (isset($this->arrUri['parameters']['strShowName']) and $this->arrUri['parameters']['strShowName'] != '') {
+                $showName = $this->arrUri['parameters']['strShowName'];
+            }
+            $intShowID = new NewExternalShowObject($showUrl, $showName);
+            UI::Redirect('/admin/show/' . $intShowID);
+        }
     }
 
     /**
@@ -247,6 +303,30 @@ class HTML
 
     }
 
+    /**
+     * Set or amend the BasicAuth credentials for this OpenID account
+     * TODO: Create setcredentials.html.tpl
+     *
+     * @return void
+     */
+    protected function basicAuth()
+    {
+        $user = UserBroker::getUser();
+        $data['user'] = '';
+        $data['state'] = null;
+        if (isset($this->arrUri['parameters']['strUsername']) and isset($this->arrUri['parameters']['strPassword']) and $this->arrUri['parameters']['strUsername'] != '' and $this->arrUri['parameters']['strPassword'] != '' ) {
+            $newCredentials = "{$this->arrUri['parameters']['strUsername']}:" . sha1($this->arrUri['parameters']['strPassword']);
+            $user->set_sha1Pass($newCredentials);
+            $data['state'] = false;
+            if ($user->write()) {
+                $data['state'] = true;
+            }
+        }
+        if (preg_match('/(.*):/', $user->get_sha1Pass(), $match) > 0) {
+            $data['user'] = $match[1];
+        }
+        UI::SmartyTemplate('setcredentials.html', $data);
+    }
 
     /**
      * Force the user back to the home page
@@ -255,7 +335,7 @@ class HTML
      */
     protected function reset_page()
     {
-        UI::Redirect('', false);
+        UI::Redirect('');
     }
 
     /**

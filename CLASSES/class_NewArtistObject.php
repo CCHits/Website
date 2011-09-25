@@ -41,8 +41,8 @@ class NewArtistObject extends ArtistObject
         $strArtistNameSounds = "",
         $strArtistUrl = ""
     ) {
-        if ($strArtistName != "" 
-            and $strArtistUrl != "" 
+        if ($strArtistName != ""
+            and $strArtistUrl != ""
         ) {
             $this->set_strArtistName($strArtistName);
             if ($strArtistNameSounds == "") {
@@ -51,7 +51,11 @@ class NewArtistObject extends ArtistObject
                 $this->set_strArtistNameSounds($strArtistNameSounds);
             }
             $this->set_strArtistUrl($strArtistUrl);
-            return $this->create();
+            if ($this->create()) {
+                return $this->get_intArtistID();
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

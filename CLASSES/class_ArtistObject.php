@@ -39,6 +39,25 @@ class ArtistObject extends GenericObject
     protected $arrTracks = array();
 
     /**
+     * This function amends data supplied by the API or HTML forms to provide additional data to update an artist
+     *
+     * @return void
+     */
+    public function amendRecord()
+    {
+        $arrUri = UI::getUri();
+        if (isset($arrUri['parameters']['strArtistName'])) {
+            $this->addJson($this->strArtistName, $arrUri['parameters']['strArtistName'], true);
+        }
+        if (isset($arrUri['parameters']['strArtistNameSounds'])) {
+            $this->strArtistNameSounds = $arrUri['parameters']['strArtistNameSounds'];
+        }
+        if (isset($arrUri['parameters']['strArtistUrl'])) {
+            $this->addJson($this->strArtistUrl, $arrUri['parameters']['strArtistUrl'], true);
+        }
+    }
+
+    /**
      * Return the value of the intArtistID
      *
      * @return int $intArtistID

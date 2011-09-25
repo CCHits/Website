@@ -61,6 +61,44 @@ class RemoteSources extends GenericObject
     protected $intUserID = 0;
 
     /**
+     * This function amends data supplied by the API or HTML forms to provide additional data to process a track
+     *
+     * @return void
+     */
+    public function amendRecord()
+    {
+        $arrUri = UI::getUri();
+        if (isset($arrUri['parameters']['strTrackName'])) {
+            $this->addJson($this->strTrackName, $arrUri['parameters']['strTrackName'], true);
+        }
+        if (isset($arrUri['parameters']['strTrackNameSounds'])) {
+            $this->strTrackNameSounds = $arrUri['parameters']['strTrackNameSounds'];
+        }
+        if (isset($arrUri['parameters']['strTrackUrl'])) {
+            $this->addJson($this->strTrackUrl, $arrUri['parameters']['strTrackUrl'], true);
+        }
+        if (isset($arrUri['parameters']['enumTrackLicense'])) {
+            $this->enumTrackLicense = $arrUri['parameters']['enumTrackLicense'];
+        }
+        if (isset($arrUri['parameters']['strArtistName'])) {
+            $this->addJson($this->strArtistName, $arrUri['parameters']['strArtistName'], true);
+        }
+        if (isset($arrUri['parameters']['strArtistNameSounds'])) {
+            $this->strArtistNameSounds = $arrUri['parameters']['strArtistNameSounds'];
+        }
+        if (isset($arrUri['parameters']['strArtistUrl'])) {
+            $this->addJson($this->strArtistUrl, $arrUri['parameters']['strArtistUrl'], true);
+        }
+        if (isset($arrUri['parameters']['intArtistID'])) {
+            $this->intArtistID = $arrUri['parameters']['intArtistID'];
+        }
+        if (isset($arrUri['parameters']['isNSFW'])) {
+            $this->isNSFW = $arrUri['parameters']['isNSFW'];
+        }
+        $this->write();
+    }
+
+    /**
      * Set the track name in the class
      *
      * @param string $strTrackName Track Name
@@ -129,7 +167,7 @@ class RemoteSources extends GenericObject
      */
     protected function set_intArtistID($intArtistID = 0)
     {
-        if ($this->intArtistID != $intArtistID) {
+        if ($this->intArtistID != $intArtistID and ArtistBroker::getArtistByID($intArtistID) != false) {
             $this->intArtistID = $intArtistID;
             $arrChanges['intArtistID'] = true;
         }
@@ -280,7 +318,7 @@ class RemoteSources extends GenericObject
     function approveProcessing()
     {
         if ($this->intArtistID == 0) {
-            $this->intArtistID = addArtist(
+            $this->intArtistID = new NewArtistObject(
                 $this->strArtistName,
                 $this->strArtistNameSounds,
                 $this->strArtistUrl
@@ -332,11 +370,15 @@ class RemoteSources extends GenericObject
         if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense)) {
             throw new RemoteSource_NoTrackLicense();
         }
-        if (!isset($this->strArtistName) or '' == trim($this->strArtistName)) {
+        if (isset($this->intArtistID) and false == ArtistBroker::getArtistByID($this->intArtistID)) {
             throw new RemoteSource_NoArtistName();
-        }
-        if (!isset($this->strArtistUrl) or '' == trim($this->strArtistUrl)) {
-            throw new RemoteSource_NoArtistUrl();
+        } else {
+            if (!isset($this->intArtistID) and (!isset($this->strArtistName) or '' == trim($this->strArtistName))) {
+                throw new RemoteSource_NoArtistName();
+            }
+            if (!isset($this->intArtistID) and (!isset($this->strArtistUrl) or '' == trim($this->strArtistUrl))) {
+                throw new RemoteSource_NoArtistUrl();
+            }
         }
         if (!isset($this->isNSFW) or trim($this->isNSFW)>1 or trim($this->isNSFW)<0) {
             throw new RemoteSource_NoNSFWFlag();
