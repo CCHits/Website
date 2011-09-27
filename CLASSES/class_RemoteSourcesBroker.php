@@ -122,6 +122,9 @@ class RemoteSourcesBroker
                 case 'sutros.com':
                 case 'www.sutros.com':
                     return new RemoteSourcesSutros($url);
+                case 'vimeo.com':
+                case 'www.vimeo.com':
+                    return new RemoteSourcesVimeo($url);
                 }
             } else {
                 $remoteSource = new RemoteSources();
