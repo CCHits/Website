@@ -150,10 +150,14 @@ class GenericObject
      */
     function asBoolean($check)
     {
-        switch($check) {
+        switch((string) $check) {
+        case 'no':
+        case '0':
+        case 'false':
+            return false;
         case '1':
-        case 'true':
         case 'yes':
+        case 'true':
             return true;
         default:
             return false;

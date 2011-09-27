@@ -84,10 +84,12 @@ class HTML
             switch($this->arrUri['path_items'][0]) {
             case 'track':
             case 't':
+                $this->result['user'] = UserBroker::getUser()->getSelf();
                 $this->track($object[1]);
                 break;
             case 'show':
             case 's':
+                $this->result['user'] = UserBroker::getUser()->getSelf();
                 $this->show($object[1]);
                 break;
             case 'vote':
@@ -120,20 +122,29 @@ class HTML
                 }
                 $this->monthly($object[1]);
                 break;
+            case 'about':
+                $this->about($object[1]);
+                break;
             case 'admin':
                 $this->format = "html";
-                session_start();
+                $this->render();
+                if (session_id()==='') {
+                    $lifetime=604800; // 7 Days
+                    session_start();
+                    setcookie(session_name(),session_id(),time()+$lifetime);
+                }
                 if (isset($_SESSION['OPENID_AUTH']) and isset($_SESSION['cookie'])) {
                     unset($_SESSION['cookie']);
                 }
                 $user = UserBroker::getUser();
+                $this->result['user'] = $user->getSelf();
                 if (preg_match('/(.*):/', $user->get_sha1Pass(), $match) > 0) {
                     $this->result['user'] = $match[1];
                 }
                 switch ($object[1]) {
                 case 'track':
                     $objTrack = TrackBroker::getTrackByID($object[2]);
-                    if ($objTrack != false and ($user->get_isUploader() or $user->get_isAdmin() or $user->get_isAuthorized())) {
+                    if ($objTrack != false and ($user->get_isUploader() or $user->get_isAdmin())) {
                         $this->editTrack($objTrack);
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
@@ -158,10 +169,10 @@ class HTML
                     }
                     break;
                 case 'addtrack':
-                    $objTrack = RemoteSourceBroker::getRemoteSourceByID($object[2]);
-                    if (($object[2] == '' or $objTrack != false) and (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized())) {
+                    $objTrack = RemoteSourcesBroker::getRemoteSourceByID($object[2]);
+                    if (($object[2] == '' or $objTrack != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
                         $this->addTrack($objTrack);
-                    } elseif ($objTrack->get_intUserID() != UserBroker::getUser()->get_intUserID()) {
+                    } elseif ($objTrack->get_intUserID() != $user->get_intUserID()) {
                         $this->result['notyourtrack'] = true;
                         UI::SmartyTemplate("login.html", $this->result);
                     } elseif ($objTrack == false) {
@@ -172,7 +183,7 @@ class HTML
                     }
                     break;
                 case 'addshow':
-                    if (UserBroker::getUser()->get_isAdmin()) {
+                    if ($user->get_isAdmin()) {
                         $this->addShow();
                     } else {
                         $this->result['notadmin'] = true;
@@ -183,22 +194,21 @@ class HTML
                     $this->listtracks(RemoteSourcesBroker::getRemoteSourcesByUserID());
                     break;
                 case 'listshows':
-                    $this->listshows(ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID()));
+                    $this->listshows(ShowBroker::getShowByUserID($user));
                     break;
                 case 'basicauth':
                     $this->basicAuth();
                     break;
-                default:
-                    if (UserBroker::getUser()->get_isUploader() or UserBroker::getUser()->get_isAdmin() or UserBroker::getUser()->get_isAuthorized()) {
+                case '':
+                    if ($user->get_isUploader() or $user->get_isAdmin()) {
                         UI::SmartyTemplate('admin.html', $this->result);
                     } else {
                         UI::SmartyTemplate("login.html");
                     }
                     break;
+                default:
+                    UI::Redirect('admin');
                 }
-                break;
-            case 'about':
-                $this->about($object[1]);
                 break;
             default:
                 $this->reset_page();
@@ -251,7 +261,7 @@ class HTML
                 }
                 UI::SmartyTemplate("error_with_track.html", $this->result);
             } else {
-                UI::SmartyTemplate('admin.html', $this->result);
+                UI::Redirect("admin");
             }
         } else {
             $this->result['track'] = $objTrack;
@@ -273,7 +283,7 @@ class HTML
                 $showName = $this->arrUri['parameters']['strShowName'];
             }
             $intShowID = new NewExternalShowObject($showUrl, $showName);
-            UI::Redirect('/admin/show/' . $intShowID);
+            UI::Redirect('admin/show/' . $intShowID);
         }
     }
 

@@ -69,9 +69,9 @@ try {
             } elseif (isset($_GET['logout'])) {
                 session_start();
                 unset($_SESSION['OPENID_AUTH']);
-                UI::redirect($arrUri['basePath'] . 'admin');
+                UI::redirect('admin');
             } else {
-                UI::redirect($arrUri['basePath'] . 'admin');
+                UI::redirect('admin');
             }
             break;
         default:
