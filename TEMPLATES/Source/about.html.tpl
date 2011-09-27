@@ -1,12 +1,11 @@
 <html>
 	<head>
-		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
-		<title>{$ServiceName} - {$Slogan}</title>
+		<title>About: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
 		<h1>Welcome to {$ServiceName}</h1>
 		<h2>{$Slogan}</h2>
-		<h3>About CCHits.net, it's FAQ and more</h3>
+		<h3>About CCHits.net, the FAQ and more</h3>
 		<ul class="TOC">
 			<li><a href="#goals">Goals</a></li>
 			<li><a href="#source">Source</a></li>
