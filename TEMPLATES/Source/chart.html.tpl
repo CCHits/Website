@@ -4,7 +4,7 @@
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.js"></script>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY.SPARKLINE/{$jquerysparkline}/jquery.sparkline.min.js"></script>
-		<title>{$ServiceName} - {$Slogan}</title>
+		<title>Chart: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
 		<h1>Welcome to {$ServiceName}</h1>

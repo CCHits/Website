@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
-		<title>Login: {$ServiceName} - {$Slogan}</title>
+		<title>Administration: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
 		<h1>Welcome to {$ServiceName}</h1>

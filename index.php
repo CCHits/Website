@@ -63,6 +63,9 @@ try {
             break;
         case 'openid':
             if (isset($_POST['id'])) {
+                if (isset($_SESSION['OPENID_AUTH'])) {
+                    unset($_SESSION['OPENID_AUTH']);
+                }
                 $content = OpenID::request($_POST['id'], $arrUri['basePath'] . 'openid', $arrUri['basePath'] . 'admin', $arrUri['basePath'] . 'admin');
             } elseif (isset($_REQUEST['return'])) {
                 $content = OpenID::response($arrUri['basePath'] . 'openid');
