@@ -138,9 +138,6 @@ class HTML
                 }
                 $user = UserBroker::getUser();
                 $this->result['user'] = $user->getSelf();
-                if (preg_match('/(.*):/', $user->get_sha1Pass(), $match) > 0) {
-                    $this->result['user'] = $match[1];
-                }
                 switch ($object[1]) {
                 case 'track':
                     $objTrack = TrackBroker::getTrackByID($object[2]);
@@ -150,7 +147,6 @@ class HTML
                         UI::sendHttpResponse(404);
                     } else {
                         $this->result['notuploader'] = true;
-                        // TODO: Create login.html.tpl (keys: notuploader, notyourshow, notadmin, notyourtrack)
                         UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
@@ -322,20 +318,16 @@ class HTML
     protected function basicAuth()
     {
         $user = UserBroker::getUser();
-        $data['user'] = '';
-        $data['state'] = null;
+        $this->result['error'] = false;
         if (isset($this->arrUri['parameters']['strUsername']) and isset($this->arrUri['parameters']['strPassword']) and $this->arrUri['parameters']['strUsername'] != '' and $this->arrUri['parameters']['strPassword'] != '' ) {
             $newCredentials = "{$this->arrUri['parameters']['strUsername']}:" . sha1($this->arrUri['parameters']['strPassword']);
             $user->set_sha1Pass($newCredentials);
-            $data['state'] = false;
             if ($user->write()) {
-                $data['state'] = true;
+                UI::Redirect('admin');
             }
+            $this->result['error'] = true;
         }
-        if (preg_match('/(.*):/', $user->get_sha1Pass(), $match) > 0) {
-            $data['user'] = $match[1];
-        }
-        UI::SmartyTemplate('setcredentials.html', $data);
+        UI::SmartyTemplate('setcredentials.html', $this->result);
     }
 
     /**
@@ -719,6 +711,7 @@ class HTML
                 UI::sendHttpResponse(500);
             }
         case 'html':
+            $this->result['config'] = ConfigBroker::getAllConfig();
             $this->result['ServiceName'] = ConfigBroker::getConfig('ServiceName', 'CCHits');
             $this->result['Slogan'] = ConfigBroker::getConfig('Slogan', 'Where you make the charts');
             $this->result['baseURL'] = $this->arrUri['basePath'];

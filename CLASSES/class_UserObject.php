@@ -49,6 +49,31 @@ class UserObject extends GenericObject
     protected $isUploader = 0;
     protected $isAdmin = 0;
     protected $datLastSeen = "";
+    protected $strUserName = "";
+
+    /**
+     * A basic handler to extract the username from the sha1Password field of the database.
+     *
+     * @return void
+     */
+    function __construct()
+    {
+        if (isset($this->sha1Pass) and $this->sha1Pass != '' and preg_match('/(.*):/', $this->sha1Pass, $match) > 0) {
+            $this->strUserName = $match[1];
+        }
+    }
+
+    /**
+     * Add the generated data to the getSelf function
+     *
+     * @return The amassed data from this function
+     */
+    function getSelf()
+    {
+        $return = parent::getSelf();
+        $return['strUserName'] = $this->strUserName;
+        return $return;
+    }
 
     /**
      * Set the OpenID authenticator for this user account
@@ -193,6 +218,16 @@ class UserObject extends GenericObject
     function get_sha1Pass()
     {
         return $this->sha1Pass;
+    }
+
+    /**
+     * Return the derived username
+     *
+     * @return string The username
+     */
+    function get_strUserName()
+    {
+        return $this->strUserName;
     }
 
     /**

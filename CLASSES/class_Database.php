@@ -53,7 +53,7 @@ class Database
     public function getConnection($RequireWrite = false)
     {
         $self = self::getHandler();
-        if (($RequireWrite == true AND $self->rw_db != null) OR ($RequireWrite != false AND $self->ro_db == null)) {
+        if (($RequireWrite == true AND $self->rw_db != null) OR ($RequireWrite == false AND $self->ro_db != null)) {
             if ($RequireWrite == true) {
                 return $self->rw_db;
             } else {

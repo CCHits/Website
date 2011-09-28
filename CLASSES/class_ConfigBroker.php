@@ -46,14 +46,11 @@ class ConfigBroker
     }
 
     /**
-     * Return either the established configuration item, or the default
+     * A function to retrieve all configuration values stored in the config table of the database
      *
-     * @param string $strKey     The key we're searching for
-     * @param string $strDefault The default response if it's not in the database
-     *
-     * @return string The value we're searching for, or the default if not found.
+     * @return array Configuration values stored in an array($key=>$value) format
      */
-    public function getConfig($strKey = "", $strDefault = "")
+    public function getAllConfig()
     {
         $handler = self::getHandler();
         if (!is_array($handler->arrConfig) or (is_array($handler->arrConfig) and count($handler->arrConfig) == 0)) {
@@ -63,12 +60,52 @@ class ConfigBroker
                 $query = $db->prepare($sql);
                 $query->execute();
                 $handler->arrConfig = $query->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_GROUP);
+                return $handler->arrConfig;
             } catch(Exception $e) {
-                return $strDefault;
+                error_log($e);
+                return false;
             }
+        } else {
+            return $handler->arrConfig;
         }
-        if (isset($handler->arrConfig[$strKey])) {
-            return $handler->arrConfig[$strKey][0];
+    }
+
+    /**
+     * A function to retrieve all configuration values stored in the appconfig values in the config files
+     *
+     * @return array Configuration values stored in an array($key=>$value) format
+     */
+    public function getAllAppConfig()
+    {
+        $handler = self::getHandler();
+        if (!is_array($handler->arrLocalConfig) or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)) {
+            include dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
+            if (isset($APPCONFIG)) {
+                $handler->arrLocalConfig = $APPCONFIG;
+                return $handler->arrLocalConfig;
+            } else {
+                return false;
+            }
+        } else {
+            return $handler->arrLocalConfig;
+        }
+    }
+
+    /**
+     * Return either the established configuration item, or the default
+     *
+     * @param string $strKey     The key we're searching for
+     * @param string $strDefault The default response if it's not in the database
+     *
+     * @return string The value we're searching for, or the default if not found.
+     */
+    public function getConfig($strKey = "", $strDefault = "")
+    {
+        $config = self::getAllConfig();
+        if ($config == false) {
+            return $strDefault;
+        } elseif (is_array($config) and isset($config[$strKey])) {
+            return $config[$strKey][0];
         } else {
             return $strDefault;
         }
@@ -84,15 +121,11 @@ class ConfigBroker
      */
     public function getAppConfig($strKey = "", $strDefault = "")
     {
-        $handler = self::getHandler();
-        if (!is_array($handler->arrLocalConfig) or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)) {
-            include dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
-            if (isset($APPCONFIG)) {
-                $handler->arrLocalConfig = $APPCONFIG;
-            }
-        }
-        if (isset($handler->arrLocalConfig[$strKey])) {
-            return $handler->arrLocalConfig[$strKey];
+        $config = self::getAllAppConfig();
+        if ($config == false) {
+            return $strDefault;
+        } elseif (is_array($config) and isset($config[$strKey])) {
+            return $config[$strKey];
         } else {
             return $strDefault;
         }
