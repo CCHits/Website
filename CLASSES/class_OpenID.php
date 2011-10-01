@@ -72,6 +72,9 @@ class OpenID
      */
     function __construct()
     {
+        // start session (needed for YADIS)
+        UI::start_session();
+
         $arrUri = UI::getUri();
         $externalLibraryLoader = new ExternalLibraryLoader();
         $openid_ver = $externalLibraryLoader->getVersion('PHP-OPENID');
@@ -82,13 +85,6 @@ class OpenID
         include_once "Auth/OpenID/FileStore.php";
         include_once "Auth/OpenID/SReg.php";
         include_once "Auth/OpenID/AX.php";
-
-        // start session (needed for YADIS)
-        if (session_id()==='') {
-            $lifetime=604800; // 7 Days
-            session_start();
-            setcookie(session_name(),session_id(),time()+$lifetime);
-        }
 
         // create file storage area for OpenID data
         $store = new Auth_OpenID_FileStore(dirname(__FILE__) . '/../OPENID_STORE');

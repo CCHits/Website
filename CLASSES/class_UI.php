@@ -904,6 +904,20 @@ class UI
     }
 
     /**
+     * Overide the standard session_start() call, with our preferred longer cookie timer.
+     *
+     * @return void
+     */
+    function start_session()
+    {
+        if (session_id()==='') {
+            // 7 Days!
+            session_set_cookie_params(604800);
+            session_start();
+        }
+    }
+
+    /**
      * Generate and return the URL for the QRCode for this page
      *
      * @param string $file The path from the Base Path to the page we are referring to

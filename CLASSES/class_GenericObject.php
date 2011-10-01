@@ -218,7 +218,7 @@ class GenericObject
     {
         $set = false;
         $arrJson = (array) json_decode($strJson);
-        if (count($arrJson == 0)) {
+        if (count($arrJson) == 0) {
             $arrJson[] = $strJson;
         }
         $arrTemp = array();
@@ -261,11 +261,11 @@ class GenericObject
     function delJson($strJson = '', $strValueToRemove = '')
     {
         $arrJson = (array) json_decode($strJson);
-        if (count($arrJson == 0)) {
+        if (count($arrJson) == 0) {
             $arrJson[] = $strJson;
         }
         if (count($arrJson) <= 1) {
-            return false;
+            return $strJson;
         }
         $arrTemp = array();
         $intKey = 0;
@@ -292,7 +292,7 @@ class GenericObject
     function inJson($strJson = '', $strValueToFind = '')
     {
         $arrJson = (array) json_decode($strJson);
-        if (count($arrJson == 0)) {
+        if (count($arrJson) == 0) {
             $arrJson[] = $strJson;
         }
         foreach ($arrJson as $value) {
@@ -313,9 +313,29 @@ class GenericObject
     function getJson($strJson = '')
     {
         $arrJson = (array) json_decode($strJson);
-        if (count($arrJson == 0)) {
+        if (count($arrJson) == 0) {
             $arrJson[] = $strJson;
         }
+        $arrJson = $this->deobjectify_array($arrJson);
         return $arrJson;
+    }
+
+    /**
+     * Return an array of data when presented with an object
+     *
+     * @param array|object $process Values to be processed
+     *
+     * @return array Processed array
+     */
+    function deobjectify_array($process)
+    {
+        foreach ((array) $process as $key => $value) {
+            if (is_object($value)) {
+                $return[$key] = deobjectify_array($value);
+            } else {
+                $return[$key] = $value;
+            }
+        }
+        return $return;
     }
 }

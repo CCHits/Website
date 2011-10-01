@@ -70,7 +70,7 @@ try {
             } elseif (isset($_REQUEST['return'])) {
                 $content = OpenID::response($arrUri['basePath'] . 'openid');
             } elseif (isset($_GET['logout'])) {
-                session_start();
+                UI::start_session();
                 unset($_SESSION['OPENID_AUTH']);
                 UI::redirect('admin');
             } else {
