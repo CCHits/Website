@@ -56,11 +56,7 @@ class UserBroker
         if ($objSelf->thisUser != null) {
             return $objSelf->thisUser;
         }
-        if (session_id()==='') {
-            $lifetime=604800; // 7 Days
-            session_start();
-            setcookie(session_name(),session_id(),time()+$lifetime);
-        }
+        UI::start_session();
         if (isset($_SESSION['cookie']) AND $_SESSION['cookie'] != '') {
             $field = "strCookieID";
             $param = $_SESSION['cookie'];

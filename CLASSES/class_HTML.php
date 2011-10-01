@@ -128,11 +128,7 @@ class HTML
             case 'admin':
                 $this->format = "html";
                 $this->render();
-                if (session_id()==='') {
-                    $lifetime=604800; // 7 Days
-                    session_start();
-                    setcookie(session_name(),session_id(),time()+$lifetime);
-                }
+                UI::start_session();
                 if (isset($_SESSION['OPENID_AUTH']) and isset($_SESSION['cookie'])) {
                     unset($_SESSION['cookie']);
                 }
@@ -199,7 +195,11 @@ class HTML
                     if ($user->get_isUploader() or $user->get_isAdmin()) {
                         UI::SmartyTemplate('admin.html', $this->result);
                     } else {
-                        UI::SmartyTemplate("login.html");
+                        if (isset($_SESSION['OPENID_AUTH']) and is_array($_SESSION['OPENID_AUTH']) and count($_SESSION['OPENID_AUTH']) > 0) {
+                            $this->result['notuploader'] = true;
+                            $this->result['notadmin'] = true;
+                        }
+                        UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
                 default:
@@ -227,9 +227,8 @@ class HTML
             if (is_array($arrData) and count($arrData) == 1) {
                 foreach ($arrData as $key=>$value) {}
                 if ($value == true) {
-                    $this->result['track'] = TrackBroker::getTrackByID($key);
+                    $this->result['track'] = TrackBroker::getTrackByID($key)->getSelf();
                     $this->result['postimport'] = true;
-                    // TODO: Create trackeditor.html.tpl
                     UI::SmartyTemplate('trackeditor.html', $this->result);
                 } else {
                     $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key);
@@ -285,7 +284,6 @@ class HTML
 
     /**
      * Edit an existing track.
-     * TODO: Write HTML::editTrack() function
      *
      * @param object $objTrack The track object
      *
@@ -293,7 +291,64 @@ class HTML
      */
     protected function editTrack($objTrack = null)
     {
+        if ($objTrack != false) {
+            if (isset($this->arrUri['parameters']['strTrackName_preferred']) and $this->arrUri['parameters']['strTrackName_preferred'] != '') {
+                $objTrack->setpreferred_strTrackName($this->arrUri['parameters']['strTrackName_preferred']);
+            }
+            if (isset($this->arrUri['parameters']['strTrackName']) and $this->arrUri['parameters']['strTrackName'] != '') {
+                $objTrack->set_strTrackName($this->arrUri['parameters']['strTrackName']);
+            }
+            if (isset($this->arrUri['parameters']['del_strTrackName']) and $this->arrUri['parameters']['del_strTrackName'] != '') {
+                $objTrack->del_strTrackName($this->arrUri['parameters']['del_strTrackName']);
+            }
+            if (isset($this->arrUri['parameters']['strTrackNameSounds']) and $this->arrUri['parameters']['strTrackNameSounds'] != '') {
+                $objTrack->set_strTrackNameSounds($this->arrUri['parameters']['strTrackNameSounds']);
+            }
+            if (isset($this->arrUri['parameters']['strTrackUrl_preferred']) and $this->arrUri['parameters']['strTrackUrl_preferred'] != '') {
+                $objTrack->setpreferred_strTrackUrl($this->arrUri['parameters']['strTrackUrl_preferred']);
+            }
+            if (isset($this->arrUri['parameters']['strTrackUrl']) and $this->arrUri['parameters']['strTrackUrl'] != '') {
+                $objTrack->set_strTrackUrl($this->arrUri['parameters']['strTrackUrl']);
+            }
+            if (isset($this->arrUri['parameters']['del_strTrackUrl']) and $this->arrUri['parameters']['del_strTrackUrl'] != '') {
+                $objTrack->del_strTrackUrl($this->arrUri['parameters']['del_strTrackUrl']);
+            }
+            if (isset($this->arrUri['parameters']['strArtistName_preferred']) and $this->arrUri['parameters']['strArtistName_preferred'] != '') {
+                $objTrack->get_objArtist()->setpreferred_strArtistName($this->arrUri['parameters']['strArtistName_preferred']);
+            }
+            if (isset($this->arrUri['parameters']['strArtistName']) and $this->arrUri['parameters']['strArtistName'] != '') {
+                $objTrack->get_objArtist()->set_strArtistName($this->arrUri['parameters']['strArtistName']);
+            }
+            if (isset($this->arrUri['parameters']['del_strArtistName']) and $this->arrUri['parameters']['del_strArtistName'] != '') {
+                $objTrack->get_objArtist()->del_strArtistName($this->arrUri['parameters']['del_strArtistName']);
+            }
+            if (isset($this->arrUri['parameters']['strArtistNameSounds']) and $this->arrUri['parameters']['strArtistNameSounds'] != '') {
+                $objTrack->get_objArtist()->set_strArtistNameSounds($this->arrUri['parameters']['strArtistNameSounds']);
+            }
+            if (isset($this->arrUri['parameters']['strArtistUrl_preferred']) and $this->arrUri['parameters']['strArtistUrl_preferred'] != '') {
+                $objTrack->get_objArtist()->setpreferred_strArtistUrl($this->arrUri['parameters']['strArtistUrl_preferred']);
+            }
+            if (isset($this->arrUri['parameters']['strArtistUrl']) and $this->arrUri['parameters']['strArtistUrl'] != '') {
+                $objTrack->get_objArtist()->set_strArtistUrl($this->arrUri['parameters']['strArtistUrl']);
+            }
+            if (isset($this->arrUri['parameters']['del_strArtistUrl']) and $this->arrUri['parameters']['del_strArtistUrl'] != '') {
+                $objTrack->get_objArtist()->del_strArtistUrl($this->arrUri['parameters']['del_strArtistUrl']);
+            }
+            if (isset($this->arrUri['parameters']['approved'])) {
+                $objTrack->set_isApproved($this->asBoolean($this->arrUri['parameters']['approved']));
+            }
+            if (isset($this->arrUri['parameters']['nsfw'])) {
+                $objTrack->set_isNSFW($this->arrUri['parameters']['nsfw']);
+            }
+            if (isset($this->arrUri['parameters']['duplicate'])) {
+                $objTrack->set_intDuplicateID($this->arrUri['parameters']['duplicate']);
+            }
+            $objTrack->get_objArtist()->write();
+            $objTrack->write();
 
+            $this->result['track'] = $objTrack->getSelf();
+            UI::SmartyTemplate('trackeditor.html', $this->result);
+        }
     }
 
     /**
@@ -311,7 +366,6 @@ class HTML
 
     /**
      * Set or amend the BasicAuth credentials for this OpenID account
-     * TODO: Create setcredentials.html.tpl
      *
      * @return void
      */

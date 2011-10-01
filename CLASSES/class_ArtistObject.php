@@ -39,6 +39,21 @@ class ArtistObject extends GenericObject
     protected $arrTracks = array();
 
     /**
+     * Add the collected generated data to the getSelf function
+     *
+     * @return The amassed data from this function
+     */
+    function getSelf()
+    {
+        $return = parent::getSelf();
+        $return['arrArtistName'] = $this->getJson($this->strArtistName);
+        $return['strArtistName'] = $this->preferredJson($this->strArtistName);
+        $return['strArtistUrl'] = $this->preferredJson($this->strArtistUrl);
+        $return['arrArtistUrl'] = $this->getJson($this->strArtistUrl);
+        return $return;
+    }
+
+    /**
      * This function amends data supplied by the API or HTML forms to provide additional data to update an artist
      *
      * @return void
@@ -106,10 +121,38 @@ class ArtistObject extends GenericObject
      */
     function set_strArtistName($strArtistName = "")
     {
-        if ($this->strArtistName != $strArtistName) {
-            $this->strArtistName = $strArtistName;
+        if ( ! $this->inJson($this->strArtistName, $strArtistName)) {
+            $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName);
             $this->arrChanges[] = 'strArtistName';
         }
+    }
+
+    /**
+     * Set the preferred version of the artist's name
+     *
+     * @param string $strArtistName The preferred version of the Artist's name
+     *
+     * @return void
+     */
+    function setpreferred_strArtistName($strArtistName = '')
+    {
+        if ($this->preferredJson($this->strArtistName) != $strArtistName) {
+            $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName, true);
+            $this->arrChanges[] = 'strArtistName';
+        }
+    }
+
+    /**
+     * Remove a value from the JSON array of Artist Names and update the change queue
+     *
+     * @param string $strArtistName The string to remove
+     *
+     * @return void
+     */
+    function del_strArtistName($strArtistName = "")
+    {
+        $this->strArtistName = $this->delJson($this->strArtistName, $strArtistName);
+        $this->arrChanges[] = 'strArtistName';
     }
 
     /**
@@ -157,6 +200,18 @@ class ArtistObject extends GenericObject
         }
     }
 
+    /**
+     * Remove a value from the JSON array of URLs and update the change queue
+     *
+     * @param string $strArtistUrl The string to remove
+     *
+     * @return void
+     */
+    function del_strArtistUrl($strArtistUrl = "")
+    {
+        $this->strArtistUrl = $this->delJson($this->strArtistUrl, $strArtistUrl);
+        $this->arrChanges[] = 'strArtistUrl';
+    }
 
     /**
      * Return an array of the tracks associated to this artist

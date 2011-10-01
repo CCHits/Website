@@ -119,7 +119,6 @@ class TrackObject extends GenericObject
         $this->write();
     }
 
-
     /**
      * Add the collected generated data to the getSelf function
      *
@@ -128,12 +127,15 @@ class TrackObject extends GenericObject
     function getSelf()
     {
         $return = parent::getSelf();
+        $return['arrTrackName'] = $this->getJson($this->strTrackName);
+        $return['strTrackName'] = $this->preferredJson($this->strTrackName);
         $return['strLicenseUrl'] = UI::resolveLicenseUrl($this->get_enumTrackLicense());
         $return['strLicenseName'] = UI::get_enumTrackLicenseFull($this->get_enumTrackLicense());
         $return['strTrackUrl'] = $this->preferredJson($this->get_strTrackUrl());
         $return['arrTrackUrl'] = $this->getJson($this->get_strTrackUrl());
         $return['localSource'] = $this->get_fileUrl();
-        $return['strArtistName'] = $this->objArtist->get_strArtistName();
+        $return['strArtistName'] = $this->preferredJson($this->objArtist->get_strArtistName());
+        $return['arrArtistName'] = $this->getJson($this->objArtist->get_strArtistName());
         $return['strArtistNameSounds'] = $this->objArtist->get_strArtistNameSounds();
         $return['strArtistUrl'] = $this->preferredJson($this->objArtist->get_strArtistUrl());
         $return['arrArtistUrl'] = $this->getJson($this->objArtist->get_strArtistUrl());
@@ -240,55 +242,35 @@ class TrackObject extends GenericObject
     /**
      * If we've only been given and intArtistID, pull in the true object value
      *
-     * @return true
+     * @return void
      */
     protected function verify_objArtist()
     {
         if ($this->objArtist == null and $this->intArtistID > 0) {
             $this->objArtist = ArtistBroker::getArtistByID($this->intArtistID);
         }
-        return true;
     }
 
     /**
      * Depending on the value supplied, make sure the actual value in the class
      * is right for the isNSFW value
      *
-     * @return true
+     * @return void
      */
     protected function verify_isNSFW()
     {
-        switch(strtolower($this->isNSFW)) {
-        case "0":
-        case "no":
-        case "false":
-            $this->isNSFW = false;
-            break;
-        default:
-            $this->isNSFW = true;
-        }
-        return true;
+        $this->isNSFW = $this->asBoolean($this->isNSFW);
     }
 
     /**
      * Depending on the value supplied, make sure the actual value in the class
      * is right for the isApproved value.
      *
-     * @return true
+     * @return void
      */
     protected function verify_isApproved()
     {
-        switch(strtolower($this->isApproved))
-        {
-        case "0":
-        case "no":
-        case "false":
-            $this->isApproved = false;
-            break;
-        default:
-            $this->isApproved = true;
-        }
-        return true;
+        $this->isApproved = $this->asBoolean($this->isApproved);
     }
 
     /**
@@ -315,10 +297,38 @@ class TrackObject extends GenericObject
      */
     function set_strTrackName($strTrackName = "")
     {
-        if ($this->strTrackName != $strTrackName) {
-            $this->strTrackName = $strTrackName;
+        if ( ! $this->inJson($this->strTrackName, $strTrackName)) {
+            $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName);
             $this->arrChanges[] = 'strTrackName';
         }
+    }
+
+    /**
+     * Set the Preferred Track Name
+     *
+     * @param string $strTrackName The name of the track
+     *
+     * @return void
+     */
+    function setpreferred_strTrackName($strTrackName = "")
+    {
+        if ($this->preferredJson($this->strTrackName) != $strTrackName) {
+            $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName, true);
+            $this->arrChanges[] = 'strTrackName';
+        }
+    }
+
+    /**
+     * Remove a value from the JSON array of Track Names and update the change queue
+     *
+     * @param string $strTrackName The string to remove
+     *
+     * @return void
+     */
+    function del_strTrackName($strTrackName = "")
+    {
+        $this->strTrackName = $this->delJson($this->strTrackName, $strTrackName);
+        $this->arrChanges[] = 'strTrackName';
     }
 
     /**
@@ -364,6 +374,19 @@ class TrackObject extends GenericObject
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl, true);
             $this->arrChanges[] = 'strTrackUrl';
         }
+    }
+
+    /**
+     * Remove a value from the JSON array of URLs and update the change queue
+     *
+     * @param string $strTrackUrl The string to remove
+     *
+     * @return void
+     */
+    function del_strTrackUrl($strTrackUrl = "")
+    {
+        $this->strTrackUrl = $this->delJson($this->strTrackUrl, $strTrackUrl);
+        $this->arrChanges[] = 'strTrackUrl';
     }
 
     /**
