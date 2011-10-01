@@ -132,6 +132,9 @@ class HTML
                 if (isset($_SESSION['OPENID_AUTH']) and isset($_SESSION['cookie'])) {
                     unset($_SESSION['cookie']);
                 }
+                if (isset($_SESSION['addtracktoshow']) and ($object[1] != 'show' and $object[1] != 'addshow')) {
+                    unset($_SESSION['addtracktoshow']);
+                }
                 $user = UserBroker::getUser();
                 $this->result['user'] = $user->getSelf();
                 switch ($object[1]) {
@@ -148,7 +151,9 @@ class HTML
                     break;
                 case 'show':
                     $objShow = ShowBroker::getShowByID($object[2]);
-                    if ($objShow != false and $user->get_isAdmin() and $objShow->get_intUserID() == $user->get_intUserID()) {
+                    if ($object[2] == '' and $user->get_isAdmin()) {
+                        $this->addTrackToShow();
+                    } elseif ($objShow != false and $user->get_isAdmin() and $objShow->get_intUserID() == $user->get_intUserID()) {
                         $this->editShow($objShow);
                     } elseif ($objShow->get_intUserID() != $user->get_intUserID()) {
                         $this->result['notyourshow'] = true;
@@ -183,10 +188,14 @@ class HTML
                     }
                     break;
                 case 'listtracks':
-                    $this->listtracks(RemoteSourcesBroker::getRemoteSourcesByUserID());
+                    $this->result['tracks'] = RemoteSourcesBroker::getRemoteSourcesByUserID();
+                    // TODO: Create listunfinishedtracks.html.tpl
+                    UI::SmartyTemplate('listunfinishedtracks.html', $this->result);
                     break;
                 case 'listshows':
-                    $this->listshows(ShowBroker::getShowByUserID($user));
+                    $this->result['shows'] = ShowBroker::getShowByUserID($user);
+                    // TODO: Create listmyshows.html.tpl
+                    UI::SmartyTemplate('listmyshows.html', $this->result);
                     break;
                 case 'basicauth':
                     $this->basicAuth();
@@ -214,7 +223,6 @@ class HTML
 
     /**
      * Begin or complete a RemoteSources process for a new track
-     * TODO: Write HTML::addTrack() function
      *
      * @param false|object $objTrack False for an empty new track, or RemoteSources object for a track in-progress
      *
@@ -232,11 +240,11 @@ class HTML
                     UI::SmartyTemplate('trackeditor.html', $this->result);
                 } else {
                     $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key);
-                    // TODO: Create trackimporter.html.tpl
+                    // TODO: Finish importing trackimporter.html.tpl from trackeditor.html.tpl
                     UI::SmartyTemplate('trackimporter.html', $this->result);
                 }
             } elseif (is_integer($arrData)) {
-                // Improve these!
+                // TODO: Improve the errors returned from the newTrackRouter!
                 switch ($arrData) {
                 case 406:
                     $this->result['error'] = 406;
@@ -254,6 +262,7 @@ class HTML
                     $this->result['error'] = 417;
                     break;
                 }
+                // TODO: Create error_with_track.html.tpl
                 UI::SmartyTemplate("error_with_track.html", $this->result);
             } else {
                 UI::Redirect("admin");
@@ -261,6 +270,28 @@ class HTML
         } else {
             $this->result['track'] = $objTrack;
             UI::SmartyTemplate('trackimporter.html', $this->result);
+        }
+    }
+
+    /**
+     * Begin the process of associating a track to a show.
+     * TODO: Tidy up addtracktoshow.html.tpl
+     *
+     * @return void
+     */
+    protected function addTrackToShow()
+    {
+        $this->result['track'] = TrackBroker::getTrackByID($this->arrUri['parameters']['intTrackID']);
+        if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '' and $this->result['track'] != false) {
+            $_SESSION['addtracktoshow'] = $this->arrUri['parameters']['intTrackID'];
+            $this->result['track'] = $this->result['track']->getSelf();
+            $shows = ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID(), 0, 10000);
+            foreach ($shows as $show) {
+                $this->result['shows'][] = $show->getSelf();
+            }
+            UI::SmartyTemplate('addtracktoshow.html', $this->result);
+        } else {
+            UI::Redirect("admin");
         }
     }
 
@@ -353,7 +384,7 @@ class HTML
 
     /**
      * Edit an existing Show.
-     * TODO: Write HTML::editShow() function
+     * TODO: Finish showeditor.html.tpl
      *
      * @param object $objShow The show object
      *
@@ -361,7 +392,25 @@ class HTML
      */
     protected function editShow($objShow = null)
     {
-
+        if ($objShow != false) {
+            if (isset($_SESSION['intTrackID']) and TrackBroker::getTrackByID($_SESSION['intTrackID']) != false) {
+                $temp = new NewShowTrackObject($_SESSION['intTrackID'], $objShow->get_intShowID());
+                unset($_SESSION['intTrackID']);
+            }
+            if (isset($this->arrUri['parameters']['intTrackID']) and TrackBroker::getTrackByID($this->arrUri['parameters']['intTrackID']) != false) {
+                $temp = new NewShowTrackObject($this->arrUri['parameters']['intTrackID'], $objShow->get_intShowID());
+            }
+            if (isset($this->arrUri['parameters']['strShowName']) and $this->arrUri['parameters']['strShowName'] != "") {
+                $objShow->set_strShowName($this->arrUri['parameters']['strShowName']);
+                $objShow->write();
+            }
+            if (isset($this->arrUri['parameters']['strShowUrl']) and $this->arrUri['parameters']['strShowUrl'] != "") {
+                $objShow->set_strShowUrl($this->arrUri['parameters']['strShowUrl']);
+                $objShow->write();
+            }
+        }
+        $this->result['show'] = $objShow->getSelf();
+        UI::SmartyTemplate('showeditor.html', $this->result);
     }
 
     /**

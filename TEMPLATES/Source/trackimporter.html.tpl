@@ -8,16 +8,9 @@
 		<h1>Welcome to {$ServiceName}</h1>
 		<h2>{$Slogan}</h2>
 		<h3>Track Editor</h3>
-		<p>On this page, you will edit a previously submitted track.</p>
+		<p>On this page, you will edit a track details before it is downloaded.</p>
 {if isset($error) and $error}
 		<p>There was an error.</p>
-{/if}
-{if isset($postimport) and $postimport}
-		<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
-			Associate this track with a show?
-			<input type="hidden" name="intTrackID" value="{$track.intTrackID}">
-			<input type="submit" value="Go" />
-		</form>
 {/if}
 		<table>
 			<thead>
@@ -44,7 +37,7 @@
 						</div>
 					</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="strTrackName_preferred">
 {foreach $track.arrTrackName item=trackname}
 								<option value="{$trackname}"{if $trackname == $track.strTrackName} selected="selected"{/if}>{$trackname}</option>
@@ -54,13 +47,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="strTrackName" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="del_strTrackName">
 {foreach $track.arrTrackName item=trackname}
 								<option value="{$trackname}">{$trackname}</option>
@@ -83,7 +76,7 @@
 						</div>
 					</th>
 					<td colspan=3>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="strTrackNameSounds" length="20" value="{$track.strTrackNameSounds}">
 							<input type="submit" value="Go" />
 						</form>
@@ -97,7 +90,7 @@
 						</div>
 					</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="strTrackUrl_preferred">
 {foreach $track.arrTrackUrl item=trackurl}
 								<option value="{$trackurl}"{if $trackurl == $track.strTrackUrl} selected="selected"{/if}>{$trackurl}</option>
@@ -107,13 +100,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="strTrackUrl" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="del_strTrackUrl">
 {foreach $track.arrTrackUrl item=trackurl}
 								<option value="{$trackurl}">{$trackurl}</option>
@@ -126,7 +119,7 @@
 				<tr>
 					<th>Artist Name:</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="strArtistName_preferred">
 {foreach $track.arrArtistName item=Artistname}
 								<option value="{$Artistname}"{if $Artistname == $track.strArtistName} selected="selected"{/if}>{$Artistname}</option>
@@ -136,13 +129,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="strArtistName" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="del_strArtistName">
 {foreach $track.arrArtistName item=Artistname}
 								<option value="{$Artistname}">{$Artistname}</option>
@@ -160,7 +153,7 @@
 						</div>
 					</th>
 					<td colspan="3">
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="strArtistNameSounds" length="20" value="{$track.strArtistNameSounds}">
 							<input type="submit" value="Go" />
 						</form>
@@ -174,7 +167,7 @@
 						</div>
 					</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="strArtistUrl_preferred">
 {foreach $track.arrArtistUrl item=Artisturl}
 								<option value="{$Artisturl}"{if $artisturl == $track.strArtistUrl} selected="selected"{/if}>{$Artisturl}</option>
@@ -184,13 +177,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="strArtistUrl" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<select name="del_strArtistUrl">
 {foreach $track.arrArtistUrl item=Artisturl}
 								<option value="{$Artisturl}">{$Artisturl}</option>
@@ -214,7 +207,7 @@
 					    </div>
 					</th>
 					<td colspan=3>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							Safe <input type="radio" name="nsfw" value="false" {if $track.isNSFW == false}checked="selected"{/if}><br />
 							Not Safe<input type="radio" name="nsfw" value="true" {if $track.isNSFW == true}checked="selected"{/if}>
 							<input type="submit" value="Go" />
@@ -227,7 +220,7 @@
 						<p>Be VERY CAREFUL with this - there is no undo on this!</p>
 					</th>
 					<td colspan=3>
-						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
 							<input type="text" name="duplicate" size="5">
 							<input type="submit" value="Go" />
 						</form>
