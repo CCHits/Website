@@ -391,7 +391,6 @@ class HTML
 
     /**
      * Edit an existing Show.
-     * TODO: Tidy Up showeditor.html.tpl
      *
      * @param object $objShow The show object
      *
