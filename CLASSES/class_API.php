@@ -309,8 +309,6 @@ class API
                 }
                 $objSource->amendRecord();
                 break;
-                // TODO: Handles file uploads which are not from the recognised sources list above.
-                break;
             case 'getshowid':
                 if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
                     $show_url = $arrUri['parameters']['strShowUrl'];
