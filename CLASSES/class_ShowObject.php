@@ -122,23 +122,14 @@ class ShowObject extends GenericObject
     /**
      * Return an array of the associated tracks
      *
+     * @param boolean $reset Force a reset of the arrTracks listing.
+     *
      * @return false|array Associated tracks
      */
-    function get_arrTracks()
+    function get_arrTracks($reset = false)
     {
-        if (is_null($this->arrTracks)) {
-            switch($this->enumShowType) {
-            case 'daily':
-                $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
-                // FIXME: Transition to having the dailyshow entry in the showtracks table
-                if ($this->arrTracks == false) {
-                    $this->arrTracks = array(TrackBroker::getTrackByDailyShowDate($this->intShowUrl));
-                }
-                break;
-            default:
-                $this->arrTracks = TracksBroker::getTracksByShowID($this->intShowID);
-                break;
-            }
+        if (is_null($this->arrTracks) or $reset = true) {
+            $this->arrTracks = TracksBroker::getTracksByShowIDOrderedByPartID($this->intShowID);
         }
         return $this->arrTracks;
     }

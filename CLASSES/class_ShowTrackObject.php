@@ -34,6 +34,10 @@ class ShowTrackObject extends GenericObject
         'intShowID'=>true,
         'intPartID'=>true
     );
+    protected $arrDBKeyCol = array(
+        'intTrackID'=>true,
+        'intShowID'=>true
+    );
     protected $strDBTable = "showtracks";
     // Local Properties
     protected $intTrackID = 0;

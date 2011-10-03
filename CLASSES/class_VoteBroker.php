@@ -37,11 +37,6 @@ class VoteBroker
     function getVotesForTrackByShow($intTrackID = 0)
     {
         $showTracks = ShowTrackBroker::getShowTracksByTrackID($intTrackID);
-        // FIXME: The following 4 lines are only required until we create ShowTrack lines for each Daily show.
-        $dailyTrack = ShowBroker::getInternalShowByDate('daily', TrackBroker::getTrackByID($intTrackID)->get_datDailyShow());
-        if ($dailyTrack != false) {
-            $showTracks[$dailyTrack->get_intShowID()] = $dailyTrack;
-        }
         $db = Database::getConnection();
         $return = array(0=>new VoteObject());
         try {

@@ -292,32 +292,4 @@ class TrackBroker
             return false;
         }
     }
-
-    /**
-     * Ideally, this will be removed from the code ASAP, however, for the meantime
-     * this function looks for the datDailyShow column and finds the track with
-     * this date.
-     *
-     * FIXME: Transition to having the dailyshow entry in the showtracks table
-     *
-     * @param integer $intDate The date to look for
-     *
-     * @return object|false TrackObject or false if not existing
-     */
-    function getTrackByDailyShowDate($intDate = '')
-    {
-        $db = Database::getConnection();
-        try {
-            $sql = "SELECT * FROM tracks WHERE datDailyShow = ? LIMIT 1";
-            $query = $db->prepare($sql);
-            $query->execute(array($intDate));
-            $handler = self::getHandler();
-            $item = $query->fetchObject('TrackObject');
-            $handler->arrShows[$item->get_intTrackID()] = $item;
-            return $item;
-        } catch(Exception $e) {
-            error_log("SQL Died: " . $e->getMessage());
-            return false;
-        }
-    }
 }

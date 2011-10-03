@@ -33,6 +33,7 @@ class GenericObject
     protected $strDBKeyCol = "";
     protected $arrChanges = array();
     protected $booleanFull = false;
+    protected $old = array();
 
     /**
      * Set booleanFull to this value - expands the existing object to include it's
@@ -57,6 +58,15 @@ class GenericObject
         return $this->full;
     }
 
+    function __construct()
+    {
+        if (isset($this->arrDBItems) and is_array($this->arrDBItems) and count($this->arrDBItems) > 0) {
+            foreach ($this->arrDBItems as $item=>$dummy) {
+                $this->old[$item] = $this->$item;
+            }
+        }
+    }
+
     /**
      * Commit any changes to the database
      *
@@ -66,8 +76,20 @@ class GenericObject
     {
         if (count($this->arrChanges) > 0) {
             $sql = '';
-            $strDBKeyCol = $this->strDBKeyCol;
-            $values[$strDBKeyCol] = $this->$strDBKeyCol;
+            $where = '';
+            if (isset($this->strDBKeyCol) and $this->strDBKeyCol != '') {
+                $strDBKeyCol = $this->strDBKeyCol;
+                $values[$strDBKeyCol] = $this->$strDBKeyCol;
+                $where = "{$this->strDBKeyCol} = :{$this->strDBKeyCol}";
+            } elseif (isset($this->arrDBKeyCol) and is_array($this->arrDBKeyCol) and count($this->arrDBKeyCol) > 0) {
+                foreach ($this->arrDBKeyCol as $keycol=>$dummy) {
+                    if ($where != '') {
+                        $where .= ' AND ';
+                    }
+                    $values["old$keycol"] = $this->old[$keycol];
+                    $where .= "$keycol = :old$keycol";
+                }
+            }
             foreach ($this->arrChanges as $change) {
                 if ($sql != '') {
                     $sql .= ", ";
@@ -77,7 +99,7 @@ class GenericObject
                     $values[$change] = $this->$change;
                 }
             }
-            $full_sql = "UPDATE {$this->strDBTable} SET $sql WHERE {$this->strDBKeyCol} = :{$this->strDBKeyCol}";
+            $full_sql = "UPDATE {$this->strDBTable} SET $sql WHERE $where";
             try {
                 $db = Database::getConnection(true);
                 $query = $db->prepare($full_sql);

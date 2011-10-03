@@ -277,7 +277,9 @@ class API
             case 'pulltrack':
                 $this->result = RemoteSourcesBroker::newTrackRouter($arrUri['parameters']['strTrackUrl']);
                 if (is_array($this->result) and count($this->result) == 1) {
-                    foreach ($this->result as $key=>$value) {}
+                    foreach ($this->result as $key=>$value) {
+                        // Get the last key/value pair
+                    }
                     if ($value == true) {
                         $track = TrackBroker::getTrackByID($key);
                         $track->amendRecord();

@@ -131,6 +131,159 @@ class ShowTrackBroker
     }
 
     /**
+     * This function manipulates the running order of a show, by re-indexing
+     * all the show tracks, two tracks apart, until the track to be moved back
+     * arrives, when it is shunted into a space 3 tracks back.
+     *
+     * The tracks are then sorted and committed incremented by 900 track
+     * spaces. They are then re-run, committing them back in order 900 track
+     * spaces back. This is because the index on the ShowTracks table won't
+     * permit duplication of the "intPartID" value.
+     *
+     * @param object  $objShow    The object containing the show running order and intShowID
+     * @param integer $intTrackID The track to move one space up in the running order
+     *
+     * @return void
+     */
+    public function MoveShowTrackUp($objShow = null, $intTrackID = null)
+    {
+        $pos = 1;
+        $reset = false;
+        foreach ($objShow->get_arrTracks() as $intPartID => $objTrack) {
+            if ($objTrack->get_intTrackID() == $intTrackID) {
+                $pos = $pos - 3;
+                $temp[$pos] = $objTrack;
+                $reset = true;
+            } else {
+                $pos = $pos + 2;
+                $temp[$pos] = $objTrack;
+            }
+        }
+        if ($reset == true) {
+            ksort($temp);
+            $pos = 0;
+            foreach ($temp as $objTrack) {
+                $arrTracks[$objTrack->get_intTrackID()] = $pos++;
+                $arrShowTrackObjects[$objTrack->get_intTrackID()] = ShowTrackBroker::getShowTracksByShowTrackID($objShow->get_intShowID(), $objTrack->get_intTrackID());
+            }
+            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
+                $objShowTrack->set_intPartID(900+$arrTracks[$intTrackID]);
+                $objShowTrack->write();
+            }
+            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
+                $objShowTrack->set_intPartID($arrTracks[$intTrackID]);
+                $objShowTrack->write();
+            }
+        }
+    }
+
+    /**
+     * Much like the previous function, this function manipulates the running
+     * order of a show, by re-indexing all the show tracks, two tracks apart,
+     * until the track to be moved forward arrives, when it is shunted into a
+     * space 3 tracks forward, and the pointer is then reset back by two
+     * spaces.
+     *
+     * The tracks are then sorted and committed incremented by 900 track
+     * spaces. They are then re-run, committing them back in order 900 track
+     * spaces back. This is because the index on the ShowTracks table won't
+     * permit duplication of the "intPartID" value.
+     *
+     * @param object  $objShow    The object containing the show running order and intShowID
+     * @param integer $intTrackID The track to move down space up in the running order
+     *
+     * @return void
+     */
+    public function MoveShowTrackDown($objShow = null, $intTrackID = null)
+    {
+        $pos = 1;
+        $reset = false;
+        foreach ($objShow->get_arrTracks() as $intPartID => $objTrack) {
+            if ($objTrack->get_intTrackID() == $intTrackID) {
+                $pos = $pos + 3;
+                $temp[$pos] = $objTrack;
+                $pos = $pos - 3;
+                $reset = true;
+            } else {
+                $pos = $pos + 2;
+                $temp[$pos] = $objTrack;
+            }
+        }
+        if ($reset == true) {
+            ksort($temp);
+            $pos = 0;
+            foreach ($temp as $objTrack) {
+                $arrTracks[$objTrack->get_intTrackID()] = $pos++;
+                $arrShowTrackObjects[$objTrack->get_intTrackID()] = ShowTrackBroker::getShowTracksByShowTrackID($objShow->get_intShowID(), $objTrack->get_intTrackID());
+            }
+            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
+                $objShowTrack->set_intPartID(900+$arrTracks[$intTrackID]);
+                $objShowTrack->write();
+            }
+            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
+                $objShowTrack->set_intPartID($arrTracks[$intTrackID]);
+                $objShowTrack->write();
+            }
+        }
+    }
+
+    /**
+     * This function again is very similar to it's previous two counterparts.
+     * It indexes the running order, looking for a track number to remove. Once
+     * it finds it, it ignores that particular track entry, but sets the flag
+     * to delete it from the running order.
+     *
+     * Once the indexing is complete, it checks whether the flag exists to
+     * delete the ShowTrack, and if it does, deletes it and then re-numbers the
+     * track parts, up by 900, and then back down by 900 due to the table
+     * indexes.
+     *
+     * @param object  $objShow    The object containing the show running order and intShowID
+     * @param integer $intTrackID The track to move down space up in the running order
+     *
+     * @return void
+     */
+    public function RemoveShowTrack($objShow = null, $intTrackID = null)
+    {
+        $pos = 0;
+        $remove = false;
+        foreach ($objShow->get_arrTracks() as $intPartID => $objTrack) {
+            if ($objTrack->get_intTrackID() != $intTrackID) {
+                $temp[$pos++] = $objTrack;
+            } else {
+                $remove = true;
+            }
+        }
+        if ($remove == true) {
+            $db = Database::getConnection();
+            try {
+                $sql = "DELETE FROM showtracks WHERE intTrackID = ? AND intShowID = ?";
+                $query = $db->prepare($sql);
+                $values = array($intTrackID, $objShow->get_intShowID());
+                $query->execute($values);
+            } catch(Exception $e) {
+                error_log("SQL Died: " . $e->getMessage());
+                return false;
+            }
+
+            $pos = 0;
+            foreach ($temp as $objTrack) {
+                $arrTracks[$objTrack->get_intTrackID()] = $pos++;
+                $arrShowTrackObjects[$objTrack->get_intTrackID()] = ShowTrackBroker::getShowTracksByShowTrackID($objShow->get_intShowID(), $objTrack->get_intTrackID());
+            }
+            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
+                $objShowTrack->set_intPartID(900+$arrTracks[$intTrackID]);
+                $objShowTrack->write();
+            }
+            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
+                $objShowTrack->set_intPartID($arrTracks[$intTrackID]);
+                $objShowTrack->write();
+            }
+        }
+    }
+
+
+    /**
      * This function changes any show which contains a duplicate ID and replaces it with the new track number.
      *
      * @param integer $intOldTrackID The Duplicated Track

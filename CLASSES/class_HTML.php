@@ -233,7 +233,9 @@ class HTML
         if ($objTrack == false) {
             $arrData = RemoteSourcesBroker::newTrackRouter($this->arrUri['parameters']['trackurl']);
             if (is_array($arrData) and count($arrData) == 1) {
-                foreach ($arrData as $key=>$value) {}
+                foreach ($arrData as $key=>$value) {
+                    // Get the last key/value pair from the array
+                }
                 if ($value == true) {
                     $this->result['track'] = TrackBroker::getTrackByID($key)->getSelf();
                     $this->result['postimport'] = true;
@@ -308,8 +310,13 @@ class HTML
             if (isset($this->arrUri['parameters']['strShowName']) and $this->arrUri['parameters']['strShowName'] != '') {
                 $showName = $this->arrUri['parameters']['strShowName'];
             }
-            $intShowID = new NewExternalShowObject($showUrl, $showName);
-            UI::Redirect('admin/show/' . $intShowID);
+            $show = new NewExternalShowObject($showUrl, $showName);
+            if (is_object($show)) {
+                $intShowID = $show->get_intShowID();
+                UI::Redirect('admin/show/' . $intShowID);
+            } else {
+                UI::Redirect('admin');
+            }
         }
     }
 
@@ -384,7 +391,7 @@ class HTML
 
     /**
      * Edit an existing Show.
-     * TODO: Finish showeditor.html.tpl
+     * TODO: Tidy Up showeditor.html.tpl
      *
      * @param object $objShow The show object
      *
@@ -408,7 +415,17 @@ class HTML
                 $objShow->set_strShowUrl($this->arrUri['parameters']['strShowUrl']);
                 $objShow->write();
             }
+            if (isset($this->arrUri['parameters']['moveup']) and TrackBroker::getTrackByID($this->arrUri['parameters']['moveup']) != false) {
+                ShowTrackBroker::MoveShowTrackUp($objShow, $this->arrUri['parameters']['moveup']);
+            }
+            if (isset($this->arrUri['parameters']['movedown']) and TrackBroker::getTrackByID($this->arrUri['parameters']['movedown']) != false) {
+                ShowTrackBroker::MoveShowTrackDown($objShow, $this->arrUri['parameters']['movedown']);
+            }
+            if (isset($this->arrUri['parameters']['remove']) and TrackBroker::getTrackByID($this->arrUri['parameters']['remove']) != false) {
+                ShowTrackBroker::RemoveShowTrack($objShow, $this->arrUri['parameters']['remove']);
+            }
         }
+        $objShow->get_arrTracks(true);
         $this->result['show'] = $objShow->getSelf();
         UI::SmartyTemplate('showeditor.html', $this->result);
     }
@@ -830,6 +847,7 @@ class HTML
             $this->result['ShowDaily'] = ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
             $this->result['ShowWeekly'] = ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
             $this->result['ShowMonthly'] = ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
+            header('Content-Type:text/html; charset=UTF-8');
             return true;
         case 'rss':
             $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net');
