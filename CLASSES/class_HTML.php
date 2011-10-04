@@ -188,8 +188,21 @@ class HTML
                     }
                     break;
                 case 'listtracks':
-                    $this->result['tracks'] = RemoteSourcesBroker::getRemoteSourcesByUserID();
-                    // TODO: Create listunfinishedtracks.html.tpl
+                    $tracks = RemoteSourcesBroker::getRemoteSourcesByUserID();
+                    $this->result['tracks'] = array();
+                    $track_counter = 0;
+                    if (is_array($tracks) and count($tracks) > 0) {
+                        foreach($tracks as $track) {
+                            $this->result['tracks'][$track_counter] = $track->getSelf();
+                            try {
+                                $track->is_valid_cchits_submission();
+                            } catch (Exception $e) {
+                                $this->result['tracks'][$track_counter]['error'] = $e->getMessage();
+                            }
+                            $track_counter++;
+                        }
+                    }
+                    // TODO: Finish listunfinishedtracks.html.tpl
                     UI::SmartyTemplate('listunfinishedtracks.html', $this->result);
                     break;
                 case 'listshows':
@@ -232,7 +245,15 @@ class HTML
     {
         if ($objTrack == false) {
             $arrData = RemoteSourcesBroker::newTrackRouter($this->arrUri['parameters']['trackurl']);
-            if (is_array($arrData) and count($arrData) == 1) {
+            if (is_object($arrData) and $arrData->get_intTrackID() > 0) {
+                $this->result['track'] = TrackBroker::getTrackByID($arrData->get_intTrackID())->getSelf();
+                $this->result['postimport'] = true;
+                UI::SmartyTemplate('trackeditor.html', $this->result);
+            } elseif (is_object($arrData) and $arrData->get_intProcessingID() > 0) {
+                $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
+                // TODO: Finish importing trackimporter.html.tpl from trackeditor.html.tpl
+                UI::SmartyTemplate('trackimporter.html', $this->result);
+            } elseif (is_array($arrData) and count($arrData) == 1) {
                 foreach ($arrData as $key=>$value) {
                     // Get the last key/value pair from the array
                 }
@@ -242,7 +263,6 @@ class HTML
                     UI::SmartyTemplate('trackeditor.html', $this->result);
                 } else {
                     $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key);
-                    // TODO: Finish importing trackimporter.html.tpl from trackeditor.html.tpl
                     UI::SmartyTemplate('trackimporter.html', $this->result);
                 }
             } elseif (is_integer($arrData)) {

@@ -44,7 +44,7 @@ interface IException
      * @return string Filename in which the exception occurred
      */
     public function getFile();
-    
+
     /**
      * Mapping for Interface
      *
@@ -113,11 +113,18 @@ abstract class CustomException extends Exception implements IException
     public function __construct($message = null, $code = 0)
     {
         if (!$message) {
-            throw new $this('Unknown '. get_class($this));
+            if (!isset($this->message) or !$this->message or $this->message == '') {
+                throw new $this('Unknown '. get_class($this));
+            } else {
+                $message = $this->message;
+            }
+        }
+        if ($code == 0 and isset($this->code)) {
+            $code = $this->code;
         }
         parent::__construct($message, $code);
     }
-   
+
     /**
      * Returns a nicely formatted output
      *

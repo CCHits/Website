@@ -99,6 +99,26 @@ class RemoteSources extends GenericObject
     }
 
     /**
+     * This function returns the processing ID of a track being prepared for submission
+     *
+     * @return integer Processing ID.
+     */
+    function get_intProcessingID()
+    {
+        return $this->intProcessingID;
+    }
+
+    /**
+     * This function returns the track ID of the track which has been processed.
+     *
+     * @return integer TrackID.
+     */
+    function get_intTrackID()
+    {
+        return $this->intTrackID;
+    }
+
+    /**
      * Set the track name in the class
      *
      * @param string $strTrackName Track Name
@@ -318,11 +338,12 @@ class RemoteSources extends GenericObject
     function approveProcessing()
     {
         if ($this->intArtistID == 0) {
-            $this->intArtistID = new NewArtistObject(
+            $artist = new NewArtistObject(
                 $this->strArtistName,
                 $this->strArtistNameSounds,
                 $this->strArtistUrl
             );
+            $this->intArtistID = $artist->get_intArtistID();
         }
         if ($this->fileUrl != '') {
             $get = $this->curl_get($url);
@@ -359,7 +380,7 @@ class RemoteSources extends GenericObject
      *
      * @return const Internal response codes
      */
-    protected function is_valid_cchits_submission()
+    function is_valid_cchits_submission()
     {
         if (!isset($this->strTrackName) or '' == trim($this->strTrackName)) {
             throw new RemoteSource_NoTrackName();

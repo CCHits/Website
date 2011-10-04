@@ -93,7 +93,7 @@ class RemoteSourcesBroker
     public function newTrackRouter($url = '')
     {
         if ($url != '') {
-            if (preg_match('/^http[s]*:\/\/([^\/])/', $url, $matches) > 0) {
+            if (preg_match('/^http[s]*:\/\/([^\/]+)/', $url, $matches) > 0) {
                 switch (strtolower($matches[1])) {
                 case 'alonetone.com':
                 case 'www.alonetone.com':
@@ -134,7 +134,20 @@ class RemoteSourcesBroker
         } else {
             $arrUri = UI::getUri();
             if (isset($arrUri['parameters']['_FILES'])) {
-                // TODO: Handle file uploads
+                $upload_dir = dirname(__FILE__) . '/../uploads/';
+                foreach ($arrUri['parameters']['_FILES'] as $variable => $data) {
+                    foreach ($arrUri['parameters']['_FILES'][$variable]['error'] as $key => $error) {
+                        if ($error === UPLOAD_ERR_OK) {
+                            $tmp_name = $arrUri['parameters']['_FILES'][$variable]['tmp_name'][$key];
+                            $file = GenericObject::getTempFileName($upload_dir);
+                            if ( ! move_uploaded_file($tmp_name, $file)) {
+                                error_log("Unable to move the uploaded file to $file.");
+                                die("Error handling uploaded file. Please speak to an administrator.");
+                            }
+                        }
+                    }
+                }
+                $remoteSource = new RemoteSourcesFile($file);
                 return false;
             } else {
                 return false;

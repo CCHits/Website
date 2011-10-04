@@ -1,0 +1,20 @@
+Post Import Activities
+----------------------
+
+INSERT INTO showtracks SELECT shows.intShowID, 1, tracks.intTrackID FROM shows, tracks WHERE tracks.datDailyShow=shows.intShowUrl AND shows.enumShowType='daily' ORDER BY intShowID
+
+CREATE TABLE `cchits`.`processing` (
+`intProcessingID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`strTrackName` TEXT NOT NULL ,
+`strTrackNameSounds` TEXT NOT NULL ,
+`strTrackUrl` TEXT NOT NULL ,
+`enumTrackLicense` ENUM( 'cc-by', 'cc-by-sa', 'cc-by-nd', 'cc-by-nc', 'cc-by-nc-sa', 'cc-by-nc-nd', 'cc-0', 'none specified', 'cc-nc-sampling+', 'cc-sampling+', 'cc-sa', 'cc-nc', 'cc-nd', 'cc-nc-sa', 'cc-nc-nd' ) NOT NULL ,
+`intArtistID` INT NOT NULL ,
+`strArtistName` TEXT NOT NULL ,
+`strArtistNameSounds` TEXT NOT NULL ,
+`strArtistUrl` TEXT NOT NULL ,
+`isNSFW` BOOLEAN NOT NULL ,
+`fileUrl` TEXT NOT NULL ,
+`fileName` TEXT NOT NULL ,
+`intUserID` INT NOT NULL
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

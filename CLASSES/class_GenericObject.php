@@ -58,6 +58,11 @@ class GenericObject
         return $this->full;
     }
 
+    /**
+     * Ensure that all database items are backed up before processing
+     *
+     * @return void
+     */
     function __construct()
     {
         if (isset($this->arrDBItems) and is_array($this->arrDBItems) and count($this->arrDBItems) > 0) {
@@ -359,5 +364,42 @@ class GenericObject
             }
         }
         return $return;
+    }
+
+    /**
+     * Create an file suitable for temporary use. Create the directory to place the file in if it doesn't already exist.
+     *
+     * @param string $dirname The directory in which to put the file
+     *
+     * @return string The full pathname to the file to use.
+     */
+    function getTempFileName($dirname = '')
+    {
+        if ($dirname == '') {
+            $dirname = dirname(__FILE__) . '/../upload';
+        }
+        if ( ! file_exists($dirname)) {
+            if ( ! mkdir($dirname)) {
+                error_log("Unable to make directory $dirname");
+                die("Error handling temporary files. Please contact an administrator.");
+            }
+        }
+        if ( ! is_writable($dirname)) {
+            error_log("Unable to write to $dirname");
+            die("Error handling temporary files. Please contact an administrator.");
+        }
+        // This, apparently, may help to prevent race conditions: http://www.php.net/manual/en/function.tempnam.php#98232
+        $counter = 0;
+        do {
+            $file = $dirname . '/' . mt_rand();
+            $fp = @fopen($file, 'x');
+            $counter ++;
+        } while (!$fp or $counter <= 500);
+        if ($counter >= 500) {
+            error_log("Unable to create temporary file in 500 tries.");
+            die("Error handling temporary files. Please contact an administrator.");
+        }
+        fclose($fp);
+        return $file;
     }
 }

@@ -36,11 +36,8 @@ class RemoteSourcesJamendo extends RemoteSources
     */
     function __construct($src)
     {
-        if (preg_match('/(\d+)|track\/(\d+)', $src, $match) == 0) {
+        if (preg_match('/track\/(\d+)/', $src, $match) == 0) {
             return 406;
-        }
-        if ($match[1] == "" and isset($match[2]) and $match[2] != "") {
-            $match[1] = $match[2];
         }
         $url_base = "http://api.jamendo.com/get2/track_name+track_url+track_stream+license_url+artist_id+artist_name+artist_url/track/json/track_album+album_artist/track/?streamencoding=mp31&track_id=";
         $file_contents = file_get_contents($url_base . $match[1]);
@@ -57,7 +54,7 @@ class RemoteSourcesJamendo extends RemoteSources
         $this->strTrackUrl = $json_contents[0]->track_url;
         $this->strArtistUrl = $json_contents[0]->artist_url;
         $this->enumTrackLicense = $matches[1];
-        $this->fileUrl = find_download($track);
+        $this->fileUrl = $this->find_download($match[1]);
         return $this->create_pull_entry();
     }
 
@@ -89,7 +86,7 @@ class RemoteSourcesJamendo extends RemoteSources
             $download_server++;
             return $this->find_download($track_id, $download_server);
         }
-        $status = curl_get("http://download{$download_server}.jamendo.com/request/track/" . $track_id . "/mp32/0." . rand(), 0);
+        $status = $this->curl_get("http://download{$download_server}.jamendo.com/request/track/" . $track_id . "/mp32/0." . rand(), 0);
         if (false == $status or !is_array($status) or count($status) == 0 or $status[1]['http_code'] == 404) {
             $download_server++;
             return $this->find_download($track_id, $download_server);
