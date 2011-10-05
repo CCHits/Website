@@ -60,6 +60,41 @@ class RemoteSources extends GenericObject
     protected $fileName = "";
     protected $intUserID = 0;
 
+    public function cancel()
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "DELETE FROM processing WHERE intProcessingID = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($this->intProcessingID));
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    /**
+     * Add the collected generated data to the getSelf function
+     *
+     * @return The amassed data from this function
+     */
+    function getSelf()
+    {
+        $return = parent::getSelf();
+        $return['arrTrackName'] = $this->getJson($this->strTrackName);
+        $return['strTrackName'] = $this->preferredJson($this->strTrackName);
+        $return['strTrackUrl'] = $this->preferredJson($this->strTrackUrl);
+        $return['arrTrackUrl'] = $this->getJson($this->strTrackUrl);
+        $return['strArtistName'] = $this->preferredJson($this->strArtistName);
+        $return['arrArtistName'] = $this->getJson($this->strArtistName);
+        $return['strArtistNameSounds'] = $this->strArtistNameSounds;
+        $return['strArtistUrl'] = $this->preferredJson($this->strArtistUrl);
+        $return['arrArtistUrl'] = $this->getJson($this->strArtistUrl);
+        $return['enumTrackLicense'] = LicenseSelector::validateLicense($this->enumTrackLicense);
+        return $return;
+    }
+
     /**
      * This function amends data supplied by the API or HTML forms to provide additional data to process a track
      *
@@ -68,34 +103,62 @@ class RemoteSources extends GenericObject
     public function amendRecord()
     {
         $arrUri = UI::getUri();
-        if (isset($arrUri['parameters']['strTrackName'])) {
-            $this->addJson($this->strTrackName, $arrUri['parameters']['strTrackName'], true);
+        if (isset($arrUri['parameters']['strTrackName_preferred']) and $arrUri['parameters']['strTrackName_preferred'] != '') {
+            $this->setpreferred_strTrackName($arrUri['parameters']['strTrackName_preferred']);
         }
-        if (isset($arrUri['parameters']['strTrackNameSounds'])) {
-            $this->strTrackNameSounds = $arrUri['parameters']['strTrackNameSounds'];
+        if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] != '') {
+            $this->set_strTrackName($arrUri['parameters']['strTrackName']);
         }
-        if (isset($arrUri['parameters']['strTrackUrl'])) {
-            $this->addJson($this->strTrackUrl, $arrUri['parameters']['strTrackUrl'], true);
+        if (isset($arrUri['parameters']['del_strTrackName']) and $arrUri['parameters']['del_strTrackName'] != '') {
+            $this->del_strTrackName($arrUri['parameters']['del_strTrackName']);
         }
-        if (isset($arrUri['parameters']['enumTrackLicense'])) {
-            $this->enumTrackLicense = $arrUri['parameters']['enumTrackLicense'];
+        if (isset($arrUri['parameters']['strTrackNameSounds']) and $arrUri['parameters']['strTrackNameSounds'] != '') {
+            $this->set_strTrackNameSounds($arrUri['parameters']['strTrackNameSounds']);
         }
-        if (isset($arrUri['parameters']['strArtistName'])) {
-            $this->addJson($this->strArtistName, $arrUri['parameters']['strArtistName'], true);
+        if (isset($arrUri['parameters']['strTrackUrl_preferred']) and $arrUri['parameters']['strTrackUrl_preferred'] != '') {
+            $this->setpreferred_strTrackUrl($arrUri['parameters']['strTrackUrl_preferred']);
         }
-        if (isset($arrUri['parameters']['strArtistNameSounds'])) {
-            $this->strArtistNameSounds = $arrUri['parameters']['strArtistNameSounds'];
+        if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] != '') {
+            $this->set_strTrackUrl($arrUri['parameters']['strTrackUrl']);
         }
-        if (isset($arrUri['parameters']['strArtistUrl'])) {
-            $this->addJson($this->strArtistUrl, $arrUri['parameters']['strArtistUrl'], true);
+        if (isset($arrUri['parameters']['del_strTrackUrl']) and $arrUri['parameters']['del_strTrackUrl'] != '') {
+            $this->del_strTrackUrl($arrUri['parameters']['del_strTrackUrl']);
         }
-        if (isset($arrUri['parameters']['intArtistID'])) {
-            $this->intArtistID = $arrUri['parameters']['intArtistID'];
+        if (isset($arrUri['parameters']['intArtistID']) and $arrUri['parameters']['intArtistID'] != '') {
+            $this->set_intArtistID($arrUri['parameters']['intArtistID']);
         }
-        if (isset($arrUri['parameters']['isNSFW'])) {
-            $this->isNSFW = $arrUri['parameters']['isNSFW'];
+        if (isset($arrUri['parameters']['strArtistName_preferred']) and $arrUri['parameters']['strArtistName_preferred'] != '') {
+            $this->setpreferred_strArtistName($arrUri['parameters']['strArtistName_preferred']);
         }
-        $this->write();
+        if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] != '') {
+            $this->set_strArtistName($arrUri['parameters']['strArtistName']);
+        }
+        if (isset($arrUri['parameters']['del_strArtistName']) and $arrUri['parameters']['del_strArtistName'] != '') {
+            $this->del_strArtistName($arrUri['parameters']['del_strArtistName']);
+        }
+        if (isset($arrUri['parameters']['strArtistNameSounds']) and $arrUri['parameters']['strArtistNameSounds'] != '') {
+            $this->set_strArtistNameSounds($arrUri['parameters']['strArtistNameSounds']);
+        }
+        if (isset($arrUri['parameters']['strArtistUrl_preferred']) and $arrUri['parameters']['strArtistUrl_preferred'] != '') {
+            $this->setpreferred_strArtistUrl($arrUri['parameters']['strArtistUrl_preferred']);
+        }
+        if (isset($arrUri['parameters']['strArtistUrl']) and $arrUri['parameters']['strArtistUrl'] != '') {
+            $this->set_strArtistUrl($arrUri['parameters']['strArtistUrl']);
+        }
+        if (isset($arrUri['parameters']['del_strArtistUrl']) and $arrUri['parameters']['del_strArtistUrl'] != '') {
+            $this->del_strArtistUrl($arrUri['parameters']['del_strArtistUrl']);
+        }
+        if (isset($arrUri['parameters']['approved'])) {
+            $this->set_isApproved($this->asBoolean($arrUri['parameters']['approved']));
+        }
+        if (isset($arrUri['parameters']['nsfw'])) {
+            $this->set_isNSFW($arrUri['parameters']['nsfw']);
+        }
+        try {
+            $this->write();
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -119,48 +182,115 @@ class RemoteSources extends GenericObject
     }
 
     /**
-     * Set the track name in the class
+     * This function returns the UserID of the track which has been submitted.
      *
-     * @param string $strTrackName Track Name
+     * @return integer UserID.
+     */
+    function get_intUserID()
+    {
+        return $this->intUserID;
+    }
+
+
+    /**
+     * Set the Track Name
+     *
+     * @param string $strTrackName The name of the track
      *
      * @return void
      */
-    protected function set_strTrackName($strTrackName = "")
+    function set_strTrackName($strTrackName = "")
     {
-        if ($this->strTrackName != $strTrackName) {
-            $this->strTrackName = $strTrackName;
-            $arrChanges['strTrackName'] = true;
+        if ( ! $this->inJson($this->strTrackName, $strTrackName)) {
+            $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName);
+            $this->arrChanges[] = 'strTrackName';
         }
     }
 
     /**
-     * Set the sound of the track name in the class
+     * Set the Preferred Track Name
      *
-     * @param string $strTrackNameSounds Sound of the Track Name
+     * @param string $strTrackName The name of the track
      *
      * @return void
      */
-    protected function set_strTrackNameSounds($strTrackNameSounds = "")
+    function setpreferred_strTrackName($strTrackName = "")
+    {
+        if ($this->preferredJson($this->strTrackName) != $strTrackName) {
+            $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName, true);
+            $this->arrChanges[] = 'strTrackName';
+        }
+    }
+
+    /**
+     * Remove a value from the JSON array of Track Names and update the change queue
+     *
+     * @param string $strTrackName The string to remove
+     *
+     * @return void
+     */
+    function del_strTrackName($strTrackName = "")
+    {
+        $this->strTrackName = $this->delJson($this->strTrackName, $strTrackName);
+        $this->arrChanges[] = 'strTrackName';
+    }
+
+    /**
+     * Set the spoken version of the Track Name
+     *
+     * @param string $strTrackNameSounds The festival pronounciation of this track name
+     *
+     * @return void
+     */
+    function set_strTrackNameSounds($strTrackNameSounds = "")
     {
         if ($this->strTrackNameSounds != $strTrackNameSounds) {
             $this->strTrackNameSounds = $strTrackNameSounds;
-            $arrChanges['strTrackNameSounds'] = true;
+            $this->arrChanges[] = 'strTrackNameSounds';
         }
     }
 
     /**
-     * Set the track's information URL in the class
+     * Set the URL to find more details about the track
      *
-     * @param string $strTrackUrl The external location of the Track information
+     * @param string $strTrackUrl The place to find out more about the track
      *
      * @return void
      */
-    protected function set_strTrackUrl($strTrackUrl = "")
+    function set_strTrackUrl($strTrackUrl = "")
     {
-        if ($this->strTrackUrl != $strTrackUrl) {
-            $this->strTrackUrl = $strTrackUrl;
-            $arrChanges['strTrackUrl'] = true;
+        if ( ! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
+            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
+            $this->arrChanges[] = 'strTrackUrl';
         }
+    }
+
+    /**
+     * Set the preferred URL to find more details about the track
+     *
+     * @param string $strTrackUrl The preferred place to find out more about the track
+     *
+     * @return void
+     */
+    function setpreferred_strTrackUrl($strTrackUrl = '')
+    {
+        if ($this->preferredJson($this->strTrackUrl) != $strTrackUrl) {
+            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl, true);
+            $this->arrChanges[] = 'strTrackUrl';
+        }
+    }
+
+    /**
+     * Remove a value from the JSON array of URLs and update the change queue
+     *
+     * @param string $strTrackUrl The string to remove
+     *
+     * @return void
+     */
+    function del_strTrackUrl($strTrackUrl = "")
+    {
+        $this->strTrackUrl = $this->delJson($this->strTrackUrl, $strTrackUrl);
+        $this->arrChanges[] = 'strTrackUrl';
     }
 
     /**
@@ -172,8 +302,9 @@ class RemoteSources extends GenericObject
      */
     protected function set_enumTrackLicense($enumTrackLicense = "")
     {
-        if ($this->enumTrackLicense != $enumTrackLicense) {
-            $this->enumTrackLicense = $enumTrackLicense;
+        $strLicense = LicenseSelector::validateLicense($enumTrackLicense);
+        if ($this->enumTrackLicense != $strLicense) {
+            $this->enumTrackLicense = $strLicense;
             $arrChanges['enumTrackLicense'] = true;
         }
     }
@@ -189,53 +320,127 @@ class RemoteSources extends GenericObject
     {
         if ($this->intArtistID != $intArtistID and ArtistBroker::getArtistByID($intArtistID) != false) {
             $this->intArtistID = $intArtistID;
+            $objArtist = ArtistBroker::getArtistByID($intArtistID);
+            foreach ($this->deobjectify_array(json_decode($this->strArtistName)) as $key=>$value) {
+                if ($key != 'preferred') {
+                    $objArtist->set_strArtistName($value);
+                } else {
+                    $objArtist->setpreferred_strArtistName($value);
+                }
+            }
+            foreach ($this->deobjectify_array(json_decode($this->strArtistUrl)) as $key=>$value) {
+                if ($key != 'preferred') {
+                    $objArtist->set_strArtistUrl($value);
+                } else {
+                    $objArtist->setpreferred_strArtistUrl($value);
+                }
+            }
+            $objArtist->set_strArtistNameSounds($this->strArtistNameSounds);
+            $objArtist->write();
             $arrChanges['intArtistID'] = true;
         }
     }
 
+
     /**
-     * Set the Artist name in the class
+     * Set or amend the value of the strArtistName
      *
-     * @param string $strArtistName The name of the artist
+     * @param string $strArtistName The new artist name
      *
      * @return void
      */
-    protected function set_strArtistName($strArtistName = "")
+    function set_strArtistName($strArtistName = "")
     {
-        if ($this->strArtistName != $strArtistName) {
-            $this->strArtistName = $strArtistName;
-            $arrChanges['strArtistName'] = true;
+        if ( ! $this->inJson($this->strArtistName, $strArtistName)) {
+            $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName);
+            $this->arrChanges[] = 'strArtistName';
         }
     }
 
     /**
-     * Set the sound of the Artist name in the class
+     * Set the preferred version of the artist's name
      *
-     * @param string $strArtistNameSounds The sound of the artist's name
+     * @param string $strArtistName The preferred version of the Artist's name
      *
      * @return void
      */
-    protected function set_strArtistNameSounds($strArtistNameSounds = "")
+    function setpreferred_strArtistName($strArtistName = '')
+    {
+        if ($this->preferredJson($this->strArtistName) != $strArtistName) {
+            $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName, true);
+            $this->arrChanges[] = 'strArtistName';
+        }
+    }
+
+    /**
+     * Remove a value from the JSON array of Artist Names and update the change queue
+     *
+     * @param string $strArtistName The string to remove
+     *
+     * @return void
+     */
+    function del_strArtistName($strArtistName = "")
+    {
+        $this->strArtistName = $this->delJson($this->strArtistName, $strArtistName);
+        $this->arrChanges[] = 'strArtistName';
+    }
+
+    /**
+     * Set or amend the value of the strArtistNameSounds
+     *
+     * @param string $strArtistNameSounds The new way to pronounce the artist name
+     *
+     * @return void
+     */
+    function set_strArtistNameSounds($strArtistNameSounds = "")
     {
         if ($this->strArtistNameSounds != $strArtistNameSounds) {
             $this->strArtistNameSounds = $strArtistNameSounds;
-            $arrChanges['strArtistNameSounds'] = true;
+            $this->arrChanges[] = 'strArtistNameSounds';
         }
     }
 
     /**
-     * Set the artist's URL in the class
+     * Set or amend the value of the strArtistUrl
      *
-     * @param string $strArtistUrl The external location of the Artist's information
+     * @param string $strArtistUrl The new URL for the artist
      *
      * @return void
      */
-    protected function set_strArtistUrl($strArtistUrl = "")
+    function set_strArtistUrl($strArtistUrl = "")
     {
-        if ($this->strArtistUrl != $strArtistUrl) {
-            $this->strArtistUrl = $strArtistUrl;
-            $arrChanges['strArtistUrl'] = true;
+        if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
+            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
+            $this->arrChanges[] = 'strArtistUrl';
         }
+    }
+
+    /**
+     * Set the preferred URL to find more details about the Artist
+     *
+     * @param string $strArtistUrl The preferred place to find out more about the Artist
+     *
+     * @return void
+     */
+    function setpreferred_strArtistUrl($strArtistUrl = '')
+    {
+        if ($this->preferredJson($this->strArtistUrl) != $strArtistUrl) {
+            $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl, true);
+            $this->arrChanges[] = 'strArtistUrl';
+        }
+    }
+
+    /**
+     * Remove a value from the JSON array of URLs and update the change queue
+     *
+     * @param string $strArtistUrl The string to remove
+     *
+     * @return void
+     */
+    function del_strArtistUrl($strArtistUrl = "")
+    {
+        $this->strArtistUrl = $this->delJson($this->strArtistUrl, $strArtistUrl);
+        $this->arrChanges[] = 'strArtistUrl';
     }
 
     /**
@@ -306,7 +511,7 @@ class RemoteSources extends GenericObject
         try {
             $this->is_valid_cchits_submission();
             return array($this->approveProcessing()=>true);
-        } catch (exception $e) {
+        } catch (Exception $e) {
             $this->set_intUserID();
             $this->create();
             return array($this->intProcessingID=>false);
@@ -316,7 +521,7 @@ class RemoteSources extends GenericObject
     /**
      * Override the Write action by checking it against the validity check
      *
-     * @return boolean Did this action result in a completed submission?
+     * @return boolean|Exception Did this action result in a completed submission?
      */
     function write()
     {
@@ -324,9 +529,9 @@ class RemoteSources extends GenericObject
             $this->is_valid_cchits_submission();
             $this->approveProcessing();
             return true;
-        } catch (exception $e) {
+        } catch (Exception $e) {
             parent::write();
-            return false;
+            throw $e;
         }
     }
 
@@ -388,7 +593,7 @@ class RemoteSources extends GenericObject
         if (!isset($this->strTrackUrl) or '' == trim($this->strTrackUrl)) {
             throw new RemoteSource_NoTrackUrl();
         }
-        if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense)) {
+        if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense) or 'None Selected' == LicenseSelector::validateLicense($this->enumTrackLicense)) {
             throw new RemoteSource_NoTrackLicense();
         }
         if (isset($this->intArtistID) and false == ArtistBroker::getArtistByID($this->intArtistID)) {

@@ -68,7 +68,7 @@ class RemoteSourcesMacjams extends RemoteSources
             $this->fileUrl = $arrFileUrl[1];
         }
         if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
-            $this->enumTrackLicense = $arrTrackLicense[1];
+            $this->enumTrackLicense = LicenseSelector::validateLicense($arrTrackLicense[1]);
         }
         return $this->create_pull_entry();
     }

@@ -58,7 +58,7 @@ class RemoteSourcesSoundcloud extends RemoteSources
         $this->strArtistName = $json_contents->user->username;
         $this->strTrackUrl = $json_contents->permalink_url;
         $this->strArtistUrl = $json_contents->user->permalink_url;
-        $this->enumTrackLicense = $json_contents->license;
+        $this->enumTrackLicense = LicenseSelector::validateLicense($json_contents->license);
         $this->fileUrl = $json_contents->download_url . "?consumer_key={$soundcloud_api}";
         return $this->create_pull_entry();
     }

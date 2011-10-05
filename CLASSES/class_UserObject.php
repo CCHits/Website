@@ -32,6 +32,7 @@ class UserObject extends GenericObject
     protected $arrDBItems = array(
         'strOpenID'=>true,
         'strCookieID'=>true,
+        'strEMail'=>true,
         'sha1Pass'=>true,
         'isAuthorized'=>true,
         'isUploader'=>true,
@@ -43,6 +44,7 @@ class UserObject extends GenericObject
     // Local Properties
     protected $intUserID = 0;
     protected $strOpenID = "";
+    protected $strEMail = "";
     protected $strCookieID = "";
     protected $sha1Pass = "";
     protected $isAuthorized = 0;
@@ -87,6 +89,21 @@ class UserObject extends GenericObject
         if ($this->strOpenID != $strOpenID) {
             $this->strOpenID = $strOpenID;
             $this->arrChanges[] = 'strOpenID';
+        }
+    }
+
+    /**
+     * Set the OpenID provided e-mail address for this user account.
+     *
+     * @param string $strEMail The e-mail address to set for this user account
+     *
+     * @return void
+     */
+    function set_strEMail($strEMail = "")
+    {
+        if ($this->strEMail != $strEMail) {
+            $this->strEMail = $strEMail;
+            $this->arrChanges[] = 'strEMail';
         }
     }
 

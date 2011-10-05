@@ -58,7 +58,7 @@ class RemoteSourcesBroker
     {
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM processing WHERE intUserID = ? LIMIT 1";
+            $sql = "SELECT * FROM processing WHERE intUserID = ?";
             $query = $db->prepare($sql);
             $query->execute(array(UserBroker::getUser()->get_intUserID()));
             $item = $query->fetchObject('RemoteSources');

@@ -9,8 +9,8 @@
 		<h2>{$Slogan}</h2>
 		<h3>Track Editor</h3>
 		<p>On this page, you will edit a track details before it is downloaded.</p>
-{if isset($error) and $error}
-		<p>There was an error.</p>
+{if isset($error)}
+		<p>There was an error.{if $error != ''} The error was: "{$error->getMessage()}"{/if}</p>
 {/if}
 		<table>
 			<thead>
@@ -37,7 +37,7 @@
 						</div>
 					</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="strTrackName_preferred">
 {foreach $track.arrTrackName item=trackname}
 								<option value="{$trackname}"{if $trackname == $track.strTrackName} selected="selected"{/if}>{$trackname}</option>
@@ -47,13 +47,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<input type="text" name="strTrackName" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="del_strTrackName">
 {foreach $track.arrTrackName item=trackname}
 								<option value="{$trackname}">{$trackname}</option>
@@ -76,7 +76,7 @@
 						</div>
 					</th>
 					<td colspan=3>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<input type="text" name="strTrackNameSounds" length="20" value="{$track.strTrackNameSounds}">
 							<input type="submit" value="Go" />
 						</form>
@@ -90,7 +90,7 @@
 						</div>
 					</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="strTrackUrl_preferred">
 {foreach $track.arrTrackUrl item=trackurl}
 								<option value="{$trackurl}"{if $trackurl == $track.strTrackUrl} selected="selected"{/if}>{$trackurl}</option>
@@ -100,13 +100,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<input type="text" name="strTrackUrl" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="del_strTrackUrl">
 {foreach $track.arrTrackUrl item=trackurl}
 								<option value="{$trackurl}">{$trackurl}</option>
@@ -119,7 +119,7 @@
 				<tr>
 					<th>Artist Name:</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="strArtistName_preferred">
 {foreach $track.arrArtistName item=Artistname}
 								<option value="{$Artistname}"{if $Artistname == $track.strArtistName} selected="selected"{/if}>{$Artistname}</option>
@@ -129,13 +129,13 @@
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<input type="text" name="strArtistName" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="del_strArtistName">
 {foreach $track.arrArtistName item=Artistname}
 								<option value="{$Artistname}">{$Artistname}</option>
@@ -153,7 +153,7 @@
 						</div>
 					</th>
 					<td colspan="3">
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<input type="text" name="strArtistNameSounds" length="20" value="{$track.strArtistNameSounds}">
 							<input type="submit" value="Go" />
 						</form>
@@ -167,23 +167,23 @@
 						</div>
 					</th>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="strArtistUrl_preferred">
 {foreach $track.arrArtistUrl item=Artisturl}
-								<option value="{$Artisturl}"{if $artisturl == $track.strArtistUrl} selected="selected"{/if}>{$Artisturl}</option>
+								<option value="{$Artisturl}"{if $Artisturl == $track.strArtistUrl} selected="selected"{/if}>{$Artisturl}</option>
 {/foreach} 
 							</select>
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<input type="text" name="strArtistUrl" length="20">
 							<input type="submit" value="Go" />
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							<select name="del_strArtistUrl">
 {foreach $track.arrArtistUrl item=Artisturl}
 								<option value="{$Artisturl}">{$Artisturl}</option>
@@ -207,7 +207,7 @@
 					    </div>
 					</th>
 					<td colspan=3>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
 							Safe <input type="radio" name="nsfw" value="false" {if $track.isNSFW == false}checked="selected"{/if}><br />
 							Not Safe<input type="radio" name="nsfw" value="true" {if $track.isNSFW == true}checked="selected"{/if}>
 							<input type="submit" value="Go" />
@@ -215,13 +215,27 @@
 					</td>
 				</tr>
 				<tr>
-					<th>
-						<p>Duplicate Track? Enter the TrackID of the track it is duplicated with.</p>
-						<p>Be VERY CAREFUL with this - there is no undo on this!</p>
+					<th>License
 					</th>
 					<td colspan=3>
-						<form method="post" action="{$baseURL}admin/addtrack/{$track.intTrackID}">
-							<input type="text" name="duplicate" size="5">
+						<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+							<select name="enumTrackLicense">
+								<option value="cc-sa"{if $track.enumTrackLicense == "cc-sa"} selected="selected"{/if}>cc-sa</option>
+								<option value="cc-nc"{if $track.enumTrackLicense == "cc-nc"} selected="selected"{/if}>cc-nc</option>
+								<option value="cc-nd"{if $track.enumTrackLicense == "cc-nd"} selected="selected"{/if}>cc-nd</option>
+								<option value="cc-nc-sa"{if $track.enumTrackLicense == "cc-nc-sa"} selected="selected"{/if}>cc-nc-sa</option>
+								<option value="cc-nc-nd"{if $track.enumTrackLicense == "cc-nc-nd"} selected="selected"{/if}>cc-nc-nd</option>
+								<option value="cc-by"{if $track.enumTrackLicense == "cc-by"} selected="selected"{/if}>cc-by</option>
+								<option value="cc-by-sa"{if $track.enumTrackLicense == "cc-by-sa"} selected="selected"{/if}>cc-by-sa</option>
+								<option value="cc-by-nc"{if $track.enumTrackLicense == "cc-by-nc"} selected="selected"{/if}>cc-by-nc</option>
+								<option value="cc-by-nd"{if $track.enumTrackLicense == "cc-by-nd"} selected="selected"{/if}>cc-by-nd</option>
+								<option value="cc-by-nc-sa"{if $track.enumTrackLicense == "cc-by-nc-sa"} selected="selected"{/if}>cc-by-nc-sa</option>
+								<option value="cc-by-nc-nd"{if $track.enumTrackLicense == "cc-by-nc-nd"} selected="selected"{/if}>cc-by-nc-nd</option>
+								<option value="cc-sampling+"{if $track.enumTrackLicense == "cc-sampling+"} selected="selected"{/if}>cc-sampling+</option>
+								<option value="cc-nc-sampling+"{if $track.enumTrackLicense == "cc-nc-sampling+"} selected="selected"{/if}>cc-nc-sampling+</option>
+								<option value="cc-0"{if $track.enumTrackLicense == "cc-0"} selected="selected"{/if}>cc-0</option>
+								<option value="none selected"{if $track.enumTrackLicense == "none selected"} selected="selected"{/if}>None Selected</option>
+							</select>
 							<input type="submit" value="Go" />
 						</form>
 					</td>

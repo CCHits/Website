@@ -89,9 +89,16 @@ class UserBroker
                 $objSelf->thisUser = $query->fetchObject('UserObject');
                 if ($objSelf->thisUser == false) {
                     $objSelf->thisUser = new NewUserObject($param);
+                    if (isset($_SESSION['OPENID_AUTH']['email'])) {
+                        $objSelf->thisUser->set_strEMail($_SESSION['OPENID_AUTH']['email']);
+                        $objSelf->thisUser->write();
+                    }
                     return $objSelf->thisUser;
                 } else {
                     $objSelf->thisUser->set_datLastSeen(date("Y-m-d H:i:s"));
+                    if (isset($_SESSION['OPENID_AUTH']['email'])) {
+                        $objSelf->thisUser->set_strEMail($_SESSION['OPENID_AUTH']['email']);
+                    }
                     $objSelf->thisUser->write();
                     return $objSelf->thisUser;
                 }

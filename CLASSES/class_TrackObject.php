@@ -98,24 +98,58 @@ class TrackObject extends GenericObject
     public function amendRecord()
     {
         $arrUri = UI::getUri();
-        if (isset($arrUri['parameters']['strTrackName'])) {
-            $this->addJson($this->strTrackName, $arrUri['parameters']['strTrackName'], true);
+        if (isset($arrUri['parameters']['strTrackName_preferred']) and $arrUri['parameters']['strTrackName_preferred'] != '') {
+            $this->setpreferred_strTrackName($arrUri['parameters']['strTrackName_preferred']);
         }
-        if (isset($arrUri['parameters']['strTrackNameSounds'])) {
-            $this->strTrackNameSounds = $arrUri['parameters']['strTrackNameSounds'];
+        if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] != '') {
+            $this->set_strTrackName($arrUri['parameters']['strTrackName']);
         }
-        if (isset($arrUri['parameters']['strTrackUrl'])) {
-            $this->addJson($this->strTrackUrl, $arrUri['parameters']['strTrackUrl'], true);
+        if (isset($arrUri['parameters']['del_strTrackName']) and $arrUri['parameters']['del_strTrackName'] != '') {
+            $this->del_strTrackName($arrUri['parameters']['del_strTrackName']);
         }
-        if (isset($arrUri['parameters']['enumTrackLicense'])) {
-            $this->enumTrackLicense = $arrUri['parameters']['enumTrackLicense'];
+        if (isset($arrUri['parameters']['strTrackNameSounds']) and $arrUri['parameters']['strTrackNameSounds'] != '') {
+            $this->set_strTrackNameSounds($arrUri['parameters']['strTrackNameSounds']);
         }
-        if (isset($arrUri['parameters']['intArtistID'])) {
-            $this->intArtistID = $arrUri['parameters']['intArtistID'];
+        if (isset($arrUri['parameters']['strTrackUrl_preferred']) and $arrUri['parameters']['strTrackUrl_preferred'] != '') {
+            $this->setpreferred_strTrackUrl($arrUri['parameters']['strTrackUrl_preferred']);
         }
-        if (isset($arrUri['parameters']['isNSFW'])) {
-            $this->isNSFW = $arrUri['parameters']['isNSFW'];
+        if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] != '') {
+            $this->set_strTrackUrl($arrUri['parameters']['strTrackUrl']);
         }
+        if (isset($arrUri['parameters']['del_strTrackUrl']) and $arrUri['parameters']['del_strTrackUrl'] != '') {
+            $this->del_strTrackUrl($arrUri['parameters']['del_strTrackUrl']);
+        }
+        if (isset($arrUri['parameters']['strArtistName_preferred']) and $arrUri['parameters']['strArtistName_preferred'] != '') {
+            $this->get_objArtist()->setpreferred_strArtistName($arrUri['parameters']['strArtistName_preferred']);
+        }
+        if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] != '') {
+            $this->get_objArtist()->set_strArtistName($arrUri['parameters']['strArtistName']);
+        }
+        if (isset($arrUri['parameters']['del_strArtistName']) and $arrUri['parameters']['del_strArtistName'] != '') {
+            $this->get_objArtist()->del_strArtistName($arrUri['parameters']['del_strArtistName']);
+        }
+        if (isset($arrUri['parameters']['strArtistNameSounds']) and $arrUri['parameters']['strArtistNameSounds'] != '') {
+            $this->get_objArtist()->set_strArtistNameSounds($arrUri['parameters']['strArtistNameSounds']);
+        }
+        if (isset($arrUri['parameters']['strArtistUrl_preferred']) and $arrUri['parameters']['strArtistUrl_preferred'] != '') {
+            $this->get_objArtist()->setpreferred_strArtistUrl($arrUri['parameters']['strArtistUrl_preferred']);
+        }
+        if (isset($arrUri['parameters']['strArtistUrl']) and $arrUri['parameters']['strArtistUrl'] != '') {
+            $this->get_objArtist()->set_strArtistUrl($arrUri['parameters']['strArtistUrl']);
+        }
+        if (isset($arrUri['parameters']['del_strArtistUrl']) and $arrUri['parameters']['del_strArtistUrl'] != '') {
+            $this->get_objArtist()->del_strArtistUrl($arrUri['parameters']['del_strArtistUrl']);
+        }
+        if (isset($arrUri['parameters']['approved'])) {
+            $this->set_isApproved($this->asBoolean($arrUri['parameters']['approved']));
+        }
+        if (isset($arrUri['parameters']['nsfw'])) {
+            $this->set_isNSFW($arrUri['parameters']['nsfw']);
+        }
+        if (isset($arrUri['parameters']['duplicate'])) {
+            $this->set_intDuplicateID($arrUri['parameters']['duplicate']);
+        }
+        $this->get_objArtist()->write();
         $this->write();
     }
 
@@ -455,6 +489,22 @@ class TrackObject extends GenericObject
     }
 
     /**
+     * Set the license terms we're using this track under
+     *
+     * @param string $strLicense The new license terms to operate under
+     *
+     * @return boolean Success or failure (due to unsupported terms)
+     */
+    function set_enumTrackLicense($strLicense = "")
+    {
+        $strLicense = LicenseSelector::validateLicense($strLicense);
+        if ($this->enumTrackLicense != $strLicense) {
+            $this->enumTrackLicense = $strLicense;
+            $arrChanges['enumTrackLicense'] = true;
+        }
+    }
+
+    /**
      * Set the number of the track which this is a duplicate of
      *
      * @param integer $intDuplicateID The Track number this track is a duplicate of
@@ -493,122 +543,6 @@ class TrackObject extends GenericObject
     {
         unlink($this->get_localFileSource());
         $this->set_fileSource("");
-    }
-
-    /**
-     * Set the license terms we're using this track under
-     *
-     * @param string $strLicense The new license terms to operate under
-     *
-     * @return boolean Success or failure (due to unsupported terms)
-     */
-    function set_enumTrackLicense($strLicense = "")
-    {
-        switch($strLicense)
-        {
-        // Actual valid licenses in the database
-        case 'cc-by':
-        case 'by':
-            $this->enumTrackLicense = 'cc-by';
-            break;
-        case 'cc-by-sa':
-        case 'cc-sa-by':
-        case 'by-sa':
-        case 'sa-by':
-            $this->enumTrackLicense = 'cc-by-sa';
-            break;
-        case 'cc-sa':
-        case 'sa':
-            $this->enumTrackLicense = 'cc-sa';
-            break;
-        case 'cc-by-nc':
-        case 'cc-nc-by':
-        case 'by-nc':
-        case 'nc-by':
-            $this->enumTrackLicense = 'cc-by-nc';
-            break;
-        case 'cc-nc':
-        case 'nc':
-            $this->enumTrackLicense = 'cc-nc';
-            break;
-        case 'cc-by-nd':
-        case 'cc-nd-by':
-        case 'by-nd':
-        case 'nd-by':
-            $this->enumTrackLicense = 'cc-by-nd';
-            break;
-        case 'cc-nd':
-        case 'nd':
-            $this->enumTrackLicense = 'cc-nd';
-            break;
-        case 'cc-by-sa-nc':
-        case 'cc-by-nc-sa':
-        case 'cc-nc-by-sa':
-        case 'cc-nc-sa-by':
-        case 'cc-sa-by-nc':
-        case 'cc-sa-nc-by':
-        case 'by-sa-nc':
-        case 'by-nc-sa':
-        case 'nc-by-sa':
-        case 'nc-sa-by':
-        case 'sa-by-nc':
-        case 'sa-nc-by':
-            $this->enumTrackLicense = 'cc-by-nc-sa';
-            break;
-        case 'cc-sa-nc':
-        case 'cc-nc-sa':
-        case 'sa-nc':
-        case 'nc-sa':
-            $this->enumTrackLicense = 'cc-nc-sa';
-            break;
-        case 'cc-by-nd-nc':
-        case 'cc-by-nc-nd':
-        case 'cc-nc-by-nd':
-        case 'cc-nc-nd-by':
-        case 'cc-nd-by-nc':
-        case 'cc-nd-nc-by':
-        case 'by-nd-nc':
-        case 'by-nc-nd':
-        case 'nc-by-nd':
-        case 'nc-nd-by':
-        case 'nd-by-nc':
-        case 'nd-nc-by':
-            $this->enumTrackLicense = 'cc-by-nc-nd';
-            break;
-        case 'cc-nd-nc':
-        case 'cc-nc-nd':
-        case 'nd-nc':
-        case 'nc-nd':
-            $this->enumTrackLicense = 'cc-nc-nd';
-            break;
-        case 'cc-sampling+':
-        case 'cc-sampling-plus':
-        case 'sampling+':
-        case 'sampling-plus':
-            $this->enumTrackLicense = 'cc-sampling+';
-            break;
-        case 'cc-nc-sampling+':
-        case 'cc-sampling+-nc':
-        case 'cc-nc-sampling-plus':
-        case 'cc-sampling-plus-nc':
-        case 'nc-sampling+':
-        case 'sampling+-nc':
-        case 'nc-sampling-plus':
-        case 'sampling-plus-nc':
-            $this->enumTrackLicense = 'cc-nc-sampling+';
-            break;
-        case 'cc-0':
-        case 'cc0':
-        case '0':
-            $this->enumTrackLicense = 'cc-0';
-            break;
-        case 'WIPE':
-            $this->enumTrackLicense = null;
-            break;
-        default:
-            return false;
-        }
-        return true;
     }
 
     /**

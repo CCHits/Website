@@ -57,7 +57,7 @@ class RemoteSourcesCCMixter extends RemoteSources
         $this->strArtistName = $json_contents[0]->user_real_name;
         $this->strTrackUrl = $json_contents[0]->file_page_url;
         $this->strArtistUrl = $json_contents[0]->artist_page_url;
-        $this->enumTrackLicense = $matches[1];
+        $this->enumTrackLicense = LicenseSelector::validateLicense($matches[1]);
         if ($json_contents[0]->upload_extra->nsfw == false) {
             $this->isNSFW = 0;
         } else {

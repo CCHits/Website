@@ -61,15 +61,28 @@ class ArtistObject extends GenericObject
     public function amendRecord()
     {
         $arrUri = UI::getUri();
-        if (isset($arrUri['parameters']['strArtistName'])) {
-            $this->addJson($this->strArtistName, $arrUri['parameters']['strArtistName'], true);
+        if (isset($arrUri['parameters']['strArtistName_preferred']) and $arrUri['parameters']['strArtistName_preferred'] != '') {
+            $this->setpreferred_strArtistName($arrUri['parameters']['strArtistName_preferred']);
         }
-        if (isset($arrUri['parameters']['strArtistNameSounds'])) {
-            $this->strArtistNameSounds = $arrUri['parameters']['strArtistNameSounds'];
+        if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] != '') {
+            $this->set_strArtistName($arrUri['parameters']['strArtistName']);
         }
-        if (isset($arrUri['parameters']['strArtistUrl'])) {
-            $this->addJson($this->strArtistUrl, $arrUri['parameters']['strArtistUrl'], true);
+        if (isset($arrUri['parameters']['del_strArtistName']) and $arrUri['parameters']['del_strArtistName'] != '') {
+            $this->del_strArtistName($arrUri['parameters']['del_strArtistName']);
         }
+        if (isset($arrUri['parameters']['strArtistNameSounds']) and $arrUri['parameters']['strArtistNameSounds'] != '') {
+            $this->set_strArtistNameSounds($arrUri['parameters']['strArtistNameSounds']);
+        }
+        if (isset($arrUri['parameters']['strArtistUrl_preferred']) and $arrUri['parameters']['strArtistUrl_preferred'] != '') {
+            $this->setpreferred_strArtistUrl($arrUri['parameters']['strArtistUrl_preferred']);
+        }
+        if (isset($arrUri['parameters']['strArtistUrl']) and $arrUri['parameters']['strArtistUrl'] != '') {
+            $this->set_strArtistUrl($arrUri['parameters']['strArtistUrl']);
+        }
+        if (isset($arrUri['parameters']['del_strArtistUrl']) and $arrUri['parameters']['del_strArtistUrl'] != '') {
+            $this->del_strArtistUrl($arrUri['parameters']['del_strArtistUrl']);
+        }
+        $this->write();
     }
 
     /**
@@ -110,6 +123,21 @@ class ArtistObject extends GenericObject
     function get_strArtistUrl()
     {
         return $this->strArtistUrl;
+    }
+
+    /**
+     * Bypassing the subsequent JSON based modifiers, this lets you dump your details straight into the artist details.
+     *
+     * @param string $jsonArtistName JSON encoded list of Artist alternative names.
+     *
+     * @return void
+     */
+    function set_jsonArtistName($jsonArtistName = "")
+    {
+        if ($this->strArtistName != $jsonArtistName) {
+            $this->strArtistName = $jsonArtistName;
+            $this->arrChanges[] = 'strArtistName';
+        }
     }
 
     /**
@@ -167,6 +195,21 @@ class ArtistObject extends GenericObject
         if ($this->strArtistNameSounds != $strArtistNameSounds) {
             $this->strArtistNameSounds = $strArtistNameSounds;
             $this->arrChanges[] = 'strArtistNameSounds';
+        }
+    }
+
+    /**
+     * Bypassing the subsequent JSON based modifiers, this lets you dump your details straight into the artist details.
+     *
+     * @param string $jsonArtistUrl JSON encoded list of Artist alternative URLs.
+     *
+     * @return void
+     */
+    function set_jsonArtistUrl($jsonArtistUrl = "")
+    {
+        if ($this->strArtistUrl != $jsonArtistUrl) {
+            $this->strArtistUrl = $jsonArtistUrl;
+            $this->arrChanges[] = 'strArtistUrl';
         }
     }
 

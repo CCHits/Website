@@ -88,7 +88,7 @@ class RemoteSourcesRiffworld extends RemoteSources
                 }
                 $license .= 'sa';
             }
-            $this->enumTrackLicense = 'cc-' . $license;
+            $this->enumTrackLicense = LicenseSelector::validateLicense('cc-' . $license);
         }
         return $this->create_pull_entry();
     }

@@ -177,7 +177,7 @@
 						<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
 							<select name="strArtistUrl_preferred">
 {foreach $track.arrArtistUrl item=Artisturl}
-								<option value="{$Artisturl}"{if $artisturl == $track.strArtistUrl} selected="selected"{/if}>{$Artisturl}</option>
+								<option value="{$Artisturl}"{if $Artisturl == $track.strArtistUrl} selected="selected"{/if}>{$Artisturl}</option>
 {/foreach} 
 							</select>
 							<input type="submit" value="Go" />

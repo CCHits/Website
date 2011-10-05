@@ -179,6 +179,18 @@ class HTML
                         UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
+                case 'deltrack':
+                    $objTrack = RemoteSourcesBroker::getRemoteSourceByID($object[2]);
+                    if ($objTrack != false and $objTrack->get_intUserID() == $user->get_intUserID()) {
+                        $objTrack->cancel();
+                        UI::Redirect('admin/listtracks');
+                    } elseif($objTrack == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        $this->result['notyourtrack'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
+                    }
+                    break;
                 case 'addshow':
                     if ($user->get_isAdmin()) {
                         $this->addShow();
@@ -202,7 +214,6 @@ class HTML
                             $track_counter++;
                         }
                     }
-                    // TODO: Finish listunfinishedtracks.html.tpl
                     UI::SmartyTemplate('listunfinishedtracks.html', $this->result);
                     break;
                 case 'listshows':
@@ -250,7 +261,7 @@ class HTML
                 $this->result['postimport'] = true;
                 UI::SmartyTemplate('trackeditor.html', $this->result);
             } elseif (is_object($arrData) and $arrData->get_intProcessingID() > 0) {
-                $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
+                $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID())->getSelf();
                 // TODO: Finish importing trackimporter.html.tpl from trackeditor.html.tpl
                 UI::SmartyTemplate('trackimporter.html', $this->result);
             } elseif (is_array($arrData) and count($arrData) == 1) {
@@ -262,7 +273,7 @@ class HTML
                     $this->result['postimport'] = true;
                     UI::SmartyTemplate('trackeditor.html', $this->result);
                 } else {
-                    $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key);
+                    $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key)->getSelf();
                     UI::SmartyTemplate('trackimporter.html', $this->result);
                 }
             } elseif (is_integer($arrData)) {
@@ -290,7 +301,14 @@ class HTML
                 UI::Redirect("admin");
             }
         } else {
-            $this->result['track'] = $objTrack;
+            try {
+                // FIXME: "This artist has no name"... GULP!
+                $objTrack->amendRecord();
+            } catch (Exception $e) {
+                $this->result['error']=$e;
+            }
+            $this->result['track'] = $objTrack->getSelf();
+            // TODO: Ensure the trackimporter can also search for artists based on the derived texts... it currently does not.
             UI::SmartyTemplate('trackimporter.html', $this->result);
         }
     }
@@ -350,60 +368,7 @@ class HTML
     protected function editTrack($objTrack = null)
     {
         if ($objTrack != false) {
-            if (isset($this->arrUri['parameters']['strTrackName_preferred']) and $this->arrUri['parameters']['strTrackName_preferred'] != '') {
-                $objTrack->setpreferred_strTrackName($this->arrUri['parameters']['strTrackName_preferred']);
-            }
-            if (isset($this->arrUri['parameters']['strTrackName']) and $this->arrUri['parameters']['strTrackName'] != '') {
-                $objTrack->set_strTrackName($this->arrUri['parameters']['strTrackName']);
-            }
-            if (isset($this->arrUri['parameters']['del_strTrackName']) and $this->arrUri['parameters']['del_strTrackName'] != '') {
-                $objTrack->del_strTrackName($this->arrUri['parameters']['del_strTrackName']);
-            }
-            if (isset($this->arrUri['parameters']['strTrackNameSounds']) and $this->arrUri['parameters']['strTrackNameSounds'] != '') {
-                $objTrack->set_strTrackNameSounds($this->arrUri['parameters']['strTrackNameSounds']);
-            }
-            if (isset($this->arrUri['parameters']['strTrackUrl_preferred']) and $this->arrUri['parameters']['strTrackUrl_preferred'] != '') {
-                $objTrack->setpreferred_strTrackUrl($this->arrUri['parameters']['strTrackUrl_preferred']);
-            }
-            if (isset($this->arrUri['parameters']['strTrackUrl']) and $this->arrUri['parameters']['strTrackUrl'] != '') {
-                $objTrack->set_strTrackUrl($this->arrUri['parameters']['strTrackUrl']);
-            }
-            if (isset($this->arrUri['parameters']['del_strTrackUrl']) and $this->arrUri['parameters']['del_strTrackUrl'] != '') {
-                $objTrack->del_strTrackUrl($this->arrUri['parameters']['del_strTrackUrl']);
-            }
-            if (isset($this->arrUri['parameters']['strArtistName_preferred']) and $this->arrUri['parameters']['strArtistName_preferred'] != '') {
-                $objTrack->get_objArtist()->setpreferred_strArtistName($this->arrUri['parameters']['strArtistName_preferred']);
-            }
-            if (isset($this->arrUri['parameters']['strArtistName']) and $this->arrUri['parameters']['strArtistName'] != '') {
-                $objTrack->get_objArtist()->set_strArtistName($this->arrUri['parameters']['strArtistName']);
-            }
-            if (isset($this->arrUri['parameters']['del_strArtistName']) and $this->arrUri['parameters']['del_strArtistName'] != '') {
-                $objTrack->get_objArtist()->del_strArtistName($this->arrUri['parameters']['del_strArtistName']);
-            }
-            if (isset($this->arrUri['parameters']['strArtistNameSounds']) and $this->arrUri['parameters']['strArtistNameSounds'] != '') {
-                $objTrack->get_objArtist()->set_strArtistNameSounds($this->arrUri['parameters']['strArtistNameSounds']);
-            }
-            if (isset($this->arrUri['parameters']['strArtistUrl_preferred']) and $this->arrUri['parameters']['strArtistUrl_preferred'] != '') {
-                $objTrack->get_objArtist()->setpreferred_strArtistUrl($this->arrUri['parameters']['strArtistUrl_preferred']);
-            }
-            if (isset($this->arrUri['parameters']['strArtistUrl']) and $this->arrUri['parameters']['strArtistUrl'] != '') {
-                $objTrack->get_objArtist()->set_strArtistUrl($this->arrUri['parameters']['strArtistUrl']);
-            }
-            if (isset($this->arrUri['parameters']['del_strArtistUrl']) and $this->arrUri['parameters']['del_strArtistUrl'] != '') {
-                $objTrack->get_objArtist()->del_strArtistUrl($this->arrUri['parameters']['del_strArtistUrl']);
-            }
-            if (isset($this->arrUri['parameters']['approved'])) {
-                $objTrack->set_isApproved($this->asBoolean($this->arrUri['parameters']['approved']));
-            }
-            if (isset($this->arrUri['parameters']['nsfw'])) {
-                $objTrack->set_isNSFW($this->arrUri['parameters']['nsfw']);
-            }
-            if (isset($this->arrUri['parameters']['duplicate'])) {
-                $objTrack->set_intDuplicateID($this->arrUri['parameters']['duplicate']);
-            }
-            $objTrack->get_objArtist()->write();
-            $objTrack->write();
-
+            $objTrack->amendRecord();
             $this->result['track'] = $objTrack->getSelf();
             UI::SmartyTemplate('trackeditor.html', $this->result);
         }

@@ -3,7 +3,9 @@ Post Import Activities
 
 INSERT INTO showtracks SELECT shows.intShowID, 1, tracks.intTrackID FROM shows, tracks WHERE tracks.datDailyShow=shows.intShowUrl AND shows.enumShowType='daily' ORDER BY intShowID
 
-CREATE TABLE `cchits`.`processing` (
+ALTER TABLE `users` ADD `strEMail` TEXT NOT NULL AFTER `strOpenID` 
+
+CREATE TABLE `processing` (
 `intProcessingID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `strTrackName` TEXT NOT NULL ,
 `strTrackNameSounds` TEXT NOT NULL ,

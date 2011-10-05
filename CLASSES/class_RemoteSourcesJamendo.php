@@ -53,7 +53,7 @@ class RemoteSourcesJamendo extends RemoteSources
         $this->strArtistName = $json_contents[0]->artist_name;
         $this->strTrackUrl = $json_contents[0]->track_url;
         $this->strArtistUrl = $json_contents[0]->artist_url;
-        $this->enumTrackLicense = $matches[1];
+        $this->enumTrackLicense = LicenseSelector::validateLicense($matches[1]);
         $this->fileUrl = $this->find_download($match[1]);
         return $this->create_pull_entry();
     }
