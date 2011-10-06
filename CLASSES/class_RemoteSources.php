@@ -86,11 +86,21 @@ class RemoteSources extends GenericObject
         $return['strTrackName'] = $this->preferredJson($this->strTrackName);
         $return['strTrackUrl'] = $this->preferredJson($this->strTrackUrl);
         $return['arrTrackUrl'] = $this->getJson($this->strTrackUrl);
-        $return['strArtistName'] = $this->preferredJson($this->strArtistName);
-        $return['arrArtistName'] = $this->getJson($this->strArtistName);
-        $return['strArtistNameSounds'] = $this->strArtistNameSounds;
-        $return['strArtistUrl'] = $this->preferredJson($this->strArtistUrl);
-        $return['arrArtistUrl'] = $this->getJson($this->strArtistUrl);
+        if (isset($this->intArtistID) and $this->intArtistID > 0 and ArtistBroker::getArtistByID($this->intArtistID) != false) {
+            $objArtist = ArtistBroker::getArtistByID($this->intArtistID);
+            $arrArtist = $objArtist->getSelf();
+            $return['strArtistName'] = $arrArtist['strArtistName'];
+            $return['arrArtistName'] = $arrArtist['arrArtistName'];
+            $return['strArtistNameSounds'] = $arrArtist['strArtistNameSounds'];
+            $return['strArtistUrl'] = $arrArtist['strArtistUrl'];
+            $return['arrArtistUrl'] = $arrArtist['arrArtistUrl'];
+        } else {
+            $return['strArtistName'] = $this->preferredJson($this->strArtistName);
+            $return['arrArtistName'] = $this->getJson($this->strArtistName);
+            $return['strArtistNameSounds'] = $this->strArtistNameSounds;
+            $return['strArtistUrl'] = $this->preferredJson($this->strArtistUrl);
+            $return['arrArtistUrl'] = $this->getJson($this->strArtistUrl);
+        }
         $return['enumTrackLicense'] = LicenseSelector::validateLicense($this->enumTrackLicense);
         return $return;
     }
@@ -191,6 +201,15 @@ class RemoteSources extends GenericObject
         return $this->intUserID;
     }
 
+    /**
+     * This function returns the ArtistID associated to the submitted track.
+     *
+     * @return integer ArtistID.
+     */
+    function get_intArtistID()
+    {
+        return $this->intArtistID;
+    }
 
     /**
      * Set the Track Name
@@ -584,14 +603,9 @@ class RemoteSources extends GenericObject
             throw new RemoteSource_NoTrackLicense();
         }
         if (isset($this->intArtistID) and $this->intArtistID != 0 and false == ArtistBroker::getArtistByID($this->intArtistID)) {
-            throw new RemoteSource_NoArtistName();
-        } else {
-            if (!isset($this->intArtistID) and (!isset($this->strArtistName) or '' == trim($this->strArtistName))) {
-                throw new RemoteSource_NoArtistName();
-            }
-            if (!isset($this->intArtistID) and (!isset($this->strArtistUrl) or '' == trim($this->strArtistUrl))) {
-                throw new RemoteSource_NoArtistUrl();
-            }
+            throw new RemoteSource_NoArtist();
+        } elseif ($this->intArtistID == 0) {
+            throw new RemoteSource_NoArtist();
         }
         if (!isset($this->isNSFW) or trim($this->isNSFW)>1 or trim($this->isNSFW)<0) {
             throw new RemoteSource_NoNSFWFlag();
@@ -774,27 +788,10 @@ class RemoteSource_NoTrackLicense extends CustomException
  * @link     http://code.cchits.net Developers Web Site
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
-class RemoteSource_NoArtistName extends CustomException
+class RemoteSource_NoArtist extends CustomException
 {
-    protected $message = "This Artist has no name.";
+    protected $message = "The Artist is not set or created.";
     protected $code = 252;
-}
-
-/**
- * This class handles custom exceptions
- *
- * @category Default
- * @package  Exceptions
- * @author   Jon Spriggs <jon@sprig.gs>
- * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
- * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
- */
-class RemoteSource_NoArtistUrl extends CustomException
-{
-    protected $message = "This Artist has no Url.";
-    protected $code = 251;
 }
 
 /**

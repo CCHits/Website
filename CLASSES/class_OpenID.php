@@ -29,10 +29,10 @@ class OpenID
 {
     protected static $handler = null;
 
-    protected $nickname    = TRUE;
+    protected $nickname    = FALSE;
     protected $email       = TRUE;
-    protected $realname    = TRUE;
-    protected $language    = TRUE;
+    protected $realname    = FALSE;
+    protected $language    = FALSE;
     protected $dateofbirth = FALSE;
     protected $gender	   = FALSE;
     protected $postcode	   = FALSE;

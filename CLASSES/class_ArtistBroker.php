@@ -16,6 +16,7 @@
  */
 /**
  * This class knows every way to get an Artist
+ * TODO: Implement caching as per trackbroker
  *
  * @category Default
  * @package  Brokers

@@ -125,7 +125,7 @@ class TrackBroker
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
+            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ? OR strTrackName REGEXP ?";
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
@@ -138,7 +138,7 @@ class TrackBroker
                     $strTrackName .= "[:space:]*$chrTrackName";
                 }
             }
-            $query->execute(array("{$strTrackName}[:space:]*"));
+            $query->execute(array("\"{$strTrackName}[:space:]*\"", "{$strTrackName}[:space:]*"));
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -217,10 +217,9 @@ class TrackBroker
             return false;
         }
     }
+
     /**
-     * This function finds a track by its url.
-     * This search removes all spaces and then checks for the name
-     * including any spaces
+     * This function finds a track by the first part of the url.
      *
      * @param string  $strTrackUrl The part of the Track name to search for
      * @param integer $intPage     The start "page" number
@@ -247,10 +246,10 @@ class TrackBroker
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ?";
+            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? or strTrackUrl LIKE ?";
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
-            $query->execute(array("$strTrackUrl%"));
+            $query->execute(array("\"$strTrackUrl%", "$strTrackUrl%"));
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -263,6 +262,28 @@ class TrackBroker
                 }
                 return $return;
             }
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * This function finds a track by the url.
+     *
+     * @param string  $strTrackUrl The part of the Track name to search for
+     *
+     * @return array|false An array of TrackObject or false if the item doesn't exist
+     */
+    public function getTrackByExactUrl($strTrackUrl = "") {
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? OR strTrackUrl = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array("%\"$strTrackUrl\"%", $strTrackUrl));
+            $handler = self::getHandler();
+            $item = $query->fetchObject('TrackObject');
+            return $item;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;

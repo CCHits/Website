@@ -165,6 +165,17 @@ class HTML
                         UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
+                case 'artist':
+                    $objArtist = ArtistBroker::getArtistByID($object[2]);
+                    if ($objArtist != false and ($user->get_isUploader() or $user->get_isAdmin())) {
+                        $this->editArtist($objArtist);
+                    } elseif ($objTrack == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        $this->result['notuploader'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
+                    }
+                    break;
                 case 'addtrack':
                     $objTrack = RemoteSourcesBroker::getRemoteSourceByID($object[2]);
                     if (($object[2] == '' or $objTrack != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
@@ -172,6 +183,17 @@ class HTML
                     } elseif ($objTrack->get_intUserID() != $user->get_intUserID()) {
                         $this->result['notyourtrack'] = true;
                         UI::SmartyTemplate("login.html", $this->result);
+                    } elseif ($objTrack == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        $this->result['notuploader'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
+                    }
+                    break;
+                case 'addartist':
+                    $objArtist = ArtistBroker::getArtistByID($object[2]);
+                    if (($object[2] == '' or $objArtist != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
+                        $this->addArtist($objArtist);
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
                     } else {
@@ -257,12 +279,15 @@ class HTML
         if ($objTrack == false) {
             $arrData = RemoteSourcesBroker::newTrackRouter($this->arrUri['parameters']['trackurl']);
             if (is_object($arrData) and $arrData->get_intTrackID() > 0) {
-                $this->result['track'] = TrackBroker::getTrackByID($arrData->get_intTrackID())->getSelf();
-                $this->result['postimport'] = true;
-                UI::SmartyTemplate('trackeditor.html', $this->result);
+                UI::Redirect("admin/track/" . $arrData->get_intTrackID());
             } elseif (is_object($arrData) and $arrData->get_intProcessingID() > 0) {
-                $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID())->getSelf();
-                // TODO: Finish importing trackimporter.html.tpl from trackeditor.html.tpl
+                $remotesource = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
+                if ($remotesource->get_intArtistID() == 0) {
+                    $this->result['artists'] = ArtistBroker::getArtistByPartialUrl($remotesource->get_strArtistUrl());
+                } else {
+                    $this->result['artists'] = array($remotesource->get_intArtistID() => ArtistBroker::getArtistByID($remotesource->get_intArtistID()));
+                }
+                $this->result['track'] = $remotesource->getSelf();
                 UI::SmartyTemplate('trackimporter.html', $this->result);
             } elseif (is_array($arrData) and count($arrData) == 1) {
                 foreach ($arrData as $key=>$value) {
@@ -302,16 +327,45 @@ class HTML
             }
         } else {
             try {
-                // FIXME: "This artist has no name"... GULP!
                 $objTrack->amendRecord();
             } catch (Exception $e) {
                 $this->result['error']=$e;
             }
             $this->result['track'] = $objTrack->getSelf();
-            // TODO: Ensure the trackimporter can also search for artists based on the derived texts... it currently does not.
             UI::SmartyTemplate('trackimporter.html', $this->result);
         }
     }
+
+    /**
+     * Begin or complete adding an artist
+     *
+     * @param false|object $objArtist False for an empty new artist, or ArtistObject object for an Artist in-progress
+     *
+     * @return void
+     */
+    protected function addArtist($objArtist = null)
+    {
+        if ($objArtist == false) {
+            $arrData = new NewArtistObject($this->arrUri['parameters']['artistname'], $this->arrUri['parameters']['artistnamesounds'], $this->arrUri['parameters']['artisturl']);
+            if (is_object($arrData) and $arrData->get_intArtistID() > 0) {
+                $this->result['artist'] = $arrData->getSelf();
+                $this->result['postimport'] = true;
+                UI::SmartyTemplate('artisteditor.html', $this->result);
+            } else {
+                UI::SmartyTemplate('artisteditor.html', $this->result);
+            }
+        } else {
+            try {
+                $objArtist->amendRecord();
+            } catch (Exception $e) {
+                $this->result['error']=$e;
+            }
+            $this->result['artist'] = $objArtist->getSelf();
+            // TODO: Create artisteditor.html.tpl
+            UI::SmartyTemplate('artisteditor.html', $this->result);
+        }
+    }
+
 
     /**
      * Begin the process of associating a track to a show.

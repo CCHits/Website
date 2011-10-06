@@ -223,7 +223,7 @@ class ArtistObject extends GenericObject
     function set_strArtistUrl($strArtistUrl = "")
     {
         if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
-            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
+            $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl);
             $this->arrChanges[] = 'strArtistUrl';
         }
     }

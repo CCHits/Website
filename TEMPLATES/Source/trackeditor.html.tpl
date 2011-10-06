@@ -12,13 +12,11 @@
 {if isset($error) and $error}
 		<p>There was an error.</p>
 {/if}
-{if isset($postimport) and $postimport}
 		<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
 			Associate this track with a show?
 			<input type="hidden" name="intTrackID" value="{$track.intTrackID}">
 			<input type="submit" value="Go" />
 		</form>
-{/if}
 		<table>
 			<thead>
 				<tr>

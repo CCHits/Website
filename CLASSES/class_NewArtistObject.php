@@ -44,13 +44,13 @@ class NewArtistObject extends ArtistObject
         if ($strArtistName != ""
             and $strArtistUrl != ""
         ) {
-            $this->set_strArtistName($strArtistName);
+            $this->set_jsonArtistName($strArtistName);
             if ($strArtistNameSounds == "") {
                 $this->set_strArtistNameSounds($strArtistName);
             } else {
                 $this->set_strArtistNameSounds($strArtistNameSounds);
             }
-            $this->set_strArtistUrl($strArtistUrl);
+            $this->set_jsonArtistUrl($strArtistUrl);
             if ($this->create()) {
                 return $this->get_intArtistID();
             } else {

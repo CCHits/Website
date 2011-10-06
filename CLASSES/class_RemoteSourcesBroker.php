@@ -93,6 +93,10 @@ class RemoteSourcesBroker
     public function newTrackRouter($url = '')
     {
         if ($url != '') {
+            $trackbroker = TrackBroker::getTrackByExactUrl($url);
+            if ($trackbroker != false) {
+                return $trackbroker;
+            }
             if (preg_match('/^http[s]*:\/\/([^\/]+)/', $url, $matches) > 0) {
                 switch (strtolower($matches[1])) {
                 case 'alonetone.com':

@@ -464,7 +464,7 @@ class TrackObject extends GenericObject
     function set_md5FileHash($md5FileHash = "")
     {
         if ($md5FileHash == '') {
-            $md5FileHash = md5sum($this->get_localFileSource());
+            $md5FileHash = md5($this->get_localFileSource());
         }
         if ($this->md5FileHash != $md5FileHash) {
             $this->md5FileHash = $md5FileHash;

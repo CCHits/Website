@@ -49,6 +49,12 @@ class NewTrackObject extends TrackObject
         $isNSFW = false,
         $fileSource = ""
     ) {
+        if (! is_object($objArtist) and 0 + $objArtist > 0) {
+            $objArtist = ArtistBroker::getArtistByID($objArtist);
+            if ($objArtist == false) {
+                return false;
+            }
+        }
         if ((UserBroker::getUser()->get_isUploader()
             or UserBroker::getUser()->get_isAdmin())
             and $objArtist != null
