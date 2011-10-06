@@ -54,12 +54,12 @@ class RemoteSourcesSoundcloud extends RemoteSources
         if ($json_contents->downloadable != TRUE) {
             return 417;
         }
-        $this->strTrackName = $json_contents->title;
-        $this->strArtistName = $json_contents->user->username;
-        $this->strTrackUrl = $json_contents->permalink_url;
-        $this->strArtistUrl = $json_contents->user->permalink_url;
-        $this->enumTrackLicense = LicenseSelector::validateLicense($json_contents->license);
-        $this->fileUrl = $json_contents->download_url . "?consumer_key={$soundcloud_api}";
+        $this->set_strTrackName($json_contents->title);
+        $this->set_strArtistName($json_contents->user->username);
+        $this->set_strTrackUrl($json_contents->permalink_url);
+        $this->set_strArtistUrl($json_contents->user->permalink_url);
+        $this->set_enumTrackLicense(LicenseSelector::validateLicense($json_contents->license));
+        $this->set_fileUrl($json_contents->download_url . "?consumer_key={$soundcloud_api}");
         return $this->create_pull_entry();
     }
 }

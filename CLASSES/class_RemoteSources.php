@@ -410,7 +410,7 @@ class RemoteSources extends GenericObject
     function set_strArtistUrl($strArtistUrl = "")
     {
         if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
-            $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
+            $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl);
             $this->arrChanges[] = 'strArtistUrl';
         }
     }
@@ -548,22 +548,8 @@ class RemoteSources extends GenericObject
                 $this->strArtistNameSounds,
                 $this->strArtistUrl
             );
-            $this->intArtistID = $artist->get_intArtistID();
-        }
-        if ($this->fileUrl != '') {
-            $get = $this->curl_get($url);
-            if ($get[1]['http_code'] == 200) {
-                $this->fileName = $get[0];
-            } else {
-                unlink($get[0]);
-                throw new RemoteSource_NoFileDl();
-            }
-        } elseif ($this->fileName == '') {
-            throw new RemoteSource_NoFileName();
-        } else {
-            if ( ! file_exists($this->fileName)) {
-                throw new RemoteSource_NoFileExist();
-            }
+            $this->set_intArtistID($artist->get_intArtistID());
+            $this->write();
         }
         $this->intTrackID = new NewTrackObject(
             $this->intArtistID,
@@ -577,6 +563,7 @@ class RemoteSources extends GenericObject
         if ($this->fileUrl != '') {
             unlink($this->fileName);
         }
+        $this->cancel();
         return $this->intTrackID;
     }
 
@@ -596,7 +583,7 @@ class RemoteSources extends GenericObject
         if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense) or 'None Selected' == LicenseSelector::validateLicense($this->enumTrackLicense)) {
             throw new RemoteSource_NoTrackLicense();
         }
-        if (isset($this->intArtistID) and false == ArtistBroker::getArtistByID($this->intArtistID)) {
+        if (isset($this->intArtistID) and $this->intArtistID != 0 and false == ArtistBroker::getArtistByID($this->intArtistID)) {
             throw new RemoteSource_NoArtistName();
         } else {
             if (!isset($this->intArtistID) and (!isset($this->strArtistName) or '' == trim($this->strArtistName))) {
@@ -611,7 +598,13 @@ class RemoteSources extends GenericObject
         }
         if (isset($this->fileUrl) and "" != $this->fileUrl) {
             if (isset($this->fileName) and false == $this->fileName) {
-                throw new RemoteSource_NoFileDl();
+                $get = $this->curl_get($this->fileUrl);
+                if ($get[1]['http_code'] == 200) {
+                    $this->set_fileName($get[0]);
+                    $this->write();
+                } else {
+                    throw new RemoteSource_NoFileDl();
+                }
             }
             if (!isset($this->fileName) or '' == trim($this->fileName)) {
                 throw new RemoteSource_NoFileName();
@@ -639,7 +632,11 @@ class RemoteSources extends GenericObject
     protected function curl_get($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10)
     {
         $url = str_replace("&amp;", "&", urldecode(trim($url)));
-        $cookie = tempnam(sys_get_temp_dir(), "CURLCOOKIE_");
+        $cookie = $this->getTempFileName(dirname(__FILE__) . '/../cookie/');
+        if ($cookie == false) {
+            error_log("Wasn't able to create a temporary file for the cookie jar");
+            return false;
+        }
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -653,17 +650,20 @@ class RemoteSources extends GenericObject
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
         if ($as_file == 1) {
-            $tmpfname = tempnam(sys_get_temp_dir(), "UP_");
-            $out = fopen($tmpfname, 'wb');
-            if ($out == FALSE) {
+            $tempname = $this->getTempFileName();
+            if ($tempname == false) {
+                error_log("Wasn't able to create a temporary file for uploading");
+                unlink($cookie);
                 return false;
             }
+            $out = fopen($tempname, 'wb');
             curl_setopt($ch, CURLOPT_FILE, $out);
         }
 
         $content = curl_exec($ch);
         $response = curl_getinfo($ch);
         if (curl_errno($ch)) {
+            error_log("Unable to download file: " . curl_error($ch));
             $error = 1;
         }
         curl_close($ch);
@@ -672,6 +672,10 @@ class RemoteSources extends GenericObject
         }
 
         if (isset($error)) {
+            if ($as_file == 1) {
+                unlink($tempname);
+            }
+            unlink($cookie);
             return false;
         }
 
@@ -679,7 +683,11 @@ class RemoteSources extends GenericObject
             if ($headers = get_headers($response['url'])) {
                 foreach ($headers as $value) {
                     if (substr(strtolower($value), 0, 9) == "location:") {
-                        return get_url(trim(substr($value, 9, strlen($value))), $as_file);
+                        if ($as_file == 1) {
+                            unlink($tempname);
+                        }
+                        unlink($cookie);
+                        return $this->curl_get(trim(substr($value, 9, strlen($value))), $as_file);
                     }
                 }
             }
@@ -690,11 +698,14 @@ class RemoteSources extends GenericObject
             or preg_match("/>[[:space:]]+window\.location\=\"(.*)\"/i", $content))
             and $javascript_loop < $max_loop
         ) {
-            return get_url($value[1], 0, $javascript_loop+1, $max_loop);
+            unlink($cookie);
+            return $this->curl_get($value[1], 0, $javascript_loop+1, $max_loop);
         } else {
             if ($as_file == 1) {
-                return array($tmpfname, $response);
+                unlink($cookie);
+                return array($tempname, $response);
             } else {
+                unlink($cookie);
                 return array($content, $response);
             }
         }

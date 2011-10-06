@@ -43,12 +43,12 @@ class RemoteSourcesFile extends RemoteSources
         $exec_command = "$soxi -a \"$src\"";
         $exec_data = exec($exec_command, $exec_output, $return);
         if (preg_match("/^[Tt][Ii][Tt][Ll][Ee]=(.*)/", $return, $arrTrackName) > 0) {
-            $this->strTrackName = $arrTrackName[1];
+            $this->set_strTrackName($arrTrackName[1]);
         }
         if (preg_match("/^[Aa][Rr][Tt][Ii][Ss][Tt]=(.*)/", $return, $arrArtistName) > 0) {
-            $this->strArtistName = $arrArtistName[1];
+            $this->set_strArtistName($arrArtistName[1]);
         }
-        $this->fileName = $src;
+        $this->set_fileName($src);
         return $this->create_pull_entry();
     }
 }

@@ -49,26 +49,21 @@ class RemoteSourcesMacjams extends RemoteSources
         $regex_strArtistUrl = '/<h2 style="[^"]*"><a href="([^"]*)">[^<]*<\/a><\/h2>/';
         $regex_strFileUrl = '/so.addVariable\("file","([^"]*)\);/';
         $regex_enumTrackLicense = '/licenses\/([^\/]*)\//';
-        $this->strTrackUrl = $src;
-        preg_match($regex_strArtistName, $file_contents, $arrArtistName);
-        preg_match($regex_strTrackName, $file_contents, $arrTrackName);
-        preg_match($regex_strArtistUrl, $src, $arrArtistUrl);
-        preg_match($regex_strFileUrl, $src, $arrFileUrl);
-        preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense);
+        $this->set_strTrackUrl($src);
         if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
-            $this->strArtistName = $arrArtistName[1];
+            $this->set_strArtistName($arrArtistName[1]);
         }
         if (preg_match($regex_strTrackName, $file_contents, $arrTrackName) > 0) {
-            $this->strTrackName = $arrTrackName[1];
+            $this->set_strTrackName($arrTrackName[1]);
         }
         if (preg_match($regex_strArtistUrl, $src, $arrArtistUrl) > 0) {
-            $this->strArtistUrl = 'http://macjams.com' . $arrArtistUrl[1];
+            $this->set_strArtistUrl('http://macjams.com' . $arrArtistUrl[1]);
         }
         if (preg_match($regex_strFileUrl, $src, $arrFileUrl) > 0) {
-            $this->fileUrl = $arrFileUrl[1];
+            $this->set_fileUrl($arrFileUrl[1]);
         }
         if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
-            $this->enumTrackLicense = LicenseSelector::validateLicense($arrTrackLicense[1]);
+            $this->set_enumTrackLicense(LicenseSelector::validateLicense($arrTrackLicense[1]));
         }
         return $this->create_pull_entry();
     }

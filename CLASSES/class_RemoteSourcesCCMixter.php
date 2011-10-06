@@ -53,17 +53,17 @@ class RemoteSourcesCCMixter extends RemoteSources
             return 406;
         }
         preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);
-        $this->strTrackName = $json_contents[0]->upload_name;
-        $this->strArtistName = $json_contents[0]->user_real_name;
-        $this->strTrackUrl = $json_contents[0]->file_page_url;
-        $this->strArtistUrl = $json_contents[0]->artist_page_url;
-        $this->enumTrackLicense = LicenseSelector::validateLicense($matches[1]);
+        $this->set_strTrackName($json_contents[0]->upload_name);
+        $this->set_strArtistName($json_contents[0]->user_real_name);
+        $this->set_strTrackUrl($json_contents[0]->file_page_url);
+        $this->set_strArtistUrl($json_contents[0]->artist_page_url);
+        $this->set_enumTrackLicense(LicenseSelector::validateLicense($matches[1]));
         if ($json_contents[0]->upload_extra->nsfw == false) {
-            $this->isNSFW = 0;
+            $this->set_isNSFW(0);
         } else {
-            $this->isNSFW = 1;
+            $this->set_isNSFW(1);
         }
-        $this->fileUrl = $json_contents[0]->files[0]->download_url;
+        $this->set_fileUrl($json_contents[0]->files[0]->download_url);
         return $this->create_pull_entry();
     }
 }

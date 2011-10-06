@@ -49,12 +49,12 @@ class RemoteSourcesJamendo extends RemoteSources
             return 406;
         }
         preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);
-        $this->strTrackName = $json_contents[0]->track_name;
-        $this->strArtistName = $json_contents[0]->artist_name;
-        $this->strTrackUrl = $json_contents[0]->track_url;
-        $this->strArtistUrl = $json_contents[0]->artist_url;
-        $this->enumTrackLicense = LicenseSelector::validateLicense($matches[1]);
-        $this->fileUrl = $this->find_download($match[1]);
+        $this->set_strTrackName($json_contents[0]->track_name);
+        $this->set_strArtistName($json_contents[0]->artist_name);
+        $this->set_strTrackUrl($json_contents[0]->track_url);
+        $this->set_strArtistUrl($json_contents[0]->artist_url);
+        $this->set_enumTrackLicense(LicenseSelector::validateLicense($matches[1]));
+        $this->set_fileUrl($this->find_download($match[1]));
         return $this->create_pull_entry();
     }
 
@@ -80,7 +80,7 @@ class RemoteSourcesJamendo extends RemoteSources
             break;
         case 50:
             // Stop
-            return $this->NOFILEDL;
+            return false;
         default:
             // Bypass the numbers not listed above
             $download_server++;

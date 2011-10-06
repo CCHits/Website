@@ -211,6 +211,10 @@ class GenericObject
             foreach ($arrJson as $value) {
                 return $value;
             }
+        } elseif (is_array($arrJson) and count($arrJson) == 1) {
+            foreach ($arrJson as $value) {
+                return $value;
+            }
         } else {
             return $strJson;
         }
@@ -245,8 +249,10 @@ class GenericObject
     {
         $set = false;
         $arrJson = (array) json_decode($strJson);
-        if (count($arrJson) == 0) {
+        if (count($arrJson) == 0 and $strJson != '') {
             $arrJson[] = $strJson;
+        } elseif ($strJson == '') {
+            $arrJson = array();
         }
         $arrTemp = array();
         $intKey = 0;
@@ -375,11 +381,17 @@ class GenericObject
      */
     function getTempFileName($dirname = '')
     {
+        $here = dirname(__FILE__);
         if ($dirname == '') {
             $dirname = dirname(__FILE__) . '/../upload';
         }
-        if ( ! file_exists($dirname)) {
-            if ( ! mkdir($dirname)) {
+        if (substr($dirname, -1) == '/') {
+            $dirname = substr($dirname, 0, -1);
+        }
+        $state = file_exists($dirname);
+        if (! $state) {
+            $state = mkdir($dirname, umask(), true);
+            if (! $state) {
                 error_log("Unable to make directory $dirname");
                 die("Error handling temporary files. Please contact an administrator.");
             }
@@ -389,16 +401,10 @@ class GenericObject
             die("Error handling temporary files. Please contact an administrator.");
         }
         // This, apparently, may help to prevent race conditions: http://www.php.net/manual/en/function.tempnam.php#98232
-        $counter = 0;
         do {
             $file = $dirname . '/' . mt_rand();
             $fp = @fopen($file, 'x');
-            $counter ++;
-        } while (!$fp or $counter <= 500);
-        if ($counter >= 500) {
-            error_log("Unable to create temporary file in 500 tries.");
-            die("Error handling temporary files. Please contact an administrator.");
-        }
+        } while (!$fp);
         fclose($fp);
         return $file;
     }

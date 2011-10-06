@@ -49,21 +49,21 @@ class RemoteSourcesSutros extends RemoteSources
         $regex_strArtistUrl = '/\s*<div class="username"><b><a href="[^"]+">([^<]+)<\/a><\/b><\/div>/';
         $regex_fileUrl = '/\s*<div id="details" class="song" about="([^"]+)">/';
         $regex_enumTrackLicense = '/licenses\/([^\/]*)\//';
-        $this->strTrackUrl = $src;
+        $this->set_strTrackUrl($src);
         if (preg_match($regex_strArtistName, $file_contents, $arrArtistName) > 0) {
-            $this->strArtistName = $arrArtistName[1];
+            $this->set_strArtistName($arrArtistName[1]);
         }
         if (preg_match($regex_strTrackName, $file_contents, $arrTrackName) > 0) {
-            $this->strTrackName = $arrTrackName[1];
+            $this->set_strTrackName($arrTrackName[1]);
         }
         if (preg_match($regex_strArtistUrl, $file_contents, $arrArtistUrl) > 0) {
-            $this->strArtistUrl = $arrArtistUrl[1];
+            $this->set_strArtistUrl($arrArtistUrl[1]);
         }
         if (preg_match($regex_fileUrl, $file_contents, $arrFileUrl) > 0) {
-            $this->fileUrl = $arrFileUrl[1];
+            $this->set_fileUrl($arrFileUrl[1]);
         }
         if (preg_match($regex_enumTrackLicense, $file_contents, $arrTrackLicense) > 0) {
-            $this->enumTrackLicense = LicenseSelector::validateLicense($arrTrackLicense[1]);
+            $this->set_enumTrackLicense(LicenseSelector::validateLicense($arrTrackLicense[1]));
         }
         return $this->create_pull_entry();
     }
