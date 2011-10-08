@@ -40,7 +40,9 @@
 		</form>
 {/foreach}
 ]]></description>
+{if isset($show.player_data.mp3)}
 		<enclosure url="{$show.player_data.mp3}" length="{$show.player_data.mp3_len}" type="audio/mpeg" />
+{/if}
 		<category>Music</category>
 		<pubDate>{$show.datDateAdded}</pubDate>
 		<author>{$feedOwner}</author>
@@ -49,22 +51,33 @@
 		<itunes:subtitle>{$show.strShowName}</itunes:subtitle>
 		<itunes:keywords>Free {$feedWhen} Creative Commons Licensed Music</itunes:keywords>
 		<itunes:duration>{$show.timeLength}</itunes:duration>
+{if isset($show.player_data.mp3)}
 		<mrss-plus:fullwork url="{$show.player_data.mp3}" fileSize="{$show.player_data.mp3_len}" type="audio/mpeg" medium="audio" isDefault="true" expression="full" duration="{$show.timeLength}" lang="en">
-{if $show.player_data.oga != ''}			<mrss-plus:alternate-fullwork url="{$show.player_data.oga}" fileSize="{$show.player_data.oga_len}" type="audio/oga" medium="audio" isDefault="false" expression="full" duration="{$show.timeLength}" lang="en" description="OGG/Vorbis version" />{/if}
+{if isset($show.player_data.oga) and $show.player_data.oga != ''}
+            <mrss-plus:alternate-fullwork url="{$show.player_data.oga}" fileSize="{$show.player_data.oga_len}" type="audio/oga" medium="audio" isDefault="false" expression="full" duration="{$show.timeLength}" lang="en" description="OGG/Vorbis version" />
+{/if}
+{if isset($show.player_data.m4a) and $show.player_data.m4a != ''}
+            <mrss-plus:alternate-fullwork url="{$show.player_data.m4a}" fileSize="{$show.player_data.m4a_len}" type="audio/mp4a-latm" medium="audio" isDefault="false" expression="full" duration="{$show.timeLength}" lang="en" description="MPEG4-Audio version" />
+{/if}
 			<mrss-plus:hash algo="sha1">{$show.shaHash}</mrss-plus:hash>
 {if $show.strCommentUrl != ''}
 			<mrss-plus:comments url="{$show.strCommentUrl}" />
 {/if}
-{if isset($show.arrShowLayout)}{foreach from=$show.arrShowLayout item=$track}
+{if isset($show.arrShowLayout)}
+{foreach from=$show.arrShowLayout item=$track}
 			<mrss-plus:partwork src="{$track.strTrackUrl}" startTime="{$track.start}" endTime="{$track.stop}">
-				{if $track.strLicenseUrl != ''}<mrss-plus:licenses>
+{if $track.strLicenseUrl != ''}
+				<mrss-plus:licenses>
 					<mrss-plus:license type="text/html" href="{$track.strLicenseUrl}">{$track.strLicenseName}</mrss-plus:license>
-				</mrss-plus:licenses>{/if}
+				</mrss-plus:licenses>
+{/if}
 				<mrss-plus:credit role="artist" scheme="urn:music" url="{$track.strArtistUrl}">{$track.strArtistName}</mrss-plus:credit>
 				<mrss-plus:title type="plain" url="{$track.strTrackUrl}">{$track.strTrackName}</mrss-plus:title>
 			</mrss-plus:partwork>
-{/foreach}{/if}
+{/foreach}
+{/if}
 		</mrss-plus:fullwork>
+{/if}
 	</item>
 {/foreach}
 	</channel>
