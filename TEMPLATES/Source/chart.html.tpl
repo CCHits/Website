@@ -9,10 +9,10 @@
 	<body>
 		<h1>Welcome to {$ServiceName}</h1>
 		<h2>{$Slogan}</h2>
-		{if $previous_page == true}<a href="{$arrUri.no_params}{if $arrUri.parameters.page - 1 > 0}?page={$arrUri.parameters.page - 1}{if isset($arrUri.parameters.size)}&size={$arrUri.parameters.size}{/if}{else}{if isset($arrUri.parameters.size)}?size={$arrUri.parameters.size}{/if}{/if}">&lt;- Previous page</a>{/if}
-		{if $next_page == true}<a href="{$arrUri.no_params}?page={$arrUri.parameters.page + 1}{if isset($arrUri.parameters.size)}&size={$arrUri.parameters.size}{/if}">Next page -&gt;</a>{/if}
+		{if $previous_page == true}<a href="{$arrUri.no_params}{if isset($arrUri.parameters.page) and $arrUri.parameters.page - 1 > 0}?page={$arrUri.parameters.page - 1}{if isset($arrUri.parameters.size)}&size={$arrUri.parameters.size}{/if}{else}{if isset($arrUri.parameters.size)}?size={$arrUri.parameters.size}{/if}{/if}">&lt;- Previous page</a>{/if}
+		{if $next_page == true}<a href="{$arrUri.no_params}?page={if isset($arrUri.parameters.page)}{$arrUri.parameters.page + 1}{else}1{/if}{if isset($arrUri.parameters.size)}&size={$arrUri.parameters.size}{/if}">Next page -&gt;</a>{/if}
 		<div id="chart">
-			<h3>The Chart</h3>
+			<h3>The Chart for {$chart.strChartDate}</h3>
 			<table>
 				<thead>
 					<tr>
@@ -22,14 +22,15 @@
 					</tr>
 				</thead>
 				<tbody>
-{foreach $chart as $position=>$track}{strip} 
+{if isset($chart) and isset($chart.position)}
+{foreach from=$chart.position as key=position item=track}
+{strip} 
 					<tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
 						{include file="show_track_data.tpl"}
 				    </tr>
-{/strip}{/foreach}
-					<tr>
-						<td colspan="3"><a href="{$baseURL}chart">More...</a></td>
-					</tr>
+{/strip}
+{/foreach}
+{/if}
 				</tbody>
 			</table>
 		</div>

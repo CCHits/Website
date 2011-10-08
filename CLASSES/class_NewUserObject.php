@@ -52,13 +52,43 @@ class NewUserObject extends UserObject
                 $cookie_string = $_SERVER['REMOTE_ADDR'];
             }
             $cookie_string .= $_SERVER['HTTP_USER_AGENT'];
-            $cookie_string .= $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-            $cookie_string .= $_SERVER['HTTP_ACCEPT_ENCODING'];
-            $cookie_string .= $_SERVER['HTTP_ACCEPT_CHARSET'];
+            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                $cookie_string .= $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+            }
+            if (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) {
+                $cookie_string .= $_SERVER['HTTP_ACCEPT_ENCODING'];
+            }
+            if (isset($_SERVER['HTTP_ACCEPT_CHARSET'])) {
+                $cookie_string .= $_SERVER['HTTP_ACCEPT_CHARSET'];
+            }
             $this->set_strCookieID(sha1($cookie_string));
             $_SESSION['cookie'] = sha1($cookie_string);
+            try {
+                $db = Database::getConnection();
+                $sql = "SELECT * FROM users WHERE strCookieID = ? LIMIT 1";
+                $query = $db->prepare($sql);
+                $query->execute(array($_SESSION['cookie']));
+                $user = $query->fetchObject('UserObject');
+                if ($user == false) {
+                    $this->create();
+                } else {
+                    $this->intUserID = $user->get_intUserID();
+                    $this->strOpenID = $user->get_strOpenID();
+                    $this->strEMail = $user->get_strEMail();
+                    $this->strCookieID = $user->get_strCookieID();
+                    $this->sha1Pass = $user->get_sha1Pass();
+                    $this->isAuthorized = $user->get_isAuthorized();
+                    $this->isUploader = $user->get_isUploader();
+                    $this->isAdmin = $user->get_isAdmin();
+                    $this->datLastSeen = $user->get_datLastSeen();
+                    $this->strUserName = $user->get_strUserName();
+                }
+            } catch(Exception $e) {
+                return false;
+            }
         }
-        $this->datLastSeen = date("Y-m-d H:i:s");
+
+
         return $this->create();
     }
 }

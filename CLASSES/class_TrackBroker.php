@@ -271,11 +271,12 @@ class TrackBroker
     /**
      * This function finds a track by the url.
      *
-     * @param string  $strTrackUrl The part of the Track name to search for
+     * @param string $strTrackUrl The part of the Track name to search for
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist
      */
-    public function getTrackByExactUrl($strTrackUrl = "") {
+    public function getTrackByExactUrl($strTrackUrl = "")
+    {
         $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? OR strTrackUrl = ?";

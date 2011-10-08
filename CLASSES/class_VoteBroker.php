@@ -65,12 +65,14 @@ class VoteBroker
                     $count = $count + $object->get_intCount();
                 }
                 $shows = ShowBroker::getShowsByIDs($return);
-                foreach ($shows as $show) {
-                    if ($show != false) {
-                        switch($show->get_enumShowType()) {
-                        case 'weekly':
-                        case 'monthly':
-                            $voteadj++;
+                if (is_array($shows)) {
+                    foreach ($shows as $show) {
+                        if ($show != false) {
+                            switch($show->get_enumShowType()) {
+                            case 'weekly':
+                            case 'monthly':
+                                $voteadj++;
+                            }
                         }
                     }
                 }

@@ -246,25 +246,33 @@ class TrackObject extends GenericObject
                     $return['shows'][] = $show->getSelf();
                 }
             }
+            $return['intVote'] = 0;
+            $return['decVoteAdj'] = 0;
+            $return['decAdj'] = 0;
+            $return['arrShows'] = array();
             $votes = VoteBroker::getVotesForTrackByShow($this->intTrackID);
-            $return['intVote'] = $votes['total'];
-            $return['decVoteAdj'] = $votes['total'] * $votes['adjust'];
-            $return['decAdj'] = $votes['adjust'];
-            foreach ($votes['shows'] as $show) {
-                if ($show == false) {
-                    $intShowID = 0;
-                    $return['arrShows'][0] = array(
-                    	'strShowName' => "Non-show votes",
-                        'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . ConfigBroker::getConfig('fileBaseTrack', '/track') . '/' . $this->intTrackID,
-                        'enumShowType' => 'none'
-                    );
-                } else {
-                    $intShowID = $show->get_intShowID();
-                    $show->set_full(false);
-                    $return['arrShows'][$intShowID] = $show->getSelf();
+            if (is_array($votes)) {
+                $return['intVote'] = $votes['total'];
+                $return['decVoteAdj'] = $votes['total'] * $votes['adjust'];
+                $return['decAdj'] = $votes['adjust'];
+                if (is_array($votes['shows'])) {
+                    foreach ($votes['shows'] as $show) {
+                        if ($show == false) {
+                            $intShowID = 0;
+                            $return['arrShows'][0] = array(
+                            	'strShowName' => "Non-show votes",
+                                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . ConfigBroker::getConfig('fileBaseTrack', '/track') . '/' . $this->intTrackID,
+                                'enumShowType' => 'none'
+                            );
+                        } else {
+                            $intShowID = $show->get_intShowID();
+                            $show->set_full(false);
+                            $return['arrShows'][$intShowID] = $show->getSelf();
+                        }
+                        $return['arrShows'][$intShowID]['intVote'] = $votes['breakdown'][$intShowID]->get_intCount();
+                        $return['arrShows'][$intShowID]['decVoteAdj'] = $votes['breakdown'][$intShowID]->get_intCount() * $votes['adjust'];
+                    }
                 }
-                $return['arrShows'][$intShowID]['intVote'] = $votes['breakdown'][$intShowID]->get_intCount();
-                $return['arrShows'][$intShowID]['decVoteAdj'] = $votes['breakdown'][$intShowID]->get_intCount() * $votes['adjust'];
             }
         }
         if ($this->intTrend > 0) {

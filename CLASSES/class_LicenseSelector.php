@@ -28,6 +28,13 @@
 
 class LicenseSelector
 {
+    /**
+     * Convert license strings not matching the recognised format into a recognised format.
+     *
+     * @param string $strLicense License string to parse
+     *
+     * @return string Recognised strings.
+     */
     function validateLicense($strLicense = "")
     {
         switch($strLicense)

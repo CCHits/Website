@@ -60,6 +60,11 @@ class RemoteSources extends GenericObject
     protected $fileName = "";
     protected $intUserID = 0;
 
+    /**
+     * Remove this RemoteSource from the Processing table.
+     *
+     * @return boolean Action completed.
+     */
     public function cancel()
     {
         $db = Database::getConnection();
@@ -67,6 +72,7 @@ class RemoteSources extends GenericObject
             $sql = "DELETE FROM processing WHERE intProcessingID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($this->intProcessingID));
+            return true;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
@@ -568,9 +574,9 @@ class RemoteSources extends GenericObject
                 $this->strArtistUrl
             );
             $this->set_intArtistID($artist->get_intArtistID());
-            $this->write();
+            parent::write();
         }
-        $this->intTrackID = new NewTrackObject(
+        $track = new NewTrackObject(
             $this->intArtistID,
             $this->strTrackName,
             $this->strTrackNameSounds,
@@ -579,11 +585,13 @@ class RemoteSources extends GenericObject
             $this->isNSFW,
             $this->fileName
         );
-        if ($this->fileUrl != '') {
+        if ($this->fileUrl != '' and $track != false) {
             unlink($this->fileName);
         }
-        $this->cancel();
-        return $this->intTrackID;
+        if ($track != false) {
+            $this->cancel();
+            return $track->get_intTrackID();
+        }
     }
 
     /**

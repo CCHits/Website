@@ -218,6 +218,16 @@ class UserObject extends GenericObject
     }
 
     /**
+     * Return the user's e-mail. Only used when re-using the UserObject in NewUserObject
+     *
+     * @return string The User's e-mail address
+     */
+    function get_strEMail()
+    {
+        return $this->strEMail;
+    }
+
+    /**
      * Return the strCookieID
      *
      * @return string The Cookie string being used by this session/user

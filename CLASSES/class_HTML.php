@@ -57,16 +57,45 @@ class HTML
             case 'json':
                 $this->format = 'json';
                 break;
+            case 'mp3':
             case 'rss':
                 switch($this->arrUri['path_items'][0]) {
                 case 'daily':
-                    $this->format = 'rss';
+                    $this->format = 'mp3.rss';
                     break;
                 case 'weekly':
-                    $this->format = 'rss';
+                    $this->format = 'mp3.rss';
                     break;
                 case 'monthly':
-                    $this->format = 'rss';
+                    $this->format = 'mp3.rss';
+                    break;
+                }
+                break;
+            case 'ogg':
+            case 'oga':
+                switch($this->arrUri['path_items'][0]) {
+                case 'daily':
+                    $this->format = 'oga.rss';
+                    break;
+                case 'weekly':
+                    $this->format = 'oga.rss';
+                    break;
+                case 'monthly':
+                    $this->format = 'oga.rss';
+                    break;
+                }
+                break;
+            case 'mp4':
+            case 'm4a':
+                switch($this->arrUri['path_items'][0]) {
+                case 'daily':
+                    $this->format = 'm4a.rss';
+                    break;
+                case 'weekly':
+                    $this->format = 'm4a.rss';
+                    break;
+                case 'monthly':
+                    $this->format = 'm4a.rss';
                     break;
                 }
             }
@@ -96,27 +125,60 @@ class HTML
                 $this->vote($object[1], $object[2]);
                 break;
             case 'chart':
+                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
+                    $this->format = 'rss';
+                    if (isset($this->arrUri['path_items'][2])) {
+                        $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    } else {
+                        $this->arrUri['path_items'][1] = null;
+                    }
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Chart', 'Current Chart Places');
+                }
                 $this->chart($object[1]);
                 break;
             case 'daily':
-                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
-                    $this->format = 'rss';
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                    $this->format = 'mp3.rss';
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                    $this->format = 'oga.rss';
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                    $this->format = 'm4a.rss';
                     $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 }
                 $this->daily($object[1]);
                 break;
             case 'weekly':
-                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
-                    $this->format = 'rss';
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                    $this->format = 'mp3.rss';
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                    $this->format = 'oga.rss';
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                    $this->format = 'm4a.rss';
                     $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 }
                 $this->weekly($object[1]);
                 break;
             case 'monthly':
-                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
-                    $this->format = 'rss';
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                    $this->format = 'mp3.rss';
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                    $this->format = 'oga.rss';
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                    $this->format = 'm4a.rss';
                     $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
                 }
@@ -206,7 +268,7 @@ class HTML
                     if ($objTrack != false and $objTrack->get_intUserID() == $user->get_intUserID()) {
                         $objTrack->cancel();
                         UI::Redirect('admin/listtracks');
-                    } elseif($objTrack == false) {
+                    } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
                     } else {
                         $this->result['notyourtrack'] = true;
@@ -226,7 +288,7 @@ class HTML
                     $this->result['tracks'] = array();
                     $track_counter = 0;
                     if (is_array($tracks) and count($tracks) > 0) {
-                        foreach($tracks as $track) {
+                        foreach ($tracks as $track) {
                             $this->result['tracks'][$track_counter] = $track->getSelf();
                             try {
                                 $track->is_valid_cchits_submission();
@@ -624,7 +686,20 @@ class HTML
      */
     function chart($date = null)
     {
-        if ($this->format == 'rss') {
+        switch ($date) {
+        case 'changes':
+            $date = null;
+            $this->format = 'changes.rss';
+            break;
+        case 'day':
+        default:
+            $date = null;
+            $this->format = 'day.rss';
+            break;
+        }
+        if ($this->format == 'changes.rss') {
+            $this->result['chart'] = ChartBroker::getChartByDateWithChanges($date, 0, TrackBroker::getTotalTracks());
+        } elseif ($this->format == 'day.rss') {
             $this->result['chart'] = ChartBroker::getChartByDate($date, 0, TrackBroker::getTotalTracks());
         } else {
             $this->result['chart'] = ChartBroker::getChartByDate($date);
@@ -888,6 +963,11 @@ class HTML
             header('Content-Type:text/html; charset=UTF-8');
             return true;
         case 'rss':
+        case 'oga.rss':
+        case 'mp3.rss':
+        case 'm4a.rss':
+        case 'changes.rss':
+        case 'day.rss':
             $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net');
             $this->result['feedDescription'] = ConfigBroker::getConfig('About The Site', 'CCHits.net is designed to provide a Chart for Creative Commons Music, in a way that is easily able to be integrated into other music shows that play Creative Commons Music. CCHits.net has a daily exposure podcast, playing one new track every day, a weekly podcast, playing the last week of tracks played on the podcast, plus the top rated three tracks from the previous week. There is also a monthly podcast which features the top rated tracks over the whole system.');
             $this->result['feedWhen'] = $this->arrUri['path_items'][0];

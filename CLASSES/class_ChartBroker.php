@@ -79,6 +79,24 @@ class ChartBroker
     }
 
     /**
+     * A function to retrieve all the tracks associated to a day's chart where changes have occurred (position, votes).
+     * TODO: Write this function - currently maps to the function not looking for changes
+     *
+     * @param date    $strChartDate The date of the chart in Y-m-d format
+     * @param integer $intPage      The start "page" number
+     * @param integer $intSize      The size of each page
+     *
+     * @return array|false An array of the Tracks, or false if the operation fails.
+     */
+    function getChartByDateWithChanges(
+        $strChartDate = '',
+        $intPage = null,
+        $intSize = null
+    ) {
+        return self::getChartByDate($strChartDate, $intPage, $intSize);
+    }
+
+    /**
      * A function to retrieve all the tracks associated to a day's chart.
      *
      * @param date    $strChartDate The date of the chart in Y-m-d format
@@ -113,17 +131,24 @@ class ChartBroker
                 $query->execute();
                 $strChartDate = $query->fetchColumn();
             }
+            if (! is_integer($strChartDate)) {
+                $return['intChartDate'] = UI::getShortDate($strChartDate);
+                $return['strChartDate'] = $strChartDate;
+            } else {
+                $return['intChartDate'] = $strChartDate;
+                $return['strChartDate'] = UI::getLongDate($strChartDate);
+            }
             $sql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ?";
             $pagestart = ($intPage * $intSize);
             $query = $db->prepare($sql . " ORDER BY intPositionID ASC LIMIT " . $pagestart . ", $intSize");
-            $query->execute(array($strChartDate));
+            $query->execute(array(UI::getShortDate($strChartDate)));
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 foreach ($tracks as $track) {
                     $temp = TrackBroker::getTrackByID($track['intTrackID']);
                     if ($temp != false) {
-                        $return[$track['intPositionID']] = $temp->getSelf();
-                        $return[$track['intPositionID']]['intChartPosition'] = $track['intPositionID'];
+                        $return['position'][$track['intPositionID']] = $temp->getSelf();
+                        $return['position'][$track['intPositionID']]['intChartPosition'] = $track['intPositionID'];
                     }
                 }
             }

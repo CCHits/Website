@@ -30,6 +30,7 @@ class ShowBroker
 {
     protected static $handler = null;
     protected $arrShows = array();
+    protected $arrDates = array();
 
     /**
      * An internal function to make this a singleton
@@ -62,8 +63,14 @@ class ShowBroker
                 $sql = "SELECT * FROM shows WHERE intShowID = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($intShowID));
-                $handler->arrShows[$intShowID] = $query->fetchObject('ShowObject');
-                return $handler->arrShows[$intShowID];
+                $item = $query->fetchObject('ShowObject');
+                if ($item != false) {
+                    $handler->arrShows[$intShowID] = $item;
+                    if ((integer) $item->get_intShowUrl() > 0) {
+                        $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                    }
+                }
+                return $item;
             } catch(Exception $e) {
                 error_log($e);
                 return false;
@@ -80,6 +87,7 @@ class ShowBroker
      */
     public function getShowsByIDs($arrShowIDs = array())
     {
+        $return = array();
         if (is_array($arrShowIDs) and count($arrShowIDs) > 0) {
             $handler = self::getHandler();
             $gotall = true;
@@ -106,8 +114,14 @@ class ShowBroker
                     }
                     if (!isset($handler->arrShows[$intShowID])) {
                         $query->execute(array($intShowID));
-                        $handler->arrShows[$intShowID] = $query->fetchObject('ShowObject');
-                        $return[$intShowID] = $handler->arrShows[$intShowID];
+                        $item = $query->fetchObject('ShowObject');
+                        if ($item != false) {
+                            $handler->arrShows[$intShowID] = $item;
+                            if ((integer) $item->get_intShowUrl() > 0) {
+                                $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                            }
+                        }
+                        $return[$intShowID] = $item;
                     }
                 }
                 return $return;
@@ -152,14 +166,20 @@ class ShowBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " ORDER BY datDateAdded DESC LIMIT " . $pagestart . ", $intSize");
             $query->execute(array($intUserID));
-            $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {
                 return false;
             } else {
+                $handler = self::getHandler();
                 while ($item != false) {
                     $return[] = $item;
-                    $handler->arrShows[$item->get_intShowID()] = $item;
+                    $item = $query->fetchObject('ShowObject');
+                    if ($item != false) {
+                        $handler->arrShows[$item->get_intShowID()] = $item;
+                        if ((integer) $item->get_intShowUrl() > 0) {
+                            $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                        }
+                    }
                     $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
@@ -185,8 +205,13 @@ class ShowBroker
             $query = $db->prepare($sql);
             $query->execute(array($strShowUrl));
             $item = $query->fetchObject('ShowObject');
-            $handler = self::getHandler();
-            $handler->arrShows[$temp->get_intShowID()] = $item;
+            if ($item != false) {
+                $handler = self::getHandler();
+                $handler->arrShows[$item->get_intShowID()] = $item;
+                if ((integer) $item->get_intShowUrl() > 0) {
+                    $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                }
+            }
             return $item;
         } catch(Exception $e) {
             error_log($e);
@@ -230,9 +255,15 @@ class ShowBroker
             if ($item == false) {
                 return false;
             } else {
+                $handler = self::getHandler();
                 while ($item != false) {
                     $return[] = $item;
-                    $handler->arrShows[$item->get_intShowID()] = $item;
+                    if ($item != false) {
+                        $handler->arrShows[$item->get_intShowID()] = $item;
+                        if ((integer) $item->get_intShowUrl() > 0) {
+                            $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                        }
+                    }
                     $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
@@ -289,9 +320,15 @@ class ShowBroker
             if ($item == false) {
                 return false;
             } else {
+                $handler = self::getHandler();
                 while ($item != false) {
                     $return[] = $item;
-                    $handler->arrShows[$item->get_intShowID()] = $item;
+                    if ($item != false) {
+                        $handler->arrShows[$item->get_intShowID()] = $item;
+                        if ((integer) $item->get_intShowUrl() > 0) {
+                            $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                        }
+                    }
                     $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
@@ -333,9 +370,15 @@ class ShowBroker
             if ($item == false) {
                 return false;
             } else {
+                $handler = self::getHandler();
                 while ($item != false) {
                     $return[] = $item;
-                    $handler->arrShows[$item->get_intShowID()] = $item;
+                    if ($item != false) {
+                        $handler->arrShows[$item->get_intShowID()] = $item;
+                        if ((integer) $item->get_intShowUrl() > 0) {
+                            $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                        }
+                    }
                     $item = $query->fetchObject('ShowObject');
                 }
                 return $return;
@@ -364,14 +407,22 @@ class ShowBroker
         default:
             return false;
         }
+        $handler = self::getHandler();
+        if (isset($handler->arrDates[$intShowUrl][$enumShowType])) {
+            return $handler->arrDates[$intShowUrl][$enumShowType];
+        }
         $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE enumShowType = ? and intShowUrl = ?";
             $query = $db->prepare($sql);
             $query->execute(array($enumShowType, $intShowUrl));
-            $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
-            $handler->arrShows[$item->get_intShowID()] = $item;
+            if ($item != false) {
+                $handler->arrShows[$item->get_intShowID()] = $item;
+                if ((integer) $item->get_intShowUrl() > 0) {
+                    $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
+                }
+            }
             return $item;
         } catch(Exception $e) {
             error_log($e);
