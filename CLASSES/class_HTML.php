@@ -567,7 +567,8 @@ class HTML
      */
     protected function front_page()
     {
-        $this->result['chart'] = ChartBroker::getChartByDate('', 0, 15);
+        $chart = ChartBroker::getChartByDate('', 0, 15);
+        $this->result['chart'] = $chart['position'];
         $this->result['daily'] = end(ShowBroker::getInternalShowByType('daily', 1))->getSelf();
         $this->result['weekly'] = end(ShowBroker::getInternalShowByType('weekly', 1))->getSelf();
         $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1))->getSelf();

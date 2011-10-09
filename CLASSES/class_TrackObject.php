@@ -238,39 +238,34 @@ class TrackObject extends GenericObject
             } else {
                 $return['generalPosition'] = 'bottom';
             }
+            $return['shows'][0] = array(
+            	'strShowName' => "Non-show votes",
+                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . ConfigBroker::getConfig('fileBaseTrack', '/track') . '/' . $this->intTrackID,
+                'enumShowType' => 'none'
+            );
             $showtracks = ShowTrackBroker::getShowTracksByTrackID($this->intTrackID);
             if ($showtracks != false) {
                 foreach ($showtracks as $showtrack) {
                     $show = ShowBroker::getShowByID($showtrack->get_intShowID());
                     $show->set_full(false);
-                    $return['shows'][] = $show->getSelf();
+                    $return['shows'][$show->get_intShowID()] = $show->getSelf();
                 }
             }
             $return['intVote'] = 0;
             $return['decVoteAdj'] = 0;
             $return['decAdj'] = 0;
-            $return['arrShows'] = array();
             $votes = VoteBroker::getVotesForTrackByShow($this->intTrackID);
             if (is_array($votes)) {
                 $return['intVote'] = $votes['total'];
                 $return['decVoteAdj'] = $votes['total'] * $votes['adjust'];
                 $return['decAdj'] = $votes['adjust'];
-                if (is_array($votes['shows'])) {
-                    foreach ($votes['shows'] as $show) {
-                        if ($show == false) {
-                            $intShowID = 0;
-                            $return['arrShows'][0] = array(
-                            	'strShowName' => "Non-show votes",
-                                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . ConfigBroker::getConfig('fileBaseTrack', '/track') . '/' . $this->intTrackID,
-                                'enumShowType' => 'none'
-                            );
-                        } else {
-                            $intShowID = $show->get_intShowID();
-                            $show->set_full(false);
-                            $return['arrShows'][$intShowID] = $show->getSelf();
-                        }
-                        $return['arrShows'][$intShowID]['intVote'] = $votes['breakdown'][$intShowID]->get_intCount();
-                        $return['arrShows'][$intShowID]['decVoteAdj'] = $votes['breakdown'][$intShowID]->get_intCount() * $votes['adjust'];
+                foreach ($return['shows'] as $intShowID=>$objShow) {
+                    if (is_array($votes['shows']) and isset($votes['shows'][$intShowID])) {
+                        $return['shows'][$intShowID]['intVote'] = $votes['breakdown'][$intShowID]->get_intCount();
+                        $return['shows'][$intShowID]['decVoteAdj'] = $votes['breakdown'][$intShowID]->get_intCount() * $votes['adjust'];
+                    } else {
+                        $return['shows'][$intShowID]['intVote'] = 0;
+                        $return['shows'][$intShowID]['decVoteAdj'] = 0;
                     }
                 }
             }

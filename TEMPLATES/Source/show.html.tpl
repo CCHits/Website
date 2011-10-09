@@ -13,7 +13,7 @@
 {if isset($playlist.player_data.mp3) or isset($playlist.player_data.ogg)}{include file="player.html.tpl" player_id=$show.intShowID playlist=$show}{/if}
 		{foreach from=$show.arrTracks item=track}
 		<form action="{$baseURL}vote/{$track.intTrackID}/{$show.intShowID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
+			<p><a href="{$baseURL}track/{$track.intTrackID}"><img src="{$track.qrcode}" alt="QR Code for this track" /></a> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
 		</form>
 		{/foreach}
 	</body>

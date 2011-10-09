@@ -34,10 +34,9 @@
 		<link>{$show.strShowUrl}</link>
 		<guid>{$show.strShowUrl}</guid>
 		<description><![CDATA[<h1>{$show.strShowName}</h1>
+{assign var='realshow' value=$show}
 {foreach from=$show.arrTracks item=track}
-		<form action="{$baseURL}vote/{$track.intTrackID}/{$show.intShowID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
-		</form>
+{include file='show_track_votelinks.tpl'}
 {/foreach}
 ]]></description>
 {if isset($show.player_data.mp3)}

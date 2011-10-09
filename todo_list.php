@@ -74,8 +74,7 @@
  * Vote - API
  * TODO: Figure out why the UserBroker/NewUserObject returns a new item *every time* for the same object!
  *
- * Post-vote - From Show - show rest of tracks from that show + other shows that track has been on
- * TODO: Add content to the show.html.tpl containing the rest of the show that track has been on.
+ * Post-vote - From Show - show rest of tracks from that show + other shows that track has been on - Done
  * Post-vote - From track - other shows that track has been on - Done
  *
  * Admin console - upload file - Done
