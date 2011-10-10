@@ -20,13 +20,18 @@
 	<managingEditor>{$feedOwner}</managingEditor>
 	<webMaster>{$feedOwner}</webMaster>
 {foreach from=$chart.position key=position item=track}
-{if $track.strPositionYesterday != 'equal'}
+{if $track.strTrackName != ''}
 	<item>
 		<title>{$track.strTrackName}</title>
 		<link>{$baseURL}track/{$track.intTrackID}</link>
 		<guid isPermaLink="false">{$baseURL}chart/{$chart.intChartDate}#{$track.intTrackID}</guid>
-		<description><![CDATA[<h1>{$track.strTrackName} by {$track.strArtistName}</h1>
-{include file='track_detail.tpl'}
+		<description><![CDATA[<p>{$track.intChartPosition}: {$track.strTrackName} by {$track.strArtistName}</p>
+<p>Due to:</p>
+<ul>
+{if isset($track.reasons.vote)}<li>This track received votes today</li>{/if}
+{if isset($track.reasons.show)}<li>This track was listed in a show today</li>{/if}
+{if isset($track.reasons.move)}<li>This track moved in the charts today</li>{/if}
+</ul>
 ]]></description>
 		<pubDate>{$chart.intChartDate}</pubDate>
 		<author>{$feedOwner}</author>

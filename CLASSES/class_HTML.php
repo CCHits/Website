@@ -57,15 +57,22 @@ class HTML
             case 'json':
                 $this->format = 'json';
                 break;
-            case 'mp3':
             case 'rss':
                 switch($this->arrUri['path_items'][0]) {
                 case 'daily':
-                    $this->format = 'mp3.rss';
-                    break;
                 case 'weekly':
+                case 'monthly':
                     $this->format = 'mp3.rss';
+                    if (isset($this->arrUri['ua']) and preg_match('/^iTunes\/\d+\.\d+/')) {
+                        $this->format = 'm4a.rss';
+                    }
                     break;
+                }
+                break;
+            case 'mp3':
+                switch($this->arrUri['path_items'][0]) {
+                case 'daily':
+                case 'weekly':
                 case 'monthly':
                     $this->format = 'mp3.rss';
                     break;
@@ -75,11 +82,7 @@ class HTML
             case 'oga':
                 switch($this->arrUri['path_items'][0]) {
                 case 'daily':
-                    $this->format = 'oga.rss';
-                    break;
                 case 'weekly':
-                    $this->format = 'oga.rss';
-                    break;
                 case 'monthly':
                     $this->format = 'oga.rss';
                     break;
@@ -89,11 +92,7 @@ class HTML
             case 'm4a':
                 switch($this->arrUri['path_items'][0]) {
                 case 'daily':
-                    $this->format = 'm4a.rss';
-                    break;
                 case 'weekly':
-                    $this->format = 'm4a.rss';
-                    break;
                 case 'monthly':
                     $this->format = 'm4a.rss';
                     break;
@@ -680,6 +679,7 @@ class HTML
 
     /**
      * Render a chart for the site
+     * TODO: Split changes and day into /changes and /chart again
      *
      * @param integer $date The date of the chart to return
      *

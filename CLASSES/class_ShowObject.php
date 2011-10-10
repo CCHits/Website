@@ -48,7 +48,8 @@ class ShowObject extends GenericObject
     protected $jsonAudioLayout = "";
     protected $datDateAdded = "";
     protected $strShowFileMP3 = "";
-    protected $strShowFileOGG = "";
+    protected $strShowFileOGA = "";
+    protected $strShowFileM4A = "";
     protected $arrTracks = null;
     // Functional switches extending GenericObject
     protected $booleanFull = true;
@@ -75,8 +76,11 @@ class ShowObject extends GenericObject
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
                     $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
-                    $this->strShowFileOGG = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg';
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
+                    $this->strShowFileOGA = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                }
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
+                    $this->strShowFileM4A = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
             if ($this->strShowName == "") {
@@ -178,11 +182,17 @@ class ShowObject extends GenericObject
             } else {
                 $return['player_data']['mp3_len'] = 0;
             }
-            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg')) {
-                $return['player_data']['oga'] = $this->strShowFileOGG;
-                $return['player_data']['oga_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.ogg');
+            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
+                $return['player_data']['oga'] = $this->strShowFileOGA;
+                $return['player_data']['oga_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga');
             } else {
                 $return['player_data']['oga_len'] = 0;
+            }
+            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
+                $return['player_data']['m4a'] = $this->strShowFileM4A;
+                $return['player_data']['m4a_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a');
+            } else {
+                $return['player_data']['m4a_len'] = 0;
             }
             $arrShowLayout = (array) json_decode($this->jsonAudioLayout);
             if (count($arrShowLayout) > 0) {
@@ -199,6 +209,7 @@ class ShowObject extends GenericObject
         $return['strShowNameSpoken'] = $this->strShowNameSpoken;
         $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
         $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseShow', '/shows') . '/' . $this->intShowID);
+        $return['shorturl'] = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/s/' . UI::setLongNumber($this->intShowID);
         return $return;
     }
 

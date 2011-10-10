@@ -622,7 +622,9 @@ class RemoteSources extends GenericObject
             if (isset($this->fileName) and false == $this->fileName) {
                 $get = $this->curl_get($this->fileUrl);
                 if ($get[1]['http_code'] == 200) {
-                    $this->set_fileName($get[0]);
+                    if (FileFunctions::getFileFormat($get[0]) != '') {
+                        $this->set_fileName($get[0]);
+                    }
                     $this->write();
                 } else {
                     throw new RemoteSource_NoFileDl();

@@ -273,6 +273,7 @@ class TrackObject extends GenericObject
         if ($this->intTrend > 0) {
             $return['intTrend'] = $this->intTrend;
         }
+        $return['shorturl'] = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/t/' . UI::setLongNumber($this->intTrackID);
         return $return;
     }
 
@@ -451,8 +452,10 @@ class TrackObject extends GenericObject
      */
     function set_fileSource($fileSource = "")
     {
-        if ($this->fileSource != $fileSource) {
-            $this->fileSource = $fileSource;
+        $format = FileFunctions::getFileFormat($fileSource);
+        $newfilename = ConfigBroker::getConfig("fileBase", "/var/www/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->intTrackID . '.' . $format;
+        if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '' and rename($fileSource, $newfilename)) {
+            $this->fileSource = $newfilename;
             $this->arrChanges[] = 'fileSource';
         }
     }

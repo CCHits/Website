@@ -371,41 +371,4 @@ class GenericObject
         }
         return $return;
     }
-
-    /**
-     * Create an file suitable for temporary use. Create the directory to place the file in if it doesn't already exist.
-     *
-     * @param string $dirname The directory in which to put the file
-     *
-     * @return string The full pathname to the file to use.
-     */
-    function getTempFileName($dirname = '')
-    {
-        $here = dirname(__FILE__);
-        if ($dirname == '') {
-            $dirname = dirname(__FILE__) . '/../upload';
-        }
-        if (substr($dirname, -1) == '/') {
-            $dirname = substr($dirname, 0, -1);
-        }
-        $state = file_exists($dirname);
-        if (! $state) {
-            $state = mkdir($dirname, umask(), true);
-            if (! $state) {
-                error_log("Unable to make directory $dirname");
-                die("Error handling temporary files. Please contact an administrator.");
-            }
-        }
-        if ( ! is_writable($dirname)) {
-            error_log("Unable to write to $dirname");
-            die("Error handling temporary files. Please contact an administrator.");
-        }
-        // This, apparently, may help to prevent race conditions: http://www.php.net/manual/en/function.tempnam.php#98232
-        do {
-            $file = $dirname . '/' . mt_rand();
-            $fp = @fopen($file, 'x');
-        } while (!$fp);
-        fclose($fp);
-        return $file;
-    }
 }

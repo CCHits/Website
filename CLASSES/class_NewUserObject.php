@@ -87,8 +87,5 @@ class NewUserObject extends UserObject
                 return false;
             }
         }
-
-
-        return $this->create();
     }
 }

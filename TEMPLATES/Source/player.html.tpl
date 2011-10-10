@@ -27,9 +27,9 @@
 				<div id="jp_playlist_{$player_id}" class="jp-playlist">
 					<ul>
 {if isset($playlist.player_data)}
-                        <li>{$playlist.player_data.name} ({if isset($playlist.player_data.mp3)}<a href="{$playlist.player_data.mp3}">mp3</a> | {/if}{if isset($playlist.player_data.oga)}<a href="{$playlist.player_data.oga}">ogg</a> | {/if}<a href="{$playlist.player_data.link}">link</a>)</li>
+                        <li>{$playlist.player_data.name} ({if isset($playlist.player_data.mp3)}<a href="{$playlist.player_data.mp3}">mp3</a> | {/if}{if isset($playlist.player_data.oga)}<a href="{$playlist.player_data.oga}">ogg</a> | {/if}{if isset($playlist.player_data.m4a)}<a href="{$playlist.player_data.m4a}">M4A</a> | {/if}<a href="{$playlist.player_data.link}">link</a>)</li>
 {elseif is_array($playlist)}{foreach $playlist as $listitem}
-                        <li>{$listitem.player_data.name} ({if isset($listitem.player_data.mp3)}<a href="{$listitem.player_data.mp3}">mp3</a> | {/if}{if isset($listitem.player_data.oga)}<a href="{$listitem.player_data.oga}">ogg</a> | {/if}<a href="{$listitem.player_data.link}">link</a>)</li>
+                        <li>{$listitem.player_data.name} ({if isset($listitem.player_data.mp3)}<a href="{$listitem.player_data.mp3}">mp3</a> | {/if}{if isset($listitem.player_data.oga)}<a href="{$listitem.player_data.oga}">ogg</a> | {/if}{if isset($playlist.player_data.m4a)}<a href="{$playlist.player_data.m4a}">M4A</a> | {/if}<a href="{$listitem.player_data.link}">link</a>)</li>
 {/foreach}{/if}
 					</ul>
 				</div>

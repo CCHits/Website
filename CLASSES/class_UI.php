@@ -213,6 +213,10 @@ class UI
             $arrUrl['basePath'] .= '/' . $arrUrl['site_path'];
         }
         $arrUrl['basePath'] .=  '/';
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            // Remember, this isn't guaranteed to be accurate
+            $arrUrl['ua'] = $_SERVER['HTTP_USER_AGENT'];
+        }
         return $arrUrl;
     }
 

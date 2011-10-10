@@ -83,19 +83,90 @@ class ChartBroker
      * TODO: Write this function - currently maps to the function not looking for changes
      *
      * @param date    $strChartDate The date of the chart in Y-m-d format
-     * @param integer $intPage      The start "page" number
-     * @param integer $intSize      The size of each page
+     * @param date    $strPriorDate The date of the chart to be compared with in Y-m-d format
      *
      * @return array|false An array of the Tracks, or false if the operation fails.
      */
     function getChartByDateWithChanges(
         $strChartDate = '',
-        $intPage = null,
-        $intSize = null
+        $strPriorDate = ''
     ) {
-        return self::getChartByDate($strChartDate, $intPage, $intSize);
-    }
+        $return = array();
+        $db = Database::getConnection();
+        try {
+            if (! is_integer($strChartDate) OR UI::getShortDate($strChartDate) == false) {
+                $strChartDate = '';
+            }
+            if ($strChartDate == '') {
+                $sql = "SELECT max(datChart) as max_datChart FROM chart LIMIT 0, 1";
+                $query = $db->prepare($sql);
+                $query->execute();
+                $strChartDate = $query->fetchColumn();
+            }
+            if ($strPriorDate == '') {
+                $sql = "SELECT datChart FROM chart WHERE datChart < '$strChartDate' GROUP BY datChart ORDER BY datChart DESC LIMIT 0, 1";
+                $query = $db->prepare($sql);
+                $query->execute();
+                $strPriorDate = $query->fetchColumn();
+            }
+            $return['intChartDate'] = UI::getShortDate($strChartDate);
+            $return['strChartDate'] = $strChartDate;
 
+            $sql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? ORDER BY intPositionID ASC";
+            $query = $db->prepare($sql);
+            $query->execute(array(UI::getShortDate($strChartDate)));
+            $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            $query->execute(array(UI::getShortDate($strPriorDate)));
+            $tracks2 = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            $sql = "SELECT intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? GROUP BY intTrackID";
+            $query = $db->prepare($sql);
+            $values = array(UI::getShortDate($strChartDate), UI::getShortDate($strPriorDate));
+            $query->execute($values);
+            $votes = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            $sql = "SELECT st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID GROUP BY st.intTrackID";
+            $query = $db->prepare($sql);
+            $query->execute($values);
+            $shows = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($tracks as $todaytrack) {
+                $todayT[$todaytrack['intTrackID']] = $todaytrack['intPositionID'];
+            }
+
+            foreach ($tracks2 as $yesterdaytrack) {
+                if ($todayT[$yesterdaytrack['intTrackID']] != $yesterdaytrack['intPositionID']) {
+                    $diff[$yesterdaytrack['intTrackID']]['move'] = true;
+                }
+            }
+
+            foreach ($votes as $vote) {
+                $diff[$vote['intTrackID']]['vote'] = true;
+            }
+
+            foreach ($shows as $show) {
+                $diff[$show['intTrackID']]['show'] = true;
+            }
+            $position = array();
+            if (isset($diff) and is_array($diff) and count($diff) > 0) {
+                foreach ($diff as $trackid=>$reasons) {
+                    $temp = TrackBroker::getTrackByID($trackid);
+                    if ($temp != false) {
+                        $position[$todayT[$trackid]] = $temp->getSelf();
+                        $position[$todayT[$trackid]]['reasons'] = $reasons;
+                        $position[$todayT[$trackid]]['intChartPosition'] = $todayT[$trackid];
+                    }
+                }
+            }
+            ksort($position);
+            $return['position'] = $position;
+            return $return;
+        } catch(Exception $e) {
+            error_log("SQL error: " . $e);
+            return false;
+        }
+    }
     /**
      * A function to retrieve all the tracks associated to a day's chart.
      *
