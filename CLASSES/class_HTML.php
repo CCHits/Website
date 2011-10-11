@@ -274,6 +274,18 @@ class HTML
                         UI::SmartyTemplate("login.html", $this->result);
                     }
                     break;
+                case 'delshow':
+                    $objShow = ShowBroker::getShowByID($object[2]);
+                    if ($objShow != false and $objShow->get_intUserID() == $user->get_intUserID()) {
+                        $objUser->cancel();
+                        UI::Redirect('admin/listshows');
+                    } elseif ($objTrack == false) {
+                        UI::sendHttpResponse(404);
+                    } else {
+                        $this->result['notyourshow'] = true;
+                        UI::SmartyTemplate("login.html", $this->result);
+                    }
+                    break;
                 case 'addshow':
                     if ($user->get_isAdmin()) {
                         $this->addShow();
@@ -300,8 +312,11 @@ class HTML
                     UI::SmartyTemplate('listunfinishedtracks.html', $this->result);
                     break;
                 case 'listshows':
-                    $this->result['shows'] = ShowBroker::getShowByUserID($user);
-                    // TODO: Create listmyshows.html.tpl
+                    $shows = ShowBroker::getShowByUserID($user);
+                    foreach ($shows as $show) {
+                        $return['shows'][$show->get_intShowID()] = $show->getSelf();
+                        $return['shows'][$show->get_intShowID()]['countTracks'] = count($show->get_arrTracks());
+                    }
                     UI::SmartyTemplate('listmyshows.html', $this->result);
                     break;
                 case 'basicauth':

@@ -124,16 +124,42 @@ class ShowObject extends GenericObject
     }
 
     /**
+     * Delete the show if there are no tracks linked to it.
+     *
+     * @return boolean Action completed successfully
+     */
+    function cancel()
+    {
+        if (count($this->get_arrTracks) == 0) {
+            $db = Database::getConnection();
+            try {
+                $sql = "DELETE FROM processing WHERE intProcessingID = ?";
+                $query = $db->prepare($sql);
+                $query->execute(array($this->intProcessingID));
+                return true;
+            } catch(Exception $e) {
+                error_log("SQL Died: " . $e->getMessage());
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Return an array of the associated tracks
      *
      * @param boolean $reset Force a reset of the arrTracks listing.
      *
-     * @return false|array Associated tracks
+     * @return array Associated tracks
      */
     function get_arrTracks($reset = false)
     {
-        if (is_null($this->arrTracks) or $reset = true) {
+        if (is_null($this->arrTracks) or (is_array($this->arrTracks) and count($this->arrTracks) == 0) or $reset = true) {
             $this->arrTracks = TracksBroker::getTracksByShowIDOrderedByPartID($this->intShowID);
+        }
+        if (!is_array($this->arrTracks)) {
+            $this->arrTracks = array();
         }
         return $this->arrTracks;
     }
