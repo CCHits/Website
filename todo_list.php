@@ -57,7 +57,7 @@
  * NEXTRELEASE: Amend RemoteSources to create transcode to .ogg, .mp3 and .m4a for sourced files. Set ID3/vorbiscomment/mp4tags with artist, title from CCHits DB. Add comment to show download location or track location. Set QRCode as Artwork, pointing to the CCHits.net/track/trackid page.
  *
  * Artist - Search (By Name, source, URL)
- * TODO: Needed for Remotesources functions.
+ * TODO: ArtistSearch Needed for Remotesources functions.
  * Artist - HTML (like external show)
  * Artist - API (like external show)
  * Artist - RSS of changes (Tracks, votes, positions)

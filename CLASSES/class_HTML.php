@@ -102,12 +102,15 @@ class HTML
                 $this->front_page();
                 exit(0);
             }
-            $object = array(1 => null, 2 => null);
+            $object = array(1 => null, 2 => null, 3 => null);
             if (isset($this->arrUri['path_items'][1])) {
                 $object[1] = $this->arrUri['path_items'][1];
             }
             if (isset($this->arrUri['path_items'][2])) {
                 $object[2] = $this->arrUri['path_items'][2];
+            }
+            if (isset($this->arrUri['path_items'][3])) {
+                $object[3] = $this->arrUri['path_items'][3];
             }
             switch($this->arrUri['path_items'][0]) {
             case 'track':
@@ -126,14 +129,18 @@ class HTML
             case 'chart':
                 if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
-                    if (isset($this->arrUri['path_items'][2])) {
-                        $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    } else {
-                        $this->arrUri['path_items'][1] = null;
-                    }
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Chart', 'Current Chart Places');
                 }
                 $this->chart($object[1]);
+                break;
+            case 'change':
+                if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
+                    $object[1] = $object[2];
+                    $object[2] = $object[3];
+                    $this->format = 'rss';
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Change Log', 'Change Log');
+                }
+                $this->change($object[1], $object[2]);
                 break;
             case 'daily':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
@@ -378,7 +385,7 @@ class HTML
                     UI::SmartyTemplate('trackimporter.html', $this->result);
                 }
             } elseif (is_integer($arrData)) {
-                // TODO: Improve the errors returned from the newTrackRouter!
+                // NEXTRELEASE: Improve the errors returned from the newTrackRouter!
                 switch ($arrData) {
                 case 406:
                     $this->result['error'] = 406;
@@ -694,7 +701,6 @@ class HTML
 
     /**
      * Render a chart for the site
-     * TODO: Split changes and day into /changes and /chart again
      *
      * @param integer $date The date of the chart to return
      *
@@ -702,20 +708,7 @@ class HTML
      */
     function chart($date = null)
     {
-        switch ($date) {
-        case 'changes':
-            $date = null;
-            $this->format = 'changes.rss';
-            break;
-        case 'day':
-        default:
-            $date = null;
-            $this->format = 'day.rss';
-            break;
-        }
-        if ($this->format == 'changes.rss') {
-            $this->result['chart'] = ChartBroker::getChartByDateWithChanges($date, 0, TrackBroker::getTotalTracks());
-        } elseif ($this->format == 'day.rss') {
+        if ($this->format == 'rss') {
             $this->result['chart'] = ChartBroker::getChartByDate($date, 0, TrackBroker::getTotalTracks());
         } else {
             $this->result['chart'] = ChartBroker::getChartByDate($date);
@@ -727,8 +720,24 @@ class HTML
             if ( ! array_key_exists(TrackBroker::getTotalTracks(), $this->result['chart'])) {
                 $this->result['next_page'] = true;
             }
-            // TODO: Write chart.rss.tpl
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
+        }
+    }
+
+    /**
+     * Find and list all the changes for one day
+     * TODO: Finish writing change.html
+     *
+     * @param integer $intTrackID The optional trackID to search for
+     * @param integer $date       The date to search for
+     *
+     * @return void
+     */
+    function change($intTrackID = null, $date = null)
+    {
+        $this->result['changes'] = ChangeBroker::getChangeByDate($intTrackID, $date);
+        if ($this->render()) {
+            UI::SmartyTemplate("change.{$this->format}", $this->result);
         }
     }
 
