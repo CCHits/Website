@@ -9,9 +9,8 @@
  * Chart - API
  * NEXTRELEASE: Chart API calls
  * Chart - RSS Diffs - Done
- * FIXME: Check why /chart/rss and /change/rss RSS Feeds are returning as HTML
  *
- * Changes - (One per change per day)
+ * Changes - Done
  *
  * Trend Data - HTML
  * Trend Data - API

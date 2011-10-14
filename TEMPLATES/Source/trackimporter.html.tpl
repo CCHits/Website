@@ -12,6 +12,9 @@
 {if isset($error)}
 		<p>There was an error.{if $error != ''} The error was: "{$error->getMessage()}"{/if}</p>
 {/if}
+{if isset($errorcode)}
+        <p>There was an error in the import. The errorcode is {$errorcode}.</p>
+{/if}
 		<table>
 			<thead>
 				<tr>

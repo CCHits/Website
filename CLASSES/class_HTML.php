@@ -116,7 +116,11 @@ class HTML
             case 'track':
             case 't':
                 $this->result['user'] = UserBroker::getUser()->getSelf();
-                $this->track($object[1]);
+                if ($this->format == 'rss') {
+                    $this->change($object[1]);
+                } else {
+                    $this->track($object[1]);
+                }
                 break;
             case 'show':
             case 's':
@@ -389,23 +393,22 @@ class HTML
                 // NEXTRELEASE: Improve the errors returned from the newTrackRouter!
                 switch ($arrData) {
                 case 406:
-                    $this->result['error'] = 406;
+                    $this->result['errorcode'] = 406;
                     break;
                 case 400:
-                    $this->result['error'] = 400;
+                    $this->result['errorcode'] = 400;
                     break;
                 case 404:
-                    $this->result['error'] = 404;
+                    $this->result['errorcode'] = 404;
                     break;
                 case 412:
-                    $this->result['error'] = 412;
+                    $this->result['errorcode'] = 412;
                     break;
                 case 417:
-                    $this->result['error'] = 417;
+                    $this->result['errorcode'] = 417;
                     break;
                 }
-                // TODO: Create error_with_track.html.tpl
-                UI::SmartyTemplate("error_with_track.html", $this->result);
+                UI::SmartyTemplate("trackimporter.html", $this->result);
             } else {
                 UI::Redirect("admin");
             }
@@ -619,7 +622,6 @@ class HTML
                 $track->set_full(true);
                 $this->result['track'] = $track->getSelf();
                 if ($this->render()) {
-                    // TODO: Write track.rss.tpl
                     UI::SmartyTemplate("track.{$this->format}", $this->result);
                 }
             } else {
@@ -727,7 +729,6 @@ class HTML
 
     /**
      * Find and list all the changes for one day
-     * TODO: Finish writing change.html
      *
      * @param integer $intTrackID The optional trackID to search for
      * @param integer $date       The date to search for
@@ -992,8 +993,6 @@ class HTML
         case 'oga.rss':
         case 'mp3.rss':
         case 'm4a.rss':
-        case 'changes.rss':
-        case 'day.rss':
             $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net');
             $this->result['feedDescription'] = ConfigBroker::getConfig('About The Site', 'CCHits.net is designed to provide a Chart for Creative Commons Music, in a way that is easily able to be integrated into other music shows that play Creative Commons Music. CCHits.net has a daily exposure podcast, playing one new track every day, a weekly podcast, playing the last week of tracks played on the podcast, plus the top rated three tracks from the previous week. There is also a monthly podcast which features the top rated tracks over the whole system.');
             $this->result['feedWhen'] = $this->arrUri['path_items'][0];
@@ -1005,6 +1004,7 @@ class HTML
             $this->result['feedOwner'] = ConfigBroker::getConfig('Contact EMail', 'show@cchits.net') . ' (' . ConfigBroker::getConfig('Contact Name', 'CCHits.net Show Admin') . ')';
             $this->result['contactName'] = ConfigBroker::getConfig('Contact Name', 'CCHits.net Show Admin');
             $this->result['contactEmail'] = ConfigBroker::getConfig('Contact EMail', 'show@cchits.net');
+            header("Content-Type: application/rss+xml");
             return true;
         default:
             UI::sendHttpResponse(404);
