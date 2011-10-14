@@ -31,9 +31,9 @@ class ChangeBroker
     /**
      * A function to retrieve all the tracks associated to a day's chart where changes have occurred (position, votes).
      *
-     * @param integer $intTrackID   The optional trackID to search for
+     * @param integer $intTrackID    The optional trackID to search for
      * @param date    $strChangeDate The date of the chart in Y-m-d format
-     * @param date    $strPriorDate The date of the chart to be compared with in Y-m-d format
+     * @param date    $strPriorDate  The date of the chart to be compared with in Y-m-d format
      *
      * @return array|false An array of the Tracks, or false if the operation fails.
      */
@@ -64,19 +64,19 @@ class ChangeBroker
             $return['strChangeDate'] = $strChangeDate;
 
             if ($intTrackID != 0) {
-              $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? AND intTrackID = ? ORDER BY intPositionID ASC";
-              $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? AND intTrackID = ? GROUP BY intTrackID";
-              $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID AND st.intTrackID = ? GROUP BY st.intTrackID";
-              $values1 = array(UI::getShortDate($strChangeDate), $intTrackID);
-              $values2 = array(UI::getShortDate($strPriorDate), $intTrackID);
-              $values3 = array(UI::getShortDate($strChangeDate), UI::getShortDate($strPriorDate), $intTrackID);
+                $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? AND intTrackID = ? ORDER BY intPositionID ASC";
+                $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? AND intTrackID = ? GROUP BY intTrackID";
+                $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID AND st.intTrackID = ? GROUP BY st.intTrackID";
+                $values1 = array(UI::getShortDate($strChangeDate), $intTrackID);
+                $values2 = array(UI::getShortDate($strPriorDate), $intTrackID);
+                $values3 = array(UI::getShortDate($strChangeDate), UI::getShortDate($strPriorDate), $intTrackID);
             } else {
-              $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? ORDER BY intPositionID ASC";
-              $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? GROUP BY intTrackID";
-              $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID GROUP BY st.intTrackID";
-              $values1 = array(UI::getShortDate($strChangeDate));
-              $values2 = array(UI::getShortDate($strPriorDate));
-              $values3 = array(UI::getShortDate($strChangeDate), UI::getShortDate($strPriorDate));
+                $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? ORDER BY intPositionID ASC";
+                $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? GROUP BY intTrackID";
+                $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID GROUP BY st.intTrackID";
+                $values1 = array(UI::getShortDate($strChangeDate));
+                $values2 = array(UI::getShortDate($strPriorDate));
+                $values3 = array(UI::getShortDate($strChangeDate), UI::getShortDate($strPriorDate));
             }
             $query = $db->prepare($positionsql);
             $query->execute($values1);
