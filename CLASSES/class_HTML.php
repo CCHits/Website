@@ -129,6 +129,7 @@ class HTML
             case 'chart':
                 if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
+                    $object[1] = $object[2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Chart', 'Current Chart Places');
                 }
                 $this->chart($object[1]);

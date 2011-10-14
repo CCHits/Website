@@ -8,11 +8,10 @@
  * Chart - HTML - Partial
  * Chart - API
  * NEXTRELEASE: Chart API calls
- * Chart - RSS
- * FIXME: Check why /chart/day (aka /chart/rss) and /chart/changes RSS Feeds are returning as HTML
+ * Chart - RSS Diffs - Done
+ * FIXME: Check why /chart/rss and /change/rss RSS Feeds are returning as HTML
  *
  * Changes - (One per change per day)
- * TODO: Separate out code from Chart RSS feed.
  *
  * Trend Data - HTML
  * Trend Data - API

@@ -23,7 +23,7 @@
 			<title>{$track.strTrackName}</title>
 			<link>{$baseURL}track/{$track.intTrackID}</link>
 			<guid>{$baseURL}chart/{$chart.intChartDate}</guid>
-			<description><![CDATA[<h1>Chart for {$chart.strChartDate}</h1>
+			<description><![CDATA[<h1>Chart changes for {$chart.strChartDate}</h1>
 <ul>
 {foreach from=$chart.position key=position item=track}
 {if $track.strPositionYesterday != 'equal'}
