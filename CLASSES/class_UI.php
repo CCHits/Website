@@ -520,7 +520,7 @@ class UI
 
     /**
      * Return utf8 encoded XML response
-     * TODO: Write utf8xml function
+     * NEXTRELEASE: Write utf8xml function
      *
      * @param Array $array Incoming data
      *
