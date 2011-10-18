@@ -15,7 +15,8 @@
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
 /**
- * This class performs checks on files to ensure they are valid, or converts them from one format to another.
+ * This class performs non-class specific actions, such as checks on files to ensure they are valid,
+ * or converts them from one format to another, or perform lookups against items to ensure they contain values.
  *
  * @category Default
  * @package  CCHitsClass
@@ -25,8 +26,41 @@
  * @link     http://code.cchits.net Developers Web Site
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
-class FileFunctions
+class GeneralFunctions
 {
+    /**
+     * This function looks for a value within an array or an object, and returns it if it's there. If it isn't it
+     * returns the default value.
+     *
+     * @param mixed  $haystack The object or array to check within
+     * @param string $needle   The key or property to look for
+     * @param mixed  $default  The value to return if the key or property doesn't exist
+     *
+     * @return mixed The value found, or the default if not.
+     */
+    function getValue($haystack = null, $needle = null, $default = false, $emptyisfalse = false)
+    {
+        if ($haystack != null && $needle != null) {
+            if (is_array($haystack) && count($haystack) > 0 && isset($haystack[$needle])) {
+                if ($emptyisfalse == true && (string) $haystack[$needle] == '') {
+                    return $default;
+                } else {
+                    return $haystack[$needle];
+                }
+            } elseif (is_object($haystack) && isset($haystack->$needle)) {
+                if ($emptyisfalse == true && (string) $haystack->$needle == '') {
+                    return $default;
+                } else {
+                    return $haystack->$needle;
+                }
+            } else {
+                return $default;
+            }
+        } else {
+            return $default;
+        }
+    }
+
     /**
      * Create an file suitable for temporary use. Create the directory to place the file in if it doesn't already exist.
      *
