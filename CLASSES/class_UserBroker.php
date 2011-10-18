@@ -68,12 +68,12 @@ class UserBroker
             $username = $auth_params[0];
             unset($auth_params[0]);
             $password = sha1(implode('',$auth_params));
-            $field = "sha1Password";
+            $field = "sha1Pass";
             $param = "{$username}:{$password}";
         } elseif (isset($_SERVER['PHP_AUTH_USER']) and isset($_SERVER['PHP_AUTH_PW'])) {
             $username = $_SERVER['PHP_AUTH_USER'];
             $password = sha1($_SERVER['PHP_AUTH_PW']);
-            $field = "sha1Password";
+            $field = "sha1Pass";
             $param = "{$username}:{$password}";
         } else {
             $objSelf->thisUser = new NewUserObject();

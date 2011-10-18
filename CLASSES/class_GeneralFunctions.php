@@ -41,7 +41,7 @@ class GeneralFunctions
      */
     function getValue($haystack = null, $needle = null, $default = false, $emptyisfalse = false)
     {
-        if ($haystack != null && $needle != null) {
+        if ($haystack != null && $needle !== null) {
             if (is_array($haystack) && count($haystack) > 0 && isset($haystack[$needle])) {
                 if ($emptyisfalse == true && (string) $haystack[$needle] == '') {
                     return $default;

@@ -27,8 +27,9 @@
  */
 class API
 {
-    protected $result = null;
-    protected $result_array = null;
+    protected $result = null; // An object for rendering
+    protected $result_array = null; // An array of objects for rendering
+    protected $result_list = null; // An array for rendering
     protected $response_code = 200;
     protected $format = 'json';
 
@@ -338,20 +339,20 @@ class API
                     if ($temp == false) {
                         $temp = new NewDailyShowObject($date);
                     }
-                    $result = array('daily_show' => $temp->get_intShowID());
+                    $this->result_list = array('daily_show' => $temp->get_intShowID());
                     if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
                         $temp = ShowBroker::getInternalShowByDate('weekly', $date);
                         if ($temp == false) {
                             $temp = new NewWeeklyShowObject($date);
                         }
-                        $result['weekly_show'] = $temp->get_intShowID();
+                        $this->result_list['weekly_show'] = $temp->get_intShowID();
                     }
                     if (1 == date('d', strtotime(UI::getLongDate($date) . ' 12:00:00 + 1 day'))) {
                         $temp = ShowBroker::getInternalShowByDate('monthly', substr($date, 0, 6));
                         if ($temp == false) {
                             $temp = new NewMonthlyShowObject(substr($date, 0, 6));
                         }
-                        $result['monthly_show'] = $temp->get_intShowID();
+                        $this->result_list['monthly_show'] = $temp->get_intShowID();
                     }
                     $this->render();
                     exit(0);
@@ -405,10 +406,17 @@ class API
         case 'html':
             if (is_object($this->result)) {
                 $content = "<table>";
-                foreach ($this->result->getSelf() as $key=>$value) {
+                foreach ($this->result->getSelf() as $key => $value) {
                     if (is_array($value)) {
                         $value = UI::utf8json($value);
                     }
+                    $content .= "<tr><td>$key</td><td>$value</td></tr>";
+                }
+                $content .= "</table>";
+                UI::sendHttpResponse(200, null, 'text/html', $content);
+            } elseif (is_array($this->result_list)) {
+                $content = '<table>';
+                foreach ($this->result_list as $key => $value) {
                     $content .= "<tr><td>$key</td><td>$value</td></tr>";
                 }
                 $content .= "</table>";
@@ -440,6 +448,8 @@ class API
         case 'json':
             if (is_object($this->result)) {
                 UI::sendHttpResponse(200, UI::utf8json($this->result->getSelf()), 'application/json');
+            } elseif (is_array($this->result_list)) {
+                UI::sendHttpResponse(200, UI::utf8json($this->result_list), 'application/json');
             } elseif (is_array($this->result_array)) {
                 foreach ($this->result_array as $result_item) {
                     if (is_object($result_item)) {
@@ -461,6 +471,24 @@ class API
             if (is_object($this->result)) {
                 $return = '';
                 foreach ($this->result->getSelf() as $key=>$value) {
+                    if (is_array($value)) {
+                        foreach ($value as $v_key=>$v_value) {
+                            if ($return != '') {
+                                $return .= " && ";
+                            }
+                            $return .= "{$v_key}=\"$v_value\"";
+                        }
+                    } else {
+                        if ($return != '') {
+                            $return .= " && ";
+                        }
+                        $return .= "{$key}=\"$value\"";
+                    }
+                }
+                UI::sendHttpResponse(200, $return, 'text/plain');
+            } elseif (is_array($this->result_list)) {
+                $return = '';
+                foreach ($this->result_list as $key=>$value) {
                     if (is_array($value)) {
                         foreach ($value as $v_key=>$v_value) {
                             if ($return != '') {
