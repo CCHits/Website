@@ -143,7 +143,7 @@ class RemoteSourcesBroker
                     foreach ($arrUri['parameters']['_FILES'][$variable]['error'] as $key => $error) {
                         if ($error === UPLOAD_ERR_OK) {
                             $tmp_name = $arrUri['parameters']['_FILES'][$variable]['tmp_name'][$key];
-                            $file = FileFunctions::getTempFileName($upload_dir);
+                            $file = GeneralFunctions::getTempFileName($upload_dir);
                             if ( ! move_uploaded_file($tmp_name, $file)) {
                                 error_log("Unable to move the uploaded file to $file.");
                                 die("Error handling uploaded file. Please speak to an administrator.");

@@ -38,16 +38,16 @@ class ChartObject
     function __construct($date = '')
     {
         $db = Database::getConnection(true);
-        if ($date != '') {
+        if ($date != '' || strtotime(UI::getLongDate($date)) === false) {
             $date = date("Ymd");
         }
         $sql = "SELECT datChart FROM chart WHERE datChart = ? LIMIT 0, 1";
         $query = $db->prepare($sql);
         $query->execute(array($date));
-        if ($query->fetch() or 0 + $date < 20000000) {
+        if ($query->fetch() || 0 + $date < 20000000) {
             return false;
         }
-        $chartdate = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
+        $chartdate = UI::getLongDate($date);
         $trenddate = date("Y-m-d", strtotime("-1 day", strtotime($chartdate)));
         $sql = "SELECT t.intTrackID, t.intChartPlace, count(t.intTrackID) * ((100-(IFNULL(MAX(intShowCount),0)*5))/100) AS decVotes
                 FROM tracks AS t

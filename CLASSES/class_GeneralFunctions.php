@@ -32,9 +32,10 @@ class GeneralFunctions
      * This function looks for a value within an array or an object, and returns it if it's there. If it isn't it
      * returns the default value.
      *
-     * @param mixed  $haystack The object or array to check within
-     * @param string $needle   The key or property to look for
-     * @param mixed  $default  The value to return if the key or property doesn't exist
+     * @param mixed   $haystack     The object or array to check within
+     * @param string  $needle       The key or property to look for
+     * @param mixed   $default      The value to return if the key or property doesn't exist
+     * @param boolean $emptyisfalse If true, and the result of the check returns an empty string, return the default value
      *
      * @return mixed The value found, or the default if not.
      */

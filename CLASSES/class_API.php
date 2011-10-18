@@ -40,12 +40,7 @@ class API
     function __construct()
     {
         $arrUri = UI::getUri();
-        if (is_array($arrUri)
-            and isset($arrUri['path_items'])
-            and is_array($arrUri['path_items'])
-            and count($arrUri['path_items']) > 0
-            and $arrUri['path_items'][0] != 'api'
-        ) {
+        if (GeneralFunctions::getValue(GeneralFunctions::getValue($arrUri, 'path_items', array()), 0, '') != 'api') {
             throw new API_NotApiCall();
         } else {
             switch($arrUri['format']) {
@@ -83,10 +78,8 @@ class API
             // Searches
             case 'searchartistbyname':
             case 'searchartistsbyname':
-                if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] == '') {
-                    $artist_name = $arrUri['parameters']['strArtistName'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $artist_name = '';
+                $artist_name = GeneralFunctions::getValue($arrUri['parameters'], 'strArtistName', '', true);
+                if ($artist_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($artist_name != '') {
@@ -95,8 +88,6 @@ class API
                             $artist_name .= $arrUri['path_items'][$arrItem];
                         }
                     }
-                } else {
-                    $artist_name = '';
                 }
             case 'listartist':
             case 'listartists':
@@ -108,8 +99,8 @@ class API
                 break;
             case 'searchartistbyurl':
             case 'searchartistsbyurl':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $artist_url = '';
+                $artist_url = GeneralFunctions::getValue($arrUri['parameters'], 'strArtistUrl', '', true);
+                if ($artist_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($artist_url != '') {
@@ -118,7 +109,8 @@ class API
                             $artist_url .= $arrUri['path_items'][$arrItem];
                         }
                     }
-                } else {
+                }
+                if ($artist_url == '') {
                     $this->render();
                     break;
                 }
@@ -127,10 +119,8 @@ class API
                 break;
             case 'searchtrackbyname':
             case 'searchtracksbyname':
-                if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] == '') {
-                    $track_name = $arrUri['parameters']['strTrackName'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $track_name = '';
+                $track_name = GeneralFunctions::getValue($arrUri['parameters'], 'strArtistName', '', true);
+                if ($track_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($track_name != '') {
@@ -139,8 +129,6 @@ class API
                             $track_name .= $arrUri['path_items'][$arrItem];
                         }
                     }
-                } else {
-                    $track_name = '';
                 }
             case 'listtrack':
             case 'listtracks':
@@ -156,10 +144,8 @@ class API
                 break;
             case 'searchtrackbyurl':
             case 'searchtracksbyurl':
-                if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] == '') {
-                    $track_url = $arrUri['parameters']['strTrackUrl'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $track_url = '';
+                $track_url = GeneralFunctions::getValue($arrUri['parameters'], 'strTrackUrl', '', true);
+                if ($track_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($track_url != '') {
@@ -168,7 +154,8 @@ class API
                             $track_url .= $arrUri['path_items'][$arrItem];
                         }
                     }
-                } else {
+                }
+                if ($track_url == '') {
                     $this->render();
                     break;
                 }
@@ -181,10 +168,8 @@ class API
                 break;
             case 'searchshowbyname':
             case 'searchshowsbyname':
-                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] == '') {
-                    $show_name = $arrUri['parameters']['strShowName'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $show_name = '';
+                $show_name = GeneralFunctions::getValue($arrUri['parameters'], 'strShowName', '', true);
+                if ($show_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($show_name != '') {
@@ -193,8 +178,6 @@ class API
                             $show_name .= $arrUri['path_items'][$arrItem];
                         }
                     }
-                } else {
-                    $show_name = '';
                 }
             case 'listshow':
             case 'listshows':
@@ -206,10 +189,8 @@ class API
                 break;
             case 'searchshowbyurl':
             case 'searchshowsbyurl':
-                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
-                    $show_url = $arrUri['parameters']['strShowUrl'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $show_url = '';
+                $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
+                if ($show_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($show_url != '') {
@@ -218,7 +199,8 @@ class API
                             $show_url .= $arrUri['path_items'][$arrItem];
                         }
                     }
-                } else {
+                }
+                if ($show_url == '') {
                     $this->render();
                     break;
                 }
@@ -227,45 +209,21 @@ class API
                 break;
             // Direct Lookups
             case 'gettrack':
-                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
-                    $intTrackID = $arrUri['parameters']['intTrackID'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intTrackID = $arrUri['path_items'][2];
-                } else {
-                    $intTrackID = 0;
-                }
+                $intTrackID = GeneralFunctions::getValue($arrUri['parameters'], 'intTrackID', GeneralFunctions::getValue($arrUri['path_items'], 2, 0, true), true);
                 $this->result = TrackBroker::getTrackByID(UI::getLongNumber($intTrackID));
                 $this->result->set_full(true);
                 $this->render();
                 break;
             case 'getshow':
-                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
-                    $intShowID = $arrUri['parameters']['intShowID'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intShowID = $arrUri['path_items'][2];
-                } else {
-                    $intShowID = 0;
-                }
+                $intShowID = GeneralFunctions::getValue($arrUri['parameters'], 'intShowID', GeneralFunctions::getValue($arrUri['path_items'], 2, 0, true), true);
                 $this->result = ShowBroker::getShowByID(UI::getLongNumber($intShowID));
                 $this->render();
                 break;
 
             // Upload Scripts
             case 'addtracktoshow':
-                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
-                    $intTrackID = $arrUri['parameters']['intTrackID'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intTrackID = $arrUri['path_items'][2];
-                } else {
-                    $intTrackID = 0;
-                }
-                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
-                    $intShowID = $arrUri['parameters']['intShowID'];
-                } elseif (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
-                    $intShowID = $arrUri['path_items'][3];
-                } else {
-                    $intShowID = 0;
-                }
+                $intTrackID = GeneralFunctions::getValue($arrUri['parameters'], 'intTrackID', GeneralFunctions::getValue($arrUri['path_items'], 2, 0, true), true);
+                $intShowID = GeneralFunctions::getValue($arrUri['parameters'], 'intShowID', GeneralFunctions::getValue($arrUri['path_items'], 3, 0, true), true);
                 if ($intTrackID != 0 and $intShowID != 0) {
                     $this->result = new NewShowTrackObject($intTrackID, $intShowID);
                 } else {
@@ -295,112 +253,74 @@ class API
                 $this->render();
                 break;
             case 'completetrack':
-                if (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
-                    $intTrackID = $arrUri['parameters']['intTrackID'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intTrackID = $arrUri['path_items'][2];
-                } else {
-                    $intTrackID = 0;
-                }
+                $intTrackID = GeneralFunctions::getValue($arrUri['parameters'], 'intTrackID', GeneralFunctions::getValue($arrUri['path_items'], 2, 0, true), true);
                 $objSource = RemoteSourcesBroker::getRemoteSourceByID($intTrackID);
                 if ($objSource == false) {
                     $this->render();
                     break;
                 }
-                $objSource->amendRecord();
+                try{
+                    $objSource->amendRecord();
+                    $this->result = array('intTrackID'=>$objSource->get_intTrackID());
+                } catch (Exception $e) {
+                    $this->result = array('Incomplete'=>$e->getMessage());
+                }
+                $this->render();
                 break;
             case 'getshowid':
-                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
-                    $show_url = $arrUri['parameters']['strShowUrl'];
-                } else {
+                $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
+                if ($show_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
+                    for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                        if (isset ($arrUri['path_items'][$arrItem])) {
+                            if ($show_url != '') {
+                                $show_url .= '/';
+                            }
+                            $show_url .= $arrUri['path_items'][$arrItem];
+                        }
+                    }
+                }
+                if ($show_url == '') {
                     $this->render();
                     break;
                 }
                 $this->result = ShowBroker::getShowByExactUrl($show_url);
                 if ($this->result == false) {
-                    if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] == '') {
-                        $show_name = $arrUri['parameters']['strShowName'];
-                    } else {
-                        $this->render();
-                        break;
-                    }
+                    $show_name = GeneralFunctions::getValue($arrUri['parameters'], 'strShowName', $show_url, true);
                     $this->result = new NewExternalShowObject($show_url, $show_name);
                 }
                 $this->render();
                 break;
             case 'editshow':
-                if (isset($arrUri['parameters']['strShowUrl']) and $arrUri['parameters']['strShowUrl'] == '') {
-                    $show_url = $arrUri['parameters']['strShowUrl'];
-                } else {
-                    $this->render();
-                    break;
-                }
-                if (isset($arrUri['parameters']['strShowName']) and $arrUri['parameters']['strShowName'] == '') {
-                    $show_name = $arrUri['parameters']['strShowName'];
-                } else {
-                    $this->render();
-                    break;
-                }
-                if (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
-                    $show = ShowBroker::getShowByID($arrUri['parameters']['intShowID']);
+                $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
+                $show_name = GeneralFunctions::getValue($arrUri['parameters'], 'strShowName', $show_url, true);
+                $show = ShowBroker::getShowByID(GeneralFunctions::getValue($arrUri['parameters'], 'intShowID', false, true));
+                if ($show != false) {
                     $show->set_strShowUrl($show_url);
                     $show->set_strShowName($show_name);
                     $show->write();
                     UI::sendHttpResponseNote(200);
-                    break;
                 } else {
                     $this->render();
-                    break;
                 }
                 break;
 
             // Get Statistical Information
             case 'gettrends':
-                if (isset($arrUri['parameters']['strTrendDate']) and $arrUri['parameters']['strTrendDate'] == '') {
-                    $strTrendDate = $arrUri['parameters']['strTrendDate'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $strTrendDate = $arrUri['path_items'][2];
-                } else {
-                    $this->render();
-                    break;
-                }
+                $strTrendDate = GeneralFunctions::getValue($arrUri['parameters'], 'strTrendDate', GeneralFunctions::getValue($arrUri['path_items'], 2, date('Y-m-d'), true), true);
                 $this->result_array = TrendBroker::getTrendByDate($strTrendDate);
                 $this->render();
                 break;
             case 'getchart':
-                if (isset($arrUri['parameters']['strChartDate']) and $arrUri['parameters']['strChartDate'] == '') {
-                    $strChartDate = $arrUri['parameters']['strChartDate'];
-                } elseif (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $strChartDate = $arrUri['path_items'][2];
-                } else {
-                    $this->render();
-                    break;
-                }
+                $strChartDate = GeneralFunctions::getValue($arrUri['parameters'], 'strChartDate', GeneralFunctions::getValue($arrUri['path_items'], 2, date('Y-m-d'), true), true);
                 $this->result_array = ChartBroker::getChartByDate($strChartDate);
                 $this->render();
                 break;
 
             // Voting
             case 'vote':
-                if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                    $intTrackID = $arrUri['path_items'][2];
-                } elseif (isset($arrUri['parameters']['intTrackID']) and $arrUri['parameters']['intTrackID'] == '') {
-                    $intTrackID = $arrUri['parameters']['intTrackID'];
-                } else {
-                    $intTrackID = 0;
-                }
-                if (isset($arrUri['path_items'][3]) and $arrUri['path_items'][3] != '') {
-                    $intShowID = $arrUri['path_items'][3];
-                } elseif (isset($arrUri['parameters']['intShowID']) and $arrUri['parameters']['intShowID'] == '') {
-                    $intShowID = $arrUri['parameters']['intShowID'];
-                } else {
-                    $intShowID = 0;
-                }
-                if ($intTrackID != 0) {
-                    $this->result = new NewVoteObject($intTrackID, $intShowID);
-                } else {
-                    $this->result = false;
-                }
+                $intTrackID = GeneralFunctions::getValue($arrUri['parameters'], 'intTrackID', GeneralFunctions::getValue($arrUri['path_items'], 2, 0, true), true);
+                $intShowID = GeneralFunctions::getValue($arrUri['parameters'], 'intShowID', GeneralFunctions::getValue($arrUri['path_items'], 3, 0, true), true);
+                $this->result = new NewVoteObject($intTrackID, $intShowID);
                 $this->render();
                 break;
 
@@ -409,35 +329,31 @@ class API
             case 'runshows':
                 UI::requireAuth();
                 if (UserBroker::getUser()->get_isAdmin()) {
-                    if (isset($arrUri['path_items'][2]) and $arrUri['path_items'][2] != '') {
-                        $date = $arrUri['path_items'][2];
-                    } else {
-                        $date = '';
-                    }
-                    $temp = new ChartObject($date);
-                    if ($date == '') {
+                    $date = GeneralFunctions::getValue($arrUri['parameters'], 'date', GeneralFunctions::getValue($arrUri['path_items'], 2, date('Ymd'), true), true);
+                    if ($date == '' || strtotime(UI::getLongDate($date)) === false) {
                         $date = date('Ymd');
                     }
+                    $temp = new ChartObject($date);
                     $temp = ShowBroker::getInternalShowByDate('daily', $date);
                     if ($temp == false) {
                         $temp = new NewDailyShowObject($date);
                     }
-                    $response = 'DAILY_SHOW=' . $temp->get_intShowID();
+                    $result = array('daily_show' => $temp->get_intShowID());
                     if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
                         $temp = ShowBroker::getInternalShowByDate('weekly', $date);
                         if ($temp == false) {
                             $temp = new NewWeeklyShowObject($date);
                         }
-                        $response .= ' && WEEKLY_SHOW=' . $temp->get_intShowID();
+                        $result['weekly_show'] = $temp->get_intShowID();
                     }
                     if (1 == date('d', strtotime(UI::getLongDate($date) . ' 12:00:00 + 1 day'))) {
                         $temp = ShowBroker::getInternalShowByDate('monthly', substr($date, 0, 6));
                         if ($temp == false) {
                             $temp = new NewMonthlyShowObject(substr($date, 0, 6));
                         }
-                        $response .= ' && MONTHLY_SHOW=' . $temp->get_intShowID();
+                        $result['monthly_show'] = $temp->get_intShowID();
                     }
-                    UI::sendHttpResponse(200, $response, 'text/plain');
+                    $this->render();
                     exit(0);
                 } else {
                     $this->render();

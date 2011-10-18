@@ -156,6 +156,7 @@ class TrackBroker
             return false;
         }
     }
+
     /**
      * This function finds a track by its name.
      * This search removes all spaces and then checks for the name
@@ -284,7 +285,16 @@ class TrackBroker
             $query->execute(array("%\"$strTrackUrl\"%", $strTrackUrl));
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
-            return $item;
+            if ($item == false) {
+                return false;
+            } else {
+                while ($item != false) {
+                    $return[] = $item;
+                    $handler->arrTracks[$item->get_intTrackID()] = $item;
+                    $item = $query->fetchObject('TrackObject');
+                }
+                return $return;
+            }
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;

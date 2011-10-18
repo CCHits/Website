@@ -590,6 +590,7 @@ class RemoteSources extends GenericObject
         }
         if ($track != false) {
             $this->cancel();
+            $this->intTrackID = $track->get_intTrackID();
             return $track->get_intTrackID();
         }
     }
@@ -622,7 +623,7 @@ class RemoteSources extends GenericObject
             if (isset($this->fileName) and false == $this->fileName) {
                 $get = $this->curl_get($this->fileUrl);
                 if ($get[1]['http_code'] == 200) {
-                    if (FileFunctions::getFileFormat($get[0]) != '') {
+                    if (GeneralFunctions::getFileFormat($get[0]) != '') {
                         $this->set_fileName($get[0]);
                     }
                     $this->write();
