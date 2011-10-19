@@ -339,20 +339,33 @@ class API
                     if ($temp == false) {
                         $temp = new NewDailyShowObject($date);
                     }
-                    $this->result_list = array('daily_show' => $temp->get_intShowID());
+                    if ($this->format == 'shell') {
+                        $this->result_list = array('daily_show' => $temp->get_intShowID());
+                    } else {
+                        $this->result_array = array('daily_show' => $temp);
+                    }
+                    $this->result_array = array('daily_show' => $temp);
                     if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
                         $temp = ShowBroker::getInternalShowByDate('weekly', $date);
                         if ($temp == false) {
                             $temp = new NewWeeklyShowObject($date);
                         }
-                        $this->result_list['weekly_show'] = $temp->get_intShowID();
+                        if ($this->format == 'shell') {
+                            $this->result_list['weekly_show'] = $temp->get_intShowID();
+                        } else {
+                            $this->result_array['weekly_show'] = $temp;
+                        }
                     }
                     if (1 == date('d', strtotime(UI::getLongDate($date) . ' 12:00:00 + 1 day'))) {
                         $temp = ShowBroker::getInternalShowByDate('monthly', substr($date, 0, 6));
                         if ($temp == false) {
                             $temp = new NewMonthlyShowObject(substr($date, 0, 6));
                         }
-                        $this->result_list['monthly_show'] = $temp->get_intShowID();
+                        if ($this->format == 'shell') {
+                            $this->result_list['monthly_show'] = $temp->get_intShowID();
+                        } else {
+                            $this->result_array['monthly_show'] = $temp;
+                        }
                     }
                     $this->render();
                     exit(0);
@@ -423,8 +436,8 @@ class API
                 UI::sendHttpResponse(200, null, 'text/html', $content);
             } elseif (is_array($this->result_array)) {
                 $content = '';
-                foreach ($this->result_array as $result_item) {
-                    $content .= "<table>";
+                foreach ($this->result_array as $result_key => $result_item) {
+                    $content .= "<h1>$result_key</h1><table>";
                     if (is_object($result_item)) {
                         $result_item = $result_item->getSelf();
                     }
@@ -451,11 +464,11 @@ class API
             } elseif (is_array($this->result_list)) {
                 UI::sendHttpResponse(200, UI::utf8json($this->result_list), 'application/json');
             } elseif (is_array($this->result_array)) {
-                foreach ($this->result_array as $result_item) {
+                foreach ($this->result_array as $result_key => $result_item) {
                     if (is_object($result_item)) {
                         $result_item = $result_item->getSelf();
                     }
-                    $result[] = $result_item;
+                    $result[$result_key] = $result_item;
                 }
                 UI::sendHttpResponse(200, UI::utf8json($result), 'application/json');
             } elseif ($this->result == true) {
@@ -507,14 +520,14 @@ class API
             } elseif (is_array($this->result_array)) {
                 $return = '';
                 $key_inc = 0;
-                foreach ($this->result_array as $result_item) {
+                foreach ($this->result_array as $result_key => $result_item) {
                     $key_inc++;
                     if (is_object($result_item)) {
                         $result_item = $result_item->getSelf();
                     }
-                    foreach ($result_item as $key=>$value) {
+                    foreach ($result_item as $key => $value) {
                         if (is_array($value)) {
-                            foreach ($value as $v_key=>$v_value) {
+                            foreach ($value as $v_key => $v_value) {
                                 if ($return != '') {
                                     $return .= " && ";
                                 }

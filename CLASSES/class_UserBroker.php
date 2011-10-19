@@ -57,24 +57,17 @@ class UserBroker
             return $objSelf->thisUser;
         }
         UI::start_session();
+        list($username, $password) = UI::getAuth();
         if (isset($_SESSION['cookie']) AND $_SESSION['cookie'] != '') {
             $field = "strCookieID";
             $param = $_SESSION['cookie'];
         } elseif (isset($_SESSION['OPENID_AUTH']) AND $_SESSION['OPENID_AUTH'] != false) {
             $field = "strOpenID";
             $param = $_SESSION['OPENID_AUTH']['url'];
-        } elseif (isset($_SERVER['HTTP_AUTHORIZATION']) and $_SERVER['HTTP_AUTHORIZATION'] != '') {
-            $auth_params = explode(":" , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-            $username = $auth_params[0];
-            unset($auth_params[0]);
-            $password = sha1(implode('',$auth_params));
+        } elseif ($username !== null && $password !== null) {
             $field = "sha1Pass";
-            $param = "{$username}:{$password}";
-        } elseif (isset($_SERVER['PHP_AUTH_USER']) and isset($_SERVER['PHP_AUTH_PW'])) {
-            $username = $_SERVER['PHP_AUTH_USER'];
-            $password = sha1($_SERVER['PHP_AUTH_PW']);
-            $field = "sha1Pass";
-            $param = "{$username}:{$password}";
+            $sha1password = sha1($password);
+            $param = "{$username}:{$sha1password}";
         } else {
             $objSelf->thisUser = new NewUserObject();
             return $objSelf->thisUser;

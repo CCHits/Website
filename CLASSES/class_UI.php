@@ -237,7 +237,6 @@ class UI
         } elseif (isset($_SERVER['PHP_AUTH_USER']) and isset($_SERVER['PHP_AUTH_PW'])) {
             $username = $_SERVER['PHP_AUTH_USER'];
             $password = $_SERVER['PHP_AUTH_PW'];
-            $uri .= "{$username}:{$password}@";
         }
         return array($username, $password);
     }
