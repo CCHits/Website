@@ -66,6 +66,7 @@ class ChartObject
             	ORDER BY decVotes DESC, intTrackID ASC";
         $chartsql = $db->prepare("INSERT INTO chart (datChart, intPositionID, intTrackID) VALUES (?, ?, ?)");
         $update = $db->prepare("UPDATE tracks SET intChartPlace = ? WHERE intTrackID = ?");
+        $counter = 0;
         foreach ($db->query($sql) as $data) {
             $counter++;
             $chartsql->execute(array($chartdate, $counter, $data['intTrackID']));

@@ -373,7 +373,7 @@ class UI
 
         //workaround for IE filename bug with multiple periods / multiple dots in filename
         //that adds square brackets to filename - eg. setup.abc.exe becomes setup[1].abc.exe
-        $filename = (strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) ?
+        $filename = (strstr(GeneralFunctions::getValue($_SERVER, 'HTTP_USER_AGENT', ''), 'MSIE')) ?
                       preg_replace('/\./', '%2e', $fileinfo['basename'], substr_count($fileinfo['basename'], '.') - 1) :
                       $fileinfo['basename'];
 
