@@ -1,0 +1,38 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="intro_data" version="1.3.0" audacityversion="1.3.13-beta" sel0="0.0000000000" sel1="0.0000000000" vpos="0" h="0.0000000000" zoom="65.2529069059" rate="44100.0">
+	<tags>
+		<tag name="ALBUM" value="ccMixter"/>
+		<tag name="YEAR" value="2009"/>
+		<tag name="Interpreted, remixed, or otherwise modified by" value="scottaltham"/>
+		<tag name="Copyright message" value="2009 scottaltham Licensed to the public under http://creativecommons.org/licenses/by/3.0/ Verify at http://ccmixter.org/files/scottaltham/19726"/>
+		<tag name="TITLE" value="GMZ "/>
+		<tag name="ARTIST" value="scottaltham"/>
+	</tags>
+	<wavetrack name="scottaltham_-_GMZ" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" rate="44100" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="399417">
+				<waveblock start="0">
+					<simpleblockfile filename="e00002b6.au" len="153201" min="-0.861385" max="0.743559" rms="0.11006"/>
+				</waveblock>
+				<waveblock start="153201">
+					<simpleblockfile filename="e0000114.au" len="246216" min="-0.883265" max="0.697235" rms="0.089203"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="scottaltham_-_GMZ" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" rate="44100" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="399417">
+				<waveblock start="0">
+					<simpleblockfile filename="e00009bb.au" len="153201" min="-0.817176" max="0.845231" rms="0.103076"/>
+				</waveblock>
+				<waveblock start="153201">
+					<simpleblockfile filename="e00008cb.au" len="246216" min="-0.816332" max="0.785522" rms="0.083254"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>

@@ -1,0 +1,68 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="outro_data" version="1.3.0" audacityversion="1.3.13-beta" sel0="11.2120909121" sel1="11.2120909121" vpos="0" h="0.0000000000" zoom="31.7514371574" rate="44100.0">
+	<tags>
+		<tag name="ALBUM" value="ccMixter"/>
+		<tag name="YEAR" value="2009"/>
+		<tag name="Interpreted, remixed, or otherwise modified by" value="scottaltham"/>
+		<tag name="Copyright message" value="2009 scottaltham Licensed to the public under http://creativecommons.org/licenses/by/3.0/ Verify at http://ccmixter.org/files/scottaltham/19726"/>
+		<tag name="TITLE" value="GMZ "/>
+		<tag name="ARTIST" value="scottaltham"/>
+	</tags>
+	<wavetrack name="scottaltham_-_GMZ" channel="0" linked="1" mute="0" solo="0" height="150" minimized="0" rate="44100" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1686141">
+				<waveblock start="0">
+					<simpleblockfile filename="e000000c.au" len="133498" min="-0.288025" max="0.272426" rms="0.037134"/>
+				</waveblock>
+				<waveblock start="133498">
+					<simpleblockfile filename="e0000027.au" len="262144" min="-0.873869" max="0.759335" rms="0.141593"/>
+				</waveblock>
+				<waveblock start="395642">
+					<simpleblockfile filename="e000021e.au" len="262144" min="-0.825161" max="0.639289" rms="0.152326"/>
+				</waveblock>
+				<waveblock start="657786">
+					<simpleblockfile filename="e0000f1c.au" len="262144" min="-0.655501" max="0.655841" rms="0.139278"/>
+				</waveblock>
+				<waveblock start="919930">
+					<simpleblockfile filename="e000053b.au" len="262144" min="-0.656691" max="0.596826" rms="0.119073"/>
+				</waveblock>
+				<waveblock start="1182074">
+					<simpleblockfile filename="e000072f.au" len="262144" min="-0.431216" max="0.366868" rms="0.07174"/>
+				</waveblock>
+				<waveblock start="1444218">
+					<simpleblockfile filename="e0000894.au" len="241923" min="-0.209849" max="0.203638" rms="0.025563"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="scottaltham_-_GMZ" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" rate="44100" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1686141">
+				<waveblock start="0">
+					<simpleblockfile filename="e0000e4a.au" len="133498" min="-0.259341" max="0.250432" rms="0.036418"/>
+				</waveblock>
+				<waveblock start="133498">
+					<simpleblockfile filename="e0000542.au" len="262144" min="-0.837637" max="0.744794" rms="0.138121"/>
+				</waveblock>
+				<waveblock start="395642">
+					<simpleblockfile filename="e00009ca.au" len="262144" min="-0.82536" max="0.720446" rms="0.149161"/>
+				</waveblock>
+				<waveblock start="657786">
+					<simpleblockfile filename="e0000853.au" len="262144" min="-0.78104" max="0.687154" rms="0.135345"/>
+				</waveblock>
+				<waveblock start="919930">
+					<simpleblockfile filename="e0000cb4.au" len="262144" min="-0.617077" max="0.67007" rms="0.116081"/>
+				</waveblock>
+				<waveblock start="1182074">
+					<simpleblockfile filename="e000051b.au" len="262144" min="-0.393806" max="0.435936" rms="0.069722"/>
+				</waveblock>
+				<waveblock start="1444218">
+					<simpleblockfile filename="e0000df1.au" len="241923" min="-0.193033" max="0.216267" rms="0.024947"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>
