@@ -40,12 +40,12 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         track_concatenate(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav');
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
         track_merge(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav');
-        $track[$show_data['arrTracks'][1]['intTrackID']] = $show_data['arrTracks'][1];
+        $arrTracks[$show_data['arrTracks'][1]['intTrackID']] = $show_data['arrTracks'][1];
         $running_order = json_add($running_order, track_length(Configuration::getWorkingDir() . '/run.wav'), $show_data['arrTracks'][1]['intTrackID']);
 
         $track = download_file($show_data['arrTracks'][1]['localSource']);
         copy($track, Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource']);
-        unlink($track);
+        debug_unlink($track);
 
         track_concatenate(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'], Configuration::getWorkingDir() . '/runplustrack.wav');
         $running_order = json_add($running_order, track_length(Configuration::getWorkingDir() . '/runplustrack.wav'), 'outro');
@@ -65,23 +65,29 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $arrRunningOrder = mkarray(json_decode($running_order));
 
         foreach ($arrRunningOrder as $timestamp => $entry) {
-            if (! is_int($entry)) {
-                $arrRunningOrder_final[(string) $timestamp] = $entry;
+            if (0 + $entry > 0) {
+                $arrRunningOrder_final[(string) $timestamp] = $arrTracks[$entry];
             } else {
-                $arrRunningOrder_final[(string) $timestamp] = $track[$entry];
+                $arrRunningOrder_final[(string) $timestamp] = $entry;
             }
         }
 
-        $coverart = curl_get($show_data['qrcode']);
+        $coverart = download_file($show_data['qrcode']);
+        if ($coverart != false) {
+            copy($coverart, Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png');
+            debug_unlink($coverart);
+            $coverart = Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png';
+        } else {
+            $coverart = '';
+        }
 
         make_output(Configuration::getWorkingDir() . '/show.wav', Configuration::getWorkingDir() . '/show.', array(
             'Title' => $show_data['strShowName'],
             'Artist' => 'CCHits.net',
-            'AlbumArt' => $coverart[0],
+            'AlbumArt' => $coverart,
             'RunningOrder' => $arrRunningOrder_final
         ));
 
-        unlink($coverart);
     }
 }
 ?></pre>
