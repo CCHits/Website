@@ -3,17 +3,20 @@
 /**
  * TODO: Merge library.php into an appropriate class
  */
-function make_sable($input, $output) {
+function make_sable($input, $output, $remove_sources = true) {
     if (file_exists($input)) {
         $cmd = 'text2wave -o "' . Configuration::getWorkingDir() . '/tmp.wav' . '" "' . $input . '"';
-        exec($cmd, $result, $exit_status);
+        exec($cmd, $result, $exit_code);
         echo $cmd . "\r\n";
-        if ($exit_status != 0) {
-            echo "Exit status: $exit_status\r\n";
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n";
             if (file_exists($output)) {
                 unlink($output);
             }
             return false;
+        }
+        if ($remove_sources == true) {
+            unlink($input);
         }
         if (make_wav(Configuration::getWorkingDir() . '/tmp.wav', $output)) {
             unlink(Configuration::getWorkingDir() . '/tmp.wav');
@@ -29,10 +32,10 @@ function make_sable($input, $output) {
 
 function make_silence($duration, $output) {
     $cmd = 'sox -q -n -r 44100 -c 2 "' . $output . '" trim 0.0 ' . $duration;
-    exec($cmd, $result, $exit_status);
+    exec($cmd, $result, $exit_code);
     echo $cmd . "\r\n";
-    if ($exit_status != 0) {
-        echo "Exit status: $exit_status\r\n";
+    if ($exit_code != 0) {
+        echo "Exit status: $exit_code\r\n";
         if (file_exists($output)) {
             unlink($output);
         }
@@ -44,10 +47,10 @@ function make_silence($duration, $output) {
 function track_concatenate($first, $second, $output, $remove_sources = true) {
     if (file_exists($first) and file_exists($second)) {
         $cmd = 'sox -q --combine concatenate -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
-        exec($cmd, $result, $exit_status);
+        exec($cmd, $result, $exit_code);
         echo $cmd . "\r\n";
-        if ($exit_status != 0) {
-            echo "Exit status: $exit_status\r\n";
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n";
             if (file_exists($output)) {
                 unlink($output);
             }
@@ -65,10 +68,19 @@ function track_concatenate($first, $second, $output, $remove_sources = true) {
 function track_merge($first, $second, $output, $remove_sources = true) {
     if (file_exists($first) and file_exists($second)) {
         $cmd = 'sox -q -m -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
-        exec($cmd, $result, $exit_status);
+        exec($cmd, $result, $exit_code);
         echo $cmd . "\r\n";
-        if ($exit_status != 0) {
-            echo "Exit status: $exit_status\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
             if (file_exist($output)) {
                 unlink($output);
             }
@@ -86,10 +98,19 @@ function track_merge($first, $second, $output, $remove_sources = true) {
 function track_reverse($in, $out, $remove_sources = true) {
     if (file_exists($in)) {
         $cmd = 'sox -q "' . $in . '" "' . $out . '" reverse';
-        exec($cmd, $result, $exit_status);
+        exec($cmd, $result, $exit_code);
         echo $cmd . "\r\n";
-        if ($exit_status != 0) {
-            echo "Exit status: $exit_status\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
             if (file_exist($out)) {
                 unlink($out);
             }
@@ -108,23 +129,32 @@ function track_length($input) {
         $cmd = 'soxi -D "' . $input . '"';
         exec($cmd, $result, $exit_code);
         echo $cmd . "\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
         if ($exit_code != 0) {
-            echo "Exit status: $exit_code\r\n";
+            echo "Exit status: $exit_code\r\n$content\r\n";
             return 0;
         }
-        return $result;
+        return $content;
     } else {
         return 0;
     }
 }
 
 function json_add($original, $key, $value, $cumulative = true) {
-    $array = (array) json_decode($original);
+    $array = mkarray(json_decode($original));
     if ($cumulative == true && count($array) > 0) {
         foreach ($array as $array_key=>$array_value) {
             // A dirty way to get the last key=>value pair
         }
-        $key = $array_key + $key;
+        $key = (float) $array_key + (float) $key;
     }
     $array[(string) $key] = $value;
     return json_encode($array);
@@ -132,11 +162,20 @@ function json_add($original, $key, $value, $cumulative = true) {
 
 function make_wav($input, $output) {
     if (file_exists($input)) {
-        $cmd = 'sox -q "' . $input . '" -r 44100 -c 2 "' . $output . '"';
-        exec($cmd, $result, $exit_status);
+        $cmd = 'sox -q "' . $input . '" -r 44100 -c 2 -t wavpcm "' . $output . '"';
+        exec($cmd, $result, $exit_code);
         echo $cmd . "\r\n";
-        if ($exit_status != 0) {
-            echo "Exit status: $exit_status\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
             unlink($output);
             return false;
         }
@@ -167,6 +206,218 @@ function download_file($url) {
     return false;
   }
 }
+
+function make_output($input, $output_root, $arrMetadata) {
+    // eyeD3 doesn't support "MP3 Extended" (AKA MP3 with Chapter Support), but it has been requested.
+    make_output_mp3($input, $output_root . 'mp3', $arrMetadata);
+    // Chapter information thanks to this page: http://code.google.com/p/subler/wiki/ChapterTextFormat
+    make_output_oga($input, $output_root . 'oga', $arrMetadata);
+    make_output_m4a($input, $output_root . 'm4a', $arrMetadata);
+//    unlink($input);
+}
+
+function make_output_mp3($input, $output, $arrMetadata) {
+    if (file_exists($input)) {
+        $cmd = 'sox "' . $input . '" -t mp3 "' . $output . '"';
+        exec($cmd, $result, $exit_code);
+        echo $cmd . "\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
+            unlink($output);
+            return false;
+        }
+        $cmd = 'eyeD3';
+        if (isset($arrMetadata['Artist']) and $arrMetadata['Artist'] != '') {
+            $cmd .= ' --artist="' . $arrMetadata['Artist'] . '"';
+        }
+        if (isset($arrMetadata['Title']) and $arrMetadata['Title'] != '') {
+            $cmd .= ' --title="' . $arrMetadata['Title'] . '"';
+        }
+        if (isset($arrMetadata['AlbumArt']) and $arrMetadata['AlbumArt'] != '') {
+            $cmd .= ' --add-image "' . $arrMetadata['AlbumArt'] . '":FRONT_COVER';
+        }
+        $cmd .= ' "' . $output . '"';
+        exec($cmd, $result, $exit_code);
+        echo $cmd . "\r\n";
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n";
+            unlink($output);
+            return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function make_output_oga($input, $output, $arrMetadata) {
+    if (file_exists($input)) {
+        $cmd = 'sox "' . $input . '" -t ogg "' . $output . '"';
+        exec($cmd, $result, $exit_code);
+        echo $cmd . "\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
+            unlink($output);
+            return false;
+        }
+        $content = '';
+        if (isset($arrMetadata['AlbumArt']) and $arrMetadata != false) {
+            $in = fopen($arrMetadata['AlbumArt'], "r");
+            $content .= "METADATA_BLOCK_PICTURE=";
+            $imgbinary = fread($in, filesize($arrMetadata['AlbumArt']));
+            fclose($in);
+            $content .= base64_encode($imgbinary) . "\r\n";
+        }
+        if (isset($arrMetadata['Title'])) {
+            $content .= "TITLE={$arrMetadata['Title']}\r\n";
+        }
+        if (isset($arrMetadata['Artist'])) {
+            $content .= "ARTIST={$arrMetadata['Artist']}\r\n";
+        }
+        if (isset($arrMetadata['RunningOrder']) && is_array($arrMetadata['RunningOrder']) && count($arrMetadata['RunningOrder']) > 0) {
+            $chapter_no = 0;
+            foreach ($arrMetadata['RunningOrder'] as $timestamp => $chapter) {
+                $chapter_no++;
+                $content .= 'CHAPTER';
+                $content .= str_pad($chapter_no, 2, '0', STR_PAD_LEFT);
+                $content .= '=';
+                $content .= str_pad(intval(intval($timestamp) / 3600), 2, '0', STR_PAD_LEFT) . ':';
+                $content .= str_pad(bcmod((intval($timestamp) / 60), 60), 2, '0', STR_PAD_LEFT) . ':';
+                $content .= str_pad(bcmod(intval($timestamp), 60), 2, '0', STR_PAD_LEFT) . '.';
+                $content .= $timestamp - intval($timestamp) . "\r\n";
+                $content .= 'CHAPTER';
+                $content .= str_pad($chapter_no, 2, '0', STR_PAD_LEFT);
+                $content .= 'NAME=';
+                if (is_array($chapter)) {
+                    $content .= $chapter['strTrackName'] . ' by ' . $chapter['strArtistName'] . "\r\n";
+                } else {
+                    $content .= $chapter . "\r\n";
+                }
+            }
+        }
+        $out = fopen(Configuration::getWorkingDir() . '/oga_comments', 'w');
+        fwrite($out, $content);
+        fclose($out);
+        $cmd = 'vorbiscomment --write "' . $output . '" --raw --commentfile "' . Configuration::getWorkingDir() . '/oga_comments' . '"';
+        exec($cmd, $result, $exit_code);
+        echo $cmd . "\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        unlink(Configuration::getWorkingDir() . '/oga_comments');
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
+            unlink($output);
+            return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function make_output_m4a($input, $output, $arrMetadata) {
+    if (file_exists($input)) {
+        $cmd = 'faac';
+        if (isset($arrMetadata['Artist']) and $arrMetadata['Artist'] != '') {
+            $cmd .= ' --artist="' . $arrMetadata['Artist'] . '"';
+        }
+        if (isset($arrMetadata['Title']) and $arrMetadata['Title'] != '') {
+            $cmd .= ' --title="' . $arrMetadata['Title'] . '"';
+        }
+        $cmd .= ' -o "' . $output . '" "' . $input . '"';
+        exec($cmd, $result, $exit_code);
+        echo $cmd . "\r\n";
+        $content = '';
+        if (count($result) > 0) {
+            foreach ($result as $line) {
+                if ($content != '') {
+                    $content .= "\r\n";
+                }
+                $content .= $line;
+            }
+        }
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n$content\r\n";
+            unlink($output);
+            return false;
+        }
+        if (isset($arrMetadata['AlbumArt']) and $arrMetadata['AlbumArt'] != '') {
+            $cmd = 'mp4art --add "' . $arrMetadata['AlbumArt'] . '" ' . $output;
+            exec($cmd, $result, $exit_code);
+            echo $cmd . "\r\n";
+            $content = '';
+            if (count($result) > 0) {
+                foreach ($result as $line) {
+                    if ($content != '') {
+                        $content .= "\r\n";
+                    }
+                    $content .= $line;
+                }
+            }
+            if ($exit_code != 0) {
+                echo "Exit status: $exit_code\r\n$content\r\n";
+                unlink($output);
+                return false;
+            }
+        }
+        if (isset($arrMetadata['RunningOrder']) && is_array($arrMetadata['RunningOrder']) && count($arrMetadata['RunningOrder']) > 0) {
+            $chapter_no = 0;
+            foreach ($arrMetadata['RunningOrder'] as $timestamp => $chapter) {
+                $chapter_no++;
+                $content .= str_pad(intval(intval($timestamp) / 3600), 2, '0', STR_PAD_LEFT) . ':';
+                $content .= str_pad(bcmod((intval($timestamp) / 60), 60), 2, '0', STR_PAD_LEFT) . ':';
+                $content .= str_pad(bcmod(intval($timestamp), 60), 2, '0', STR_PAD_LEFT) . '.';
+                $content .= str_pad(substr($timestamp - intval($timestamp), 0, 3), 3, '0', STR_PAD_RIGHT) . " ";
+                if (is_array($chapter)) {
+                    $content .= $chapter['strTrackName'] . ' by ' . $chapter['strArtistName'] . "\r\n";
+                } else {
+                    $content .= $chapter . "\r\n";
+                }
+            }
+        }
+        $out = fopen($output . '.chapters.txt', 'w');
+        fwrite($out, $content);
+        fclose($out);
+        $cmd = 'mp4chaps --import "' . $output . '"';
+        exec($cmd, $result, $exit_code);
+        echo $cmd . "\r\n";
+        unlink($output . '.chapters.txt');
+        if ($exit_code != 0) {
+            echo "Exit status: $exit_code\r\n";
+            unlink($output);
+            return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 /*==================================
 Get url content and response headers (given a url, follows all redirections on it and returned content and response headers of final url)

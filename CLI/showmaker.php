@@ -29,23 +29,26 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $out = fopen(Configuration::getWorkingDir() . '/intro.sable', 'w');
         fwrite($out, $intro);
         fclose($out);
-        $outro = "$pre_sable\r\nThat was <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strTrackNameSounds']} <BREAK LEVEL=\"SMALL\" /> by <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strArtistNameSounds']} <BREAK LEVEL=\"MEDIUM\" /> It was a {$show_data['arrTracks'][1]['pronouncable_enumTrackLicense']} licensed track. Remember, you can vote for this track by visiting {$show_data['strShowUrlSpoken']} <BREAK LEVEL=\"MEDIUM\" /> Your vote will decide whether it makes it into the best-of-the-week <BREAK LEVEL=\"SMALL\" /> weekly show which is available from cee-cee-hits dot net slash weekly <BREAK LEVEL=\"MEDIUM\" />The theme is an exerpt from Gee Em Zed By Scott Alt-him <BREAK LEVEL=\"SMALL\" />for details, please visit Cee-Cee-Hits dot net slash theme$post_sable";
+        $outro = "$pre_sable\r\nThat was <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strTrackNameSounds']} <BREAK LEVEL=\"SMALL\" /> by <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strArtistNameSounds']} <BREAK LEVEL=\"MEDIUM\" /> It was a {$show_data['arrTracks'][1]['pronouncable_enumTrackLicense']} licensed track. Remember, you can vote for this track by visiting {$show_data['strShowUrlSpoken']} <BREAK LEVEL=\"MEDIUM\" /> Your vote will decide whether it makes it into the best-of-the-week <BREAK LEVEL=\"SMALL\" /> weekly show which is available from cee-cee-hits dot net slash weekly <BREAK LEVEL=\"LARGE\" />The theme is an exerpt from Gee Em Zed By Scott Alt-ham <BREAK LEVEL=\"SMALL\" />for details, please visit Cee-Cee-Hits dot net slash theme$post_sable";
         $out = fopen(Configuration::getWorkingDir() . '/outro.sable', 'w');
         fwrite($out, $outro);
         fclose($out);
 
+        $running_order = json_add('', 0.000000, 'intro', false);
         make_silence(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
         make_sable(Configuration::getWorkingDir() . '/intro.sable', Configuration::getWorkingDir() . '/intro.wav');
         track_concatenate(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav');
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
-        track_merge(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav', false);
-        $running_order = json_add('', track_length(Configuration::getWorkingDir() . '/run.wav', 'intro'));
+        track_merge(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav');
+        $track[$show_data['arrTracks'][1]['intTrackID']] = $show_data['arrTracks'][1];
+        $running_order = json_add($running_order, track_length(Configuration::getWorkingDir() . '/run.wav'), $show_data['arrTracks'][1]['intTrackID']);
 
         $track = download_file($show_data['arrTracks'][1]['localSource']);
-        copy($track, Configuration::getWorkingDir() . '/' . $show_data['attTracks'][1]['fileSource']);
+        copy($track, Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource']);
         unlink($track);
 
-        track_concatenate(Configuration::getWorkingDir() . '/run.wav', $track, Configuration::getWorkingDir() . '/runplustrack.wav');
+        track_concatenate(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'], Configuration::getWorkingDir() . '/runplustrack.wav');
+        $running_order = json_add($running_order, track_length(Configuration::getWorkingDir() . '/runplustrack.wav'), 'outro');
 
         make_sable(Configuration::getWorkingDir() . '/outro.sable', Configuration::getWorkingDir() . '/outro.wav');
         make_silence(34, Configuration::getWorkingDir() . '/post-show-silence.wav');
@@ -57,12 +60,28 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         track_reverse(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/run.wav');
 
         track_concatenate(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/show.wav');
+        $running_order = json_add($running_order, track_length(Configuration::getWorkingDir() . '/show.wav'), 'end');
 
-/*        make_output(Configuration::getWorkingDir() . '/show.wav', Configuration::media_base . '/daily/' . $show_data['intShowID'] . '.mp3', Configuration::media_base . '/daily/' . $show_data['intShowID'] . '.oga', array(
+        $arrRunningOrder = mkarray(json_decode($running_order));
+
+        foreach ($arrRunningOrder as $timestamp => $entry) {
+            if (! is_int($entry)) {
+                $arrRunningOrder_final[(string) $timestamp] = $entry;
+            } else {
+                $arrRunningOrder_final[(string) $timestamp] = $track[$entry];
+            }
+        }
+
+        $coverart = curl_get($show_data['qrcode']);
+
+        make_output(Configuration::getWorkingDir() . '/show.wav', Configuration::getWorkingDir() . '/show.', array(
             'Title' => $show_data['strShowName'],
             'Artist' => 'CCHits.net',
-            'AlbumArt' => curl_get($show_data['qrcode'])
-        ));*/
+            'AlbumArt' => $coverart[0],
+            'RunningOrder' => $arrRunningOrder_final
+        ));
+
+        unlink($coverart);
     }
 }
 ?></pre>

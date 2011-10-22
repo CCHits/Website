@@ -72,7 +72,7 @@ class ShowObject extends GenericObject
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
                 $this->strShowUrl = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl;
-                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits Dot Net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
+                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
                     $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
@@ -90,7 +90,7 @@ class ShowObject extends GenericObject
                     $this->strShowName .= ' ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Top Tracks Show');
                     $this->strShowName .= ' for ';
                     $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
+                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits');
                     $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
                     $this->strShowNameSpoken .= ' for ';
                     $this->strShowNameSpoken .= date("F", strtotime(UI::getLongDate($this->intShowUrl) . '-01'));
@@ -101,7 +101,7 @@ class ShowObject extends GenericObject
                     $this->strShowName .= ' ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                     $this->strShowName .= ' for ';
                     $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
+                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits');
                     $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Daily Show Name', 'Daily Exposure Show');
                     $this->strShowNameSpoken .= ' for ';
                     $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
@@ -112,7 +112,7 @@ class ShowObject extends GenericObject
                     $this->strShowName .= ' ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                     $this->strShowName .= ' for ';
                     $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits dot Net');
+                    $this->strShowNameSpoken = 'The ' . ConfigBroker::getConfig('Spoken Site Name', 'Cee Cee Hits');
                     $this->strShowNameSpoken .= ' ' . ConfigBroker::getConfig('Spoken Weekly Show Name', 'Weekly Review Show');
                     $this->strShowNameSpoken .= ' for ';
                     $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
