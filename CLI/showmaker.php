@@ -29,7 +29,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $out = fopen(Configuration::getWorkingDir() . '/intro.sable', 'w');
         fwrite($out, $intro);
         fclose($out);
-        $outro = "$pre_sable\r\nThat was <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strTrackNameSounds']} <BREAK LEVEL=\"SMALL\" /> by <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strArtistNameSounds']} <BREAK LEVEL=\"MEDIUM\" /> It was a {$show_data['arrTracks'][1]['pronouncable_enumTrackLicense']} licensed track. Remember, you can vote for this track by visiting {$show_data['strShowUrlSpoken']} <BREAK LEVEL=\"MEDIUM\" /> Your vote will decide whether it makes it into the best-of-the-week <BREAK LEVEL=\"SMALL\" /> weekly show which is available from cee-cee-hits dot net slash weekly <BREAK LEVEL=\"LARGE\" />The theme is an exerpt from Gee Em Zed By Scott Alt-ham <BREAK LEVEL=\"SMALL\" />for details, please visit Cee-Cee-Hits dot net slash theme$post_sable";
+        $outro = "$pre_sable\r\nThat was <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strTrackNameSounds']} <BREAK LEVEL=\"SMALL\" /> by <BREAK LEVEL=\"SMALL\" /> {$show_data['arrTracks'][1]['strArtistNameSounds']} <BREAK LEVEL=\"MEDIUM\" /> It was a {$show_data['arrTracks'][1]['pronouncable_enumTrackLicense']} licensed track. Remember, you can vote for this track by visiting {$show_data['strShowUrlSpoken']} <BREAK LEVEL=\"MEDIUM\" /> Your vote will decide whether it makes it into the best-of-the-week <BREAK LEVEL=\"SMALL\" /> weekly show which is available from cee-cee-hits dot net slash weekly <BREAK LEVEL=\"LARGE\" />The theem is an exerpt from Gee Em Zed By Scott Alt-him <BREAK LEVEL=\"SMALL\" />for details, please visit Cee-Cee-Hits dot net slash theem$post_sable";
         $out = fopen(Configuration::getWorkingDir() . '/outro.sable', 'w');
         fwrite($out, $outro);
         fclose($out);
@@ -87,7 +87,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             'AlbumArt' => $coverart,
             'RunningOrder' => $arrRunningOrder_final
         ));
-
+        if ($coverart != '') {
+            debug_unlink($coverart);
+        }
     }
 }
 ?></pre>

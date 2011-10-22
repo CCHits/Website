@@ -589,7 +589,7 @@ class UI
     function get_enumTrackLicensePronouncable($license = '')
     {
         $cc = "Creative Commons";
-        $by = "By Attribution";
+        $by = "By At-trib-ution";
         $sa = "Share Ae-like";
         $nc = "Non Commercial";
         $nd = "No Der-i-vat-ives";

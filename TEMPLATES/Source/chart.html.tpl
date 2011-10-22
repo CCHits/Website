@@ -17,6 +17,8 @@
 				<thead>
 					<tr>
 						<th>Position</th>
+						<th>Movement</th>
+						<th>60 Days Movement</th>
 						<th>Track</th>
 						<th>Status</th>
 					</tr>

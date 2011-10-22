@@ -44,6 +44,9 @@ try {
             case 'monthly':
                 $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseMonthly', '/monthly') . "/";
                 break;
+            case 'shows':
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseShows', '/shows') . "/";
+                break;
             default:
                 UI::sendHttpResponse(404);
             }
