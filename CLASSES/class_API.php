@@ -344,7 +344,6 @@ class API
                     } else {
                         $this->result_array = array('daily_show' => $temp);
                     }
-                    $this->result_array = array('daily_show' => $temp);
                     if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
                         $temp = ShowBroker::getInternalShowByDate('weekly', $date);
                         if ($temp == false) {

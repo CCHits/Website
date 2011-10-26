@@ -3,23 +3,43 @@
 /**
  * TODO: Merge library.php into an appropriate class
  */
-function make_sable($input, $output, $remove_sources = true) {
-    if (file_exists($input)) {
-        $cmd = 'text2wave -o "' . Configuration::getWorkingDir() . '/tmp.wav' . '" "' . $input . '"';
+function finalize($show_root) {
+    // TODO: Write this
+}
+
+function random_select($array) {
+    if (! is_array($array) or count($array) == 0) {
+        return false;
+    }
+    return $array[rand(0, count($array) -1)];
+}
+
+function make_sable($text, $output) {
+    $out = fopen($output . '.sable', 'w');
+    if ($out == false) {
+        fclose($out);
+        return false;
+    }
+    if (! fwrite($out, $text)) {
+        fclose($out);
+        return false;
+    }
+    fclose($out);
+    if (file_exists($output . '.sable')) {
+        $cmd = 'text2wave -o "' . Configuration::getWorkingDir() . '/tmp.wav' . '" "' . $output . '.sable' . '"';
         if (debug_command($cmd) != 0) {
             if (file_exists($output)) {
                 debug_unlink($output);
             }
             return false;
         }
-        if ($remove_sources == true) {
-            debug_unlink($input);
-        }
+        debug_unlink($output . '.sable');
         if (make_wav(Configuration::getWorkingDir() . '/tmp.wav', $output)) {
             debug_unlink(Configuration::getWorkingDir() . '/tmp.wav');
             return true;
         } else {
             debug_unlink(Configuration::getWorkingDir() . '/tmp.wav');
+            debug_unlink($output);
             return false;
         }
     } else {
@@ -36,6 +56,26 @@ function make_silence($duration, $output) {
         return false;
     }
     return true;
+}
+
+function track_trim_silence($input) {
+    $cmd = 'sox "' . $input . '" "' . $input . '.trim.wav" silence 1 0.1 1% reverse';
+    if (debug_command($cmd) != 0) {
+        if (file_exists($input . '.trim.wav')) {
+            debug_unlink($input . '.trim.wav');
+        }
+        return false;
+    } else {
+        $cmd = 'sox "' . $input . '.trim.wav" "' . $input . '" silence 1 0.1 1% reverse';
+        if (debug_command($cmd) != 0) {
+            if (file_exists($input . '.trim.wav')) {
+                debug_unlink($input . '.trim.wav');
+            }
+            return false;
+        }
+        debug_unlink($input . '.trim.wav');
+        return true;
+    }
 }
 
 function track_concatenate($first, $second, $output, $remove_sources = true) {
@@ -60,7 +100,7 @@ function track_merge($first, $second, $output, $remove_sources = true) {
     if (file_exists($first) and file_exists($second)) {
         $cmd = 'sox -q -m -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
         if (debug_command($cmd) != 0) {
-            if (file_exist($output)) {
+            if (file_exists($output)) {
                 debug_unlink($output);
             }
             return false;
@@ -78,7 +118,7 @@ function track_reverse($in, $out, $remove_sources = true) {
     if (file_exists($in)) {
         $cmd = 'sox -q "' . $in . '" "' . $out . '" reverse';
         if (debug_command($cmd) != 0) {
-            if (file_exist($out)) {
+            if (file_exists($out)) {
                 debug_unlink($out);
             }
             return false;
@@ -134,12 +174,15 @@ function json_add($original, $key, $value, $cumulative = false) {
 
 function mkarray($json) {
     $array = (array) $json;
+    $new_array = array();
     foreach($array as $array_key => $array_item) {
         if (is_object($array_item)) {
-            $array[(string) $array_key] = mkarray($array_item);
+            $new_array[(string) $array_key] = mkarray($array_item);
+        } else {
+            $new_array[(string) $array_key] = $array_item;
         }
     }
-    return $array;
+    return $new_array;
 }
 
 function make_output($input, $output_root, $arrMetadata) {
@@ -195,10 +238,10 @@ function make_output_oga($input, $output, $arrMetadata) {
         $content = '';
         if (isset($arrMetadata['AlbumArt']) and $arrMetadata != false) {
             $in = fopen($arrMetadata['AlbumArt'], "r");
-            $content .= "METADATA_BLOCK_PICTURE=";
             $imgbinary = fread($in, filesize($arrMetadata['AlbumArt']));
             fclose($in);
-            $content .= base64_encode($imgbinary) . "\r\n";
+            $content .= "METADATA_BLOCK_PICTURE=" . base64_encode($imgbinary) . "\r\n";
+            $content .= "COVERART=" . base64_encode($imgbinary) . "\r\n";
         }
         $out = fopen(Configuration::getWorkingDir() . '/oga_comments', 'w');
         fwrite($out, $content);
@@ -259,7 +302,7 @@ function make_output_m4a($input, $output_root, $suffix, $arrMetadata) {
     $DEBUG = true;
     $output = $output_root . $suffix;
     if (file_exists($input)) {
-        $cmd = 'ffmpeg -i "' . $input . '" "' . $output . '"';
+        $cmd = 'ffmpeg -y -i "' . $input . '" -ac 2 -ar 44100 -ab 128k -sample_fmt s16 "' . $output . '"';
         if (debug_command($cmd) != 0) {
             if (file_exists($output)) {
                 debug_unlink($output);
@@ -347,7 +390,7 @@ function debug_command($cmd, $return_string_anyway = false, $max_acceptable_exit
     if(isset($GLOBALS['DEBUG']) and $GLOBALS['DEBUG']) {
         echo "$cmd\r\n";
     }
-    exec($cmd, $result, $exit_code);
+    exec($cmd .' 2>&1', $result, $exit_code);
     $content = '';
     if (count($result) > 0) {
         foreach ($result as $line) {
@@ -372,12 +415,11 @@ function debug_command($cmd, $return_string_anyway = false, $max_acceptable_exit
 }
 
 function download_file($url) {
-    echo "Downloading file: $url\r\n";
     $get = curl_get($url);
     if($get[1]['http_code'] == 200) {
         return $get[0];
     } else {
-        echo "Download failed. Error code: " . $get[1]['http_code'] . "\r\n";
+        echo "Downloading file: $url\r\nDownload failed. Error code: " . $get[1]['http_code'] . "\r\n";
         debug_unlink($get[0]);
         return false;
     }
@@ -476,4 +518,127 @@ function curl_post($url, $arrPost) {
     $state = true;
   }
   return array($state, $result, $response);
+}
+
+/**
+* Returns the Path and query values for this script
+*
+* @return array[0] URI
+* @return array[1] Query values
+*/
+function getPath()
+{
+    if ( ! isset($_SERVER['REQUEST_METHOD'])) {
+        if (preg_match('/\/(.*)$/', $GLOBALS['argv'][0]) == 0) {
+            $filename = trim(`pwd`) . '/' . $GLOBALS['argv'][0];
+        } else {
+            $filename = $GLOBALS['argv'][0];
+        }
+        $uri = 'file://' . $filename;
+        if (isset($data[0])) {
+            unset($data[0]);
+        }
+        $data = $GLOBALS['argv'];
+    } else {
+        $uri = "http";
+        if (isset($_SERVER['HTTPS'])) {
+            $uri .= 's';
+        }
+        $uri .= '://' . $_SERVER['SERVER_NAME'];
+        if ((isset($_SERVER['HTTPS']) and $_SERVER['SERVER_PORT'] != 443) or ( ! isset($_SERVER['HTTPS']) and $_SERVER['SERVER_PORT'] != 80)) {
+            $uri .= ':' . $_SERVER['SERVER_PORT'];
+        }
+        $uri .= $_SERVER['REQUEST_URI'];
+        switch(strtolower($_SERVER['REQUEST_METHOD'])) {
+            case 'get':
+                $data = $_GET;
+                break;
+            case 'post':
+                $data = $_POST;
+                if (isset($_FILES) and is_array($_FILES)) {
+                    $data['_FILES'] = $_FILES;
+                }
+                break;
+            case 'put':
+                parse_str(file_get_contents('php://input'), $_PUT);
+                $data = $_PUT;
+                break;
+            case 'delete':
+            case 'head':
+                $data = $_REQUEST;
+        }
+    }
+    return array($uri, $data);
+}
+
+/**
+ * Returns the URI for this script
+ *
+ * @return array URI
+ */
+function getUri()
+{
+    list($uri, $data) = getPath();
+    $arrUrl = parse_url($uri);
+    $arrUrl['full'] = $uri;
+    $match = preg_match('/^([^\?]+)/', $arrUrl['full'], $matches);
+    if ($match > 0) {
+        $arrUrl['no_params'] = $matches[1];
+    } else {
+        $arrUrl['no_params'] = $arrUrl['full'];
+    }
+    $arrUrl['parameters'] = $data;
+    if (substr($arrUrl['path'], -1) == '/') {
+        $arrUrl['path'] = substr($arrUrl['path'], 0, -1);
+    }
+    $match = preg_match('/\/(.*)/', $arrUrl['path'], $matches);
+    if ($match > 0) {
+        $arrUrl['path'] = $matches[1];
+    }
+    $arrUrl['site_path'] = '';
+    $arrUrl['router_path'] = $arrUrl['path'];
+    if (isset($_SERVER['SCRIPT_NAME']) and isset($_SERVER['REQUEST_METHOD'])) {
+        $path_elements = str_split($arrUrl['path']);
+        $match = preg_match('%/(.*)$%', $_SERVER['SCRIPT_NAME'], $matches);
+        $script_elements = str_split($matches[1]);
+        $char = 0;
+        while (isset($path_elements[$char]) and $path_elements[$char] == $script_elements[$char]) {
+            $char++;
+        }
+        $arrUrl['site_path'] = substr($arrUrl['path'], 0, $char);
+        $arrUrl['router_path'] = substr($arrUrl['path'], $char);
+    }
+    $arrUrl['path_items'] = explode('/', $arrUrl['router_path']);
+    $arrLastUrlItem = explode('.', $arrUrl['path_items'][count($arrUrl['path_items'])-1]);
+    if (count($arrLastUrlItem) > 1) {
+        $arrUrl['path_items'][count($arrUrl['path_items'])-1] = '';
+        foreach ($arrLastUrlItem as $key=>$UrlItem) {
+            if ($key + 1 == count($arrLastUrlItem)) {
+                $arrUrl['format'] = $UrlItem;
+            } else {
+                if ($arrUrl['path_items'][count($arrUrl['path_items'])-1] != '') {
+                    $arrUrl['path_items'][count($arrUrl['path_items'])-1] .= '.';
+                }
+                $arrUrl['path_items'][count($arrUrl['path_items'])-1] .= $UrlItem;
+            }
+        }
+    } else {
+        $arrUrl['format'] = '';
+    }
+    $arrUrl['basePath'] = "{$arrUrl['scheme']}://";
+    if (isset($arrUrl['host'])) {
+        $arrUrl['basePath'] .= $arrUrl['host'];
+    }
+    if (isset($arrUrl['port']) and $arrUrl['port'] != '') {
+        $arrUrl['basePath'] .= ':' . $arrUrl['port'];
+    }
+    if (isset($arrUrl['site_path']) and $arrUrl['site_path'] != '') {
+        $arrUrl['basePath'] .= '/' . $arrUrl['site_path'];
+    }
+    $arrUrl['basePath'] .=  '/';
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+        // Remember, this isn't guaranteed to be accurate
+        $arrUrl['ua'] = $_SERVER['HTTP_USER_AGENT'];
+    }
+    return $arrUrl;
 }

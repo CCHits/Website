@@ -42,6 +42,11 @@
 				</li>
 		    </ul>
 		</div>
+		<div class="GetInvolved">
+			<a name="getinvolved"></a>
+			<h3>Get Involved</h3>
+			<p>If you want to get involved, please contact <a href="mailto:show@cchits.net">show@cchits.net</a> to talk about submitting tracks, creating shows and generally doing more with CCHits.net</p>
+		</div>
 		<div class="FAQItem">
 			<a name="source"></a>
 			<h3>Source</h3>
