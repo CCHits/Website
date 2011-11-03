@@ -71,16 +71,16 @@ class ShowObject extends GenericObject
 
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
-                $this->strShowUrl = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/' . $this->enumShowType . "/" . $this->intShowUrl;
+                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
                 $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
-                    $this->strShowFileMP3 = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
-                    $this->strShowFileOGA = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
                 }
                 if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
-                    $this->strShowFileM4A = ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
             if ($this->strShowName == "") {
@@ -232,8 +232,8 @@ class ShowObject extends GenericObject
         $return['strShowNameSpoken'] = $this->strShowNameSpoken;
         $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
         $return['strSiteNameSpoken'] = ConfigBroker::getConfig("Spoken Site Name", "Cee Cee Hits dot net");
-        $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseShow', '/shows') . '/' . $this->intShowID);
-        $return['shorturl'] = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/s/' . UI::setLongNumber($this->intShowID);
+        $return['qrcode'] = UI::InsertQRCode('/show/' . $this->intShowID);
+        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/s/' . UI::setLongNumber($this->intShowID);
         return $return;
     }
 

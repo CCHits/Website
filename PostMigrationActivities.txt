@@ -1,9 +1,12 @@
 Post Import Activities
 ----------------------
 
-INSERT INTO showtracks SELECT shows.intShowID, 1, tracks.intTrackID FROM shows, tracks WHERE tracks.datDailyShow=shows.intShowUrl AND shows.enumShowType='daily' ORDER BY intShowID
+SQL Queries
+======================
 
-ALTER TABLE `users` ADD `strEMail` TEXT NOT NULL AFTER `strOpenID` 
+INSERT INTO showtracks SELECT shows.intShowID, 1, tracks.intTrackID FROM shows, tracks WHERE tracks.datDailyShow=shows.intShowUrl AND shows.enumShowType='daily' ORDER BY intShowID;
+
+ALTER TABLE `users` ADD `strEMail` TEXT NOT NULL AFTER `strOpenID`;
 
 CREATE TABLE `processing` (
 `intProcessingID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -20,3 +23,15 @@ CREATE TABLE `processing` (
 `fileName` TEXT NOT NULL ,
 `intUserID` INT NOT NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+TRUNCATE `config`;
+
+INSERT INTO `config` (`key`, `value`) VALUES ('fileBase', '');
+INSERT INTO `config` (`key`, `value`) VALUES ('baseURL', '');
+INSERT INTO `config` (`key`, `value`) VALUES ('Soundcloud API', '');
+
+
+File Movements
+=======================
+mv /path/to/media/tracks /path/to/media/track
+mv /path/to/media/shows /path/to/media/show

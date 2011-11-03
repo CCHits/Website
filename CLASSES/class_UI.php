@@ -933,9 +933,9 @@ class UI
     {
         $arrUri = UI::getUri();
         $basePath = $arrUri['basePath'];
-        $fileURL = ConfigBroker::getConfig("baseURL", "http://cchits.net") . $file;
+        $fileURL = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . $file;
         $imageURL = $arrUri['basePath'] . 'media' . $file . '.png';
-        $fileName = ConfigBroker::getConfig("fileBase", '/var/www/media') . $file . '.png';
+        $fileName = ConfigBroker::getConfig('fileBase', '/var/www/media') . $file . '.png';
         if (! file_exists($fileName)) {
             $handler = self::getHandler();
             if ($handler->arrLibs == null) {

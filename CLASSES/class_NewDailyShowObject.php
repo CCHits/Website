@@ -37,7 +37,31 @@ class NewDailyShowObject extends NewInternalShowObject
     public function __construct($intShowUrl = 0)
     {
         $db = Database::getConnection();
-        $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID IS NULL ORDER BY RAND() LIMIT 0,1 ";
+        $sql = "SELECT tracks.intArtistID, tracks.timeLength FROM tracks, shows, showtracks WHERE showtracks.intShowID=shows.intShowID AND showtracks.intTrackID=tracks.intTrackID AND shows.enumShowType = ? ORDER BY shows.intShowUrl DESC LIMIT 0,14";
+        $query = $db->prepare($sql);
+        $query->execute(array('daily'));
+        $history = $query->fetch(PDO::FETCH_ASSOC);
+        $strQry = '';
+        $arrArtists = array();
+        $arrArtistIDs = array();
+        $boolLongTrack = false;
+        foreach ($history as $history_item) {
+            if (! isset($arrArtistIDs[$history_item['intArtistID']])) {
+                $strQry .= ' AND intArtistID != ?';
+                $arrArtists[] = $history_item['intArtistID'];
+                $arrArtistIDs[$history_item['intArtistID']] = true;
+            }
+            $minute = intval(date('i', strtotime($history_item['timeLength']))) + (intval(date('G', strtotime($history_item['timeLength']))) * 60);
+            if ($minute > 8) {
+                $boolLongTrack = true;
+            }
+        }
+
+        $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID IS NULL ";
+        if ($boolLongTrack) {
+            $sql .= " AND timeLength < '00:08:00'";
+        }
+        $sql .= $strQry . " ORDER BY RAND() LIMIT 0,1 ";
         $query = $db->prepare($sql);
         $query->execute(array());
         $track = $query->fetch(PDO::FETCH_ASSOC);

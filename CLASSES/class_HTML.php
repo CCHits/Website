@@ -150,14 +150,12 @@ class HTML
             case 'daily':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
                     $this->format = 'mp3.rss';
-                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
                     $this->format = 'oga.rss';
-                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     $this->format = 'm4a.rss';
+                }
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 }
@@ -166,14 +164,12 @@ class HTML
             case 'weekly':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
                     $this->format = 'mp3.rss';
-                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
                     $this->format = 'oga.rss';
-                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     $this->format = 'm4a.rss';
+                }
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 }
@@ -182,14 +178,12 @@ class HTML
             case 'monthly':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
                     $this->format = 'mp3.rss';
-                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
                 } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
                     $this->format = 'oga.rss';
-                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
                 } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     $this->format = 'm4a.rss';
+                }
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
                 }
@@ -987,6 +981,8 @@ class HTML
             $this->result['ShowDaily'] = ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
             $this->result['ShowWeekly'] = ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
             $this->result['ShowMonthly'] = ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
+            $this->result['contactName'] = ConfigBroker::getConfig('Contact Name', 'CCHits.net Show Admin');
+            $this->result['contactEmail'] = ConfigBroker::getConfig('Contact EMail', 'show@cchits.net');
             header('Content-Type:text/html; charset=UTF-8');
             return true;
         case 'rss':

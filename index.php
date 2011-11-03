@@ -31,21 +31,14 @@ try {
         switch($arrUri['path_items'][0]) {
         case 'media':
             switch($arrUri['path_items'][1]) {
-            case 'track':
-            case 'tracks':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseTrack', '/tracks') . "/";
+            case 'track': // MP3/OGA/M4A Audio, PNG Images
+            case 'show': // PNG Images
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $arrUri['path_items'][1] . '/';
                 break;
             case 'daily':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseDaily', '/daily') . "/";
-                break;
             case 'weekly':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseWeekly', '/weekly') . "/";
-                break;
             case 'monthly':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseMonthly', '/monthly') . "/";
-                break;
-            case 'shows':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . ConfigBroker::getConfig('fileBaseShows', '/shows') . "/";
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/show/' . $arrUri['path_items'][1] . '.';
                 break;
             default:
                 UI::sendHttpResponse(404);

@@ -104,7 +104,7 @@ class ConfigBroker
         $config = self::getAllConfig();
         if ($config == false) {
             return $strDefault;
-        } elseif (is_array($config) and isset($config[$strKey])) {
+        } elseif (is_array($config) and isset($config[$strKey]) and $config[$strKey] != '') {
             return $config[$strKey][0];
         } else {
             return $strDefault;
@@ -124,7 +124,7 @@ class ConfigBroker
         $config = self::getAllAppConfig();
         if ($config == false) {
             return $strDefault;
-        } elseif (is_array($config) and isset($config[$strKey])) {
+        } elseif (is_array($config) and isset($config[$strKey]) and $config[$strKey] != '') {
             return $config[$strKey];
         } else {
             return $strDefault;

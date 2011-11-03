@@ -176,7 +176,7 @@ class TrackObject extends GenericObject
         $return['long_enumTrackLicense'] = UI::get_enumTrackLicenseFull($this->enumTrackLicense);
         $return['pronouncable_enumTrackLicense'] = UI::get_enumTrackLicensePronouncable($this->enumTrackLicense);
         $return['dtsAdded'] = date("Y-m-d", strtotime($this->dtsAdded));
-        $return['qrcode'] = UI::InsertQRCode(ConfigBroker::getConfig('fileBaseTrack', '/tracks') . '/' . $this->intTrackID);
+        $return['qrcode'] = UI::InsertQRCode('/track/' . $this->intTrackID);
         if (isset($this->arrChartData[1])) {
             if ($this->arrChartData[0]['intPositionID'] > $this->arrChartData[1]['intPositionID']) {
                 $return['strPositionYesterday'] = 'down';
@@ -240,7 +240,7 @@ class TrackObject extends GenericObject
             }
             $return['shows'][0] = array(
             	'strShowName' => "Non-show votes",
-                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . ConfigBroker::getConfig('fileBaseTrack', '/track') . '/' . $this->intTrackID,
+                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . '/track/' . $this->intTrackID,
                 'enumShowType' => 'none'
             );
             $showtracks = ShowTrackBroker::getShowTracksByTrackID($this->intTrackID);
@@ -273,7 +273,7 @@ class TrackObject extends GenericObject
         if ($this->intTrend > 0) {
             $return['intTrend'] = $this->intTrend;
         }
-        $return['shorturl'] = ConfigBroker::getConfig("Base URL", "http://cchits.net") . '/t/' . UI::setLongNumber($this->intTrackID);
+        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/t/' . UI::setLongNumber($this->intTrackID);
         return $return;
     }
 
@@ -453,7 +453,7 @@ class TrackObject extends GenericObject
     function set_fileSource($fileSource = "")
     {
         $format = GeneralFunctions::getFileFormat($fileSource);
-        $newfilename = ConfigBroker::getConfig("fileBase", "/var/www/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->intTrackID . '.' . $format;
+        $newfilename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
         if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '' and rename($fileSource, $newfilename)) {
             $this->fileSource = $newfilename;
             $this->arrChanges[] = 'fileSource';
@@ -670,7 +670,7 @@ class TrackObject extends GenericObject
      */
     function get_fileUrl()
     {
-        return ConfigBroker::getConfig("Base Media URL", "http://cchits.net/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
+        return ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/track/' . $this->fileSource;
     }
     /**
      * Local File Location
@@ -679,7 +679,7 @@ class TrackObject extends GenericObject
      */
     function get_localFileSource()
     {
-        return ConfigBroker::getConfig("fileBase", "/var/www/media") . ConfigBroker::getConfig("fileBaseTrack", "/tracks") . '/' . $this->fileSource;
+        return ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->fileSource;
     }
 
     /**

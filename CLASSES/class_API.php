@@ -336,34 +336,40 @@ class API
                     }
                     $temp = new ChartObject($date);
                     $temp = ShowBroker::getInternalShowByDate('daily', $date);
-                    if ($temp == false) {
+                    if ($temp == false and ! isset($arrUri['parameters']['historic'])) {
                         $temp = new NewDailyShowObject($date);
                     }
-                    if ($this->format == 'shell') {
-                        $this->result_list = array('daily_show' => $temp->get_intShowID());
-                    } else {
-                        $this->result_array = array('daily_show' => $temp);
+                    if ($temp != false) {
+                        if ($this->format == 'shell') {
+                            $this->result_list = array('daily_show' => $temp->get_intShowID());
+                        } else {
+                            $this->result_array = array('daily_show' => $temp);
+                        }
                     }
                     if (7 == date('N', strtotime(UI::getLongDate($date) . ' 12:00:00'))) {
                         $temp = ShowBroker::getInternalShowByDate('weekly', $date);
-                        if ($temp == false) {
+                        if ($temp == false  and ! isset($arrUri['parameters']['historic'])) {
                             $temp = new NewWeeklyShowObject($date);
                         }
-                        if ($this->format == 'shell') {
-                            $this->result_list['weekly_show'] = $temp->get_intShowID();
-                        } else {
-                            $this->result_array['weekly_show'] = $temp;
+                        if ($temp != false) {
+                            if ($this->format == 'shell') {
+                                $this->result_list['weekly_show'] = $temp->get_intShowID();
+                            } else {
+                                $this->result_array['weekly_show'] = $temp;
+                            }
                         }
                     }
                     if (1 == date('d', strtotime(UI::getLongDate($date) . ' 12:00:00 + 1 day'))) {
                         $temp = ShowBroker::getInternalShowByDate('monthly', substr($date, 0, 6));
-                        if ($temp == false) {
+                        if ($temp == false and ! isset($arrUri['parameters']['historic'])) {
                             $temp = new NewMonthlyShowObject(substr($date, 0, 6));
                         }
-                        if ($this->format == 'shell') {
-                            $this->result_list['monthly_show'] = $temp->get_intShowID();
-                        } else {
-                            $this->result_array['monthly_show'] = $temp;
+                        if ($temp != false) {
+                            if ($this->format == 'shell') {
+                                $this->result_list['monthly_show'] = $temp->get_intShowID();
+                            } else {
+                                $this->result_array['monthly_show'] = $temp;
+                            }
                         }
                     }
                     $this->render();

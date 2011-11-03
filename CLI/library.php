@@ -1,20 +1,60 @@
 <?php
+/**
+* CCHits.net is a website designed to promote Creative Commons Music,
+* the artists who produce it and anyone or anywhere that plays it.
+* These files are used to generate the site.
+*
+* PHP version 5
+*
+* @category Default
+* @package  CCHitsClass
+* @author   Jon Spriggs <jon@sprig.gs>
+* @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+* @link     http://cchits.net Actual web service
+* @link     http://code.cchits.net Developers Web Site
+* @link     http://gitorious.net/cchits-net Version Control Service
+*/
 
 /**
- * TODO: Merge library.php into an appropriate class
+ * This function will, eventually, do things like:
+ * - post to StatusNet that the show is generated
+ * - update the system with the generated files
+ * - add timestamps and hashes
+ *
+ * @param string $show_root The base path to the files we'll be uploading.
+ *
+ * @return void
  */
-function finalize($show_root) {
+function finalize($show_root)
+{
     // TODO: Write this
 }
 
-function random_select($array) {
+/**
+ * Provided an array of strings is provided, select one at random and return it
+ *
+ * @param array $array An array of strings to return.
+ *
+ * @return string|boolean One string selected at random, or nothing at all.
+ */
+function randomTextSelect($array)
+{
     if (! is_array($array) or count($array) == 0) {
         return false;
     }
     return $array[rand(0, count($array) -1)];
 }
 
-function make_sable($text, $output) {
+/**
+ * Given a sable based XML string, encode it to WAV
+ *
+ * @param xml  $text   The XML string to encode
+ * @param path $output The filename to write the generated WAV file to.
+ *
+ * @return boolean Success or failure
+ */
+function convertSableXmlToWav($text, $output)
+{
     $out = fopen($output . '.sable', 'w');
     if ($out == false) {
         fclose($out);
@@ -27,19 +67,19 @@ function make_sable($text, $output) {
     fclose($out);
     if (file_exists($output . '.sable')) {
         $cmd = 'text2wave -o "' . Configuration::getWorkingDir() . '/tmp.wav' . '" "' . $output . '.sable' . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
-        debug_unlink($output . '.sable');
-        if (make_wav(Configuration::getWorkingDir() . '/tmp.wav', $output)) {
-            debug_unlink(Configuration::getWorkingDir() . '/tmp.wav');
+        debugUnlink($output . '.sable');
+        if (convertToWavOutput(Configuration::getWorkingDir() . '/tmp.wav', $output)) {
+            debugUnlink(Configuration::getWorkingDir() . '/tmp.wav');
             return true;
         } else {
-            debug_unlink(Configuration::getWorkingDir() . '/tmp.wav');
-            debug_unlink($output);
+            debugUnlink(Configuration::getWorkingDir() . '/tmp.wav');
+            debugUnlink($output);
             return false;
         }
     } else {
@@ -47,48 +87,76 @@ function make_sable($text, $output) {
     }
 }
 
-function make_silence($duration, $output) {
+/**
+ * This function creates a period of silence.
+ *
+ * @param float $duration The duration to create of silence
+ * @param path  $output   The output path to place the file
+ *
+ * @return boolean Success or Failure
+ */
+function generateSilenceWav($duration, $output)
+{
     $cmd = 'sox -q -n -r 44100 -c 2 "' . $output . '" trim 0.0 ' . $duration;
-    if (debug_command($cmd) != 0) {
+    if (debugExec($cmd) != 0) {
         if (file_exists($output)) {
-            debug_unlink($output);
+            debugUnlink($output);
         }
         return false;
     }
     return true;
 }
 
-function track_trim_silence($input) {
+/**
+ * This function invokes SoX to remove silence at each end of the track
+ *
+ * @param path $input The file to process and return
+ *
+ * @return boolean Success or Failure
+ */
+function trackTrimSilence($input)
+{
     $cmd = 'sox "' . $input . '" "' . $input . '.trim.wav" silence 1 0.1 1% reverse';
-    if (debug_command($cmd) != 0) {
+    if (debugExec($cmd) != 0) {
         if (file_exists($input . '.trim.wav')) {
-            debug_unlink($input . '.trim.wav');
+            debugUnlink($input . '.trim.wav');
         }
         return false;
     } else {
         $cmd = 'sox "' . $input . '.trim.wav" "' . $input . '" silence 1 0.1 1% reverse';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($input . '.trim.wav')) {
-                debug_unlink($input . '.trim.wav');
+                debugUnlink($input . '.trim.wav');
             }
             return false;
         }
-        debug_unlink($input . '.trim.wav');
+        debugUnlink($input . '.trim.wav');
         return true;
     }
 }
 
-function track_concatenate($first, $second, $output, $remove_sources = true) {
+/**
+ * This function invokes SoX to place the first track before the second track and return that as the output file, optionally, removing the sources once it's done
+ *
+ * @param path    $first          The first file to use
+ * @param path    $second         The second file to use
+ * @param path    $output         The output location of the combined two files
+ * @param boolean $remove_sources Whether the script should remove the two source files.
+ *
+ * @return boolean Success or Failure
+ */
+function concatenateTracks($first, $second, $output, $remove_sources = true)
+{
     if (file_exists($first) and file_exists($second)) {
         $cmd = 'sox -q --combine concatenate -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         } elseif ($remove_sources == true) {
-            debug_unlink($first);
-            debug_unlink($second);
+            debugUnlink($first);
+            debugUnlink($second);
         }
         return true;
     } else {
@@ -96,17 +164,28 @@ function track_concatenate($first, $second, $output, $remove_sources = true) {
     }
 }
 
-function track_merge($first, $second, $output, $remove_sources = true) {
+/**
+* This function invokes SoX to merge the first and second tracks and return that as the output file, optionally, removing the sources once it's done
+*
+* @param path    $first          The first file to use
+* @param path    $second         The second file to use
+* @param path    $output         The output location of the combined two files
+* @param boolean $remove_sources Whether the script should remove the two source files.
+*
+* @return boolean Success or Failure
+*/
+function overlayAudioTracks($first, $second, $output, $remove_sources = true)
+{
     if (file_exists($first) and file_exists($second)) {
         $cmd = 'sox -q -m -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         } elseif ($remove_sources == true) {
-            debug_unlink($first);
-            debug_unlink($second);
+            debugUnlink($first);
+            debugUnlink($second);
         }
         return true;
     } else {
@@ -114,16 +193,26 @@ function track_merge($first, $second, $output, $remove_sources = true) {
     }
 }
 
-function track_reverse($in, $out, $remove_sources = true) {
-    if (file_exists($in)) {
-        $cmd = 'sox -q "' . $in . '" "' . $out . '" reverse';
-        if (debug_command($cmd) != 0) {
-            if (file_exists($out)) {
-                debug_unlink($out);
+/**
+ * Invoke SoX to reverse the content of an audio file, removing the source if requested
+ *
+ * @param path    $input          The file to reverse
+ * @param path    $output         The output location of that reversing action
+ * @param boolean $remove_sources Whether the script should remove the two source files.
+ *
+ * @return boolean Success or Failure
+ */
+function reverseTrackAudio($input, $output, $remove_sources = true)
+{
+    if (file_exists($input)) {
+        $cmd = 'sox -q "' . $input . '" "' . $output . '" reverse';
+        if (debugExec($cmd) != 0) {
+            if (file_exists($output)) {
+                debugUnlink($output);
             }
             return false;
         } elseif ($remove_sources == true) {
-            debug_unlink($in);
+            debugUnlink($input);
         }
         return true;
     } else {
@@ -131,10 +220,18 @@ function track_reverse($in, $out, $remove_sources = true) {
     }
 }
 
-function track_length($input) {
+/**
+ * Return the length of the input file
+ *
+ * @param path $input The file to process
+ *
+ * @return float Number of seconds the file runs for
+ */
+function getTrackLength($input)
+{
     if (file_exists($input)) {
         $cmd = 'soxi -D "' . $input . '"';
-        list($exit, $content) = debug_command($cmd, true);
+        list($exit, $content) = debugExec($cmd, true);
         if ($exit != 0) {
             return 0;
         }
@@ -144,13 +241,21 @@ function track_length($input) {
     }
 }
 
-
-function make_wav($input, $output) {
+/**
+ * Ensure a consistent output of files
+ *
+ * @param path $input  The source file
+ * @param path $output The destination file
+ *
+ * @return boolean Success or Failure
+ */
+function convertToWavOutput($input, $output)
+{
     if (file_exists($input)) {
         $cmd = 'sox -q "' . $input . '" -r 44100 -c 2 "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
@@ -160,8 +265,19 @@ function make_wav($input, $output) {
     }
 }
 
-function json_add($original, $key, $value, $cumulative = false) {
-    $array = mkarray(json_decode($original));
+/**
+ * Process a JSON encoded array of data as a string into an array, add a new key and value, return the result, as a JSON encoded array
+ *
+ * @param json    $original   The original string to be used as the source
+ * @param mixed   $key        The key value to use with the new entry in the array (potentially cumulative)
+ * @param mixed   $value      The value to use with the new entry.
+ * @param boolean $cumulative If this is set to true, increment the key value by the last value to be used.
+ *
+ * @return json The json encoded string representing the array.
+ */
+function addEntryToJsonArray($original, $key, $value, $cumulative = false)
+{
+    $array = makeArrayFromObjects(json_decode($original));
     if ($cumulative == true && count($array) > 0) {
         foreach ($array as $array_key=>$array_value) {
             // A dirty way to get the last key=>value pair
@@ -172,12 +288,20 @@ function json_add($original, $key, $value, $cumulative = false) {
     return json_encode($array);
 }
 
-function mkarray($json) {
-    $array = (array) $json;
+/**
+ * Itterate through a passed array, converting any objects into arrays
+ *
+ * @param array|object $src_array An array or object containing data we need as an array
+ *
+ * @return array The resulting array
+ */
+function makeArrayFromObjects($src_array)
+{
+    $array = (array) $src_array;
     $new_array = array();
-    foreach($array as $array_key => $array_item) {
+    foreach ($array as $array_key => $array_item) {
         if (is_object($array_item)) {
-            $new_array[(string) $array_key] = mkarray($array_item);
+            $new_array[(string) $array_key] = makeArrayFromObjects($array_item);
         } else {
             $new_array[(string) $array_key] = $array_item;
         }
@@ -185,21 +309,41 @@ function mkarray($json) {
     return $new_array;
 }
 
-function make_output($input, $output_root, $arrMetadata) {
+/**
+ * A wrapper function for the next few functions
+ *
+ * @param path  $input       The filename we want to process into various output formats
+ * @param path  $output_root The filename root (i.e. /path/to/track. rather than /path/to/track.mp3) we want to use for the further functions
+ * @param array $arrMetadata The metadata to apply to the new file formats
+ *
+ * @return void
+ */
+function generateOutputTracks($input, $output_root, $arrMetadata)
+{
     // eyeD3 doesn't support "MP3 Extended" (AKA MP3 with Chapter Support), but it has been requested.
-    make_output_mp3($input, $output_root . 'mp3', $arrMetadata);
+    generateOutputTracksAsMp3($input, $output_root . 'mp3', $arrMetadata);
     // Chapter information thanks to this page: http://code.google.com/p/subler/wiki/ChapterTextFormat
-    make_output_oga($input, $output_root . 'oga', $arrMetadata);
-    make_output_m4a($input, $output_root, 'm4a', $arrMetadata);
-//    debug_unlink($input);
+    generateOutputTracksAsOga($input, $output_root . 'oga', $arrMetadata);
+    generateOutputTracksAsM4a($input, $output_root, 'm4a', $arrMetadata);
+    debugUnlink($input);
 }
 
-function make_output_mp3($input, $output, $arrMetadata) {
+/**
+* Given a source filename, generate an MP3 from that source.
+*
+* @param path  $input       The filename we want to process
+* @param path  $output      The resulting filename
+* @param array $arrMetadata The metadata to apply to the new file format
+*
+* @return boolean Success or failure
+*/
+function generateOutputTracksAsMp3($input, $output, $arrMetadata)
+{
     if (file_exists($input)) {
         $cmd = 'sox "' . $input . '" -t mp3 "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
@@ -214,9 +358,9 @@ function make_output_mp3($input, $output, $arrMetadata) {
             $cmd .= ' --add-image "' . $arrMetadata['AlbumArt'] . '":FRONT_COVER';
         }
         $cmd .= ' "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
@@ -226,17 +370,27 @@ function make_output_mp3($input, $output, $arrMetadata) {
     }
 }
 
-function make_output_oga($input, $output, $arrMetadata) {
+/**
+ * Given a source filename, generate an OGA file from that source.
+ *
+ * @param path  $input       The filename we want to process
+ * @param path  $output      The resulting filename
+ * @param array $arrMetadata The metadata to apply to the new file format
+ *
+ * @return boolean Success or failure
+ */
+function generateOutputTracksAsOga($input, $output, $arrMetadata)
+{
     if (file_exists($input)) {
         $cmd = 'sox "' . $input . '" -t ogg "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
         $content = '';
-        if (isset($arrMetadata['AlbumArt']) and $arrMetadata != false) {
+        if (isset($arrMetadata['AlbumArt']) and $arrMetadata['AlbumArt'] != false) {
             $in = fopen($arrMetadata['AlbumArt'], "r");
             $imgbinary = fread($in, filesize($arrMetadata['AlbumArt']));
             fclose($in);
@@ -247,9 +401,9 @@ function make_output_oga($input, $output, $arrMetadata) {
         fwrite($out, $content);
         fclose($out);
         $cmd = 'vorbiscomment --write "' . $output . '" --raw --commentfile "' . Configuration::getWorkingDir() . '/oga_comments' . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
@@ -285,35 +439,55 @@ function make_output_oga($input, $output, $arrMetadata) {
         fwrite($out, $content);
         fclose($out);
         $cmd = 'vorbiscomment --append "' . $output . '" --raw --commentfile "' . Configuration::getWorkingDir() . '/oga_comments' . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
-        debug_unlink(Configuration::getWorkingDir() . '/oga_comments');
+        debugUnlink(Configuration::getWorkingDir() . '/oga_comments');
         return true;
     } else {
         return false;
     }
 }
 
-function make_output_m4a($input, $output_root, $suffix, $arrMetadata) {
+/**
+* Given a source filename, generate an MP3 from that source.
+*
+* @param path  $input       The filename we want to process
+* @param path  $output      The resulting filename
+* @param array $arrMetadata The metadata to apply to the new file format
+*
+* @return boolean Success or failure
+*/
+/**
+ * Given a source filename, generate an M4A from that source.
+ *
+ * @param path   $input       The filename we want to process
+ * @param path   $output_root The filename root (i.e. /path/to/track. rather than /path/to/track.m4a) we want to use for the further functions
+ * @param string $suffix      The filename type to apply to the end of this file type (probably m4a)
+ * @param array  $arrMetadata The metadata to apply to the new file format
+ *
+ * @return boolean Success or failure
+ */
+function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
+{
     $DEBUG = true;
     $output = $output_root . $suffix;
     if (file_exists($input)) {
         $cmd = 'ffmpeg -y -i "' . $input . '" -ac 2 -ar 44100 -ab 128k -sample_fmt s16 "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
         $cmd = 'mp4tags -r AabcCdDeEgGHiIjlLmMnNoOpPBRsStTxXwyzZ "' . $output . '"';
         exec($cmd, $result, $exit_code);
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
@@ -325,17 +499,17 @@ function make_output_m4a($input, $output_root, $suffix, $arrMetadata) {
             $cmd .= ' -s "' . $arrMetadata['Title'] . '"';
         }
         $cmd .= ' "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
         if (isset($arrMetadata['AlbumArt']) and $arrMetadata['AlbumArt'] != '') {
             $cmd = 'mp4art --add "' . $arrMetadata['AlbumArt'] . '" ' . $output;
-            if (debug_command($cmd) != 0) {
+            if (debugExec($cmd) != 0) {
                 if (file_exists($output)) {
-                    debug_unlink($output);
+                    debugUnlink($output);
                 }
                 return false;
             }
@@ -360,17 +534,17 @@ function make_output_m4a($input, $output_root, $suffix, $arrMetadata) {
         fwrite($out, $content);
         fclose($out);
         $cmd = 'mp4chaps --import "' . $output . '"';
-        if (debug_command($cmd) != 0) {
+        if (debugExec($cmd) != 0) {
             if (file_exists($output_root . 'chapters.txt')) {
-                debug_unlink($output_root . 'chapters.txt');
+                debugUnlink($output_root . 'chapters.txt');
             }
             if (file_exists($output)) {
-                debug_unlink($output);
+                debugUnlink($output);
             }
             return false;
         }
         if (file_exists($output_root . 'chapters.txt')) {
-            debug_unlink($output_root . 'chapters.txt');
+            debugUnlink($output_root . 'chapters.txt');
         }
         return true;
     } else {
@@ -378,7 +552,15 @@ function make_output_m4a($input, $output_root, $suffix, $arrMetadata) {
     }
 }
 
-function debug_unlink($file) {
+/**
+ * Delete a file, provided debugging isn't enabled.
+ *
+ * @param path $file The file to delete
+ *
+ * @return void
+ */
+function debugUnlink($file)
+{
     if (!isset($GLOBALS['DEBUG']) or ! $GLOBALS['DEBUG']) {
         unlink($file);
     } else {
@@ -386,8 +568,18 @@ function debug_unlink($file) {
     }
 }
 
-function debug_command($cmd, $return_string_anyway = false, $max_acceptable_exit = 0) {
-    if(isset($GLOBALS['DEBUG']) and $GLOBALS['DEBUG']) {
+/**
+ * Run a command, and return errors if they are generated. If debugging is enabled, return all generated content anyway.
+ *
+ * @param string  $cmd                  The command to run
+ * @param boolean $return_string_anyway If this is set to true, return both the string and the exit status, instead of just the exit status
+ * @param integer $max_acceptable_exit  What is considered a successful exit code from this command
+ *
+ * @return integer|array Either the exit code and the string of data, or just the exit code
+ */
+function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0)
+{
+    if (isset($GLOBALS['DEBUG']) and $GLOBALS['DEBUG']) {
         echo "$cmd\r\n";
     }
     exec($cmd .' 2>&1', $result, $exit_code);
@@ -414,110 +606,127 @@ function debug_command($cmd, $return_string_anyway = false, $max_acceptable_exit
     }
 }
 
-function download_file($url) {
-    $get = curl_get($url);
-    if($get[1]['http_code'] == 200) {
+/**
+ * A wrapper to the curlGetResource function for files
+ *
+ * @param string $url The URL to retrieve
+ *
+ * @return string|boolean Either the path to the file, or false if the download failed.
+ */
+function downloadFile($url)
+{
+    $get = curlGetResource($url);
+    if ($get[1]['http_code'] == 200) {
         return $get[0];
     } else {
         echo "Downloading file: $url\r\nDownload failed. Error code: " . $get[1]['http_code'] . "\r\n";
-        debug_unlink($get[0]);
+        debugUnlink($get[0]);
         return false;
     }
 }
 
-/*==================================
-Get url content and response headers (given a url, follows all redirections on it and returned content and response headers of final url)
+/**
+ * Get url content and response headers (given a url, follows all redirections on it and returned content and response headers of final url)
+ *
+ * @param string  $url             The URL to retrieve
+ * @param integer $as_file         Retrieve this as a file, or just a string of data
+ * @param integer $javascript_loop If you have been redirected as part of a JavaScript redirection, follow it.
+ * @param integer $timeout         The timeout until we stop trying to retrieve this file, this pass.
+ * @param integer $max_loop        The maximum number of redirections to follow
+ *
+ * @return array Content or filename, then the response values from curl
+ */
+function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10)
+{
+    $url = str_replace("&amp;", "&", urldecode(trim($url)));
+    $cookie = tempnam(sys_get_temp_dir(), "CURLCOOKIE_");
+    $ch = curl_init();
 
-This function derived from code at http://www.php.net/manual/en/ref.curl.php#93163
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_ENCODING, "");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
-@return  array[0]    content or filename to process
-         array[1]    array of response headers
-==================================*/
-function curl_get($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10) {
-  $url = str_replace("&amp;", "&", urldecode(trim($url)));
-  $cookie = tempnam(sys_get_temp_dir(), "CURLCOOKIE_");
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-  curl_setopt($ch, CURLOPT_ENCODING, "");
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-  curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-  curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-
-  if($as_file == 1) {
-    $tmpfname = tempnam(sys_get_temp_dir(), "UP_");
-    $out = fopen($tmpfname, 'wb');
-    if($out == FALSE) {
-      die("Unable to write to $tmpfname\r\n");
-    }
-    curl_setopt($ch, CURLOPT_FILE, $out);
-  }
-
-  $content = curl_exec($ch);
-  $response = curl_getinfo($ch);
-  if(curl_errno($ch)) {
-    $error_text = curl_error($ch);
-    $error = 1;
-  }
-  curl_close($ch);
-  if($as_file == 1) {
-    fclose($out);
-  }
-
-  if(isset($error)) {
-      return false;
-  }
-
-  if($response['http_code'] == 301 or $response['http_code'] == 302) {
-    if($headers = get_headers($response['url'])) {
-      foreach($headers as $value) {
-        if(substr(strtolower($value), 0, 9) == "location:") {
-          echo "Redirecting to " . trim(substr($value, 9, strlen($value))) . "\r\n";
-          return get_url(trim(substr($value, 9, strlen($value))), $as_file);
+    if ($as_file == 1) {
+        $tmpfname = tempnam(sys_get_temp_dir(), "UP_");
+        $out = fopen($tmpfname, 'wb');
+        if ($out == FALSE) {
+            die("Unable to write to $tmpfname\r\n");
         }
-      }
+        curl_setopt($ch, CURLOPT_FILE, $out);
     }
-  }
 
-  if($as_file == 0 and
-     (preg_match("/>[[:space:]]+window\.location\.replace\('(.*)'\)/i", $content, $value) or
-      preg_match("/>[[:space:]]+window\.location\=\"(.*)\"/i", $content, $value)) and
-     $javascript_loop < $max_loop) {
-    return get_url($value[1], 0, $javascript_loop+1, $max_loop);
-  } else {
-    if($as_file == 1) {
-      return array($tmpfname, $response);
-    } else {
-      return array($content, $response);
+    $content = curl_exec($ch);
+    $response = curl_getinfo($ch);
+    if (curl_errno($ch)) {
+        $error_text = curl_error($ch);
+        $error = 1;
     }
-  }
+    curl_close($ch);
+    if ($as_file == 1) {
+        fclose($out);
+    }
+
+    if (isset($error)) {
+        return false;
+    }
+
+    if ($response['http_code'] == 301 or $response['http_code'] == 302) {
+        if ($headers = get_headers($response['url'])) {
+            foreach ($headers as $value) {
+                if (substr(strtolower($value), 0, 9) == "location:") {
+                    return get_url(trim(substr($value, 9, strlen($value))), $as_file);
+                }
+            }
+        }
+    }
+
+    if ($as_file == 0 and (preg_match("/>[[:space:]]+window\.location\.replace\('(.*)'\)/i", $content, $value) or preg_match("/>[[:space:]]+window\.location\=\"(.*)\"/i", $content, $value)) and $javascript_loop < $max_loop) {
+        return get_url($value[1], 0, $javascript_loop+1, $max_loop);
+    } else {
+        if ($as_file == 1) {
+            return array($tmpfname, $response);
+        } else {
+            return array($content, $response);
+        }
+    }
 }
 
-function curl_post($url, $arrPost) {
-  $timeout = 10000;
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL,$url);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-  curl_setopt($ch, CURLOPT_ENCODING, "");
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-  curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-  curl_setopt($ch, CURLOPT_POST,1);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $arrPost);
-  $result = curl_exec($ch);
-  $response = curl_getinfo($ch);
-  curl_close($ch);
-  if($response['http_code'] != 200) {
-    $state = false;
-  } else {
-    $state = true;
-  }
-  return array($state, $result, $response);
+/**
+ * POST to a web server.
+ *
+ * @param string $url     The URL to call
+ * @param array  $arrPost The variables to pass to the Web Server
+ *
+ * @return array Response from the web server
+ */
+function curlPostRequest($url, $arrPost)
+{
+    $timeout = 10000;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_ENCODING, "");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_POST,1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $arrPost);
+    $result = curl_exec($ch);
+    $response = curl_getinfo($ch);
+    curl_close($ch);
+    if ($response['http_code'] != 200) {
+        $state = false;
+    } else {
+        $state = true;
+    }
+    return array($state, $result, $response);
 }
 
 /**
@@ -550,22 +759,22 @@ function getPath()
         }
         $uri .= $_SERVER['REQUEST_URI'];
         switch(strtolower($_SERVER['REQUEST_METHOD'])) {
-            case 'get':
-                $data = $_GET;
-                break;
-            case 'post':
-                $data = $_POST;
-                if (isset($_FILES) and is_array($_FILES)) {
-                    $data['_FILES'] = $_FILES;
-                }
-                break;
-            case 'put':
-                parse_str(file_get_contents('php://input'), $_PUT);
-                $data = $_PUT;
-                break;
-            case 'delete':
-            case 'head':
-                $data = $_REQUEST;
+        case 'get':
+            $data = $_GET;
+            break;
+        case 'post':
+            $data = $_POST;
+            if (isset($_FILES) and is_array($_FILES)) {
+                $data['_FILES'] = $_FILES;
+            }
+            break;
+        case 'put':
+            parse_str(file_get_contents('php://input'), $_PUT);
+            $data = $_PUT;
+            break;
+        case 'delete':
+        case 'head':
+            $data = $_REQUEST;
         }
     }
     return array($uri, $data);
