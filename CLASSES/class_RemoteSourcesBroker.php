@@ -93,42 +93,44 @@ class RemoteSourcesBroker
     public function newTrackRouter($url = '')
     {
         if ($url != '') {
-            $trackbroker = TrackBroker::getTrackByExactUrl($url);
-            if ($trackbroker != false) {
-                return $trackbroker;
-            }
             if (preg_match('/^http[s]*:\/\/([^\/]+)/', $url, $matches) > 0) {
-                switch (strtolower($matches[1])) {
-                case 'alonetone.com':
-                case 'www.alonetone.com':
-                    return new RemoteSourcesAlonetone($url);
-                case 'ccmixter.org':
-                case 'www.ccmixter.org':
-                    return new RemoteSourcesCCMixter($url);
-                case 'freemusicarchive.org':
-                case 'www.freemusicarchive.org':
-                    return new RemoteSourcesFMA($url);
-                case 'jamendo.com':
-                case 'www.jamendo.com':
-                    return new RemoteSourcesJamendo($url);
-                case 'macjams.com':
-                case 'www.macjams.com':
-                    return new RemoteSourcesMacjams($url);
-                case 'riffworld.com':
-                case 'www.riffworld.com':
-                    return new RemoteSourcesRiffworld($url);
-                case 'sectionz.com':
-                case 'www.sectionz.com':
-                    return new RemoteSourcesSectionz($url);
-                case 'soundcloud.com':
-                case 'www.soundcloud.com':
-                    return new RemoteSourcesSoundcloud($url);
-                case 'sutros.com':
-                case 'www.sutros.com':
-                    return new RemoteSourcesSutros($url);
-                case 'vimeo.com':
-                case 'www.vimeo.com':
-                    return new RemoteSourcesVimeo($url);
+                try {
+                    switch (strtolower($matches[1])) {
+                    case 'alonetone.com':
+                    case 'www.alonetone.com':
+                        $remoteSource = new RemoteSourcesAlonetone($url);
+                    case 'ccmixter.org':
+                    case 'www.ccmixter.org':
+                        $remoteSource = new RemoteSourcesCCMixter($url);
+                    case 'freemusicarchive.org':
+                    case 'www.freemusicarchive.org':
+                        $remoteSource = new RemoteSourcesFMA($url);
+                    case 'jamendo.com':
+                    case 'www.jamendo.com':
+                        $remoteSource = new RemoteSourcesJamendo($url);
+                    case 'macjams.com':
+                    case 'www.macjams.com':
+                        $remoteSource = new RemoteSourcesMacjams($url);
+                    case 'riffworld.com':
+                    case 'www.riffworld.com':
+                        $remoteSource = new RemoteSourcesRiffworld($url);
+                    case 'sectionz.com':
+                    case 'www.sectionz.com':
+                        $remoteSource = new RemoteSourcesSectionz($url);
+                    case 'soundcloud.com':
+                    case 'www.soundcloud.com':
+                        $remoteSource = new RemoteSourcesSoundcloud($url);
+                    case 'sutros.com':
+                    case 'www.sutros.com':
+                        $remoteSource = new RemoteSourcesSutros($url);
+                    case 'vimeo.com':
+                    case 'www.vimeo.com':
+                        $remoteSource = new RemoteSourcesVimeo($url);
+                    }
+                    return $remoteSource;
+                } catch (Exception $e) {
+                    $remoteSource->set_exception($e);
+                    return $remoteSource;
                 }
             } else {
                 $remoteSource = new RemoteSources();

@@ -265,6 +265,9 @@ class API
                     $this->result = array('intTrackID'=>$objSource->get_intTrackID());
                 } catch (Exception $e) {
                     $this->result = array('Incomplete'=>$e->getMessage());
+                    if (isset($objSource->duplicateTracks)) {
+                        $this->result['DuplicateTracks'] = $objSource->duplicateTracks;
+                    }
                 }
                 $this->render();
                 break;

@@ -37,7 +37,7 @@ class RemoteSourcesSutros extends RemoteSources
     */
     function __construct($src)
     {
-        if (preg_match('/http[s]*:\/\/sutros.com\/songs\/[^\/]+', $src, $match) == 0) {
+        if (preg_match('/http[s]*:\/\/sutros.com\/songs\/[^\/]+/', $src, $match) == 0) {
             return 406;
         }
         $file_contents = file_get_contents($src);

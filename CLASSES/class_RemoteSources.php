@@ -39,7 +39,11 @@ class RemoteSources extends GenericObject
     	'isNSFW'=>true,
     	'fileUrl'=>true,
     	'fileName'=>true,
-    	'intUserID'=>true
+    	'intUserID'=>true,
+    	'fileMD5'=>true,
+    	'forceMD5Duplicate'=>true,
+    	'forceTrackNameDuplicate'=>true,
+    	'forceTrackUrlDuplicate'=>true
     );
     protected $strDBTable = "processing";
     protected $strDBKeyCol = "intProcessingID";
@@ -59,6 +63,12 @@ class RemoteSources extends GenericObject
     protected $fileUrl = "";
     protected $fileName = "";
     protected $intUserID = 0;
+    protected $fileMD5 = '';
+    protected $forceMD5Duplicate = false;
+    protected $forceTrackNameDuplicate = false;
+    protected $forceTrackUrlDuplicate = false;
+    protected $duplicateTracks = false;
+    protected $e = false;
 
     /**
      * Remove this RemoteSource from the Processing table.
@@ -108,6 +118,7 @@ class RemoteSources extends GenericObject
             $return['arrArtistUrl'] = $this->getJson($this->strArtistUrl);
         }
         $return['enumTrackLicense'] = LicenseSelector::validateLicense($this->enumTrackLicense);
+        $return['duplicateTracks'] = $this->duplicateTracks;
         return $return;
     }
 
@@ -119,6 +130,31 @@ class RemoteSources extends GenericObject
     public function amendRecord()
     {
         $arrUri = UI::getUri();
+        if (isset($arrUri['parameters']['_FILES'])) {
+            $upload_dir = dirname(__FILE__) . '/../uploads/';
+            foreach ($arrUri['parameters']['_FILES'] as $variable => $data) {
+                foreach ($arrUri['parameters']['_FILES'][$variable]['error'] as $key => $error) {
+                    if ($error === UPLOAD_ERR_OK) {
+                        $tmp_name = $arrUri['parameters']['_FILES'][$variable]['tmp_name'][$key];
+                        $file = GeneralFunctions::getTempFileName($upload_dir);
+                        if ( ! move_uploaded_file($tmp_name, $file)) {
+                            error_log("Unable to move the uploaded file to $file.");
+                            die("Error handling uploaded file. Please speak to an administrator.");
+                        }
+                    }
+                }
+            }
+            $this->set_fileName($file);
+        }
+        if (isset($arrUri['parameters']['forceTrackNameDuplicate'])) {
+            $this->set_forceTrackNameDuplicate($arrUri['parameters']['forceTrackNameDuplicate']);
+        }
+        if (isset($arrUri['parameters']['forceTrackUrlDuplicate'])) {
+            $this->set_forceTrackUrlDuplicate($arrUri['parameters']['forceTrackUrlDuplicate']);
+        }
+        if (isset($arrUri['parameters']['forceMD5Duplicate'])) {
+            $this->set_forceMD5Duplicate($arrUri['parameters']['forceMD5Duplicate']);
+        }
         if (isset($arrUri['parameters']['strTrackName_preferred']) and $arrUri['parameters']['strTrackName_preferred'] != '') {
             $this->setpreferred_strTrackName($arrUri['parameters']['strTrackName_preferred']);
         }
@@ -175,6 +211,28 @@ class RemoteSources extends GenericObject
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    /**
+     * To pass an exception back, without throwing it... add it to this class and return that
+     *
+     * @param Exception $e
+     *
+     * @return void
+     */
+    function set_exception($e)
+    {
+        $this->e = $e;
+    }
+
+    /**
+     * Return the exception pushed into the stack before
+     *
+     * @return Exception
+     */
+    function get_exception()
+    {
+        return $this->e;
     }
 
     /**
@@ -527,6 +585,66 @@ class RemoteSources extends GenericObject
     }
 
     /**
+     * This function sets the MD5 hash of the file.
+     *
+     * @param md5 $md5hash The hash calculated on download
+     *
+     * @return void
+     */
+    protected function set_fileMD5($md5hash)
+    {
+        if ($this->fileMD5 != $md5hash) {
+            $this->fileMD5 = $md5hash;
+            $arrChanges['fileMD5'] = true;
+        }
+    }
+
+    /**
+     * Force the processing value to ignore duplicate MD5 Sums
+     *
+     * @param boolean $boolean True or Force
+     *
+     * @return void
+     */
+    function set_forceMD5Duplicate($boolean)
+    {
+        if ($this->forceMD5Duplicate != $boolean) {
+            $this->forceMD5Duplicate = $boolean;
+            $arrChanges['forceMD5Duplicate'] = true;
+        }
+    }
+
+    /**
+    * Force the processing value to ignore duplicate track names
+    *
+    * @param boolean $boolean True or Force
+    *
+    * @return void
+    */
+    function set_forceTrackNameDuplicate($boolean)
+    {
+        if ($this->forceTrackNameDuplicate != $boolean) {
+            $this->forceTrackNameDuplicate = $boolean;
+            $arrChanges['forceTrackNameDuplicate'] = true;
+        }
+    }
+
+    /**
+    * Force the processing value to ignore duplicate track URLs
+    *
+    * @param boolean $boolean True or Force
+    *
+    * @return void
+    */
+    function set_forceTrackUrlDuplicate($boolean)
+    {
+        if ($this->forceTrackUrlDuplicate != $boolean) {
+            $this->forceTrackUrlDuplicate = $boolean;
+            $arrChanges['forceTrackUrlDuplicate'] = true;
+        }
+    }
+
+    /**
      * This function creates an entry in the "processing" table, unless there is sufficient detail to process it.
      *
      * @return array(integer, boolean) The Track or ProcessingID and the state.
@@ -604,9 +722,19 @@ class RemoteSources extends GenericObject
     {
         if (!isset($this->strTrackName) or '' == trim($this->strTrackName)) {
             throw new RemoteSource_NoTrackName();
+        } else {
+            $this->duplicateTracks = TrackBroker::getTrackByExactName($this->strTrackName);
+            if ($this->duplicateTracks and $this->forceTrackNameDuplicate != true) {
+                throw new RemoteSource_DuplicateTrackName();
+            }
         }
         if (!isset($this->strTrackUrl) or '' == trim($this->strTrackUrl)) {
             throw new RemoteSource_NoTrackUrl();
+        } else {
+            $this->duplicateTracks = TrackBroker::getTrackByExactUrl($this->strTrackUrl);
+            if ($this->duplicateTracks and $this->forceTrackUrlDuplicate != true) {
+                throw new RemoteSource_DuplicateTrackUrl();
+            }
         }
         if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense) or 'None Selected' == LicenseSelector::validateLicense($this->enumTrackLicense)) {
             throw new RemoteSource_NoTrackLicense();
@@ -625,6 +753,13 @@ class RemoteSources extends GenericObject
                 if ($get[1]['http_code'] == 200) {
                     if (GeneralFunctions::getFileFormat($get[0]) != '') {
                         $this->set_fileName($get[0]);
+                    }
+                    $md5 = md5_file($get[0]);
+                    $this->set_fileMD5($md5);
+                    parent::write();
+                    $this->duplicateTracks = TrackBroker::getTrackByMD5($md5);
+                    if ($this->duplicateTracks and $this->forceMD5Duplicate != true) {
+                        throw new RemoteSource_DuplicateMD5();
                     }
                     $this->write();
                 } else {
@@ -657,7 +792,7 @@ class RemoteSources extends GenericObject
     protected function curl_get($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10)
     {
         $url = str_replace("&amp;", "&", urldecode(trim($url)));
-        $cookie = $this->getTempFileName(dirname(__FILE__) . '/../cookie/');
+        $cookie = GeneralFunctions::getTempFileName(dirname(__FILE__) . '/../cookie/');
         if ($cookie == false) {
             error_log("Wasn't able to create a temporary file for the cookie jar");
             return false;
@@ -675,7 +810,7 @@ class RemoteSources extends GenericObject
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
         if ($as_file == 1) {
-            $tempname = $this->getTempFileName();
+            $tempname = GeneralFunctions::getTempFileName();
             if ($tempname == false) {
                 error_log("Wasn't able to create a temporary file for uploading");
                 unlink($cookie);
@@ -922,4 +1057,54 @@ class RemoteSource_InvalidAPICode extends CustomException
 {
     protected $message = "The supplied API code isn't suitable for that resource.";
     protected $code = 244;
+}
+
+/**
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     http://code.cchits.net Developers Web Site
+ * @link     http://gitorious.net/cchits-net Version Control Service
+ */
+class RemoteSource_DuplicateTrackName extends CustomException
+{
+    protected $message = "The supplied track name already exists - please verify this track isn't a duplicate, and then set the ForceDuplicateTrackName flag for this track.";
+    protected $code = 243;
+}
+/**
+* This class handles custom exceptions
+*
+* @category Default
+* @package  Exceptions
+* @author   Jon Spriggs <jon@sprig.gs>
+* @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+* @link     http://cchits.net Actual web service
+* @link     http://code.cchits.net Developers Web Site
+* @link     http://gitorious.net/cchits-net Version Control Service
+*/
+class RemoteSource_DuplicateTrackUrl extends CustomException
+{
+    protected $message = "The supplied track URL already exists - please verify this track isn't a duplicate, and then set the ForceDuplicateTrackUrl flag for this track.";
+    protected $code = 242;
+}
+
+/**
+* This class handles custom exceptions
+*
+* @category Default
+* @package  Exceptions
+* @author   Jon Spriggs <jon@sprig.gs>
+* @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+* @link     http://cchits.net Actual web service
+* @link     http://code.cchits.net Developers Web Site
+* @link     http://gitorious.net/cchits-net Version Control Service
+*/
+class RemoteSource_DuplicateMD5 extends CustomException
+{
+    protected $message = "A track with this exact MD5 sum already exists - please verify this track hasn't already been submitted already, and then set the ForceDuplicateMD5 flag for this track.";
+    protected $code = 241;
 }

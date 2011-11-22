@@ -36,7 +36,7 @@ class RemoteSourcesCCMixter extends RemoteSources
     */
     function __construct($src)
     {
-        if (preg_match('/(^\d+)|http:\/\/ccmixter.org\/files\/[^\/]+/(\d+)/', $src, $match) == 0) {
+        if (preg_match('/(^\d+)|http:\/\/ccmixter.org\/files\/[^\/]+\/(\d+)/', $src, $match) == 0) {
             return 406;
         }
         if ($match[1] == "" and isset($match[2]) and $match[2] != "") {

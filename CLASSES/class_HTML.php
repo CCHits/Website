@@ -359,24 +359,37 @@ class HTML
     protected function addTrack($objTrack = null)
     {
         if ($objTrack == false) {
-            $arrData = RemoteSourcesBroker::newTrackRouter($this->arrUri['parameters']['trackurl']);
+            $trackurl = GeneralFunctions::getValue($this->arrUri['parameters'], 'trackurl', '');
+            $arrData = RemoteSourcesBroker::newTrackRouter($trackurl);
             if (is_object($arrData) and $arrData->get_intTrackID() > 0) {
                 UI::Redirect("admin/track/" . $arrData->get_intTrackID());
             } elseif (is_object($arrData) and $arrData->get_intProcessingID() > 0) {
                 $remotesource = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
                 if ($remotesource->get_intArtistID() == 0) {
-                    $this->result['artists'] = ArtistBroker::getArtistByPartialUrl($remotesource->get_strArtistUrl());
+                    $this->result['artists'] = ArtistBroker::getArtistByPartialUrl($remotesource->get_strArtistUrl(), 0, 10000);
                 } else {
                     $this->result['artists'] = array($remotesource->get_intArtistID() => ArtistBroker::getArtistByID($remotesource->get_intArtistID()));
                 }
+                $this->result['artists'] = merge_array($this->result['artists'], ArtistBroker::getArtistByPartialName($remotesource->get_strArtistName(), 0, 10000));
                 $this->result['track'] = $remotesource->getSelf();
+                if ($remotesource->get_exception() != false) {
+                    $this->result['error'] = $remotesource->get_exception();
+                }
                 UI::SmartyTemplate('trackimporter.html', $this->result);
             } elseif (is_array($arrData) and count($arrData) == 1) {
                 foreach ($arrData as $key=>$value) {
                     // Get the last key/value pair from the array
                 }
                 if ($value == true) {
-                    $this->result['track'] = TrackBroker::getTrackByID($key)->getSelf();
+                    $track = TrackBroker::getTrackByID($key);
+                    if (is_object($track)) {
+                        $this->result['track'] = $track->getSelf();
+                    } elseif (is_array($track)) {
+                        $this->result['track'] = $track[0];
+                    } else {
+                        error_log("Response is : " . print_r($arrData));
+                        UI::Redirect("admin");
+                    }
                     $this->result['postimport'] = true;
                     UI::SmartyTemplate('trackeditor.html', $this->result);
                 } else {
@@ -410,7 +423,7 @@ class HTML
             try {
                 $objTrack->amendRecord();
             } catch (Exception $e) {
-                $this->result['error']=$e;
+                $this->result['error'] = $e;
             }
             $this->result['track'] = $objTrack->getSelf();
             UI::SmartyTemplate('trackimporter.html', $this->result);

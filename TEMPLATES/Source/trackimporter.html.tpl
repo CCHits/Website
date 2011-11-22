@@ -9,8 +9,34 @@
 		<h2>{$Slogan}</h2>
 		<h3>Track Editor</h3>
 		<p>On this page, you will edit a track details before it is downloaded.</p>
+{if $track.duplicateTracks != false}
+		<p>There were suspected duplicate tracks. Please verify none of these are actually duplicated tracks.</p>
+		<ul>
+{foreach from=$track.duplicateTracks item=$duplicate}
+			<li><a href="{$baseURL}track/{$duplicate.intTrackID}">"{$duplicate.strTrackName}" by "{$duplicate.strArtistName}"</a></li>
+{/foreach}
+		</ul>
+{/if}
 {if isset($error)}
 		<p>There was an error.{if $error != ''} The error was: "{$error->getMessage()}"{/if}</p>
+{if $error->getCode() == 243}
+		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+			<input type="hidden" name="forceTrackNameDuplicate" value="true">
+			<input type="submit" value="Force duplicate track names" />
+		</form>
+{/if}
+{if $error->getCode() == 242}
+		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+			<input type="hidden" name="forceTrackUrlDuplicate" value="true">
+			<input type="submit" value="Force duplicate track URLs" />
+		</form>
+{/if}
+{if $error->getCode() == 241}
+		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+			<input type="hidden" name="forceMD5Duplicate" value="true">
+			<input type="submit" value="Force duplicate MD5 hashes" />
+		</form>
+{/if}
 {/if}
 {if isset($errorcode)}
         <p>There was an error in the import. The errorcode is {$errorcode}.</p>

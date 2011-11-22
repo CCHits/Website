@@ -12,6 +12,7 @@
 			AND/OR<br />
 			File: <input type="file" name="file" size="30"><br />
 			<input type="submit" value="Retrieve or Upload a track."></input>
+			<p>Acceptable source domains are: alonetone.com, ccmixter.org, freemusicarchive.org, jamendo.com, macjams.com, riffworld.com, sectionz.com, soundcloud.com, sutros.com, vimeo.com</p>
 		</form>
 		<form method="post" action="{$baseURL}admin/listtracks">
 			<input type="submit" value="Show a list of outstanding unprocessed tracks."></input>

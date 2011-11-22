@@ -21,7 +21,11 @@ CREATE TABLE `processing` (
 `isNSFW` BOOLEAN NOT NULL ,
 `fileUrl` TEXT NOT NULL ,
 `fileName` TEXT NOT NULL ,
-`intUserID` INT NOT NULL
+`intUserID` INT NOT NULL ,
+`fileMD5` VARCHAR(64) NOT NULL ,
+`forceMD5Dupe` TINYINT(1) NOT NULL,
+`forceTrackNameDupe` TINYINT(1) NOT NULL,
+`forceTrackUrlDupe` TINYINT(1) NOT NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 TRUNCATE `config`;

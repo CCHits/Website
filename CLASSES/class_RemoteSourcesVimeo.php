@@ -26,7 +26,7 @@
  * @link     http://code.cchits.net Developers Web Site
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
-class RemoteSourcesAlonetone extends RemoteSources
+class RemoteSourcesVimeo extends RemoteSources
 {
     /**
     * Get all the source data we can pull from the source.
