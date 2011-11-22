@@ -43,8 +43,10 @@ class NewUserObject extends UserObject
     {
         if (strpos($data, "http://") !== false or strpos($data, "https://") !== false) {
             $this->set_strOpenID($data);
+            $this->create();
         } elseif ($data != "") {
             $this->set_sha1Pass($data);
+            $this->create();
         } else {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $cookie_string = $_SERVER['HTTP_X_FORWARDED_FOR'];
