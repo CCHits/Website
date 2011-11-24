@@ -99,35 +99,44 @@ class RemoteSourcesBroker
                     case 'alonetone.com':
                     case 'www.alonetone.com':
                         $remoteSource = new RemoteSourcesAlonetone($url);
+                        return $remoteSource;
                     case 'ccmixter.org':
                     case 'www.ccmixter.org':
                         $remoteSource = new RemoteSourcesCCMixter($url);
+                        return $remoteSource;
                     case 'freemusicarchive.org':
                     case 'www.freemusicarchive.org':
                         $remoteSource = new RemoteSourcesFMA($url);
+                        return $remoteSource;
                     case 'jamendo.com':
                     case 'www.jamendo.com':
                         $remoteSource = new RemoteSourcesJamendo($url);
+                        return $remoteSource;
                     case 'macjams.com':
                     case 'www.macjams.com':
                         $remoteSource = new RemoteSourcesMacjams($url);
+                        return $remoteSource;
                     case 'riffworld.com':
                     case 'www.riffworld.com':
                         $remoteSource = new RemoteSourcesRiffworld($url);
+                        return $remoteSource;
                     case 'sectionz.com':
                     case 'www.sectionz.com':
                         $remoteSource = new RemoteSourcesSectionz($url);
+                        return $remoteSource;
                     case 'soundcloud.com':
                     case 'www.soundcloud.com':
                         $remoteSource = new RemoteSourcesSoundcloud($url);
+                        return $remoteSource;
                     case 'sutros.com':
                     case 'www.sutros.com':
                         $remoteSource = new RemoteSourcesSutros($url);
+                        return $remoteSource;
                     case 'vimeo.com':
                     case 'www.vimeo.com':
                         $remoteSource = new RemoteSourcesVimeo($url);
+                        return $remoteSource;
                     }
-                    return $remoteSource;
                 } catch (Exception $e) {
                     $remoteSource->set_exception($e);
                     return $remoteSource;

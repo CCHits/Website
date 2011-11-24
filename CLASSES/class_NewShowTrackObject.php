@@ -51,6 +51,11 @@ class NewShowTrackObject extends ShowTrackObject
             $sql = "SELECT max(intPartID) FROM showtracks WHERE intShowID = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $intPartID = $query->fetchColumn();
             if ($intPartID == false) {
                 $intPartID = 0;

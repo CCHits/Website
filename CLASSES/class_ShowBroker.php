@@ -234,14 +234,14 @@ class ShowBroker
     ) {
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-            $page = $arrUri['parameters']['page'];
+            $intPage = $arrUri['parameters']['page'];
         } elseif ($intPage == null) {
-            $page = 0;
+            $intPage = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-            $size = $arrUri['parameters']['size'];
+            $intSize = $arrUri['parameters']['size'];
         } elseif ($intSize == null) {
-            $size = 25;
+            $intSize = 25;
         }
 
         $db = Database::getConnection();
@@ -290,14 +290,14 @@ class ShowBroker
     ) {
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-            $page = $arrUri['parameters']['page'];
+            $intPage = $arrUri['parameters']['page'];
         } elseif ($intPage == null) {
-            $page = 0;
+            $intPage = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-            $size = $arrUri['parameters']['size'];
+            $intSize = $arrUri['parameters']['size'];
         } elseif ($intSize == null) {
-            $size = 25;
+            $intSize = 25;
         }
         $db = Database::getConnection();
         try {
@@ -311,10 +311,10 @@ class ShowBroker
             $strShowName = "";
             foreach ($arr as $chrShowName) {
                 if (trim($chrShowName) != '') {
-                    $strShowName .= "[:space:]*$chrShowName";
+                    $strShowName .= "[[:space:]]*$chrShowName";
                 }
             }
-            $query->execute(array(".*{$strShowName}[:space:]*.*"));
+            $query->execute(array(".*{$strShowName}[[:space:]]*.*"));
             $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {

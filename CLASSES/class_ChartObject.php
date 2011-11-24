@@ -44,6 +44,11 @@ class ChartObject
         $sql = "SELECT datChart FROM chart WHERE datChart = ? LIMIT 0, 1";
         $query = $db->prepare($sql);
         $query->execute(array($date));
+        // This section of code, thanks to code example here:
+        // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+        if ($query->errorCode() != 0) {
+            throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+        }
         if ($query->fetch() || 0 + $date < 20000000) {
             return false;
         }
@@ -70,8 +75,19 @@ class ChartObject
         foreach ($db->query($sql) as $data) {
             $counter++;
             $chartsql->execute(array($chartdate, $counter, $data['intTrackID']));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($chartsql->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($chartsql->errorInfo(), true), 1);
+            }
             if ($data['intChartPlace'] != $counter) {
                 $update->execute(array($counter, $data['intTrackID']));
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($update->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($update->errorInfo(), true), 1);
+                }
+
             }
         }
         $sql = "SELECT intTrackID, count(intVoteID) AS intVoteCount
@@ -82,6 +98,11 @@ class ChartObject
         foreach ($db->query($sql) as $data) {
             if ($data['intTrackID'] != '' and $data['intVoteCount'] != '') {
                 $trend->execute(array($trenddate, $data['intTrackID'], $data['intVoteCount']));
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($trend->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
             }
         }
         return true;

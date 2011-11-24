@@ -108,32 +108,23 @@ class GeneralFunctions
      */
     function getFileFormat($filename = '')
     {
-        $soxi = ConfigBroker::getAppConfig('soxi', '/usr/bin/soxi');
-        $exec_command = "$soxi -e \"$filename\"";
-        $exec_data = exec($exec_command, $exec_output, $return);
-        $format = '';
-        switch(trim($exec_output)) {
-        case 'Vorbis':
-            $format = 'oga';
-            break;
-        case 'MPEG audio (layer I, II or III)':
-            $format = 'mp3';
-            break;
-        case 'Signed Integer PCM':
-            $format = 'wav';
-            break;
+        $arrLibs = new ExternalLibraryLoader();
+        $GETID3 = $arrLibs->getVersion("GETID3");
+        if ($GETID3 == false) {
+            error_log("Failed to load Media Handler - No library exists");
+            die("There was an error - please contact an administrator.");
         }
-        if ($format == '' or $format == 'wav') {
-            $file = ConfigBroker::getAppConfig('file', '/usr/bin/file');
-            $exec_command = "$file \"$filename\"";
-            $exec_data = exec($exec_command, $exec_output, $return);
-            if (preg_match("/ AAC, /", $exec_output) > 0) {
-                $format = 'aac';
-            } elseif (preg_match("/ MPEG v4 system, version 2 /", $exec_output) > 0) {
-                $format = 'm4a';
-            }
+        $getid3lib = dirname(__FILE__) . '/../EXTERNALS/GETID3/' . $GETID3 . '/getid3.php';
+        if (file_exists($getid3lib)) {
+            include_once $getid3lib;
+        } else {
+            error_log("Failed to load Media Handler - include file doesn't exist");
+            die("There was an error - please contact an administrator.");
         }
-        return $format;
+        $getID3 = new getID3;
+        $file = $getID3->analyze($filename);
+
+        return GeneralFunctions::getValue($file, 'fileformat', '');
     }
 
     /**
@@ -645,5 +636,24 @@ class GeneralFunctions
             unlink($in);
         }
         return $state;
+    }
+    
+    /**
+     * This function converts an array of strings (typically from the exec function
+     * and returns a string complete with newlines.
+     * 
+     * @param array $array Input values
+     * @return string
+     */
+    function array_to_string($array)
+    {
+        $return = '';
+        foreach ($array as $item) {
+            if ($return != '') {
+                $return .= "\r\n";
+            }
+            $return .= $item;
+        }
+        return $return;
     }
 }

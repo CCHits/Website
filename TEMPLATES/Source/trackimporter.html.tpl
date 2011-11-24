@@ -17,6 +17,65 @@
 {/foreach}
 		</ul>
 {/if}
+{if $track.intArtistID == 0}
+{if count($artists) > 0}
+                <p>Is this previously created artist the creator of this work?</p>
+		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+                        <select name="intArtistID">
+{foreach $artists item=artist}
+                            <option value="{$artist.intArtistID}">"{$artist.strArtistName}" from {$artist.strArtistUrl}</option>
+{/foreach} 
+                        </select>
+			<input type="submit" value="Select this Artist" />
+		</form>
+{else}
+                <p>Do you want to create the artist based on these details?</p>
+                <table>
+                    <tr>
+                        <th>Preferred Artist Name</th>
+                        <th>Variations of Artist Names</th>
+                        <th>Sounding of Artist's Name</th>
+                        <th>Preferred Artist URL</th>
+                        <th>Alternate URLs for the artist</th>
+                    </tr>
+                    <tr>
+                        <td>{$track.strArtistName}</td>
+                        <td>
+{if count($track.arrArtistName) > 1}
+                            <ul>
+{foreach $track.arrArtistName item=Artistname name=artists}
+                                <li>{$Artistname}</li>
+{/foreach}
+                            </ul>
+{else}
+{foreach $track.arrArtistName item=Artistname name=artists}
+                            {$Artistname}
+{/foreach}
+{/if}
+                        </td>
+                        <td>{$track.strArtistNameSounds}</td>
+                        <td>{$track.strArtistUrl}</td>
+                        <td>
+{if count($track.arrArtistUrl) > 1}
+                            <ul>
+{foreach $track.arrArtistUrl item=ArtistUrl}
+                                <li>{$ArtistUrl}</li>
+{/foreach}
+                            </ul>
+{else}
+{foreach $track.arrArtistUrl item=ArtistUrl}
+                            {$ArtistUrl}
+{/foreach}
+{/if}
+                        </td>
+                    </tr>
+                </table>
+		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+                        <input type="hidden" name="action" value="createartist">
+			<input type="submit" value="Create Artist From These Values" />
+		</form>
+{/if}
+{/if}
 {if isset($error)}
 		<p>There was an error.{if $error != ''} The error was: "{$error->getMessage()}"{/if}</p>
 {if $error->getCode() == 243}
@@ -267,6 +326,16 @@
 							</select>
 							<input type="submit" value="Go" />
 						</form>
+					</td>
+				</tr>
+				<tr>
+					<th>File upload
+					</th>
+					<td colspan=3>
+                                                <form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
+                                                    Replace file with new or edited version: <input type="file" name="file" size="30"><br />
+                                                    <input type="submit" value="Go" />
+                                                </form>
 					</td>
 				</tr>
 			</tbody>

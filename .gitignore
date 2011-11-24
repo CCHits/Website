@@ -3,3 +3,7 @@
 /.buildpath
 /.htaccess
 /.settings
+/.phpcs/
+/.externalToolBuilders/
+/nbproject/private/
+/EXTERNALS/GETID3/

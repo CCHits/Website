@@ -364,16 +364,28 @@ class HTML
             if (is_object($arrData) and $arrData->get_intTrackID() > 0) {
                 UI::Redirect("admin/track/" . $arrData->get_intTrackID());
             } elseif (is_object($arrData) and $arrData->get_intProcessingID() > 0) {
-                $remotesource = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
-                if ($remotesource->get_intArtistID() == 0) {
-                    $this->result['artists'] = ArtistBroker::getArtistByPartialUrl($remotesource->get_strArtistUrl(), 0, 10000);
+                $objTrack = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
+                $this->result['track'] = $objTrack->getSelf();
+                if ($objTrack->get_intArtistID() == 0) {
+                    $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
                 } else {
-                    $this->result['artists'] = array($remotesource->get_intArtistID() => ArtistBroker::getArtistByID($remotesource->get_intArtistID()));
+                    $artists = array($objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID()));
                 }
-                $this->result['artists'] = merge_array($this->result['artists'], ArtistBroker::getArtistByPartialName($remotesource->get_strArtistName(), 0, 10000));
-                $this->result['track'] = $remotesource->getSelf();
-                if ($remotesource->get_exception() != false) {
-                    $this->result['error'] = $remotesource->get_exception();
+                if (!is_array($artists)) {
+                    $artists = array();
+                } else {
+                    foreach ($artists as $artist) {
+                        $this->result['artists'][] = $artist->getSelf();
+                    }
+                }
+                $new_artists = ArtistBroker::getArtistByPartialName($this->result['track']['strArtistName'], 0, 10000);
+                if (is_array($new_artists)) {
+                    foreach ($new_artists as $artist) {
+                        $this->result['artists'][] = $artist->getSelf();
+                    }
+                }
+                if ($objTrack->get_exception() != false) {
+                    $this->result['error'] = $objTrack->get_exception();
                 }
                 UI::SmartyTemplate('trackimporter.html', $this->result);
             } elseif (is_array($arrData) and count($arrData) == 1) {
@@ -393,7 +405,29 @@ class HTML
                     $this->result['postimport'] = true;
                     UI::SmartyTemplate('trackeditor.html', $this->result);
                 } else {
-                    $this->result['track'] = RemoteSourcesBroker::getRemoteSourceByID($key)->getSelf();
+                    $objTrack = RemoteSourcesBroker::getRemoteSourceByID($key);
+                    $this->result['track'] = $objTrack->getSelf();
+                    if ($objTrack->get_intArtistID() == 0) {
+                        $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
+                    } else {
+                        $artists = array($objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID()));
+                    }
+                    if (!is_array($artists)) {
+                        $artists = array();
+                    } else {
+                        foreach ($artists as $artist) {
+                            $this->result['artists'][] = $artist->getSelf();
+                        }
+                    }
+                    $new_artists = ArtistBroker::getArtistByPartialName($this->result['track']['strArtistName'], 0, 10000);
+                    if (is_array($new_artists)) {
+                        foreach ($new_artists as $artist) {
+                            $this->result['artists'][] = $artist->getSelf();
+                        }
+                    }
+                    if ($objTrack->get_exception() != false) {
+                        $this->result['error'] = $objTrack->get_exception();
+                    }
                     UI::SmartyTemplate('trackimporter.html', $this->result);
                 }
             } elseif (is_integer($arrData)) {
@@ -426,6 +460,27 @@ class HTML
                 $this->result['error'] = $e;
             }
             $this->result['track'] = $objTrack->getSelf();
+            if ($objTrack->get_intArtistID() == 0) {
+                $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
+            } else {
+                $artists = array($objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID()));
+            }
+            if (!is_array($artists)) {
+                $artists = array();
+            } else {
+                foreach ($artists as $artist) {
+                    $this->result['artists'][] = $artist->getSelf();
+                }
+            }
+            $new_artists = ArtistBroker::getArtistByPartialName($this->result['track']['strArtistName'], 0, 10000);
+            if (is_array($new_artists)) {
+                foreach ($new_artists as $artist) {
+                    $this->result['artists'][] = $artist->getSelf();
+                }
+            }
+            if ($objTrack->get_exception() != false) {
+                $this->result['error'] = $objTrack->get_exception();
+            }
             UI::SmartyTemplate('trackimporter.html', $this->result);
         }
     }

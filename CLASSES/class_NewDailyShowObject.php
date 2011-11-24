@@ -40,6 +40,11 @@ class NewDailyShowObject extends NewInternalShowObject
         $sql = "SELECT tracks.intArtistID, tracks.timeLength FROM tracks, shows, showtracks WHERE showtracks.intShowID=shows.intShowID AND showtracks.intTrackID=tracks.intTrackID AND shows.enumShowType = ? ORDER BY shows.intShowUrl DESC LIMIT 0,14";
         $query = $db->prepare($sql);
         $query->execute(array('daily'));
+        // This section of code, thanks to code example here:
+        // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+        if ($query->errorCode() != 0) {
+            throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+        }
         $history = $query->fetch(PDO::FETCH_ASSOC);
         $strQry = '';
         $arrArtists = array();
@@ -64,6 +69,11 @@ class NewDailyShowObject extends NewInternalShowObject
         $sql .= $strQry . " ORDER BY RAND() LIMIT 0,1 ";
         $query = $db->prepare($sql);
         $query->execute(array());
+        // This section of code, thanks to code example here:
+        // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+        if ($query->errorCode() != 0) {
+            throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+        }
         $track = $query->fetch(PDO::FETCH_ASSOC);
         if ($track != false) {
             $status = parent::__construct($intShowUrl, 'daily');

@@ -52,12 +52,22 @@ class ChangeBroker
                 $sql = "SELECT max(datChart) as max_datChart FROM chart LIMIT 0, 1";
                 $query = $db->prepare($sql);
                 $query->execute();
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $strChangeDate = $query->fetchColumn();
             }
             if ($strPriorDate == '') {
                 $sql = "SELECT datChart FROM chart WHERE datChart < '$strChangeDate' GROUP BY datChart ORDER BY datChart DESC LIMIT 0, 1";
                 $query = $db->prepare($sql);
                 $query->execute();
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $strPriorDate = $query->fetchColumn();
             }
             $return['intChangeDate'] = UI::getShortDate($strChangeDate);
@@ -80,14 +90,34 @@ class ChangeBroker
             }
             $query = $db->prepare($positionsql);
             $query->execute($values1);
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             $query->execute($values2);
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks2 = $query->fetchAll(PDO::FETCH_ASSOC);
             $query = $db->prepare($votessql);
             $query->execute($values3);
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $votes = $query->fetchAll(PDO::FETCH_ASSOC);
             $query = $db->prepare($showsql);
             $query->execute($values3);
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $shows = $query->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($tracks as $todaytrack) {

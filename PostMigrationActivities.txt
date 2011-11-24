@@ -23,9 +23,9 @@ CREATE TABLE `processing` (
 `fileName` TEXT NOT NULL ,
 `intUserID` INT NOT NULL ,
 `fileMD5` VARCHAR(64) NOT NULL ,
-`forceMD5Dupe` TINYINT(1) NOT NULL,
-`forceTrackNameDupe` TINYINT(1) NOT NULL,
-`forceTrackUrlDupe` TINYINT(1) NOT NULL
+`forceMD5Duplicate` TINYINT(1) NOT NULL,
+`forceTrackNameDuplicate` TINYINT(1) NOT NULL,
+`forceTrackUrlDuplicate` TINYINT(1) NOT NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 TRUNCATE `config`;

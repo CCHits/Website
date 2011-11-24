@@ -70,6 +70,11 @@ class NewUserObject extends UserObject
                 $sql = "SELECT * FROM users WHERE strCookieID = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($_SESSION['cookie']));
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $user = $query->fetchObject('UserObject');
                 if ($user == false) {
                     $this->create();
@@ -86,6 +91,7 @@ class NewUserObject extends UserObject
                     $this->strUserName = $user->get_strUserName();
                 }
             } catch(Exception $e) {
+                error_log($e);
                 return false;
             }
         }

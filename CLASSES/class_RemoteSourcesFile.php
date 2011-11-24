@@ -39,14 +39,35 @@ class RemoteSourcesFile extends RemoteSources
         if ( ! file_exists($src)) {
             return 400;
         }
-        $soxi = ConfigBroker::getAppConfig('soxi', '/usr/bin/soxi');
-        $exec_command = "$soxi -a \"$src\"";
-        $exec_data = exec($exec_command, $exec_output, $return);
-        if (preg_match("/^[Tt][Ii][Tt][Ll][Ee]=(.*)/", $return, $arrTrackName) > 0) {
-            $this->set_strTrackName($arrTrackName[1]);
+
+        $arrLibs = new ExternalLibraryLoader();
+        $GETID3 = $arrLibs->getVersion("GETID3");
+        if ($GETID3 == false) {
+            error_log("Failed to load Media Handler - No library exists");
+            die("There was an error - please contact an administrator.");
         }
-        if (preg_match("/^[Aa][Rr][Tt][Ii][Ss][Tt]=(.*)/", $return, $arrArtistName) > 0) {
-            $this->set_strArtistName($arrArtistName[1]);
+        $getid3lib = dirname(__FILE__) . '/../EXTERNALS/GETID3/' . $GETID3 . '/getid3.php';
+        if (file_exists($getid3lib)) {
+            include_once $getid3lib;
+        } else {
+            error_log("Failed to load Media Handler - include file doesn't exist");
+            die("There was an error - please contact an administrator.");
+        }
+        $getID3 = new getID3;
+        $file = $getID3->analyze($filename);
+
+        if (isset($file['tags']['vorbiscomment'])) {
+            $this->set_strTrackName($file['tags']['vorbiscomment']['title']);
+            $this->set_strArtistName($file['tags']['vorbiscomment']['artist']);
+        } elseif (isset($file['tags']['id3v2'])) {
+            $this->set_strTrackName($file['tags']['id3v2']['title']);
+            $this->set_strArtistName($file['tags']['id3v2']['artist']);
+        } elseif (isset($file['tags']['id3v1'])) {
+            $this->set_strTrackName($file['tags']['id3v1']['title']);
+            $this->set_strArtistName($file['tags']['id3v1']['artist']);
+        } elseif (isset($file['tags']['quicktime'])) {
+            $this->set_strTrackName($file['tags']['quicktime']['title']);
+            $this->set_strArtistName($file['tags']['quicktime']['artist']);
         }
         $this->set_fileName($src);
         return $this->create_pull_entry();

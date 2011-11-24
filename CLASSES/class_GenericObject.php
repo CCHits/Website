@@ -95,13 +95,16 @@ class GenericObject
                     $where .= "$keycol = :old$keycol";
                 }
             }
-            foreach ($this->arrChanges as $change) {
+            foreach ($this->arrChanges as $change_key=>$change_value) {
                 if ($sql != '') {
                     $sql .= ", ";
                 }
-                if (isset($this->arrDBItems[$change])) {
-                    $sql .= "$change = :$change";
-                    $values[$change] = $this->$change;
+                if ($change_value == true and isset($this->arrDBItems[$change_key])) {
+                    $sql .= "$change_key = :$change_key";
+                    $values[$change_key] = $this->$change_key;
+                } elseif (isset($this->arrDBItems[$change_value])) {
+                    $sql .= "$change_value = :$change_value";
+                    $values[$change_value] = $this->$change_value;
                 }
             }
             $full_sql = "UPDATE {$this->strDBTable} SET $sql WHERE $where";
@@ -109,6 +112,11 @@ class GenericObject
                 $db = Database::getConnection(true);
                 $query = $db->prepare($full_sql);
                 $query->execute($values);
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 return true;
             } catch(Exception $e) {
                 error_log("Error writing: " . $e->getMessage());
@@ -140,6 +148,11 @@ class GenericObject
             $db = Database::getConnection(true);
             $query = $db->prepare($full_sql);
             $query->execute($values);
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             if ($this->strDBKeyCol != '') {
                 $key = $this->strDBKeyCol;
                 $this->$key = $db->lastInsertId();

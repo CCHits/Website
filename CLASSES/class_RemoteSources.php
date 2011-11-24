@@ -141,10 +141,10 @@ class RemoteSources extends GenericObject
                             error_log("Unable to move the uploaded file to $file.");
                             die("Error handling uploaded file. Please speak to an administrator.");
                         }
+                        $this->set_fileName($file);
                     }
                 }
             }
-            $this->set_fileName($file);
         }
         if (isset($arrUri['parameters']['forceTrackNameDuplicate'])) {
             $this->set_forceTrackNameDuplicate($arrUri['parameters']['forceTrackNameDuplicate']);
@@ -175,6 +175,16 @@ class RemoteSources extends GenericObject
         }
         if (isset($arrUri['parameters']['del_strTrackUrl']) and $arrUri['parameters']['del_strTrackUrl'] != '') {
             $this->del_strTrackUrl($arrUri['parameters']['del_strTrackUrl']);
+        }
+        if (isset($arrUri['parameters']['action']) and $arrUri['parameters']['action'] == 'createartist') {
+            if ($this->intArtistID == 0) {
+                $artist = new NewArtistObject(
+                    $this->strArtistName,
+                    $this->strArtistNameSounds,
+                    $this->strArtistUrl
+                );
+                $this->set_intArtistID($artist->get_intArtistID());
+            }
         }
         if (isset($arrUri['parameters']['intArtistID']) and $arrUri['parameters']['intArtistID'] != '') {
             $this->set_intArtistID($arrUri['parameters']['intArtistID']);
@@ -388,7 +398,7 @@ class RemoteSources extends GenericObject
         $strLicense = LicenseSelector::validateLicense($enumTrackLicense);
         if ($this->enumTrackLicense != $strLicense) {
             $this->enumTrackLicense = $strLicense;
-            $arrChanges['enumTrackLicense'] = true;
+            $this->arrChanges['enumTrackLicense'] = true;
         }
     }
 
@@ -420,10 +430,9 @@ class RemoteSources extends GenericObject
             }
             $objArtist->set_strArtistNameSounds($this->strArtistNameSounds);
             $objArtist->write();
-            $arrChanges['intArtistID'] = true;
+            $this->arrChanges['intArtistID'] = true;
         }
     }
-
 
     /**
      * Set or amend the value of the strArtistName
@@ -436,7 +445,7 @@ class RemoteSources extends GenericObject
     {
         if ( ! $this->inJson($this->strArtistName, $strArtistName)) {
             $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName);
-            $this->arrChanges[] = 'strArtistName';
+            $this->arrChanges['strArtistName'] = true;
         }
     }
 
@@ -451,7 +460,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->preferredJson($this->strArtistName) != $strArtistName) {
             $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName, true);
-            $this->arrChanges[] = 'strArtistName';
+            $this->arrChanges['strArtistName'] = true;
         }
     }
 
@@ -465,7 +474,7 @@ class RemoteSources extends GenericObject
     function del_strArtistName($strArtistName = "")
     {
         $this->strArtistName = $this->delJson($this->strArtistName, $strArtistName);
-        $this->arrChanges[] = 'strArtistName';
+        $this->arrChanges['strArtistName'] = true;
     }
 
     /**
@@ -479,7 +488,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->strArtistNameSounds != $strArtistNameSounds) {
             $this->strArtistNameSounds = $strArtistNameSounds;
-            $this->arrChanges[] = 'strArtistNameSounds';
+            $this->arrChanges['strArtistNameSounds'] = true;
         }
     }
 
@@ -494,7 +503,7 @@ class RemoteSources extends GenericObject
     {
         if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
             $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl);
-            $this->arrChanges[] = 'strArtistUrl';
+            $this->arrChanges['strArtistUrl'] = true;
         }
     }
 
@@ -509,7 +518,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->preferredJson($this->strArtistUrl) != $strArtistUrl) {
             $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl, true);
-            $this->arrChanges[] = 'strArtistUrl';
+            $this->arrChanges['strArtistUrl'] = true;
         }
     }
 
@@ -523,7 +532,7 @@ class RemoteSources extends GenericObject
     function del_strArtistUrl($strArtistUrl = "")
     {
         $this->strArtistUrl = $this->delJson($this->strArtistUrl, $strArtistUrl);
-        $this->arrChanges[] = 'strArtistUrl';
+        $this->arrChanges['strArtistUrl'] = true;
     }
 
     /**
@@ -537,7 +546,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->isNSFW != $isNSFW) {
             $this->isNSFW = $isNSFW;
-            $arrChanges['isNSFW'] = true;
+            $this->arrChanges['isNSFW'] = true;
         }
     }
 
@@ -552,7 +561,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->fileUrl != $fileUrl) {
             $this->fileUrl = $fileUrl;
-            $arrChanges['fileUrl'] = true;
+            $this->arrChanges['fileUrl'] = true;
         }
     }
 
@@ -567,7 +576,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->fileName != $fileName) {
             $this->fileName = $fileName;
-            $arrChanges['fileName'] = true;
+            $this->arrChanges['fileName'] = true;
         }
     }
 
@@ -580,7 +589,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->intUserID != UserBroker::getUser()->get_intUserID()) {
             $this->intUserID = UserBroker::getUser()->get_intUserID();
-            $arrChanges['intUserID'] = true;
+            $this->arrChanges['intUserID'] = true;
         }
     }
 
@@ -595,7 +604,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->fileMD5 != $md5hash) {
             $this->fileMD5 = $md5hash;
-            $arrChanges['fileMD5'] = true;
+            $this->arrChanges['fileMD5'] = true;
         }
     }
 
@@ -610,7 +619,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->forceMD5Duplicate != $boolean) {
             $this->forceMD5Duplicate = $boolean;
-            $arrChanges['forceMD5Duplicate'] = true;
+            $this->arrChanges['forceMD5Duplicate'] = true;
         }
     }
 
@@ -625,7 +634,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->forceTrackNameDuplicate != $boolean) {
             $this->forceTrackNameDuplicate = $boolean;
-            $arrChanges['forceTrackNameDuplicate'] = true;
+            $this->arrChanges['forceTrackNameDuplicate'] = true;
         }
     }
 
@@ -640,7 +649,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->forceTrackUrlDuplicate != $boolean) {
             $this->forceTrackUrlDuplicate = $boolean;
-            $arrChanges['forceTrackUrlDuplicate'] = true;
+            $this->arrChanges['forceTrackUrlDuplicate'] = true;
         }
     }
 
@@ -656,6 +665,7 @@ class RemoteSources extends GenericObject
             return array($this->approveProcessing()=>true);
         } catch (Exception $e) {
             $this->set_intUserID();
+            $this->set_exception($e);
             $this->create();
             return array($this->intProcessingID=>false);
         }
@@ -685,15 +695,6 @@ class RemoteSources extends GenericObject
      */
     function approveProcessing()
     {
-        if ($this->intArtistID == 0) {
-            $artist = new NewArtistObject(
-                $this->strArtistName,
-                $this->strArtistNameSounds,
-                $this->strArtistUrl
-            );
-            $this->set_intArtistID($artist->get_intArtistID());
-            parent::write();
-        }
         $track = new NewTrackObject(
             $this->intArtistID,
             $this->strTrackName,
@@ -761,7 +762,6 @@ class RemoteSources extends GenericObject
                     if ($this->duplicateTracks and $this->forceMD5Duplicate != true) {
                         throw new RemoteSource_DuplicateMD5();
                     }
-                    $this->write();
                 } else {
                     throw new RemoteSource_NoFileDl();
                 }

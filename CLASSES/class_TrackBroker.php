@@ -113,14 +113,14 @@ class TrackBroker
     ) {
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-            $page = $arrUri['parameters']['page'];
+            $intPage = $arrUri['parameters']['page'];
         } elseif ($intPage == null) {
-            $page = 0;
+            $intPage = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-            $size = $arrUri['parameters']['size'];
+            $intSize = $arrUri['parameters']['size'];
         } elseif ($intSize == null) {
-            $size = 25;
+            $intSize = 25;
         }
 
         $db = Database::getConnection();
@@ -135,10 +135,10 @@ class TrackBroker
             $strTrackName = "";
             foreach ($arr as $chrTrackName) {
                 if (trim($chrTrackName) != '') {
-                    $strTrackName .= "[:space:]*$chrTrackName";
+                    $strTrackName .= "[[:space:]]*$chrTrackName";
                 }
             }
-            $query->execute(array("\"{$strTrackName}[:space:]*\"", "{$strTrackName}[:space:]*"));
+            $query->execute(array("\"{$strTrackName}[[:space:]]*\"", "{$strTrackName}[[:space:]]*"));
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -175,14 +175,14 @@ class TrackBroker
     ) {
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-            $page = $arrUri['parameters']['page'];
+            $intPage = $arrUri['parameters']['page'];
         } elseif ($intPage == null) {
-            $page = 0;
+            $intPage = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-            $size = $arrUri['parameters']['size'];
+            $intSize = $arrUri['parameters']['size'];
         } elseif ($intSize == null) {
-            $size = 25;
+            $intSize = 25;
         }
 
         $db = Database::getConnection();
@@ -197,10 +197,10 @@ class TrackBroker
             $strTrackName = "";
             foreach ($arr as $chrTrackName) {
                 if (trim($chrTrackName) != '') {
-                    $strTrackName .= "[:space:]*$chrTrackName";
+                    $strTrackName .= "[[:space:]]*$chrTrackName";
                 }
             }
-            $query->execute(array(".*{$strTrackName}[:space:]*.*"));
+            $query->execute(array(".*{$strTrackName}[[:space:]]*.*"));
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -235,14 +235,14 @@ class TrackBroker
     ) {
         $arrUri = UI::getUri();
         if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
-            $page = $arrUri['parameters']['page'];
+            $intPage = $arrUri['parameters']['page'];
         } elseif ($intPage == null) {
-            $page = 0;
+            $intPage = 0;
         }
         if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
-            $size = $arrUri['parameters']['size'];
+            $intSize = $arrUri['parameters']['size'];
         } elseif ($intSize == null) {
-            $size = 25;
+            $intSize = 25;
         }
 
         $db = Database::getConnection();

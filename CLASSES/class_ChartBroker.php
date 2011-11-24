@@ -42,6 +42,11 @@ class ChartBroker
             $sql = "SELECT min(intPositionID) as intPeak FROM chart WHERE intTrackID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             return $query->fetchColumn();
         } catch(Exception $e) {
             error_log("SQL error: " . $e);
@@ -63,6 +68,11 @@ class ChartBroker
             $sql = "SELECT intPositionID, datChart FROM chart WHERE intTrackID = ? ORDER BY datChart DESC LIMIT 0, 60";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $return = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($return != false and count($return) < 60) {
                 $date = $return[count($return) - 1]['datChart'];
@@ -111,6 +121,11 @@ class ChartBroker
                 $sql = "SELECT max(datChart) as max_datChart FROM chart LIMIT 0, 1";
                 $query = $db->prepare($sql);
                 $query->execute();
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $strChartDate = $query->fetchColumn();
             }
             if (! is_integer($strChartDate)) {
@@ -124,6 +139,11 @@ class ChartBroker
             $pagestart = ($intPage * $intSize);
             $query = $db->prepare($sql . " ORDER BY intPositionID ASC LIMIT " . $pagestart . ", $intSize");
             $query->execute(array(UI::getShortDate($strChartDate)));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 foreach ($tracks as $track) {
