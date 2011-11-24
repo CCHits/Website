@@ -5,5 +5,4 @@
 /.settings
 /.phpcs/
 /.externalToolBuilders/
-/nbproject/private/
-/EXTERNALS/GETID3/
+/nbproject/
