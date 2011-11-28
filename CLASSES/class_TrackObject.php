@@ -454,9 +454,14 @@ class TrackObject extends GenericObject
     {
         $format = GeneralFunctions::getFileFormat($fileSource);
         $newfilename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
-        if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '' and rename($fileSource, $newfilename)) {
-            $this->fileSource = $newfilename;
-            $this->arrChanges[] = 'fileSource';
+        if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '') {
+            if (rename($fileSource, $newfilename)) {
+                $this->fileSource = $newfilename;
+                $this->arrChanges[] = 'fileSource';
+            } else {
+                error_log("Was unable to move the file from $fileSource to $newfilename");
+                return false;
+            }
         }
     }
 
@@ -478,6 +483,17 @@ class TrackObject extends GenericObject
         }
     }
 
+    function set_timeLength($timeLength = '')
+    {
+        if ($timeLength == '') {
+            $timeLength = GeneralFunctions::getFileLengthString($this->get_localFileSource());
+        }
+        if ($this->timeLength != $timeLength) {
+            $this->timeLength = $timeLength;
+            $this->arrChanges[] = 'timeLength';
+        }        
+    }
+    
     /**
      * Set or change the track's approved status
      *

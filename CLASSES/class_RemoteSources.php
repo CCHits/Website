@@ -728,16 +728,22 @@ class RemoteSources extends GenericObject
         if (!isset($this->strTrackName) or '' == trim($this->strTrackName)) {
             throw new RemoteSource_NoTrackName();
         } else {
-            $this->duplicateTracks = TrackBroker::getTrackByExactName($this->preferredJson($this->strTrackName));
-            if ($this->duplicateTracks and $this->forceTrackNameDuplicate != true) {
+            $duplicateTracks = TrackBroker::getTrackByExactName($this->preferredJson($this->strTrackName));
+            if ($duplicateTracks and $this->forceTrackNameDuplicate != true) {
+                foreach($duplicateTracks as $duplicateTrack) {
+                    $this->duplicateTracks[] = $duplicateTrack->getSelf();
+                }
                 throw new RemoteSource_DuplicateTrackName();
             }
         }
         if (!isset($this->strTrackUrl) or '' == trim($this->strTrackUrl)) {
             throw new RemoteSource_NoTrackUrl();
         } else {
-            $this->duplicateTracks = TrackBroker::getTrackByExactUrl($this->preferredJson($this->strTrackUrl));
-            if ($this->duplicateTracks and $this->forceTrackUrlDuplicate != true) {
+            $duplicateTracks = TrackBroker::getTrackByExactUrl($this->preferredJson($this->strTrackUrl));
+            if ($duplicateTracks and $this->forceTrackUrlDuplicate != true) {
+                foreach($duplicateTracks as $duplicateTrack) {
+                    $this->duplicateTracks[] = $duplicateTrack->getSelf();
+                }
                 throw new RemoteSource_DuplicateTrackUrl();
             }
         }
@@ -762,8 +768,11 @@ class RemoteSources extends GenericObject
                     $md5 = md5_file($get[0]);
                     $this->set_fileMD5($md5);
                     parent::write();
-                    $this->duplicateTracks = TrackBroker::getTrackByMD5($md5);
-                    if ($this->duplicateTracks and $this->forceMD5Duplicate != true) {
+                    $duplicateTracks = TrackBroker::getTrackByMD5($md5);
+                    if ($duplicateTracks and $this->forceMD5Duplicate != true) {
+                        foreach($duplicateTracks as $duplicateTrack) {
+                            $this->duplicateTracks[] = $duplicateTrack->getSelf();
+                        }
                         throw new RemoteSource_DuplicateMD5();
                     }
                 } else {

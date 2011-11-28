@@ -12,7 +12,7 @@
 {if $track.duplicateTracks != false}
 		<p>There were suspected duplicate tracks. Please verify none of these are actually duplicated tracks.</p>
 		<ul>
-{foreach from=$track.duplicateTracks item=$duplicate}
+{foreach from=$track.duplicateTracks item=duplicate}
 			<li><a href="{$baseURL}track/{$duplicate.intTrackID}">"{$duplicate.strTrackName}" by "{$duplicate.strArtistName}"</a></li>
 {/foreach}
 		</ul>

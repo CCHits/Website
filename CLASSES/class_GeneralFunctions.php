@@ -108,6 +108,27 @@ class GeneralFunctions
      */
     function getFileFormat($filename = '')
     {
+        return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'fileformat', '');
+    }
+    
+    function getFileLengthInSeconds($filename = '')
+    {
+        return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_seconds', '0.000');
+    }
+
+    function getFileLengthString($filename = '')
+    {
+        $fileinseconds = GeneralFunctions::getFileLengthInSeconds($filename);
+        $minutes = intval($fileinseconds)/60;
+        $hours = intval($minutes)/60;
+        $minutes = $minutes - ($hours * 60);
+        $seconds = intval($fileinseconds) - ($minutes * 60) - ($hours * 60 * 60);
+        return str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT);
+    }
+
+    
+    function getMediaAttributes($filename)
+    {
         $arrLibs = new ExternalLibraryLoader();
         $GETID3 = $arrLibs->getVersion("GETID3");
         if ($GETID3 == false) {
@@ -122,9 +143,7 @@ class GeneralFunctions
             die("There was an error - please contact an administrator.");
         }
         $getID3 = new getID3;
-        $file = $getID3->analyze($filename);
-
-        return GeneralFunctions::getValue($file, 'fileformat', '');
+        return $getID3->analyze($fileSource);
     }
 
     /**

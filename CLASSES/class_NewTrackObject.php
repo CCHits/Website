@@ -74,10 +74,17 @@ class NewTrackObject extends TrackObject
             $this->set_strTrackUrl($strTrackUrl);
             $this->set_enumTrackLicense($enumTrackLicense);
             $this->set_isNSFW($isNSFW);
-            $this->set_fileSource($fileSource);
-            $this->set_md5FileHash('');
-            $this->set_isApproved(UserBroker::getUser()->get_isAuthorized());
-            return $this->create();
+            $create = $this->create();
+            if ($create) {
+                $this->set_fileSource($fileSource);
+                $this->set_md5FileHash(); // This generates the hash directly
+                if (GeneralFunctions::getFileLengthInSeconds($this->get_localFileSource())) {
+                    $this->set_isApproved(UserBroker::getUser()->get_isAuthorized());
+                } else {
+                    $this->set_isApproved(0);
+                }                
+            }
+            return $create;
         } else {
             return false;
         }

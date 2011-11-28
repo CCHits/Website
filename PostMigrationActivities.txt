@@ -34,6 +34,7 @@ INSERT INTO `config` (`key`, `value`) VALUES ('fileBase', '');
 INSERT INTO `config` (`key`, `value`) VALUES ('baseURL', '');
 INSERT INTO `config` (`key`, `value`) VALUES ('Soundcloud API', '');
 
+ALTER TABLE tracks ADD intDuplicateID INT NOT NULL AFTER isApproved;
 
 File Movements
 =======================
