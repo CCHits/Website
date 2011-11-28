@@ -61,6 +61,11 @@ class TrackBroker
             $sql = "SELECT COUNT(intTrackID) as totalTracks FROM tracks";
             $query = $db->prepare($sql);
             $query->execute();
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $th->intTotalTracks = $query->fetchColumn();
             return $th->intTotalTracks;
         } catch(Exception $e) {
@@ -87,8 +92,13 @@ class TrackBroker
             $sql = "SELECT * FROM tracks WHERE intTrackID = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
-            $th->arrTracks[$intTrackID] = $query->fetchObject('TrackObject');
-            return $th->arrTracks[$intTrackID];
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
+            $handler->arrTracks[$intTrackID] = $query->fetchObject('TrackObject');
+            return $handler->arrTracks[$intTrackID];
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
@@ -139,6 +149,11 @@ class TrackBroker
                 }
             }
             $query->execute(array("\"{$strTrackName}[[:space:]]*\"", "{$strTrackName}[[:space:]]*"));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -201,6 +216,11 @@ class TrackBroker
                 }
             }
             $query->execute(array(".*{$strTrackName}[[:space:]]*.*"));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -251,6 +271,11 @@ class TrackBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("\"$strTrackUrl%", "$strTrackUrl%"));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -283,6 +308,11 @@ class TrackBroker
             $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? OR strTrackUrl = ?";
             $query = $db->prepare($sql);
             $query->execute(array("%\"$strTrackUrl\"%", $strTrackUrl));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
@@ -315,10 +345,19 @@ class TrackBroker
             $sql = "SELECT * FROM tracks WHERE md5FileHash = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($md5FileHash));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $handler = self::getHandler();
             $item = $query->fetchObject('TrackObject');
-            $handler->arrShows[$item->get_intTrackID()] = $item;
-            return $item;
+            if ($item == false) {
+                return false;
+            } else {
+                $handler->arrTracks[$item->get_intTrackID()] = $item;
+                return $item;
+            }
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;

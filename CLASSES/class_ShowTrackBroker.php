@@ -57,6 +57,11 @@ class ShowTrackBroker
             $sql = "SELECT * FROM showtracks WHERE intShowID = ? ORDER BY intPartID ASC";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $item = $query->fetchObject('ShowTrackObject');
             if ($item == false) {
                 return false;
@@ -88,6 +93,11 @@ class ShowTrackBroker
             $sql = "SELECT * FROM showtracks WHERE intShowID = ? AND intTrackID = ? ORDER BY intPartID ASC";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID, $intTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             return $query->fetchObject('ShowTrackObject');
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
@@ -113,6 +123,11 @@ class ShowTrackBroker
             $sql = "SELECT * FROM showtracks WHERE intTrackID = ? ORDER BY intShowID ASC";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $item = $query->fetchObject('ShowTrackObject');
             if ($item == false) {
                 return false;
@@ -261,6 +276,11 @@ class ShowTrackBroker
                 $query = $db->prepare($sql);
                 $values = array($intTrackID, $objShow->get_intShowID());
                 $query->execute($values);
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
             } catch(Exception $e) {
                 error_log("SQL Died: " . $e->getMessage());
                 return false;
@@ -298,6 +318,11 @@ class ShowTrackBroker
             $sql = "UPDATE showtracks SET intTrackID = ? WHERE intTrackID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($intNewTrackID, $intOldTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             return true;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());

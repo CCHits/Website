@@ -82,6 +82,11 @@ class RemoteSources extends GenericObject
             $sql = "DELETE FROM processing WHERE intProcessingID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($this->intProcessingID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             return true;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
@@ -217,7 +222,7 @@ class RemoteSources extends GenericObject
             $this->set_isNSFW($arrUri['parameters']['nsfw']);
         }
         try {
-            $this->write();
+            return $this->write();
         } catch (Exception $e) {
             throw $e;
         }
@@ -680,8 +685,7 @@ class RemoteSources extends GenericObject
     {
         try {
             $this->is_valid_cchits_submission();
-            $this->approveProcessing();
-            return true;
+            return $this->approveProcessing();
         } catch (Exception $e) {
             parent::write();
             throw $e;
@@ -724,7 +728,7 @@ class RemoteSources extends GenericObject
         if (!isset($this->strTrackName) or '' == trim($this->strTrackName)) {
             throw new RemoteSource_NoTrackName();
         } else {
-            $this->duplicateTracks = TrackBroker::getTrackByExactName($this->strTrackName);
+            $this->duplicateTracks = TrackBroker::getTrackByExactName($this->preferredJson($this->strTrackName));
             if ($this->duplicateTracks and $this->forceTrackNameDuplicate != true) {
                 throw new RemoteSource_DuplicateTrackName();
             }
@@ -732,7 +736,7 @@ class RemoteSources extends GenericObject
         if (!isset($this->strTrackUrl) or '' == trim($this->strTrackUrl)) {
             throw new RemoteSource_NoTrackUrl();
         } else {
-            $this->duplicateTracks = TrackBroker::getTrackByExactUrl($this->strTrackUrl);
+            $this->duplicateTracks = TrackBroker::getTrackByExactUrl($this->preferredJson($this->strTrackUrl));
             if ($this->duplicateTracks and $this->forceTrackUrlDuplicate != true) {
                 throw new RemoteSource_DuplicateTrackUrl();
             }
@@ -810,7 +814,7 @@ class RemoteSources extends GenericObject
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
         if ($as_file == 1) {
-            $tempname = GeneralFunctions::getTempFileName();
+            $tempname = GeneralFunctions::getTempFileName(dirname(__FILE__) . '/../upload/');
             if ($tempname == false) {
                 error_log("Wasn't able to create a temporary file for uploading");
                 unlink($cookie);

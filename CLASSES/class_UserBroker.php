@@ -79,6 +79,11 @@ class UserBroker
                 $sql = "SELECT * FROM users WHERE $field = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($param));
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $objSelf->thisUser = $query->fetchObject('UserObject');
                 if ($objSelf->thisUser == false) {
                     $objSelf->thisUser = new NewUserObject($param);
@@ -122,6 +127,11 @@ class UserBroker
                 $sql = "SELECT * FROM users WHERE intUserID = ? LIMIT 1";
                 $query = $db->prepare($sql);
                 $query->execute(array($intUserID));
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $result = $query->fetchObject('UserObject');
                 $objSelf->arrUsers[$intUserID] = $result;
                 return $result;

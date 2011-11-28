@@ -45,6 +45,11 @@ class VoteBroker
             $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID ORDER BY intShowID";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $item = $query->fetchObject('VoteObject');
             if ($item == false) {
                 return false;
@@ -103,6 +108,11 @@ class VoteBroker
             $sql = "SELECT intVoteID FROM votes WHERE intTrackID = ? AND intUserID = ? LIMIT 1";
             $query = $db->prepare($sql);
             $query->execute(array($intTrackID, UserBroker::getUser()->get_intUserID()));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             if ($query->fetch()) {
                 return true;
             } else {
@@ -129,6 +139,11 @@ class VoteBroker
             $sql = "UPDATE IGNORE votes SET intTrackID = ? WHERE intTrackID = ?; DELETE FROM votes WHERE intTrackID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($intNewTrackID, $intOldTrackID, $intOldTrackID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             return true;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());

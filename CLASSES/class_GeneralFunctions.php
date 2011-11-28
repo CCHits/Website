@@ -114,7 +114,7 @@ class GeneralFunctions
             error_log("Failed to load Media Handler - No library exists");
             die("There was an error - please contact an administrator.");
         }
-        $getid3lib = dirname(__FILE__) . '/../EXTERNALS/GETID3/' . $GETID3 . '/getid3.php';
+        $getid3lib = dirname(__FILE__) . '/../EXTERNALS/GETID3/' . $GETID3 . '/getid3/getid3.php';
         if (file_exists($getid3lib)) {
             include_once $getid3lib;
         } else {

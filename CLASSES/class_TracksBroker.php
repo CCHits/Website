@@ -43,6 +43,11 @@ class TracksBroker
             $sql = "SELECT intTrackID FROM tracks WHERE intArtistID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 foreach ($tracks as $track) {
@@ -73,6 +78,11 @@ class TracksBroker
             $sql = "SELECT intTrackID FROM showtracks WHERE intShowID = ?";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 foreach ($tracks as $track) {
@@ -103,6 +113,11 @@ class TracksBroker
             $sql = "SELECT intTrackID, intPartID FROM showtracks WHERE intShowID = ? ORDER BY intPartID";
             $query = $db->prepare($sql);
             $query->execute(array($intShowID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 $part = 0;

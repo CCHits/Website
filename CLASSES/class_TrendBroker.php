@@ -61,6 +61,11 @@ class TrendBroker
                 $sql = "SELECT max(datTrendDay) as max_datTrendDay FROM trends LIMIT 0, 1";
                 $query = $db->prepare($sql);
                 $query->execute();
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $strTrendDate = $query->fetchColumn();
             } else {
                 $strTrendDate = getLongDate($strTrendDate);
@@ -73,6 +78,11 @@ class TrendBroker
             $pagestart = ($intPage * $intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array($start_date, $end_date));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 $data = array();
@@ -150,6 +160,11 @@ class TrendBroker
                 $sql = "SELECT max(datTrendDay) as max_datTrendDay FROM trends LIMIT 0, 1";
                 $query = $db->prepare($sql);
                 $query->execute();
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                }
                 $strTrendDate = $query->fetchColumn();
             } else {
                 $strTrendDate = getLongDate($strTrendDate);
@@ -162,6 +177,11 @@ class TrendBroker
             $pagestart = ($intPage * $intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array($intTrackID, $start_date, $end_date));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+            }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
                 $data = array();

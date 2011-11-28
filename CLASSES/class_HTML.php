@@ -455,7 +455,7 @@ class HTML
             }
         } else {
             try {
-                $objTrack->amendRecord();
+                $intTrackID = $objTrack->amendRecord();
             } catch (Exception $e) {
                 $this->result['error'] = $e;
             }

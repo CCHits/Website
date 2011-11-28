@@ -55,11 +55,15 @@ class NewTrackObject extends TrackObject
                 return false;
             }
         }
-        if ((UserBroker::getUser()->get_isUploader()
-            or UserBroker::getUser()->get_isAdmin())
+        $user = UserBroker::getUser();
+        $is_uploader = $user->get_isUploader();
+        $is_admin = $user->get_isAdmin();
+        if ($strTrackNameSounds == '') {
+            $strTrackNameSounds = $strTrackName;
+        }
+        if (($is_uploader or $is_admin)
             and $objArtist != null
             and $strTrackName != ""
-            and $strTrackNameSounds != ""
             and $strTrackUrl != ""
             and $enumTrackLicense != ""
             and $fileSource != ""
