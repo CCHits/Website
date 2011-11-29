@@ -320,8 +320,8 @@ class HTML
                 case 'listshows':
                     $shows = ShowBroker::getShowByUserID($user);
                     foreach ($shows as $show) {
-                        $return['shows'][$show->get_intShowID()] = $show->getSelf();
-                        $return['shows'][$show->get_intShowID()]['countTracks'] = count($show->get_arrTracks());
+                        $this->result['shows'][$show->get_intShowID()] = $show->getSelf();
+                        $this->result['shows'][$show->get_intShowID()]['countTracks'] = count($show->get_arrTracks());
                     }
                     UI::SmartyTemplate('listmyshows.html', $this->result);
                     break;

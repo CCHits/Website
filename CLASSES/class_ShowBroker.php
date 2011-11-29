@@ -170,6 +170,10 @@ class ShowBroker
             $intSize = 25;
         }
 
+        if (is_object($intUserID)) {
+            $intUserID = $intUserID->get_intUserID();
+        }
+        
         $db = Database::getConnection();
         try {
             $sql = "SELECT * FROM shows WHERE intUserID = ?";
@@ -336,6 +340,15 @@ class ShowBroker
             $strShowName = "";
             foreach ($arr as $chrShowName) {
                 if (trim($chrShowName) != '') {
+                    switch($chrShowName) {
+                    case '.':
+                    case '?':
+                    case '/':
+                    case '\\':
+                        $chrShowName = '\\' . $chrShowName;
+                        break;
+                    }
+
                     $strShowName .= "[[:space:]]*$chrShowName";
                 }
             }

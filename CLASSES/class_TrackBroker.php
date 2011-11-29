@@ -145,6 +145,22 @@ class TrackBroker
             $strTrackName = "";
             foreach ($arr as $chrTrackName) {
                 if (trim($chrTrackName) != '') {
+                    switch($chrTrackName) {
+                    case '.':
+                    case '?':
+                    case '*':
+                    case '(':
+                    case ')':
+                    case '{':
+                    case '}':
+                    case '[':
+                    case ']':
+                    case '|':
+                    case '/':
+                    case '\\':
+                        $chrTrackName = '\\' . $chrTrackName;
+                        break;
+                    }
                     $strTrackName .= "[[:space:]]*$chrTrackName";
                 }
             }
@@ -212,6 +228,22 @@ class TrackBroker
             $strTrackName = "";
             foreach ($arr as $chrTrackName) {
                 if (trim($chrTrackName) != '') {
+                    switch($chrTrackName) {
+                    case '.':
+                    case '?':
+                    case '*':
+                    case '(':
+                    case ')':
+                    case '{':
+                    case '}':
+                    case '[':
+                    case ']':
+                    case '|':
+                    case '/':
+                    case '\\':
+                        $chrTrackName = '\\' . $chrTrackName;
+                        break;
+                    }
                     $strTrackName .= "[[:space:]]*$chrTrackName";
                 }
             }

@@ -48,7 +48,7 @@ try {
                 error_log("Could not find $file");
                 UI::sendHttpResponse(404);
             } else {
-                if ($arrUri['path_items'][1] == 'track' and TrackBroker::getTrackByID($arrUri['path_items'][2])->get_isApproved() == false and UserBroker::getUser()->isAdmin()) {
+                if ($arrUri['path_items'][1] == 'track' and TrackBroker::getTrackByID($arrUri['path_items'][2])->get_isApproved() == false and UserBroker::getUser()->get_isAdmin()) {
                     UI::sendHttpResponse(401);
                 } else {
                     UI::dl_file_resumable($file, TRUE);

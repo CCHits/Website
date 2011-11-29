@@ -97,6 +97,22 @@ class ArtistBroker
             $strArtistName = "";
             foreach ($arr as $chrArtistName) {
                 if (trim($chrArtistName) != '') {
+                    switch($chrArtistName) {
+                    case '.':
+                    case '?':
+                    case '*':
+                    case '(':
+                    case ')':
+                    case '{':
+                    case '}':
+                    case '[':
+                    case ']':
+                    case '|':
+                    case '/':
+                    case '\\':
+                        $chrArtistName = '\\' . $chrArtistName;
+                        break;
+                    }
                     $strArtistName .= "[[:space:]]*$chrArtistName";
                 }
             }
@@ -163,6 +179,22 @@ class ArtistBroker
             $strArtistName = "";
             foreach ($arr as $chrArtistName) {
                 if (trim($chrArtistName) != '') {
+                    switch($chrArtistName) {
+                    case '.':
+                    case '?':
+                    case '*':
+                    case '(':
+                    case ')':
+                    case '{':
+                    case '}':
+                    case '[':
+                    case ']':
+                    case '|':
+                    case '/':
+                    case '\\':
+                        $chrArtistName = '\\' . $chrArtistName;
+                        break;
+                    }
                     $strArtistName .= "[[:space:]]*$chrArtistName";
                 }
             }

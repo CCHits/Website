@@ -143,7 +143,7 @@ class GeneralFunctions
             die("There was an error - please contact an administrator.");
         }
         $getID3 = new getID3;
-        return $getID3->analyze($fileSource);
+        return $getID3->analyze($filename);
     }
 
     /**
