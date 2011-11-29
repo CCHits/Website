@@ -45,7 +45,7 @@ class RemoteSourcesBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intSourceID, 'error'=>$query->errorInfo()), true), 1);
             }
             return $query->fetchObject('RemoteSources');
         } catch(Exception $e) {
@@ -69,7 +69,7 @@ class RemoteSourcesBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>UserBroker::getUser()->get_intUserID(), 'error'=>$query->errorInfo()), true), 1);
             }
             $item = $query->fetchObject('RemoteSources');
             if ($item == false) {

@@ -60,7 +60,7 @@ class ShowTrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intShowID, 'error'=>$query->errorInfo()), true), 1);
             }
             $item = $query->fetchObject('ShowTrackObject');
             if ($item == false) {
@@ -96,7 +96,7 @@ class ShowTrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($intShowID, $intTrackID), 'error'=>$query->errorInfo()), true), 1);
             }
             return $query->fetchObject('ShowTrackObject');
         } catch(Exception $e) {
@@ -126,7 +126,7 @@ class ShowTrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true), 1);
             }
             $item = $query->fetchObject('ShowTrackObject');
             if ($item == false) {
@@ -279,7 +279,7 @@ class ShowTrackBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$values, 'error'=>$query->errorInfo()), true), 1);
                 }
             } catch(Exception $e) {
                 error_log("SQL Died: " . $e->getMessage());
@@ -321,7 +321,7 @@ class ShowTrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($intNewTrackID, $intOldTrackID), 'error'=>$query->errorInfo()), true), 1);
             }
             return true;
         } catch(Exception $e) {

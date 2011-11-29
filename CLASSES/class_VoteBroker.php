@@ -48,7 +48,7 @@ class VoteBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true), 1);
             }
             $item = $query->fetchObject('VoteObject');
             if ($item == false) {
@@ -111,7 +111,7 @@ class VoteBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($intTrackID, UserBroker::getUser()->get_intUserID()), 'error'=>$query->errorInfo()), true), 1);
             }
             if ($query->fetch()) {
                 return true;
@@ -142,7 +142,7 @@ class VoteBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($intNewTrackID, $intOldTrackID, $intOldTrackID), 'error'=>$query->errorInfo()), true), 1);
             }
             return true;
         } catch(Exception $e) {

@@ -55,7 +55,7 @@ class ChangeBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
                 }
                 $strChangeDate = $query->fetchColumn();
             }
@@ -66,7 +66,7 @@ class ChangeBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
                 }
                 $strPriorDate = $query->fetchColumn();
             }
@@ -93,14 +93,14 @@ class ChangeBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$positionsql, 'values'=>$values1, 'error'=>$query->errorInfo()), true), 1);
             }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             $query->execute($values2);
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$positionsql, 'values'=>$values2, 'error'=>$query->errorInfo()), true), 1);
             }
             $tracks2 = $query->fetchAll(PDO::FETCH_ASSOC);
             $query = $db->prepare($votessql);
@@ -108,7 +108,7 @@ class ChangeBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$votessql, 'values'=>$values3, 'error'=>$query->errorInfo()), true), 1);
             }
             $votes = $query->fetchAll(PDO::FETCH_ASSOC);
             $query = $db->prepare($showsql);
@@ -116,7 +116,7 @@ class ChangeBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r($query->errorInfo(), true), 1);
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$showsql, 'values'=>$values3, 'error'=>$query->errorInfo()), true), 1);
             }
             $shows = $query->fetchAll(PDO::FETCH_ASSOC);
 
