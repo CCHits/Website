@@ -96,15 +96,12 @@ class GenericObject
                 }
             }
             foreach ($this->arrChanges as $change_key=>$change_value) {
-                if ($sql != '') {
-                    $sql .= ", ";
-                }
                 if ($change_value == true and isset($this->arrDBItems[$change_key])) {
+                    if ($sql != '') {
+                        $sql .= ", ";
+                    }
                     $sql .= "$change_key = :$change_key";
                     $values[$change_key] = $this->$change_key;
-                } elseif (isset($this->arrDBItems[$change_value])) {
-                    $sql .= "$change_value = :$change_value";
-                    $values[$change_value] = $this->$change_value;
                 }
             }
             $full_sql = "UPDATE {$this->strDBTable} SET $sql WHERE $where";
@@ -132,6 +129,7 @@ class GenericObject
      */
     protected function create()
     {
+        $this->arrChanges = array();
         $keys = '';
         $key_place = '';
         foreach ($this->arrDBItems as $field_name=>$dummy) {

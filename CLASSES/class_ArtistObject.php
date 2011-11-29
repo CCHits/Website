@@ -136,7 +136,7 @@ class ArtistObject extends GenericObject
     {
         if ($this->strArtistName != $jsonArtistName) {
             $this->strArtistName = $jsonArtistName;
-            $this->arrChanges[] = 'strArtistName';
+            $this->arrChanges['strArtistName'] = true;
         }
     }
 
@@ -151,7 +151,7 @@ class ArtistObject extends GenericObject
     {
         if ( ! $this->inJson($this->strArtistName, $strArtistName)) {
             $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName);
-            $this->arrChanges[] = 'strArtistName';
+            $this->arrChanges['strArtistName'] = true;
         }
     }
 
@@ -166,7 +166,7 @@ class ArtistObject extends GenericObject
     {
         if ($this->preferredJson($this->strArtistName) != $strArtistName) {
             $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName, true);
-            $this->arrChanges[] = 'strArtistName';
+            $this->arrChanges['strArtistName'] = true;
         }
     }
 
@@ -180,7 +180,7 @@ class ArtistObject extends GenericObject
     function del_strArtistName($strArtistName = "")
     {
         $this->strArtistName = $this->delJson($this->strArtistName, $strArtistName);
-        $this->arrChanges[] = 'strArtistName';
+        $this->arrChanges['strArtistName'] = true;
     }
 
     /**
@@ -194,7 +194,7 @@ class ArtistObject extends GenericObject
     {
         if ($this->strArtistNameSounds != $strArtistNameSounds) {
             $this->strArtistNameSounds = $strArtistNameSounds;
-            $this->arrChanges[] = 'strArtistNameSounds';
+            $this->arrChanges['strArtistNameSounds'] = true;
         }
     }
 
@@ -209,7 +209,7 @@ class ArtistObject extends GenericObject
     {
         if ($this->strArtistUrl != $jsonArtistUrl) {
             $this->strArtistUrl = $jsonArtistUrl;
-            $this->arrChanges[] = 'strArtistUrl';
+            $this->arrChanges['strArtistUrl'] = true;
         }
     }
 
@@ -224,7 +224,7 @@ class ArtistObject extends GenericObject
     {
         if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
             $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl);
-            $this->arrChanges[] = 'strArtistUrl';
+            $this->arrChanges['strArtistUrl'] = true;
         }
     }
 
@@ -239,7 +239,7 @@ class ArtistObject extends GenericObject
     {
         if ($this->preferredJson($this->strArtistUrl) != $strArtistUrl) {
             $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl, true);
-            $this->arrChanges[] = 'strArtistUrl';
+            $this->arrChanges['strArtistUrl'] = true;
         }
     }
 
@@ -253,7 +253,7 @@ class ArtistObject extends GenericObject
     function del_strArtistUrl($strArtistUrl = "")
     {
         $this->strArtistUrl = $this->delJson($this->strArtistUrl, $strArtistUrl);
-        $this->arrChanges[] = 'strArtistUrl';
+        $this->arrChanges['strArtistUrl'] = true;
     }
 
     /**

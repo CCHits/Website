@@ -202,6 +202,9 @@ class HTML
                 if (isset($_SESSION['addtracktoshow']) and ($object[1] != 'show' and $object[1] != 'addshow')) {
                     unset($_SESSION['addtracktoshow']);
                 }
+                if (isset($_SESSION['intTrackID']) and ($object[1] != 'addtrack' and $object[1] != 'track')) {
+                    unset($_SESSION['intTrackID']);
+                }
                 $user = UserBroker::getUser();
                 $this->result['user'] = $user->getSelf();
                 switch ($object[1]) {
@@ -244,6 +247,12 @@ class HTML
                     }
                     break;
                 case 'addtrack':
+                    if (isset($_SESSION['intTrackID'])) {
+                        $intTrackID = $_SESSION['intTrackID'];
+                        unset($_SESSION['intTrackID']);
+                        UI::Redirect("admin/track/" . $intTrackID);
+                        break;
+                    }
                     $objTrack = RemoteSourcesBroker::getRemoteSourceByID($object[2]);
                     if (($object[2] == '' or $objTrack != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
                         $this->addTrack($objTrack);
@@ -364,12 +373,11 @@ class HTML
             if (is_object($arrData) and $arrData->get_intTrackID() > 0) {
                 UI::Redirect("admin/track/" . $arrData->get_intTrackID());
             } elseif (is_object($arrData) and $arrData->get_intProcessingID() > 0) {
-                $objTrack = RemoteSourcesBroker::getRemoteSourceByID($arrData->get_intProcessingID());
-                $this->result['track'] = $objTrack->getSelf();
-                if ($objTrack->get_intArtistID() == 0) {
+                $this->result['track'] = $arrData->getSelf();
+                if ($arrData->get_intArtistID() == 0) {
                     $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
                 } else {
-                    $artists = array($objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID()));
+                    $artists = array($arrData->get_intArtistID() => ArtistBroker::getArtistByID($arrData->get_intArtistID()));
                 }
                 if (!is_array($artists)) {
                     $artists = array();
@@ -384,8 +392,14 @@ class HTML
                         $this->result['artists'][] = $artist->getSelf();
                     }
                 }
-                if ($objTrack->get_exception() != false) {
-                    $this->result['error'] = $objTrack->get_exception();
+                if ($arrData->get_exception() != false) {
+                    $this->result['error'] = $arrData->get_exception();
+                }
+                if (isset($_SESSION['intTrackID'])) {
+                    $intTrackID = $_SESSION['intTrackID'];
+                    unset($_SESSION['intTrackID']);
+                    UI::Redirect("admin/track/" . $intTrackID);
+                    break;
                 }
                 UI::SmartyTemplate('trackimporter.html', $this->result);
             } elseif (is_array($arrData) and count($arrData) == 1) {
@@ -458,6 +472,12 @@ class HTML
                 $intTrackID = $objTrack->amendRecord();
             } catch (Exception $e) {
                 $this->result['error'] = $e;
+            }
+            if (isset($_SESSION['intTrackID'])) {
+                $intTrackID = $_SESSION['intTrackID'];
+                unset($_SESSION['intTrackID']);
+                UI::Redirect("admin/track/" . $intTrackID);
+                break;
             }
             $this->result['track'] = $objTrack->getSelf();
             if ($objTrack->get_intArtistID() == 0) {

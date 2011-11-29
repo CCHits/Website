@@ -301,7 +301,7 @@ class RemoteSources extends GenericObject
     {
         if ( ! $this->inJson($this->strTrackName, $strTrackName)) {
             $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName);
-            $this->arrChanges[] = 'strTrackName';
+            $this->arrChanges['strTrackName'] = true;
         }
     }
 
@@ -316,7 +316,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->preferredJson($this->strTrackName) != $strTrackName) {
             $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName, true);
-            $this->arrChanges[] = 'strTrackName';
+            $this->arrChanges['strTrackName'] = true;
         }
     }
 
@@ -330,7 +330,7 @@ class RemoteSources extends GenericObject
     function del_strTrackName($strTrackName = "")
     {
         $this->strTrackName = $this->delJson($this->strTrackName, $strTrackName);
-        $this->arrChanges[] = 'strTrackName';
+        $this->arrChanges['strTrackName'] = true;
     }
 
     /**
@@ -344,7 +344,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->strTrackNameSounds != $strTrackNameSounds) {
             $this->strTrackNameSounds = $strTrackNameSounds;
-            $this->arrChanges[] = 'strTrackNameSounds';
+            $this->arrChanges['strTrackNameSounds'] = true;
         }
     }
 
@@ -359,7 +359,7 @@ class RemoteSources extends GenericObject
     {
         if ( ! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
-            $this->arrChanges[] = 'strTrackUrl';
+            $this->arrChanges['strTrackUrl'] = true;
         }
     }
 
@@ -374,7 +374,7 @@ class RemoteSources extends GenericObject
     {
         if ($this->preferredJson($this->strTrackUrl) != $strTrackUrl) {
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl, true);
-            $this->arrChanges[] = 'strTrackUrl';
+            $this->arrChanges['strTrackUrl'] = true;
         }
     }
 
@@ -388,7 +388,7 @@ class RemoteSources extends GenericObject
     function del_strTrackUrl($strTrackUrl = "")
     {
         $this->strTrackUrl = $this->delJson($this->strTrackUrl, $strTrackUrl);
-        $this->arrChanges[] = 'strTrackUrl';
+        $this->arrChanges['strTrackUrl'] = true;
     }
 
     /**
@@ -708,7 +708,7 @@ class RemoteSources extends GenericObject
             $this->isNSFW,
             $this->fileName
         );
-        if ($this->fileUrl != '' and $track != false) {
+        if ($this->fileUrl != '' and $track != false and file_exists($this->fileName)) {
             unlink($this->fileName);
         }
         if ($track != false) {

@@ -39,7 +39,7 @@ class RemoteSourcesJamendo extends RemoteSources
         if (preg_match('/track\/(\d+)/', $src, $match) == 0) {
             return 406;
         }
-        $url_base = "http://api.jamendo.com/get2/track_name+track_url+track_stream+license_url+artist_id+artist_name+artist_url/track/json/track_album+album_artist/track/?streamencoding=mp31&track_id=";
+        $url_base = "http://api.jamendo.com/get2/track_name+track_url+license_url+artist_name+artist_url/track/json/track_album+album_artist/track/?track_id=";
         $file_contents = file_get_contents($url_base . $match[1]);
         if ($file_contents == FALSE) {
             return 406;

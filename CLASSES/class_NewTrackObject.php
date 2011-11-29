@@ -59,7 +59,7 @@ class NewTrackObject extends TrackObject
         $is_uploader = $user->get_isUploader();
         $is_admin = $user->get_isAdmin();
         if ($strTrackNameSounds == '') {
-            $strTrackNameSounds = $strTrackName;
+            $strTrackNameSounds = $this->preferredJson($strTrackName);
         }
         if (($is_uploader or $is_admin)
             and $objArtist != null
@@ -78,12 +78,16 @@ class NewTrackObject extends TrackObject
             if ($create) {
                 $this->set_fileSource($fileSource);
                 $this->set_md5FileHash(); // This generates the hash directly
+                $this->set_timeLength(GeneralFunctions::getFileLengthString($this->get_localFileSource()));
                 if (GeneralFunctions::getFileLengthInSeconds($this->get_localFileSource())) {
                     $this->set_isApproved(UserBroker::getUser()->get_isAuthorized());
                 } else {
                     $this->set_isApproved(0);
-                }                
+                }
+                $this->write();
             }
+            UI::start_session();
+            $_SESSION['intTrackID'] = $this->intTrackID;
             return $create;
         } else {
             return false;

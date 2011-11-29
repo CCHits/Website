@@ -29,7 +29,7 @@
 class TrackObject extends GenericObject
 {
     // Inherited Properties
-    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'fileSource'=>true, 'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
+    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'fileSource'=>true, 'timeLength'=>true, 'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
     protected $strDBTable = "tracks";
     protected $strDBKeyCol = "intTrackID";
     // Local Properties
@@ -322,7 +322,7 @@ class TrackObject extends GenericObject
     {
         if ($this->intArtistID != $intArtistID) {
             $this->intArtistID = $intArtistID;
-            $this->arrChanges[] = 'intArtistID';
+            $this->arrChanges['intArtistID'] = true;
         }
     }
 
@@ -337,7 +337,7 @@ class TrackObject extends GenericObject
     {
         if ( ! $this->inJson($this->strTrackName, $strTrackName)) {
             $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName);
-            $this->arrChanges[] = 'strTrackName';
+            $this->arrChanges['strTrackName'] = true;
         }
     }
 
@@ -352,7 +352,7 @@ class TrackObject extends GenericObject
     {
         if ($this->preferredJson($this->strTrackName) != $strTrackName) {
             $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName, true);
-            $this->arrChanges[] = 'strTrackName';
+            $this->arrChanges['strTrackName'] = true;
         }
     }
 
@@ -366,7 +366,7 @@ class TrackObject extends GenericObject
     function del_strTrackName($strTrackName = "")
     {
         $this->strTrackName = $this->delJson($this->strTrackName, $strTrackName);
-        $this->arrChanges[] = 'strTrackName';
+        $this->arrChanges['strTrackName'] = true;
     }
 
     /**
@@ -380,7 +380,7 @@ class TrackObject extends GenericObject
     {
         if ($this->strTrackNameSounds != $strTrackNameSounds) {
             $this->strTrackNameSounds = $strTrackNameSounds;
-            $this->arrChanges[] = 'strTrackNameSounds';
+            $this->arrChanges['strTrackNameSounds'] = true;
         }
     }
 
@@ -395,7 +395,7 @@ class TrackObject extends GenericObject
     {
         if ( ! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
-            $this->arrChanges[] = 'strTrackUrl';
+            $this->arrChanges['strTrackUrl'] = true;
         }
     }
 
@@ -410,7 +410,7 @@ class TrackObject extends GenericObject
     {
         if ($this->preferredJson($this->strTrackUrl) != $strTrackUrl) {
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl, true);
-            $this->arrChanges[] = 'strTrackUrl';
+            $this->arrChanges['strTrackUrl'] = true;
         }
     }
 
@@ -424,7 +424,7 @@ class TrackObject extends GenericObject
     function del_strTrackUrl($strTrackUrl = "")
     {
         $this->strTrackUrl = $this->delJson($this->strTrackUrl, $strTrackUrl);
-        $this->arrChanges[] = 'strTrackUrl';
+        $this->arrChanges['strTrackUrl'] = true;
     }
 
     /**
@@ -438,7 +438,7 @@ class TrackObject extends GenericObject
     {
         if ($this->isNSFW != $isNSFW) {
             $this->isNSFW = $isNSFW;
-            $this->arrChanges[] = 'isNSFW';
+            $this->arrChanges['isNSFW'] = true;
             $this->verify_isNSFW();
         }
     }
@@ -456,8 +456,8 @@ class TrackObject extends GenericObject
         $newfilename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
         if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '') {
             if (rename($fileSource, $newfilename)) {
-                $this->fileSource = $newfilename;
-                $this->arrChanges[] = 'fileSource';
+                $this->fileSource = $this->intTrackID . '.' . $format;
+                $this->arrChanges['fileSource'] = true;
             } else {
                 error_log("Was unable to move the file from $fileSource to $newfilename");
                 return false;
@@ -479,7 +479,7 @@ class TrackObject extends GenericObject
         }
         if ($this->md5FileHash != $md5FileHash) {
             $this->md5FileHash = $md5FileHash;
-            $this->arrChanges[] = 'md5FileHash';
+            $this->arrChanges['md5FileHash'] = true;
         }
     }
 
@@ -490,7 +490,7 @@ class TrackObject extends GenericObject
         }
         if ($this->timeLength != $timeLength) {
             $this->timeLength = $timeLength;
-            $this->arrChanges[] = 'timeLength';
+            $this->arrChanges['timeLength'] = true;
         }        
     }
     
@@ -505,7 +505,7 @@ class TrackObject extends GenericObject
     {
         if ($this->isApproved != $isApproved) {
             $this->isApproved = $isApproved;
-            $this->arrChanges[] = 'isApproved';
+            $this->arrChanges['isApproved'] = true;
             $this->verify_isApproved();
         }
     }
@@ -547,7 +547,7 @@ class TrackObject extends GenericObject
             $this->set_datDailyShow("");
             $this->set_intChartPlace(0);
             $this->set_isApproved(false);
-            $this->arrChanges[] = 'intDuplicateID';
+            $this->arrChanges['intDuplicateID'] = true;
             $this->write();
             $this->wipe_fileSource();
             VoteBroker::MergeVotes($this->intTrackID, $this->intDuplicateID);

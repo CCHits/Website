@@ -56,7 +56,7 @@ class ShowTrackObject extends GenericObject
     {
         if ($this->intTrackID != $intTrackID) {
             $this->intTrackID = $intTrackID;
-            $this->arrChanges[] = 'intTrackID';
+            $this->arrChanges['intTrackID'] = true;
         }
     }
 
@@ -71,7 +71,7 @@ class ShowTrackObject extends GenericObject
     {
         if ($this->intShowID != $intShowID) {
             $this->intShowID = $intShowID;
-            $this->arrChanges[] = 'intShowID';
+            $this->arrChanges['intShowID'] = true;
         }
     }
 
@@ -86,7 +86,7 @@ class ShowTrackObject extends GenericObject
     {
         if ($this->intPartID != $intPartID) {
             $this->intPartID = $intPartID;
-            $this->arrChanges[] = 'intPartID';
+            $this->arrChanges['intPartID'] = true;
         }
     }
 

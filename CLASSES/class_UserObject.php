@@ -88,7 +88,7 @@ class UserObject extends GenericObject
     {
         if ($this->strOpenID != $strOpenID) {
             $this->strOpenID = $strOpenID;
-            $this->arrChanges[] = 'strOpenID';
+            $this->arrChanges['strOpenID'] = true;
         }
     }
 
@@ -103,7 +103,7 @@ class UserObject extends GenericObject
     {
         if ($this->strEMail != $strEMail) {
             $this->strEMail = $strEMail;
-            $this->arrChanges[] = 'strEMail';
+            $this->arrChanges['strEMail'] = true;
         }
     }
 
@@ -118,7 +118,7 @@ class UserObject extends GenericObject
     {
         if ($this->strCookieID != $strCookieID) {
             $this->strCookieID = $strCookieID;
-            $this->arrChanges[] = 'strCookieID';
+            $this->arrChanges['strCookieID'] = true;
         }
     }
 
@@ -133,7 +133,7 @@ class UserObject extends GenericObject
     {
         if ($this->sha1Pass != $sha1Pass) {
             $this->sha1Pass = $sha1Pass;
-            $this->arrChanges[] = 'sha1Pass';
+            $this->arrChanges['sha1Pass'] = true;
         }
     }
 
@@ -148,7 +148,7 @@ class UserObject extends GenericObject
     {
         if ($this->isAuthorized != $isAuthorized) {
             $this->isAuthorized = $isAuthorized;
-            $this->arrChanges[] = 'isAuthorized';
+            $this->arrChanges['isAuthorized'] = true;
         }
     }
 
@@ -163,7 +163,7 @@ class UserObject extends GenericObject
     {
         if ($this->isUploader != $isUploader) {
             $this->isUploader = $isUploader;
-            $this->arrChanges[] = 'isUploader';
+            $this->arrChanges['isUploader'] = true;
         }
     }
 
@@ -178,7 +178,7 @@ class UserObject extends GenericObject
     {
         if ($this->isAdmin != $isAdmin) {
             $this->isAdmin = $isAdmin;
-            $this->arrChanges[] = 'isAdmin';
+            $this->arrChanges['isAdmin'] = true;
         }
     }
 
@@ -193,7 +193,7 @@ class UserObject extends GenericObject
     {
         if ($this->datLastSeen != $datLastSeen) {
             $this->datLastSeen = $datLastSeen;
-            $this->arrChanges[] = 'datLastSeen';
+            $this->arrChanges['datLastSeen'] = true;
         }
     }
 
