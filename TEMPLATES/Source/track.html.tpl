@@ -14,7 +14,7 @@
 		<p><a href="{$baseURL}admin/show/?intTrackID={$track.intTrackID}">Add track to show</a></p>
 {/if}
 {if $track.isNSFW}
-		<p>This track may not be suitable for family or office listening</p>
+		<p><a href="{$baseURL}about#nsfw">This track may not be suitable for family or office listening.</a></p>
 {/if}
 		<img src="{$track.qrcode}" alt="QR Code for this page" />
 		<h3>"<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</h3>

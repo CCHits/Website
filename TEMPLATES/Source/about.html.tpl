@@ -14,6 +14,7 @@
 			<li><a href="#voteadjust">Vote Adjustments</a></li>
 			<li><a href="#trends">Trending Data</a></li>
 			<li><a href="#theme">Theme</a></li>
+                        <li><a href="#nsfw">Not Safe for Work or Family Listening - an explanation</a></li>
 		</ul>
 		<div class="FAQItem">
 			<a name="goals"></a>
@@ -85,6 +86,18 @@
 			<a name="theme"></a>
 			<h3>Theme</h3>
 			<p>The theme is an exerpt from a track, sourced from <a href="http://ccmixter.org/">ccMixter</a>. The Track is called <a href="http://ccmixter.org/files/scottaltham/19726">GMZ</a> and was created by <a href="http://ccmixter.org/people/scottaltham">scottaltham</a>.</p>
+		</div>
+		<div class="FAQItem">
+			<a name="nsfw"></a>
+			<h3>Not Safe for Work or Family Listening - an explanation</h3>
+			<p>As this project was originally supposed to create audio to be used at events, I wanted to be clear about the demarkation between "Work-or-Family Safe" music, and non... so I drew up these guidelines. A track is safe for work-or-family listening if:</p>
+                        <ul>
+                            <li>The track does not contain any swear words or derogatory words for gender, race, preference, or if it does contain them, they are hard to make out or distinguish.</li>
+                            <li>The track does not contain any obvious direct references to drug use.</li>
+                            <li>The track does not contain any obvious sexual references, including suggestive sounds.</li>
+                            <li>The track does not advocate crime or gun use (which is a criminal act in some countries).</li>
+                        </ul>
+                        <p>Obviously, not everyone agrees with this definition, and I don't upload every track. Some people will mark a track as being non-work-safe if it contains language they don't understand (in case it breaches one of the recommendations), or will mark a track as being work-or-family safe even if it breaches one of the above recommendations. If you disagree with how the track is marked, please feel free to contact <a href="mailto:show@cchits.net">show@cchits.net</a> and I'll re-listen to the track, and possibly change it's flag, if I think it's appropriate.</p>
 		</div>
 	</body>
 </html>
