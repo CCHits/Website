@@ -342,6 +342,19 @@ class TrackObject extends GenericObject
     }
 
     /**
+     * Set the Track Name directly (no JSONification please)
+     *
+     * @param string $strTrackName The name of the track
+     *
+     * @return void
+     */
+    function set_jsonTrackName($strTrackName = "")
+    {
+        $this->strTrackName = $strTrackName;
+        $this->arrChanges['strTrackName'] = true;
+    }
+    
+    /**
      * Set the Preferred Track Name
      *
      * @param string $strTrackName The name of the track
@@ -397,6 +410,18 @@ class TrackObject extends GenericObject
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
             $this->arrChanges['strTrackUrl'] = true;
         }
+    }
+    /**
+     * Set the URL to find more details about the track directly (no JSONification please)
+     *
+     * @param string $strTrackUrl The place to find out more about the track
+     *
+     * @return void
+     */
+    function set_jsonTrackUrl($strTrackUrl = "")
+    {
+        $this->strTrackUrl = $strTrackUrl;
+        $this->arrChanges['strTrackUrl'] = true;
     }
 
     /**

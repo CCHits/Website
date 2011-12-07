@@ -139,7 +139,7 @@ class TrackBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
-            preg_match_all('`.`u', $strTrackName, $arr);
+            preg_match_all('`.`u', substr(json_encode(array($strTrackName)), 2, -2), $arr);
             $arr = array_chunk($arr[0], 1);
             $arr = array_map('implode', $arr);
             $strTrackName = "";
@@ -222,7 +222,7 @@ class TrackBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
-            preg_match_all('`.`u', $strTrackName, $arr);
+            preg_match_all('`.`u', substr(json_encode(array($strTrackName)), 2, -2), $arr);
             $arr = array_chunk($arr[0], 1);
             $arr = array_map('implode', $arr);
             $strTrackName = "";

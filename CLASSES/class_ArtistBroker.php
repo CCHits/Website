@@ -87,11 +87,11 @@ class ArtistBroker
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ?";
+            $sql = "SELECT * FROM artists WHERE strArtistName REGEXP ? OR REGEXP ?";
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
-            preg_match_all('`.`u', $strArtistName, $arr);
+            preg_match_all('`.`u', substr(json_encode(array($strArtistName)), 2, -2), $arr);
             $arr = array_chunk($arr[0], 1);
             $arr = array_map('implode', $arr);
             $strArtistName = "";
@@ -116,7 +116,7 @@ class ArtistBroker
                     $strArtistName .= "[[:space:]]*$chrArtistName";
                 }
             }
-            $query->execute(array("{$strArtistName}[[:space:]]*"));
+            $query->execute(array("\"{$strArtistName}[[:space:]]*\"", "{$strArtistName}[[:space:]]*"));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
@@ -173,7 +173,7 @@ class ArtistBroker
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
-            preg_match_all('`.`u', $strArtistName, $arr);
+            preg_match_all('`.`u', substr(json_encode(array($strArtistName)), 2, -2), $arr);
             $arr = array_chunk($arr[0], 1);
             $arr = array_map('implode', $arr);
             $strArtistName = "";

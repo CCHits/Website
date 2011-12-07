@@ -58,9 +58,6 @@ class NewTrackObject extends TrackObject
         $user = UserBroker::getUser();
         $is_uploader = $user->get_isUploader();
         $is_admin = $user->get_isAdmin();
-        if ($strTrackNameSounds == '') {
-            $strTrackNameSounds = $this->preferredJson($strTrackName);
-        }
         if (($is_uploader or $is_admin)
             and $objArtist != null
             and $strTrackName != ""
@@ -69,9 +66,13 @@ class NewTrackObject extends TrackObject
             and $fileSource != ""
         ) {
             $this->set_intArtistID($objArtist->get_intArtistID());
-            $this->set_strTrackName($strTrackName);
-            $this->set_strTrackNameSounds($strTrackNameSounds);
-            $this->set_strTrackUrl($strTrackUrl);
+            $this->set_jsonTrackName($strTrackName);
+            if ($strTrackNameSounds == '') {
+                $this->set_strTrackNameSounds($this->preferredJson($strTrackName));
+            } else {
+                $this->set_strTrackNameSounds($strTrackNameSounds);
+            }
+            $this->set_jsonTrackUrl($strTrackUrl);
             $this->set_enumTrackLicense($enumTrackLicense);
             $this->set_isNSFW($isNSFW);
             $create = $this->create();
