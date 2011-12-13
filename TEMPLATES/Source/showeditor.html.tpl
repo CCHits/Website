@@ -37,6 +37,7 @@
 				<th>Track Name</th>
 				<th>Artist</th>
 			</tr>
+{if isset($show.arrTracks) and count($show.arrTracks) > 0}
 {foreach from=$show.arrTracks key=key item=track name=tracks}
 			<tr>
 				<td>{$key}
@@ -60,6 +61,7 @@
 				<td>{$track.strArtistName}</td>
 			</tr>
 {/foreach}
+{/if}
 		</table>
 		
 	</body>
