@@ -13,7 +13,7 @@
 		<title>{$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+                <h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
 {include file="player.html.tpl" player_id=1 playlist=$shows}
 		{foreach from=$shows key=id item=show}

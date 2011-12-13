@@ -6,7 +6,7 @@
 		<title>{$ServiceName}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+                <h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
 		<h3>Thank you for voting for "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"{if $show != false} from "<a href="{$show.strShowUrl}">{$show.strShowName}</a>".{/if}</h3>
 		<div class="ThisTrack">

@@ -7,7 +7,7 @@
 		<title>Chart: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+                <h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
 		{if $previous_page == true}<a href="{$arrUri.no_params}{if isset($arrUri.parameters.page) and $arrUri.parameters.page - 1 > 0}?page={$arrUri.parameters.page - 1}{if isset($arrUri.parameters.size)}&size={$arrUri.parameters.size}{/if}{else}{if isset($arrUri.parameters.size)}?size={$arrUri.parameters.size}{/if}{/if}">&lt;- Previous page</a>{/if}
 		{if $next_page == true}<a href="{$arrUri.no_params}?page={if isset($arrUri.parameters.page)}{$arrUri.parameters.page + 1}{else}1{/if}{if isset($arrUri.parameters.size)}&size={$arrUri.parameters.size}{/if}">Next page -&gt;</a>{/if}
@@ -25,7 +25,7 @@
 				</thead>
 				<tbody>
 {if isset($chart) and isset($chart.position)}
-{foreach from=$chart.position as key=position item=track}
+{foreach from=$chart.position key=position item=track}
 {strip} 
 					<tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
 						{include file="show_track_data.tpl"}

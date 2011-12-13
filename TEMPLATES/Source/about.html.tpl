@@ -3,7 +3,7 @@
 		<title>About: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
 		<h3>About CCHits.net, the FAQ and more</h3>
 		<ul class="TOC">

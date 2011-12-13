@@ -4,7 +4,7 @@
 		<title>Login: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+                <h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
 		<h3>Login to upload and retrieve tracks, to edit existing tracks and to associate tracks to shows.</h3>
 		<p>We use OpenID to authenticate you. OpenID means you don't need to remember a new username and password combination to login, or store a new one somewhere... you just need to remember the login details for the accounts you probably use every day!</p>

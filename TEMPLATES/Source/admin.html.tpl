@@ -4,7 +4,7 @@
 		<title>Administration: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
 {if $user.isUploader = 1}
 		<form method="post" action="{$baseURL}admin/addtrack" enctype="multipart/form-data">
