@@ -12,7 +12,7 @@
 {if isset($error) and $error}
 		<p>There was an error.</p>
 {/if}
-		<form method="post" action="{$baseURL}admin/track/{$track.intTrackID}">
+		<form method="post" action="{$baseURL}admin/show">
 			Associate this track with a show?
 			<input type="hidden" name="intTrackID" value="{$track.intTrackID}">
 			<input type="submit" value="Go" />

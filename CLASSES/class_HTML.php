@@ -256,11 +256,11 @@ class HTML
                     $objTrack = RemoteSourcesBroker::getRemoteSourceByID($object[2]);
                     if (($object[2] == '' or $objTrack != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
                         $this->addTrack($objTrack);
+                    } elseif ($objTrack == false) {
+                        UI::sendHttpResponse(404);
                     } elseif ($objTrack->get_intUserID() != $user->get_intUserID()) {
                         $this->result['notyourtrack'] = true;
                         UI::SmartyTemplate("login.html", $this->result);
-                    } elseif ($objTrack == false) {
-                        UI::sendHttpResponse(404);
                     } else {
                         $this->result['notuploader'] = true;
                         UI::SmartyTemplate("login.html", $this->result);

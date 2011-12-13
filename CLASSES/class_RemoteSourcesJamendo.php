@@ -54,7 +54,12 @@ class RemoteSourcesJamendo extends RemoteSources
         $this->set_strTrackUrl($json_contents[0]->track_url);
         $this->set_strArtistUrl($json_contents[0]->artist_url);
         $this->set_enumTrackLicense(LicenseSelector::validateLicense($matches[1]));
-        $this->set_fileUrl($this->find_download($match[1]));
+        $arrFile = $this->curl_get("http://jamstore.radionomy.net/download/track/{$match[1]}/mp32/file.mp3", 1);
+        if ( ! is_array($arrFile) or ! isset($arrFile[1]) or ! isset($arrFile[1]['http_code']) or $arrFile[1]['http_code'] != 200) {
+            $this->set_fileUrl(download_jamendo($match[1]));
+        } else {
+            $this->set_fileName($arrFile[0]);
+        }
         return $this->create_pull_entry();
     }
 
