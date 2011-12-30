@@ -734,6 +734,7 @@ class UI
      */
     function getPronouncableDate($date = '0')
     {
+        $return = '';
         if (preg_match('/(\d\d)(\d\d)(\d\d)(\d\d)|(\d\d)(\d\d)(\d\d)|(\d\d)(\d\d)/', $date, $matches) == 1) {
             foreach ($matches as $match) {
                 switch($match) {
