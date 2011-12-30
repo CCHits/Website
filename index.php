@@ -38,6 +38,7 @@ try {
             case 'daily':
             case 'weekly':
             case 'monthly':
+            case 'extra':
                 $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/show/' . $arrUri['path_items'][1] . '.';
                 break;
             default:

@@ -452,6 +452,9 @@ class ShowBroker
         case 'weekly':
         case 'monthly':
             break;
+        case 'extra':
+            // This is actually a bit of a cludge - the extra shows get an incremented ID, rather than using a date, but the URLs work just as well.
+            break;
         default:
             return false;
         }

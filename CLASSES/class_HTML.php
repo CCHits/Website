@@ -189,6 +189,20 @@ class HTML
                 }
                 $this->monthly($object[1]);
                 break;
+            case 'extra':
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                    $this->format = 'mp3.rss';
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                    $this->format = 'oga.rss';
+                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                    $this->format = 'm4a.rss';
+                }
+                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                    $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Extra Show Name', 'Extra Shows');
+                }
+                $this->extra($object[1]);
+                break;
             case 'about':
                 $this->about($object[1]);
                 break;
@@ -896,6 +910,33 @@ class HTML
             }
         }
         $shows = ShowBroker::getInternalShowByType('monthly');
+        foreach ($shows as $intShowID=>$show) {
+            $this->result['shows'][$intShowID] = $show->getSelf();
+            $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
+        }
+        if ($this->render()) {
+            $this->result['playlist_json'] = json_encode($playlist);
+            UI::SmartyTemplate("shows.{$this->format}", $this->result);
+        }
+    }
+
+    /**
+     * Either redirect from the monthly page to the /show/showid or return an RSS feed.
+     *
+     * @param integer $showdate The date of the show to return. Leave blank for an RSS feed.
+     *
+     * @return void
+     */
+    function extra($showid = '')
+    {
+        if ($showid != '') {
+            $show = ShowBroker::getInternalShowByDate('extra', $showid);
+            if ($show != false) {
+                UI::Redirect('show/' . $show->get_intShowID());
+                exit(0);
+            }
+        }
+        $shows = ShowBroker::getInternalShowByType('extra');
         foreach ($shows as $intShowID=>$show) {
             $this->result['shows'][$intShowID] = $show->getSelf();
             $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
