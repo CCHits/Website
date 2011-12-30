@@ -2,6 +2,7 @@
 		<p class="chart_movement">The track is at position {$track.arrChartData.0.intPositionID}, which is {if $track.strPositionYesterday == 'equal'}the same as{elseif $track.strPositionYesterday == 'up'}up from{else}down from{/if} yesterday's chart position. On a week-by-week average, the track is {if $track.strPositionLastWeek == 'equal'}the same as{elseif $track.strPositionLastWeek == 'up'}up from{else}down from{/if} last week's position.</p> 
 		<p class="chart_positions">Chart positions: {include file='sparkline.tpl'}</p>
 		<p>If you want to download this file, please visit the link to the track above. If that link is not working, you can download it <a href="{$track.localSource}">here</a>.</p>
+                <p>This track is licensed: <abbr title="{$track.strLicenseName}">{$track.enumTrackLicense}</abbr></p>
 {if isset($track.shows) and count($track.shows) > 0}
 		<div class="showplays">
 			<p>This track has also been played on the following shows:</p>
