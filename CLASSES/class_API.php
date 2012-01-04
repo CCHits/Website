@@ -225,6 +225,27 @@ class API
             case 'addtracktoshow':
                 $intTrackID = GeneralFunctions::getValue($arrUri['parameters'], 'intTrackID', GeneralFunctions::getValue($arrUri['path_items'], 2, 0, true), true);
                 $intShowID = GeneralFunctions::getValue($arrUri['parameters'], 'intShowID', GeneralFunctions::getValue($arrUri['path_items'], 3, 0, true), true);
+                if ($intShowID == 0) {
+                    $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
+                    if ($show_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
+                        for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
+                            if (isset ($arrUri['path_items'][$arrItem])) {
+                                if ($show_url != '') {
+                                    $show_url .= '/';
+                                }
+                                $show_url .= $arrUri['path_items'][$arrItem];
+                            }
+                        }
+                    }
+                    $show = ShowBroker::getShowByExactUrl($show_url);
+                    if ($show == false) {
+                        $show_name = GeneralFunctions::getValue($arrUri['parameters'], 'strShowName', $show_url, true);
+                        $show = new NewExternalShowObject($show_url, $show_name);
+                    }
+                    if (is_object($show)) {
+                        $intShowID = $show->get_intShowID();
+                    }
+                }
                 if ($intTrackID != 0 and $intShowID != 0) {
                     $this->result = new NewShowTrackObject($intTrackID, $intShowID);
                 } else {
