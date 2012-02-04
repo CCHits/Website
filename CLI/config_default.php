@@ -30,14 +30,19 @@ class Configuration
 {
     protected static $config_handler = null;
 
-    private $username   = 'admin';
-    private $password   = 'admin';
-    private $url_base   = 'cchits.net/api';
-    private $media_base = '/media';
-    private $protocol   = 'http';
-    private $api        = '';
-    private $WorkingDir = '';
-    private $StaticDir  = '';
+    private $username       = 'admin';
+    private $password       = 'admin';
+    private $url_base       = 'cchits.net/api';
+    private $media_base     = '/media';
+    private $protocol       = 'http';
+    private $api            = '';
+    private $WorkingDir     = '';
+    private $StaticDir      = '';
+    private $StatusNet      = '';
+    private $StatusNetProto = 'http';
+    private $StatusNetUrl   = 'cchits.net/comments/api/statuses/';
+    private $StatusNetUser  = '';
+    private $StatusNetPass  = '';
 
     /**
     * An internal function to make this a singleton
@@ -67,6 +72,7 @@ class Configuration
         }
 
         $this->api = $this->protocol . '://' . $this->username . ':' . $this->password . '@' . $this->url_base;
+        $this->StatusNet = $this->StatusNetProto . '://' . $this->StatusNetUser . ':' . $this->StatusNetPass . '@' . $this->StatusNetUrl;
     }
 
     /**
@@ -101,4 +107,27 @@ class Configuration
         $handler = self::getHandler();
         return $handler->StaticDir;
     }
+    
+    /**
+     * Return the value of the StatusNet variable
+     *
+     * @return string StatusNet URL
+     */
+    function getStatusNet()
+    {
+        $handler = self::getHandler();
+        return $handler->StatusNet;
+    }
+
+    /**
+     * Return the value of the StatusNetUser variable
+     *
+     * @return string StatusNetUser Username
+     */
+    function getStatusNetUser()
+    {
+        $handler = self::getHandler();
+        return $handler->StatusNetUser;
+    }
+
 }

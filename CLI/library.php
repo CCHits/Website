@@ -21,13 +21,67 @@
  * - update the system with the generated files
  * - add timestamps and hashes
  *
- * @param string $show_root The base path to the files we'll be uploading.
+ * @param string $show_root   The base path to the files we'll be uploading.
+ * @param string $comment_url The URL of the appropriate point to comment on this show
  *
  * @return void
  */
-function finalize($show_root)
+function finalize($show_root, $comment_url)
 {
-    // TODO: Write this
+    $array = array('hash' => '', 'time' => '', 'comment' => '');
+    if (file_exists($show_root . 'mp3')) {
+        $array['hash'] .= 'mp3:' . md5_file($show_root . 'mp3');
+        $array['file_mp3'] = '@' . $show_root . 'mp3;type=audio/mpeg';
+        $array['time'] = getTrackLength($show_root . 'mp3');
+    }
+    if (file_exists($show_root . 'oga')) {
+        $array['hash'] .= 'oga:' . md5_file($show_root . 'oga');
+        $array['file_oga'] = '@' . $show_root . 'oga;type=audio/ogg';
+        if ($array['time'] == '') {
+            // Why we don't have the time set after the MP3 file is done, I don't know
+            // but just to be on the safe side...
+            $array['time'] = getTrackLength($show_root . 'oga');
+        }
+    }
+    if (file_exists($show_root . 'm4a')) {
+        $array['hash'] .= 'm4a:' . md5_file($show_root . 'm4a');
+        $array['file_m4a'] = '@' . $show_root . 'm4a;type=audio/mp4';
+        // I can't recall whether soxi will get m4a track lengths. To be on the safe side
+        // don't bother. It should have been picked up in the mp3 and oga files anyway.
+    }
+    $array['comment'] = $comment_url;
+    $data = curlPostRequest(Configuration::getAPI() . '/finalize', $array);
+    return $data;
+}
+
+function updateStatusNet($array = array())
+{
+    if (! is_array($array)) {
+        return 0;
+    }
+    $conversation = 0;
+    $in_reply_to = 0;
+    foreach ($array as $post) {
+        if ($in_reply_to > 0 && strstr($post, '@' . Configuration::getStatusNetUser())) {
+            list($state, $result, $response) = curlPostRequest(Configuration::getStatusNet() . 'update.xml', array('status' => $post, 'in_reply_to_status_id' => $in_reply_to));
+        } else {
+            list($state, $result, $response) = curlPostRequest(Configuration::getStatusNet() . 'update.xml', array('status' => $post));
+        }
+        if ($state == true) {
+            $atom = curlGetResource(Configuration::getStatusNet() . 'friends_timeline/' . Configuration::getStatusNetUser() . '.atom?count=1', 0);
+            if ($in_reply_to == 0) {
+                preg_match("/<link rel=\"alternate\" type=\"text\/html\" href=\"[^\"]+\/(\d+)/", $atom, $matches);
+                if (count($matches) > 0) {
+                    $in_reply_to = $matches[1];
+                }
+                preg_match("/<link rel=\"ostatus:conversation\" href=\"[^\"]+\/conversation\/(\d+)/", $atom, $matches);
+                if (count($matches) > 0) {
+                    $conversation = $matches[1];
+                }
+            }
+        }
+    }
+    return $conversation;
 }
 
 /**
@@ -453,15 +507,6 @@ function generateOutputTracksAsOga($input, $output, $arrMetadata)
 }
 
 /**
-* Given a source filename, generate an MP3 from that source.
-*
-* @param path  $input       The filename we want to process
-* @param path  $output      The resulting filename
-* @param array $arrMetadata The metadata to apply to the new file format
-*
-* @return boolean Success or failure
-*/
-/**
  * Given a source filename, generate an M4A from that source.
  *
  * @param path   $input       The filename we want to process
@@ -677,7 +722,8 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     }
 
     if ($response['http_code'] == 301 or $response['http_code'] == 302) {
-        if ($headers = get_headers($response['url'])) {
+        $headers == get_headers($response['url']);
+        if ($headers != false) {
             foreach ($headers as $value) {
                 if (substr(strtolower($value), 0, 9) == "location:") {
                     return get_url(trim(substr($value, 9, strlen($value))), $as_file);

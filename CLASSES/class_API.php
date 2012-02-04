@@ -58,7 +58,7 @@ class API
             switch($arrUri['path_items'][1]) {
             // Diagnostic Calls
             case 'echo':
-                $this->result = $arrUri;
+                $this->result_array = $arrUri;
                 $this->render();
                 break;
             case 'echologin':
@@ -427,6 +427,9 @@ class API
                         $show->write();
                     } else {
                         UI::sendHttpResponse(417);
+                    }
+                    if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
+                        $show->storeFiles($arrUri['parameters']['_FILES']);
                     }
                     $this->render();
                 }

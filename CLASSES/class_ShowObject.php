@@ -199,6 +199,7 @@ class ShowObject extends GenericObject
                 }
             }
             $showname .= $showname_tracks;
+            $return['show_summary'] = $showname_tracks;
             $return['player_data'] = array(
             	'name' => $showname,
             	'free'=>'true',
@@ -508,5 +509,31 @@ class ShowObject extends GenericObject
     function get_datDateAdded()
     {
         return $this->datDateAdded;
+    }
+    
+    /**
+     * This function handles the uploaded files
+     * 
+     * @param array $array This is the $_FILES array of data.
+     * 
+     * @return void
+     */
+    function storeFiles($array)
+    {
+        foreach ($array as $file) {
+            if ($file['error'] == 0) {
+                switch($file['type']) {
+                case 'audio/mpeg3':
+                    move_uploaded_file($file['tmp_name'], ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3');
+                    break;
+                case 'audio/mp4':
+                    move_uploaded_file($file['tmp_name'], ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a');
+                    break;
+                case 'audio/ogg':
+                    move_uploaded_file($file['tmp_name'], ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga');
+                    break;
+                }
+            }
+        }
     }
 }

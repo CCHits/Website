@@ -236,7 +236,11 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugUnlink($coverart);
         }
         // FIXME XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Got to here patching the functions to return some debugging messages if they fail
-        finalize(Configuration::getWorkingDir() . '/daily.' . $show_data['intShowUrl'] . '.');
+        finalize(Configuration::getWorkingDir() . '/daily.' . $show_data['intShowUrl'] . '.', updateStatusNet(
+                array(
+                    randomTextSelect(array('A new !daily show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
+                    randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' daily show for today (' . $show_data['shorturl'] . ') features ' . $show_data['arrTracks'][1]['strTrackName'] . ' by ' . $show_data['arrTracks'][1]['strArtistName']))
+                    )));
         echo "Done.\r\n\r\n";
     }
     if (isset($json_data['weekly_show']) and $weekly) {
@@ -411,7 +415,26 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugUnlink($coverart);
         }
         echo "Uploading and finalizing\r\n";
-        finalize(Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.');
+        $show_summary = '';
+        $track_pointer = 0;
+        foreach($show_data['arrTracks'] as $track) {
+            if ($show_summary != '') {
+                if (++$track_pointer == count($show_data['arrTracks'])) {
+                    $show_summary .= ' and ';
+                } else {
+                    $show_summary .= ', ';
+                }
+            }
+            $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
+        }
+        finalize(Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.', 
+                    updateStatusNet(
+                        array(
+                            randomTextSelect(array('A new !weekly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
+                            randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' weekly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
+                        )
+                    )
+                );
         echo "Done.\r\n\r\n";
     }
     if (isset($json_data['monthly_show']) and $monthly) {
@@ -425,7 +448,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $intro .= randomTextSelect(
             array(
                 'Hello and welcome to the ' . $show_data['strShowNameSpoken'] . ' from ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> This show plays the top rated fourty tracks across all of cee cee hits <BREAK LEVEL="MEDIUM" /> ',
-                'Your listening to a feed from ' . $show_data['strSiteNameSpoken'] . ' and this is the ' . $show_data['strShowNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> In this show you will hear the top fourty tracks that you have been voting for at ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> '
+                'Your listening to a feed from ' . $show_data['strSiteNameSpoken'] . ' and this is the ' . $show_data['strShowNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> In this show you will hear the top four-tee tracks that you have been voting for at ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> '
             )
         );
         if ($show_data['isNSFW'] != 0) {
@@ -587,7 +610,27 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugUnlink($coverart);
         }
         echo "Uploading and finalizing\r\n";
-        finalize(Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.');
+        $show_summary = '';
+        $track_pointer = 0;
+        foreach($show_data['arrTracks'] as $track) {
+            if ($show_summary != '') {
+                if (++$track_pointer == count($show_data['arrTracks'])) {
+                    $show_summary .= ' and ';
+                } else {
+                    $show_summary .= ', ';
+                }
+            }
+            $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
+        }
+        finalize(Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.', 
+                    updateStatusNet(
+                        array(
+                            randomTextSelect(array('A new !monthly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '. Get it from ' . $show_data['shorturl'])),
+                            randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
+                        )
+                    )
+                );
+       finalize(Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.');
         echo "Done.\r\n\r\n";
     }
 }
