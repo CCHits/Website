@@ -33,7 +33,6 @@ class Configuration
     private $username       = 'admin';
     private $password       = 'admin';
     private $url_base       = 'cchits.net/api';
-    private $media_base     = '/media';
     private $protocol       = 'http';
     private $api            = '';
     private $WorkingDir     = '';
