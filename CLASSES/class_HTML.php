@@ -923,7 +923,7 @@ class HTML
     /**
      * Either redirect from the monthly page to the /show/showid or return an RSS feed.
      *
-     * @param integer $showdate The date of the show to return. Leave blank for an RSS feed.
+     * @param integer $showid The show ID to return. Leave blank for an RSS feed.
      *
      * @return void
      */

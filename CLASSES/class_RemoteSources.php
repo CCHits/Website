@@ -231,7 +231,7 @@ class RemoteSources extends GenericObject
     /**
      * To pass an exception back, without throwing it... add it to this class and return that
      *
-     * @param Exception $e
+     * @param Exception $e The exception to store.
      *
      * @return void
      */
@@ -730,7 +730,7 @@ class RemoteSources extends GenericObject
         } else {
             $duplicateTracks = TrackBroker::getTrackByExactName($this->preferredJson($this->strTrackName));
             if ($duplicateTracks and $this->forceTrackNameDuplicate != true) {
-                foreach($duplicateTracks as $duplicateTrack) {
+                foreach ($duplicateTracks as $duplicateTrack) {
                     $this->duplicateTracks[] = $duplicateTrack->getSelf();
                 }
                 throw new RemoteSource_DuplicateTrackName();
@@ -741,7 +741,7 @@ class RemoteSources extends GenericObject
         } else {
             $duplicateTracks = TrackBroker::getTrackByExactUrl($this->preferredJson($this->strTrackUrl));
             if ($duplicateTracks and $this->forceTrackUrlDuplicate != true) {
-                foreach($duplicateTracks as $duplicateTrack) {
+                foreach ($duplicateTracks as $duplicateTrack) {
                     $this->duplicateTracks[] = $duplicateTrack->getSelf();
                 }
                 throw new RemoteSource_DuplicateTrackUrl();
@@ -770,7 +770,7 @@ class RemoteSources extends GenericObject
                     parent::write();
                     $duplicateTracks = TrackBroker::getTrackByMD5($md5);
                     if ($duplicateTracks and $this->forceMD5Duplicate != true) {
-                        foreach($duplicateTracks as $duplicateTrack) {
+                        foreach ($duplicateTracks as $duplicateTrack) {
                             $this->duplicateTracks[] = $duplicateTrack->getSelf();
                         }
                         throw new RemoteSource_DuplicateMD5();

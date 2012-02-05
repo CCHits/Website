@@ -508,6 +508,13 @@ class TrackObject extends GenericObject
         }
     }
 
+    /**
+     * Set the length of the track to store it.
+     * 
+     * @param string $timeLength The track timelength to store.
+     * 
+     * @return void
+     */
     function set_timeLength($timeLength = '')
     {
         if ($timeLength == '') {

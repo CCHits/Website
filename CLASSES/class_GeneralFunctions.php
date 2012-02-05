@@ -111,17 +111,37 @@ class GeneralFunctions
         return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'fileformat', '');
     }
     
+    /**
+     * This function returns the length of a file in seconds, where possible.
+     * 
+     * @param string $filename The path of the file to process
+     * 
+     * @return long The length in seconds
+     */
     function getFileLengthInSeconds($filename = '')
     {
         return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_seconds', '0.000');
     }
 
+    /**
+     * Return the length of a file in Hours:Minutes:Seconds, where possible.
+     * 
+     * @param string $filename The path of the file to process
+     *
+     * @return time The time in HH:MM:SS
+     */
     function getFileLengthString($filename = '')
     {
         return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00');
     }
 
-    
+    /**
+     * One single function to load the id3lib library.
+     * 
+     * @param string $filename The filename to parse
+     * 
+     * @return array The media attributes parsed by the id3lib library.
+     */
     function getMediaAttributes($filename)
     {
         $arrLibs = new ExternalLibraryLoader();
@@ -657,6 +677,7 @@ class GeneralFunctions
      * and returns a string complete with newlines.
      * 
      * @param array $array Input values
+     * 
      * @return string
      */
     function array_to_string($array)

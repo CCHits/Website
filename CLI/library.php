@@ -54,6 +54,13 @@ function finalize($show_root, $comment_url)
     return $data;
 }
 
+/**
+ * A function to post StatusNet updates
+ * 
+ * @param array $array An array of posts to make
+ * 
+ * @return integer ConversationID or 0 
+ */
 function updateStatusNet($array = array())
 {
     if (! is_array($array)) {

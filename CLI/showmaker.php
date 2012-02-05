@@ -236,11 +236,15 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugUnlink($coverart);
         }
         // FIXME XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Got to here patching the functions to return some debugging messages if they fail
-        finalize(Configuration::getWorkingDir() . '/daily.' . $show_data['intShowUrl'] . '.', updateStatusNet(
+        finalize(
+            Configuration::getWorkingDir() . '/daily.' . $show_data['intShowUrl'] . '.', 
+            updateStatusNet(
                 array(
                     randomTextSelect(array('A new !daily show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' daily show for today (' . $show_data['shorturl'] . ') features ' . $show_data['arrTracks'][1]['strTrackName'] . ' by ' . $show_data['arrTracks'][1]['strArtistName']))
-                    )));
+                )
+            )
+        );
         echo "Done.\r\n\r\n";
     }
     if (isset($json_data['weekly_show']) and $weekly) {
@@ -417,7 +421,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         echo "Uploading and finalizing\r\n";
         $show_summary = '';
         $track_pointer = 0;
-        foreach($show_data['arrTracks'] as $track) {
+        foreach ($show_data['arrTracks'] as $track) {
             if ($show_summary != '') {
                 if (++$track_pointer == count($show_data['arrTracks'])) {
                     $show_summary .= ' and ';
@@ -427,14 +431,15 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
             $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
         }
-        finalize(Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.', 
-                    updateStatusNet(
-                        array(
-                            randomTextSelect(array('A new !weekly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
-                            randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' weekly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
-                        )
-                    )
-                );
+        finalize(
+            Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.', 
+            updateStatusNet(
+                array(
+                    randomTextSelect(array('A new !weekly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
+                    randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' weekly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
+                )
+            )
+        );
         echo "Done.\r\n\r\n";
     }
     if (isset($json_data['monthly_show']) and $monthly) {
@@ -612,7 +617,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         echo "Uploading and finalizing\r\n";
         $show_summary = '';
         $track_pointer = 0;
-        foreach($show_data['arrTracks'] as $track) {
+        foreach ($show_data['arrTracks'] as $track) {
             if ($show_summary != '') {
                 if (++$track_pointer == count($show_data['arrTracks'])) {
                     $show_summary .= ' and ';
@@ -622,15 +627,15 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
             $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
         }
-        finalize(Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.', 
-                    updateStatusNet(
-                        array(
-                            randomTextSelect(array('A new !monthly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '. Get it from ' . $show_data['shorturl'])),
-                            randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
-                        )
-                    )
-                );
-       finalize(Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.');
+        finalize(
+            Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.', 
+            updateStatusNet(
+                array(
+                    randomTextSelect(array('A new !monthly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '. Get it from ' . $show_data['shorturl'])),
+                    randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
+                )
+            )
+        );
         echo "Done.\r\n\r\n";
     }
 }
