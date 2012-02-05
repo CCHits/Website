@@ -63,7 +63,7 @@ function finalize($show_root, $comment_url)
  */
 function updateStatusNet($array = array())
 {
-    if (! is_array($array)) {
+    if ((! is_array($array)) || (Configuration::getStatusNetUser() == '')) {
         return 0;
     }
     $conversation = 0;
@@ -76,7 +76,7 @@ function updateStatusNet($array = array())
         }
         if ($state == true) {
             $atom = curlGetResource(Configuration::getStatusNet() . 'friends_timeline/' . Configuration::getStatusNetUser() . '.atom?count=1', 0);
-            if ($in_reply_to == 0) {
+            if ($atom != false && $in_reply_to == 0) {
                 preg_match("/<link rel=\"alternate\" type=\"text\/html\" href=\"[^\"]+\/(\d+)/", $atom, $matches);
                 if (count($matches) > 0) {
                     $in_reply_to = $matches[1];
