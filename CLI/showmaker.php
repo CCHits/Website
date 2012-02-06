@@ -27,45 +27,45 @@ $historic = false;
 $GLOBALS['DEBUG'] = false;
 
 foreach ($arrUri['parameters'] as $key => $value) {
-    if ($date == null) {
+    if ($date === null) {
         if (preg_match('/(\d\d\d\d\d\d\d\d)/', $value, $matches)) {
             $date = $matches[0];
         } elseif (preg_match('/(\d\d\d\d\d\d\d\d)/', $key, $matches)) {
             $date = $matches[0];
         }
     }
-    if ($value == 'daily' or $key == 'daily') {
-        if ($daily == true and $weekly == true and $monthly == true) {
+    if ($value === 'daily' || $key === 'daily') {
+        if ($daily === true && $weekly === true && $monthly === true) {
             $weekly = false;
             $monthly = false;
         } else {
             $daily = true;
         }
     }
-    if ($value == 'weekly' or $key == 'weekly') {
-        if ($daily == true and $weekly == true and $monthly == true) {
+    if ($value === 'weekly' || $key === 'weekly') {
+        if ($daily === true && $weekly === true && $monthly === true) {
             $daily = false;
             $monthly = false;
         } else {
             $weekly = true;
         }
     }
-    if ($value == 'monthly' or $key == 'monthly') {
-        if ($daily == true and $weekly == true and $monthly == true) {
+    if ($value === 'monthly' || $key === 'monthly') {
+        if ($daily === true && $weekly === true && $monthly === true) {
             $daily = false;
             $weekly = false;
         } else {
             $monthly = true;
         }
     }
-    if ($value == 'debug' or $key == 'debug') {
+    if ($value === 'debug' || $key === 'debug') {
         $GLOBALS['DEBUG'] = true;
     }
-    if ($value == 'historic' or $key == 'historic') {
+    if ($value === 'historic' || $key === 'historic') {
         $historic = true;
     }
 }
-if ($date == null) {
+if ($date === null) {
     $date = date("Ymd");
 }
 
@@ -88,7 +88,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     $track_nsfw = array(' a track which may not be considered work or family safe <BREAK LEVEL="MEDIUM" /> It is ');
     $show_nsfw = array(' the show for to day contains tracks which may not be considered work or family safe <BREAK LEVEL="MEDIUM" /> ');
 
-    if (isset($json_data['daily_show']) and $daily) {
+    if (isset($json_data['daily_show']) && $daily) {
         echo "Creating Daily Show...\r\n";
         $show_data = $json_data['daily_show'];
         echo 'The Daily track is ' . $show_data['arrTracks'][1]['strTrackName'] . ' by ' . $show_data['arrTracks'][1]['strArtistName'] . "\r\n";
@@ -136,7 +136,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
 
         echo "Downloading and merging audio file\r\n";
         $track = downloadFile($show_data['arrTracks'][1]['localSource']);
-        if ($track == false) {
+        if ($track === false) {
             debugUnlink(Configuration::getWorkingDir() . '/run.wav');
             die("The tracks are not currently available.\r\n");
         }
@@ -237,6 +237,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         }
         // FIXME XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Got to here patching the functions to return some debugging messages if they fail
         finalize(
+            $show_data['intShowID'],
             Configuration::getWorkingDir() . '/daily.' . $show_data['intShowUrl'] . '.', 
             updateStatusNet(
                 array(
@@ -247,7 +248,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         );
         echo "Done.\r\n\r\n";
     }
-    if (isset($json_data['weekly_show']) and $weekly) {
+    if (isset($json_data['weekly_show']) && $weekly) {
         echo "Creating Weekly Show...\r\n";
         $show_data = makeArrayFromObjects($json_data['weekly_show']);
         $running_order = addEntryToJsonArray('', 0, 'intro');
@@ -343,7 +344,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
 
             echo "Downloading and merging audio file ($intTrackID)\r\n";
             $track = downloadFile($arrTrack['localSource']);
-            if ($track == false) {
+            if ($track === false) {
                 debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
                 die("The tracks are not currently available.");
             }
@@ -423,7 +424,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $track_pointer = 0;
         foreach ($show_data['arrTracks'] as $track) {
             if ($show_summary != '') {
-                if (++$track_pointer == count($show_data['arrTracks'])) {
+                if (++$track_pointer === count($show_data['arrTracks'])) {
                     $show_summary .= ' and ';
                 } else {
                     $show_summary .= ', ';
@@ -432,6 +433,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
         }
         finalize(
+            $show_data['intShowID'],
             Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.', 
             updateStatusNet(
                 array(
@@ -442,7 +444,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         );
         echo "Done.\r\n\r\n";
     }
-    if (isset($json_data['monthly_show']) and $monthly) {
+    if (isset($json_data['monthly_show']) && $monthly) {
         echo "Creating Monthly Show...\r\n";
         $show_data = $json_data['monthly_show'];
         $running_order = addEntryToJsonArray('', 0, 'intro');
@@ -538,7 +540,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
 
             echo "Downloading and merging audio file ($intTrackID)\r\n";
             $track = downloadFile($arrTrack['localSource']);
-            if ($track == false) {
+            if ($track === false) {
                 debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
                 die("The tracks are not currently available.");
             }
@@ -619,7 +621,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $track_pointer = 0;
         foreach ($show_data['arrTracks'] as $track) {
             if ($show_summary != '') {
-                if (++$track_pointer == count($show_data['arrTracks'])) {
+                if (++$track_pointer === count($show_data['arrTracks'])) {
                     $show_summary .= ' and ';
                 } else {
                     $show_summary .= ', ';
@@ -628,6 +630,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
         }
         finalize(
+            $show_data['intShowID'],
             Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.', 
             updateStatusNet(
                 array(

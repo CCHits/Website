@@ -21,12 +21,13 @@
  * - update the system with the generated files
  * - add timestamps and hashes
  *
- * @param string $show_root   The base path to the files we'll be uploading.
- * @param string $comment_url The URL of the appropriate point to comment on this show
+ * @param integer $show_id     The ShowID to finalize
+ * @param string  $show_root   The base path to the files we'll be uploading.
+ * @param string  $comment_url The URL of the appropriate point to comment on this show
  *
  * @return void
  */
-function finalize($show_root, $comment_url)
+function finalize($show_id, $show_root, $comment_url)
 {
     $array = array('hash' => '', 'time' => '', 'comment' => '');
     if (file_exists($show_root . 'mp3')) {
@@ -50,7 +51,7 @@ function finalize($show_root, $comment_url)
         // don't bother. It should have been picked up in the mp3 and oga files anyway.
     }
     $array['comment'] = $comment_url;
-    $data = curlPostRequest(Configuration::getAPI() . '/finalize', $array);
+    $data = curlPostRequest(Configuration::getAPI() . '/finalize/' . $show_id, $array);
     return $data;
 }
 
