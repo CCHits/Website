@@ -106,7 +106,7 @@ class Configuration
         $handler = self::getHandler();
         return $handler->StaticDir;
     }
-    
+
     /**
      * Return the value of the StatusNet variable
      *
@@ -128,5 +128,4 @@ class Configuration
         $handler = self::getHandler();
         return $handler->StatusNetUser;
     }
-
 }
