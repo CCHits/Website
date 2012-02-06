@@ -37,6 +37,8 @@ $RO_PASS = '';
 
 $APPCONFIG = array();
 
+date_default_timezone_set("UTC");
+
 if (file_exists(dirname(__FILE__) . "/LOCAL_CONFIG.php")) {
     include dirname(__FILE__) . "/LOCAL_CONFIG.php";
 }
