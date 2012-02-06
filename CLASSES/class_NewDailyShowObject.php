@@ -66,7 +66,7 @@ class NewDailyShowObject extends NewInternalShowObject
         if ($boolLongTrack) {
             $sql .= " AND timeLength < '00:08:00'";
         }
-        $sql .= $strQry . " ORDER BY RAND() LIMIT 0,1 ";
+        $sql .= " ORDER BY RAND() LIMIT 0,1 ";
         $query = $db->prepare($sql);
         $query->execute();
         // This section of code, thanks to code example here:
