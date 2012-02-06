@@ -523,14 +523,21 @@ class ShowObject extends GenericObject
         foreach ($array as $file) {
             if ($file['error'] == 0) {
                 switch($file['type']) {
+                case 'audio/mpeg':
                 case 'audio/mpeg3':
-                    move_uploaded_file($file['tmp_name'], ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3');
+                case 'audio/mp3':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                    error_log('mp3: from ' . $file['tmp_name'] . ' to ' . $filename . ' state: ' . move_uploaded_file($file['tmp_name'], $filename));
                     break;
                 case 'audio/mp4':
-                    move_uploaded_file($file['tmp_name'], ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a');
+                case 'audio/m4a':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                    error_log('m4a: from ' . $file['tmp_name'] . ' to ' . $filename . ' state: ' . move_uploaded_file($file['tmp_name'], $filename));
                     break;
                 case 'audio/ogg':
-                    move_uploaded_file($file['tmp_name'], ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga');
+                case 'audio/oga':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                    error_log('ogg: from ' . $file['tmp_name'] . ' to ' . $filename . ' state: ' . move_uploaded_file($file['tmp_name'], $filename));
                     break;
                 }
             }

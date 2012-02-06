@@ -39,7 +39,7 @@ try {
             case 'weekly':
             case 'monthly':
             case 'extra':
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/show/' . $arrUri['path_items'][1] . '.';
+                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $arrUri['path_items'][1] . '.';
                 break;
             default:
                 UI::sendHttpResponse(404);
