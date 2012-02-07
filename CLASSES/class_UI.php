@@ -390,6 +390,17 @@ class UI
         case 'mp3':
             $ctype='audio/mpeg';
             break;
+        case 'ogg':
+        case 'oga':
+            $ctype='audio/ogg';
+            break;
+        case 'mp3':
+            $ctype='audio/mpeg';
+            break;
+        case 'mp4':
+        case 'm4a':
+            $ctype='audio/mp4';
+            break;
         case 'mpg':
             $ctype='video/mpeg';
             break;
@@ -405,9 +416,12 @@ class UI
             list($size_unit, $range_orig) = explode('=', $_SERVER['HTTP_RANGE'], 2);
 
             if ($size_unit == 'bytes') {
-                //multiple ranges could be specified at the same time, but for simplicity only serve the first range
-                //http://tools.ietf.org/id/draft-ietf-http-range-retrieval-00.txt
-                list($range, $extra_ranges) = explode(',', $range_orig, 2);
+                if ($range_orig == '0-') {
+                    $range = '';
+                } else {
+                    $ranges = explode(',', $range_orig);
+                    $range = $ranges[0];
+                }
             } else {
                 $range = '';
             }
