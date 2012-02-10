@@ -36,6 +36,7 @@
 				<th>Track Position</th>
 				<th>Track Name</th>
 				<th>Artist</th>
+                                <th>Vote URL</th>
 			</tr>
 {if isset($show.arrTracks) and count($show.arrTracks) > 0}
 {foreach from=$show.arrTracks key=key item=track name=tracks}
@@ -59,6 +60,7 @@
 				</td>
 				<td>{$track.strTrackName}</td>
 				<td>{$track.strArtistName}</td>
+                                <td>{$baseURL}vote/{$track.intTrackID}/{$show.intShowID}</td>
 			</tr>
 {/foreach}
 {/if}
