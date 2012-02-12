@@ -96,7 +96,7 @@ class GeneralFunctions
             $fp = @fopen($file, 'x');
         } while (!$fp);
         fclose($fp);
-        return $file;
+        return realpath($file);
     }
 
     /**
