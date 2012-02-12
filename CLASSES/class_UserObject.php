@@ -43,10 +43,10 @@ class UserObject extends GenericObject
     protected $strDBKeyCol = "intUserID";
     // Local Properties
     protected $intUserID = 0;
-    protected $strOpenID = "";
-    protected $strEMail = "";
-    protected $strCookieID = "";
-    protected $sha1Pass = "";
+    protected $strOpenID = null;
+    protected $strEMail = null;
+    protected $strCookieID = null;
+    protected $sha1Pass = null;
     protected $isAuthorized = 0;
     protected $isUploader = 0;
     protected $isAdmin = 0;

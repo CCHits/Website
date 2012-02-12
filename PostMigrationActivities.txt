@@ -4,9 +4,19 @@ Post Import Activities
 SQL Queries
 ======================
 
+ALTER TABLE `shows` CHANGE `datDateAdded` `datDateAdded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
 INSERT INTO showtracks SELECT shows.intShowID, 1, tracks.intTrackID FROM shows, tracks WHERE tracks.datDailyShow=shows.intShowUrl AND shows.enumShowType='daily' ORDER BY intShowID;
 
-ALTER TABLE `users` ADD `strEMail` TEXT NOT NULL AFTER `strOpenID`;
+ALTER TABLE `users` ADD `strEMail` TEXT NULL AFTER `strOpenID`;
+ALTER TABLE `users` CHANGE `strOpenID` `strOpenID` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `strCookieID` `strCookieID` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `sha1Pass` `sha1Pass` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+UPDATE users SET strOpenID = NULL WHERE strOpenID = '';
+UPDATE users SET strEMail = NULL WHERE strEMail = '';
+UPDATE users SET strCookieID = NULL WHERE strCookieID = '';
+UPDATE users SET sha1Pass = NULL WHERE sha1Pass = '';
 
 CREATE TABLE `processing` (
 `intProcessingID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -35,6 +45,19 @@ INSERT INTO `config` (`key`, `value`) VALUES ('baseURL', '');
 INSERT INTO `config` (`key`, `value`) VALUES ('Soundcloud API', '');
 
 ALTER TABLE tracks ADD intDuplicateID INT NOT NULL AFTER isApproved;
+
+ALTER TABLE `shows` CHANGE `strShowName` `strShowName` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `strShowUrl` `strShowUrl` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `shaHash` `shaHash` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `strCommentUrl` `strCommentUrl` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `jsonAudioLayout` `jsonAudioLayout` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+UPDATE shows SET strShowName = NULL WHERE strShowName = '';
+UPDATE shows SET strShowUrl = NULL WHERE strShowUrl = '';
+UPDATE shows SET shaHash = NULL WHERE shaHash = '';
+UPDATE shows SET strCommentUrl = NULL WHERE strCommentUrl = '';
+UPDATE shows SET jsonAudioLayout = NULL WHERE jsonAudioLayout = '';
+UPDATE shows SET intUserID = 1 WHERE intUserID = 0;
 
 File Movements
 =======================
