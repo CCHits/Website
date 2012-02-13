@@ -35,17 +35,17 @@ class ShowObject extends GenericObject
     protected $strDBKeyCol = "intShowID";
     // Local Properties
     protected $intShowID = 0;
-    protected $strShowName = "";
+    protected $strShowName = null;
     protected $strShowNameSpoken = "";
-    protected $strShowUrl = "";
+    protected $strShowUrl = null;
     protected $strShowUrlSpoken = "";
     protected $intShowUrl = 0;
     protected $enumShowType = null;
     protected $intUserID = 0;
     protected $timeLength = "";
-    protected $shaHash = "";
-    protected $strCommentUrl = "";
-    protected $jsonAudioLayout = "";
+    protected $shaHash = null;
+    protected $strCommentUrl = null;
+    protected $jsonAudioLayout = null;
     protected $datDateAdded = "";
     protected $strShowFileMP3 = "";
     protected $strShowFileOGA = "";

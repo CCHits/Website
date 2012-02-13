@@ -478,7 +478,7 @@ class TrackObject extends GenericObject
     function set_fileSource($fileSource = "")
     {
         $format = GeneralFunctions::getFileFormat($fileSource);
-        $newfilename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
+        $newfilename = realpath(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format);
         if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '') {
             if (rename($fileSource, $newfilename)) {
                 $this->fileSource = $this->intTrackID . '.' . $format;
@@ -727,7 +727,7 @@ class TrackObject extends GenericObject
      */
     function get_localFileSource()
     {
-        return ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->fileSource;
+        return realpath(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->fileSource);
     }
 
     /**
