@@ -40,7 +40,7 @@ class RemoteSourcesFMA extends RemoteSources
             return 406;
         }
         $file_contents = file_get_contents($src);
-        if ($file_contents == FALSE or $file_contents = '') {
+        if ($file_contents == FALSE or $file_contents == '') {
             return 406;
         }
         $regex_strArtistName = '/\s+<span class="subh1">\(by <a href="\S+">(.*)<\/a>\)<\/span>/';
