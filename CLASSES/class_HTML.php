@@ -306,7 +306,7 @@ class HTML
                 case 'delshow':
                     $objShow = ShowBroker::getShowByID($object[2]);
                     if ($objShow != false and $objShow->get_intUserID() == $user->get_intUserID()) {
-                        $objUser->cancel();
+                        $objShow->cancel();
                         UI::Redirect('admin/listshows');
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
@@ -341,10 +341,20 @@ class HTML
                     UI::SmartyTemplate('listunfinishedtracks.html', $this->result);
                     break;
                 case 'listshows':
+                    $this->result['previous_page'] = false;
+                    $this->result['next_page'] = false;
                     $shows = ShowBroker::getShowByUserID($user);
                     foreach ($shows as $show) {
                         $this->result['shows'][$show->get_intShowID()] = $show->getSelf();
                         $this->result['shows'][$show->get_intShowID()]['countTracks'] = count($show->get_arrTracks());
+                    }
+                    if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
+                        $this->result['previous_page'] = true;
+                    }
+                    $total_tracks = ShowBroker::getTotalShowsByUserID($user);
+                    $current_tracks = (GeneralFunctions::getValue($this->arrUri['parameters'], 'page', 0, true) + 1) * GeneralFunctions::getValue($this->arrUri['parameters'], 'size', 25, true);
+                    if ($total_tracks > $current_tracks) {
+                        $this->result['next_page'] = true;
                     }
                     UI::SmartyTemplate('listmyshows.html', $this->result);
                     break;

@@ -176,9 +176,8 @@ class ShowBroker
         
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM shows WHERE intUserID = ?";
-            $pagestart = ($intPage*$intSize);
-            $query = $db->prepare($sql . " ORDER BY datDateAdded DESC LIMIT " . $pagestart . ", $intSize");
+            $sql = "SELECT * FROM shows WHERE intUserID = ? ORDER BY datDateAdded DESC LIMIT " . ($intPage*$intSize) . ", $intSize";
+            $query = $db->prepare($sql);
             $query->execute(array($intUserID));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
@@ -209,6 +208,34 @@ class ShowBroker
         }
     }
 
+    /**
+     * Return the total number of tracks in the system
+     *
+     * @return integer Total number of tracks
+     */
+    function getTotalShowsByUserID($intUserID = 0)
+    {
+        if (is_object($intUserID)) {
+            $intUserID = $intUserID->get_intUserID();
+        }
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT COUNT(intShowID) FROM shows WHERE intUserID = ?";
+            $query = $db->prepare($sql);
+            $query->execute(array($intUserID));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+            }
+            return $query->fetchColumn();
+        } catch(Exception $e) {
+            error_log("SQL Died: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    
     /**
      * This function finds a show by it's exact (but case insensitive) URL.
      *

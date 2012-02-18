@@ -130,9 +130,9 @@ class ShowObject extends GenericObject
         if (count($this->get_arrTracks) == 0) {
             $db = Database::getConnection();
             try {
-                $sql = "DELETE FROM processing WHERE intProcessingID = ?";
+                $sql = "DELETE FROM shows WHERE intShowID = ?";
                 $query = $db->prepare($sql);
-                $query->execute(array($this->intProcessingID));
+                $query->execute(array($this->intShowID));
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {

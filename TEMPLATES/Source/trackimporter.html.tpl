@@ -5,8 +5,9 @@
 		<link rel="stylesheet" type="text/css" href="{$baseURL}STYLE/site.css" />	
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
+                <p><a href="{$baseURL}admin">Go back to the admin page.</a></p>
 		<h3>Track Editor</h3>
 		<p>On this page, you will edit a track details before it is downloaded.</p>
 {if $track.duplicateTracks != false}

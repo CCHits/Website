@@ -4,8 +4,9 @@
 		<title>Set Credentials: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
+                <p><a href="{$baseURL}admin">Go back to the admin page.</a></p>
 		<h3>Set Credentials Page</h3>
 		<p>On this page you can create an account to use the API, or you can amend your username and password.</p>
 {if $error}

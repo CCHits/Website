@@ -9,7 +9,7 @@
 		<h3>Login to upload and retrieve tracks, to edit existing tracks and to associate tracks to shows.</h3>
 		<p>We use OpenID to authenticate you. OpenID means you don't need to remember a new username and password combination to login, or store a new one somewhere... you just need to remember the login details for the accounts you probably use every day!</p>
 {if isset($notuploader) or isset($notadmin) or isset($notyourtrack) or isset($notyourshow)}
-		<p>You've been brought back to this page, as you may need to log in with an account which provides different access to the system than the access you have requested. For your reference, your UserID is {$user.intUserID}</p>
+		<p class="error"><b>You've been brought back to this page, as you may need to log in with an account which provides different access to the system than the access you have requested. For your reference, your UserID is {$user.intUserID}</b></p>
 {if isset($notuploader)}
 		<p>This account does not have permission to upload to or amend tracks with this service.</p>
 {/if}

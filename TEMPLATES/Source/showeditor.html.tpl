@@ -4,10 +4,11 @@
 		<link rel="stylesheet" type="text/css" href="{$baseURL}STYLE/site.css" />	
 	</head>
 	<body>
-		<h1>Welcome to {$ServiceName}</h1>
+		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
-		<h3>Track Editor</h3>
-		<p>On this page you will modify or create a show.</p>
+                <p><a href="{$baseURL}admin">Go back to the admin page.</a></p>
+		<h3>Show Editor</h3>
+		<p>On this page you will modify or create a show. (<a href="{$baseURL}admin/listshows">Go to your shows</a>)</p>
 {if isset($error) and $error}
 		<p>There was an error.</p>
 {/if}
