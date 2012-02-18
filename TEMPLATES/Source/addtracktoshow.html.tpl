@@ -1,8 +1,12 @@
 <html>
 	<head>
-		<title>Add Track To Show</title>
+		<title>Add Track To Show: {$ServiceName} - {$Slogan}</title>
 	</head>
 	<body>
+		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
+		<h2>{$Slogan}</h2>
+                <p><a href="{$baseURL}admin">Go back to the admin page.</a></p>
+		<h3>Add a track to a show</h3>
 		<p>Associate track "{$track.strTrackName}" by "{$track.strArtistName}" to one of the following shows:</p>
 		<table>
 			<tr>
