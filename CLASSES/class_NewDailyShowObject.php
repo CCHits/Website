@@ -62,7 +62,7 @@ class NewDailyShowObject extends NewInternalShowObject
             }
         }
 
-        $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE showtrack.intTrackID IS NULL ";
+        $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 showtrack.intTrackID IS NULL ";
         if ($boolLongTrack) {
             $sql .= " AND timeLength < '00:08:00'";
         }
