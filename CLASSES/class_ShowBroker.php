@@ -210,6 +210,8 @@ class ShowBroker
 
     /**
      * Return the total number of tracks in the system
+     * 
+     * @param integer|object $intUserID The UserID or the user object.
      *
      * @return integer Total number of tracks
      */
