@@ -144,7 +144,7 @@ class TracksBroker
         $return = array();
         $db = Database::getConnection();
         try {
-            $sql = "SELECT tracks.* FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 AND showtrack.intTrackID IS NULL";
+            $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 AND showtrack.intTrackID IS NULL";
             $query = $db->prepare($sql);
             $query->execute();
             // This section of code, thanks to code example here:
