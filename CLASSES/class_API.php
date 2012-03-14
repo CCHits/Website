@@ -396,6 +396,16 @@ class API
                             }
                         }
                     }
+                    $temp = TracksBroker::getUnplayedTracks();
+                    if ($temp != false) {
+                        foreach ($temp as $track) {
+                            if ($this->format == 'shell') {
+                                $this->result_list['unplayed_' . $track->get_intTrackID()] = $track->get_strTrackName() . ' by ' . $track->get_strArtistName();
+                            } else {
+                                $this->result_array['unplayed'][$track->get_intTrackID()] = $track;
+                            }
+                        }
+                    }
                     $this->render();
                     exit(0);
                 } else {

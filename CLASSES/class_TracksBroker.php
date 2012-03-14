@@ -133,5 +133,39 @@ class TracksBroker
             return false;
         }
     }
+    
+    /**
+     * A function to retrieve all unplayed tracks
+     *
+     * @return array|false An array of the Tracks, or false if the operation fails.
+     */
+    function getUnplayedTracks()
+    {
+        $return = array();
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT tracks.* FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 AND showtrack.intTrackID IS NULL";
+            $query = $db->prepare($sql);
+            $query->execute();
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intShowID, 'error'=>$query->errorInfo()), true), 1);
+            }
+            $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+            if ($tracks != false and count($tracks)>0) {
+                $part = 0;
+                foreach ($tracks as $track) {
+                    $temp = TrackBroker::getTrackByID($track['intTrackID']);
+                    if ($temp != false) {
+                        $return[$part++] = $temp;
+                    }
+                }
+            }
+            return $return;
+        } catch(Exception $e) {
+            return false;
+        }
+    }
 }
 
