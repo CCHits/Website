@@ -191,7 +191,6 @@ class ShowBroker
                 $handler = self::getHandler();
                 while ($item != false) {
                     $return[] = $item;
-                    $item = $query->fetchObject('ShowObject');
                     if ($item != false) {
                         $handler->arrShows[$item->get_intShowID()] = $item;
                         if ((integer) $item->get_intShowUrl() > 0) {
