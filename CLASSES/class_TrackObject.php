@@ -478,7 +478,7 @@ class TrackObject extends GenericObject
     function set_fileSource($fileSource = "")
     {
         $format = GeneralFunctions::getFileFormat($fileSource);
-        $newfilename = realpath(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format);
+        $newfilename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
         if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '') {
             if (rename($fileSource, $newfilename)) {
                 $this->fileSource = $this->intTrackID . '.' . $format;
