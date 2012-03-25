@@ -373,6 +373,7 @@ class GenericObject
      */
     function deobjectify_array($process)
     {
+        $return = array();
         foreach ((array) $process as $key => $value) {
             if (is_object($value)) {
                 $return[$key] = deobjectify_array($value);
