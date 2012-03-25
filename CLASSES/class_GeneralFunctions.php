@@ -154,7 +154,7 @@ class GeneralFunctions
         if (file_exists($getid3lib)) {
             include_once $getid3lib;
         } else {
-            error_log("Failed to load Media Handler - include file doesn't exist");
+            error_log("Failed to load Media Handler - include file doesn't exist (looking for $getid3lib)");
             die("There was an error - please contact an administrator.");
         }
         $getID3 = new getID3;
