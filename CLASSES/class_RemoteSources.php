@@ -215,6 +215,9 @@ class RemoteSources extends GenericObject
         if (isset($arrUri['parameters']['del_strArtistUrl']) and $arrUri['parameters']['del_strArtistUrl'] != '') {
             $this->del_strArtistUrl($arrUri['parameters']['del_strArtistUrl']);
         }
+        if (isset($arrUri['parameters']['enumTrackLicense']) and $arrUri['parameters']['enumTrackLicense'] != '') {
+            $this->set_enumTrackLicense($arrUri['parameters']['enumTrackLicense']);
+        }
         if (isset($arrUri['parameters']['approved'])) {
             $this->set_isApproved($this->asBoolean($arrUri['parameters']['approved']));
         }
