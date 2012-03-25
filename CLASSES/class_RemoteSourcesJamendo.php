@@ -42,10 +42,12 @@ class RemoteSourcesJamendo extends RemoteSources
         $url_base = "http://api.jamendo.com/get2/track_name+track_url+license_url+artist_name+artist_url/track/json/track_album+album_artist/track/?track_id=";
         $file_contents = file_get_contents($url_base . $match[1]);
         if ($file_contents == FALSE) {
+            error_log("No response when trying to retrieve $url_base{$match[1]}");
             return 406;
         }
         $json_contents = json_decode($file_contents);
         if ($json_contents == FALSE) {
+            error_log("No content when trying to read $url_base{$match[1]}");
             return 406;
         }
         preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);
