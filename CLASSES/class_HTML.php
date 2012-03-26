@@ -598,6 +598,9 @@ class HTML
             $show = new NewExternalShowObject($showUrl, $showName);
             if (is_object($show)) {
                 $intShowID = $show->get_intShowID();
+                if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '') {                
+                  $temp = new NewShowTrackObject($this->arrUri['parameters']['intTrackID'], $show->get_intShowID());
+                }
                 UI::Redirect('admin/show/' . $intShowID);
             } else {
                 UI::Redirect('admin');

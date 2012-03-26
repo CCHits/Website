@@ -15,6 +15,7 @@
 			</tr>
 			<tr>
 				<form method="post" action="{$baseURL}admin/addshow/">
+				  <input type="hidden" name="intTrackID" value="{$track.intTrackID}">
 					<td>Show Url: <input type="text" name="strShowUrl" size="15"> Show Name (Optional): <input type="text" name="strShowName" size="15"></td>
 					<td><input type="submit" value="Go" /></td>
 				</form>
