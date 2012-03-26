@@ -572,7 +572,7 @@ class HTML
         if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '' and $this->result['track'] != false) {
             $_SESSION['addtracktoshow'] = $this->arrUri['parameters']['intTrackID'];
             $this->result['track'] = $this->result['track']->getSelf();
-            $shows = ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID(), 0, 10000);
+            $shows = ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID(), 0, 100);
             foreach ($shows as $show) {
                 $this->result['shows'][] = $show->getSelf();
             }
