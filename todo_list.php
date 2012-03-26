@@ -5,8 +5,8 @@
  *
  * Front page - Done
  *
- * Chart - HTML - Partial
- * Chart - API
+ * Chart - HTML - Done
+ * Chart - API - Done
  * NEXTRELEASE: Chart API calls
  * Chart - RSS Diffs - Done
  *
@@ -17,18 +17,15 @@
  * Trend Data - RSS
  * NEXTRELEASE: All Trend pages and calls
  *
- * Daily Show - Generate
- * TODO: Finish Daily Show Generator
+ * Daily Show - Generate - Done
  * Daily Show - HTML - Done
  * Daily Show - RSS - Done
  *
- * Weekly Show - Generate
- * TODO: Finish Weekly Show Generator
+ * Weekly Show - Generate - Done
  * Weekly Show - HTML - Done
  * Weekly Show - RSS - Done
  *
- * Monthly Show - Generate
- * TODO: Finish Monthly Show Generator
+ * Monthly Show - Generate - Done
  * Monthly Show - HTML - Done
  * Monthly Show - RSS - Done
  *
@@ -42,11 +39,9 @@
  *
  * Track - HTML
  * Track - API
- * TODO: Check why track 55 returns just the daily show (91), when it's also been on show 96 for the HTML and API.
  * Track - Search (By Name, source, Duration, license and Work-Safe status)
  * NEXTRELEASE: Write HTML search tool to find shows by various criteria
  * Track - RSS of Changes (Shows, votes, positions)
- * Track - Identify NSFW error
  * NEXTRELEASE: Write function to flag NSFW on tracks.
  * Track - Identify Non-CC licensed or contention
  * NEXTRELEASE: Write function to flag license contention on tracks.
@@ -55,7 +50,6 @@
  * NEXTRELEASE: Amend RemoteSources to create transcode to .ogg, .mp3 and .m4a for sourced files. Set ID3/vorbiscomment/mp4tags with artist, title from CCHits DB. Add comment to show download location or track location. Set QRCode as Artwork, pointing to the CCHits.net/track/trackid page.
  *
  * Artist - Search (By Name, source, URL)
- * TODO: ArtistSearch Needed for Remotesources functions.
  * Artist - HTML (like external show)
  * Artist - API (like external show)
  * Artist - RSS of changes (Tracks, votes, positions)
@@ -74,7 +68,6 @@
  *
  * Admin console - upload file - Done
  * Admin console - download from remote sources - Done
- * TODO: Fix post-add on Admin console to search for prior examples of that track (not just by URL) and Artist. Create new entry for both if not exist.
  * Admin console - create show - Done
  * Admin console - edit show - Done
  * Admin console - change basic auth parameters - Done
