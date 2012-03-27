@@ -66,9 +66,9 @@ class ShowTrackBroker
             if ($item == false) {
                 return false;
             } else {
-                $return[] = $item;
+                $return[$item->get_intPartID()] = $item;
                 while ($item = $query->fetchObject('ShowTrackObject')) {
-                    $return[] = $item;
+                    $return[$item->get_intPartID()] = $item;
                 }
                 return $return;
             }
@@ -146,58 +146,47 @@ class ShowTrackBroker
     }
 
     /**
-     * This function manipulates the running order of a show, by re-indexing
-     * all the show tracks, two tracks apart, until the track to be moved back
-     * arrives, when it is shunted into a space 3 tracks back.
+     * This function sets the value of the track position which needs to be
+     * moved to 9999, then moves the previous track to the position of the
+     * track which needs to be moved, and then will move the track just moved
+     * to position 9999 back to the position of the track which was moved.
      *
-     * The tracks are then sorted and committed incremented by 900 track
-     * spaces. They are then re-run, committing them back in order 900 track
-     * spaces back. This is because the index on the ShowTracks table won't
-     * permit duplication of the "intPartID" value.
+     * This is because of the indexes on this table, and that we can't have two
+     * tracks in the same position in a show.
      *
-     * @param object  $objShow    The object containing the show running order and intShowID
-     * @param integer $intTrackID The track to move one space up in the running order
+     * @param object  $objShow    The object containing the show running order
+     * and intShowID
+     * @param integer $intTrackID The track to move one space up in the running
+     * order
      *
      * @return void
      */
     public function MoveShowTrackUp($objShow = null, $intTrackID = null)
     {
-        $pos = 1;
-        $reset = false;
-        foreach ($objShow->get_arrTracks() as $intPartID => $objTrack) {
-            if ($objTrack->get_intTrackID() == $intTrackID) {
-                $pos = $pos - 3;
-                $temp[$pos] = $objTrack;
-                $reset = true;
-            } else {
-                $pos = $pos + 2;
-                $temp[$pos] = $objTrack;
-            }
-        }
-        if ($reset == true) {
-            ksort($temp);
-            $pos = 0;
-            foreach ($temp as $objTrack) {
-                $arrTracks[$objTrack->get_intTrackID()] = $pos++;
-                $arrShowTrackObjects[$objTrack->get_intTrackID()] = ShowTrackBroker::getShowTracksByShowTrackID($objShow->get_intShowID(), $objTrack->get_intTrackID());
-            }
-            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
-                $objShowTrack->set_intPartID(900+$arrTracks[$intTrackID]);
-                $objShowTrack->write();
-            }
-            foreach ($arrShowTrackObjects as $intTrackID=>$objShowTrack) {
-                $objShowTrack->set_intPartID($arrTracks[$intTrackID]);
-                $objShowTrack->write();
+        $arrShowTracks = ShowTrackBroker::getShowTracksByShowID($objShow->get_intShowID());
+        $this_objShowTrack = false;
+        $this_intPartID = false;
+        foreach ($arrShowTracks as $intPartID => $objShowTrack) {
+            $last_objShowTrack = $this_objShowTrack;
+            $last_intPartID = $this_intPartID;
+            $this_objShowTrack = $objShowTrack;
+            $this_intPartID = $intPartID;
+            if ($this_objShowTrack->get_intTrackID() == $intTrackID && $last_objShowTrack != false) {
+                $last_objShowTrack->set_intPartID(9999);
+                $last_objShowTrack->write();
+                $this_objShowTrack->set_intPartID($last_intPartID);
+                $this_objShowTrack->write();
+                $last_objShowTrack->set_intPartID($this_intPartID);
+                $last_objShowTrack->write();
             }
         }
     }
 
     /**
-     * Much like the previous function, this function manipulates the running
-     * order of a show, by re-indexing all the show tracks, two tracks apart,
-     * until the track to be moved forward arrives, when it is shunted into a
-     * space 3 tracks forward, and the pointer is then reset back by two
-     * spaces.
+     * This function manipulates the running order of a show, by re-indexing 
+     * all the show tracks, two tracks apart, until the track to be moved 
+     * forward arrives, when it is shunted into a space 3 tracks forward, and 
+     * the pointer is then reset back by two spaces.
      *
      * The tracks are then sorted and committed incremented by 900 track
      * spaces. They are then re-run, committing them back in order 900 track
