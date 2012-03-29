@@ -82,8 +82,12 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     $pre_sable = '<?xml version="1.0"?>
 <!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN" "Sable.v0_2.dtd" []>
 <SABLE>
-<SPEAKER NAME="cmu_us_clb_arctic_clunits">';
-    $post_sable = '</SPEAKER>
+  <SPEAKER NAME="cmu_us_clb_arctic_clunits">
+    <RATE SPEED="+25%">
+';
+    $post_sable = '
+    </RATE>
+  </SPEAKER>
 </SABLE>';
     $track_nsfw = array(' a track which may not be considered work or family safe <BREAK LEVEL="MEDIUM" /> It is ');
     $show_nsfw = array(' the show for to day contains tracks which may not be considered work or family safe <BREAK LEVEL="MEDIUM" /> ');
