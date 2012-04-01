@@ -38,10 +38,11 @@ class NewMonthlyShowObject extends NewInternalShowObject
     {
         $datShowUrl = date("Y-m-d", strtotime(date("Y-m-d", strtotime(UI::getLongDate($intShowUrl) . '-01 + 1 month')) . ' - 1 day'));
         $status = parent::__construct($intShowUrl, 'monthly');
-        $arrTracks = ChartBroker::getChartByDate($datShowUrl, 0, 40);
-        krsort($arrTracks);
-        foreach ($arrTracks as $track) {
-            $this->arrTracks[] = new NewShowTrackObject($track->get_intTrackID(), $this->intShowID);
+        $arrChart = ChartBroker::getChartByDate($datShowUrl, 0, 40);
+        $arrChartTracks = $arrChart['position'];
+        krsort($arrChartTracks);
+        foreach ($arrChartTracks as $track) {
+            $this->arrTracks[] = new NewShowTrackObject($track['intTrackID'], $this->intShowID);
         }
         return $this;
     }
