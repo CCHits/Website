@@ -50,6 +50,9 @@ class ArtistObject extends GenericObject
         $return['strArtistName'] = $this->preferredJson($this->strArtistName);
         $return['strArtistUrl'] = $this->preferredJson($this->strArtistUrl);
         $return['arrArtistUrl'] = $this->getJson($this->strArtistUrl);
+        if ($this->strArtistNameSounds == '') {
+            $return['strArtistNameSounds'] = $this->preferredJson($this->strArtistName);
+        }
         return $return;
     }
 
@@ -112,6 +115,9 @@ class ArtistObject extends GenericObject
      */
     function get_strArtistNameSounds()
     {
+        if ($this->strArtistNameSounds == '') {
+            $this->set_strArtistNameSounds($this->preferredJson($this->strArtistName));
+        }
         return $this->strArtistNameSounds;
     }
 
