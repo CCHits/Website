@@ -156,7 +156,7 @@ class TrackObject extends GenericObject
     /**
      * Add the collected generated data to the getSelf function
      *
-     * @return The amassed data from this function
+     * @return array The amassed data from this function
      */
     function getSelf()
     {
