@@ -126,6 +126,7 @@ function convertSableXmlToWav($text, $output)
         fclose($out);
         return false;
     }
+    echo "Sable: $text\r\n";
     fclose($out);
     if (file_exists($output . '.sable')) {
         $cmd = 'text2wave -o "' . Configuration::getWorkingDir() . '/tmp.wav' . '" "' . $output . '.sable' . '"';
@@ -666,11 +667,14 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
  *
  * @return string|boolean Either the path to the file, or false if the download failed.
  */
-function downloadFile($url)
+function downloadFile($url, $loop_count = 1, $loop_max = 5)
 {
     $get = curlGetResource($url);
     if ($get[1]['http_code'] == 200) {
         return $get[0];
+    } elseif ($get[1]['http_code'] == 500 && $loop_count < $loop_max) {
+        sleep(120);
+        return downloadFile($url, $loop_count + 1);
     } else {
         echo "Downloading file: $url\r\nDownload failed. Error code: " . $get[1]['http_code'] . "\r\n";
         debugUnlink($get[0]);
@@ -692,11 +696,9 @@ function downloadFile($url)
 function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10)
 {
     $url = str_replace("&amp;", "&", urldecode(trim($url)));
-    $cookie = tempnam(sys_get_temp_dir(), "CURLCOOKIE_");
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_ENCODING, "");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -706,7 +708,7 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
     if ($as_file == 1) {
-        $tmpfname = tempnam(sys_get_temp_dir(), "UP_");
+        $tmpfname = tempnam(dirname(__FILE__), "/TEMP/fileget_");
         $out = fopen($tmpfname, 'wb');
         if ($out == FALSE) {
             die("Unable to write to $tmpfname\r\n");
