@@ -292,7 +292,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
 
         echo "Creating Weekly Show...\r\n";
 
-        echo "These tracks are ";
+        echo "These " . count($show_data['arrTracks']) . " tracks are ";
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
             if ($intTrackID > 1) {
                 echo ", ";
@@ -513,7 +513,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             echo "WARNING: Failed to reverse run_rev.wav into run.wav\r\n";
         }
 
-        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/daily.wav')) {
+        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/weekly.wav')) {
             echo "WARNING: Failed to concatenate runplustrack.wav with run.wav\r\n";
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/daily.wav'), 'end');
@@ -600,7 +600,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
         overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav');
 
-        echo "These tracks are ";
+        echo "These " . count($show_data['arrTracks']) . " tracks are ";
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
             if ($intTrackID > 1) {
                 echo ", ";
