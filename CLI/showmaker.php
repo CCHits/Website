@@ -40,7 +40,6 @@ $post_sable = '
 $track_nsfw = array(' a track which may not be considered work or family safe <BREAK LEVEL="MEDIUM" /> It is ');
 $show_nsfw = array(' the show for to day contains tracks which may not be considered work or family safe <BREAK LEVEL="MEDIUM" /> ');
 
-
 foreach ($arrUri['parameters'] as $key => $value) {
     if ($date === null) {
         if (preg_match('/(\d\d\d\d\d\d\d\d)/', $value, $matches)) {
@@ -93,13 +92,16 @@ if ($historic) {
 $data = curlGetResource($get, 0);
 if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     $json_data = makeArrayFromObjects(json_decode($data[0]));
+    $f = fopen(Configuration::getWorkingDir() . '/showmaker.json', 'w');
+    fwrite($f, print_r($json_data, true));
+    fclose($f);
 
     if (isset($json_data['daily_show']) && $daily) {
         $show_data = $json_data['daily_show'];
 
         echo "Creating Daily Show...\r\n";
         echo sprintf('The Daily track is %1$s by %2$s ' . "\r\n", $show_data['arrTracks'][1]['strTrackName'], $show_data['arrTracks'][1]['strArtistName']);
-        
+
         echo "Making intro bumper\r\n";
         $running_order = addEntryToJsonArray('', 0, 'intro');
         if ( ! generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav')) {
@@ -290,7 +292,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
 
         echo "Creating Weekly Show...\r\n";
 
-        echo "These tracks are ";
+        echo "These " . count($show_data['arrTracks']) . " tracks are ";
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
             if ($intTrackID > 1) {
                 echo ", ";
@@ -377,8 +379,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'That was a %1$s licensed track called %2$s by %3$s and the point where we move into the highest rated tracks from the week before. Up first is %4$s by %5$s',
-                            'You have been listening to %3$s with their track %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> and now lets play some tracks from the week before. Here we have %5$s with their track %4$s',
+                            'That was a %1$s licensed track called %2$s by %3$s and the point where we move into the highest rated tracks from the week before this one. Up first is %4$s by %5$s',
+                            'You have been listening to %3$s with their track %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> and now lets play some tracks from the week before this. Here we have %5$s with their track %4$s',
                         )
                     ),
                     $arrLastTrack['pronouncable_enumTrackLicense'],
@@ -511,7 +513,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             echo "WARNING: Failed to reverse run_rev.wav into run.wav\r\n";
         }
 
-        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/daily.wav')) {
+        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/weekly.wav')) {
             echo "WARNING: Failed to concatenate runplustrack.wav with run.wav\r\n";
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/daily.wav'), 'end');
@@ -598,7 +600,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
         overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav');
 
-        echo "These tracks are ";
+        echo "These " . count($show_data['arrTracks']) . " tracks are ";
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
             if ($intTrackID > 1) {
                 echo ", ";
