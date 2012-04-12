@@ -55,72 +55,6 @@ class ShowObject extends GenericObject
     protected $booleanFull = true;
 
     /**
-     * Construct the object.
-     *
-     * Check whether it's being instantiated from PDO and thus already
-     * has some details populated. In which case, set class objects
-     * accordingly.
-     *
-     * @return void
-     */
-    function __construct()
-    {
-        if ($this->intShowID > 0) {
-            $intShowID = $this->intShowID;
-        }
-
-        if ($this->intShowUrl != 0) {
-            if ($this->strShowUrl == "") {
-                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
-                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
-                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
-                }
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
-                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
-                }
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
-                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
-                }
-            }
-            if ($this->strShowName == "") {
-                switch($this->enumShowType) {
-                case 'monthly':
-                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
-                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Top Tracks Show');
-                    $this->strShowName .= ' for ';
-                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
-                    $this->strShowNameSpoken .= ' for ';
-                    $this->strShowNameSpoken .= date("F", strtotime(UI::getLongDate($this->intShowUrl) . '-01'));
-                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
-                    break;
-                case 'daily':
-                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
-                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
-                    $this->strShowName .= ' for ';
-                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Daily Show Name', 'Daily Exposure Show');
-                    $this->strShowNameSpoken .= ' for ';
-                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
-                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
-                    break;
-                case 'weekly':
-                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
-                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
-                    $this->strShowName .= ' for ';
-                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Weekly Show Name', 'Weekly Review Show');
-                    $this->strShowNameSpoken .= ' for ';
-                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
-                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
      * Delete the show if there are no tracks linked to it.
      *
      * @return boolean Action completed successfully
@@ -173,6 +107,56 @@ class ShowObject extends GenericObject
      */
     function getSelf()
     {
+        if ($this->intShowUrl != 0) {
+            if ($this->strShowUrl == "") {
+                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
+                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                }
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
+                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                }
+                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
+                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                }
+            }
+            if ($this->strShowName == "") {
+                switch($this->enumShowType) {
+                case 'monthly':
+                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
+                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Top Tracks Show');
+                    $this->strShowName .= ' for ';
+                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
+                    $this->strShowNameSpoken .= ' for ';
+                    $this->strShowNameSpoken .= date("F", strtotime(UI::getLongDate($this->intShowUrl) . '-01'));
+                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
+                    break;
+                case 'daily':
+                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
+                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
+                    $this->strShowName .= ' for ';
+                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Daily Show Name', 'Daily Exposure Show');
+                    $this->strShowNameSpoken .= ' for ';
+                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
+                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
+                    break;
+                case 'weekly':
+                    $this->strShowName = 'The ' . ConfigBroker::getConfig('Site Name', 'CCHits.net');
+                    $this->strShowName .= ' ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+                    $this->strShowName .= ' for ';
+                    $this->strShowName .= UI::getLongDate($this->intShowUrl);
+                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Weekly Show Name', 'Weekly Review Show');
+                    $this->strShowNameSpoken .= ' for ';
+                    $this->strShowNameSpoken .= date("jS F", strtotime(UI::getLongDate($this->intShowUrl)));
+                    $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
+                    break;
+                }
+            }
+        }
+
         $return = parent::getSelf();
         $counter = 0;
         $showname = $this->strShowName;
