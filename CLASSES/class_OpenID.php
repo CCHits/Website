@@ -177,7 +177,7 @@ class OpenID
         }
 
         // redirect to OpenID provider for authentication
-        $url = $auth->redirectURL($base, $base . '?return');
+        $url = $auth->redirectURL($base, $base . '?return=1');
         header('Location: ' . $url);
     }
 
@@ -192,7 +192,7 @@ class OpenID
     function response($base = '')
     {
         $handler = self::getHandler();
-        $response = $handler->consumer->complete($base . '?return');
+        $response = $handler->consumer->complete($base . '?return=1');
 
         if ($response->status == Auth_OpenID_SUCCESS) {
             // Get registration informations

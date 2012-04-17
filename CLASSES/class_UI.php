@@ -147,6 +147,9 @@ class UI
                 $data = $_REQUEST;
             }
         }
+        if (isset($data['__HTTP_AUTHORIZATION'])) {
+          unset($data['__HTTP_AUTHORIZATION']);
+        }
         $handler->arrUri = array($uri, $data);
         return array($uri, $data);
     }
@@ -229,8 +232,23 @@ class UI
     {
         $username = null;
         $password = null;
-        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) { // If the server is passing an environment variable
             $auth_params = explode(":", base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+            $username = $auth_params[0];
+            unset($auth_params[0]);
+            $password = implode('', $auth_params);
+        } elseif (getenv('HTTP_AUTHORIZATION')) {
+            $auth_params = explode(":", base64_decode(substr(getenv('HTTP_AUTHORIZATION'), 6)));
+            $username = $auth_params[0];
+            unset($auth_params[0]);
+            $password = implode('', $auth_params);
+        } elseif (apache_getenv('HTTP_AUTHORIZATION')) {
+            $auth_params = explode(":", base64_decode(substr(apache_getenv('HTTP_AUTHORIZATION'), 6)));
+            $username = $auth_params[0];
+            unset($auth_params[0]);
+            $password = implode('', $auth_params);
+        } elseif (isset($_REQUEST['__HTTP_AUTHORIZATION'])) { // If we're having to pass it as a variable as part of the query.
+            $auth_params = explode(":", base64_decode(substr($_REQUEST['__HTTP_AUTHORIZATION'], 6)));
             $username = $auth_params[0];
             unset($auth_params[0]);
             $password = implode('', $auth_params);
