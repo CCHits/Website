@@ -126,7 +126,6 @@ function convertSableXmlToWav($text, $output)
         fclose($out);
         return false;
     }
-    echo "Sable: $text\r\n";
     fclose($out);
     if (file_exists($output . '.sable')) {
         $cmd = 'text2wave -o "' . Configuration::getWorkingDir() . '/tmp.wav' . '" "' . $output . '.sable' . '"';
@@ -160,7 +159,7 @@ function convertSableXmlToWav($text, $output)
  */
 function generateSilenceWav($duration, $output)
 {
-    $cmd = 'sox -q -n -r 44100 -c 2 "' . $output . '" trim 0.0 ' . $duration;
+    $cmd = 'sox -q -n -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $output . '" trim 0.0 ' . $duration;
     if (debugExec($cmd) != 0) {
         if (file_exists($output)) {
             debugUnlink($output);
@@ -211,12 +210,46 @@ function trackTrimSilence($input)
 function concatenateTracks($first, $second, $output, $remove_sources = true)
 {
     if (file_exists($first) and file_exists($second)) {
-        $cmd = 'sox -q --combine concatenate -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
+        $cmd = 'sox -q --combine concatenate -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $first . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $second . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
             }
-            return false;
+            // It may be that they wouldn't handle the sample rates - try converting to the desired format forst, and then merge.
+            $tmpfname = tempnam(dirname(__FILE__) . '/TEMP', "fileconvert_");
+            $cmd1 = 'sox -q "' . $first . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $tmpfname . '.1.wav"';
+            $cmd2 = 'sox -q "' . $second . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $tmpfname . '.2.wav"';
+            if (debugExec($cmd1) != 0 || debugExec($cmd2) != 0) {
+                if (file_exists($tmpfname . '.1.wav')) {
+                    debugUnlink($tmpfname . '.1.wav');
+                }
+                if (file_exists($tmpfname . '.2.wav')) {
+                    debugUnlink($tmpfname . '.2.wav');
+                }
+                return false;
+            } else {
+                $cmd = 'sox -q --combine concatenate "' . $tmpfname . '.1.wav" "' . $tmpfname . '.2.wav" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $output . '"';
+                if (debugExec($cmd) != 0) {
+                    if (file_exists($output)) {
+                        debugUnlink($output);
+                    }
+                    if (file_exists($tmpfname . '.1.wav')) {
+                        debugUnlink($tmpfname . '.1.wav');
+                    }
+                    if (file_exists($tmpfname . '.2.wav')) {
+                        debugUnlink($tmpfname . '.2.wav');
+                    }
+                    return false;
+                } else {
+                    if (file_exists($tmpfname . '.1.wav')) {
+                        debugUnlink($tmpfname . '.1.wav');
+                    }
+                    if (file_exists($tmpfname . '.2.wav')) {
+                        debugUnlink($tmpfname . '.2.wav');
+                    }
+                    return true;
+                }
+            }
         } elseif ($remove_sources == true) {
             debugUnlink($first);
             debugUnlink($second);
@@ -240,12 +273,46 @@ function concatenateTracks($first, $second, $output, $remove_sources = true)
 function overlayAudioTracks($first, $second, $output, $remove_sources = true)
 {
     if (file_exists($first) and file_exists($second)) {
-        $cmd = 'sox -q -m -r 44100 -c 2 "' . $first . '" -r 44100 -c 2 "' . $second . '" -r 44100 -c 2 "' . $output . '"';
+        $cmd = 'sox -q -m -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $first . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $second . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
             }
-            return false;
+            // It may be that they wouldn't handle the sample rates - try converting to the desired format forst, and then merge.
+            $tmpfname = tempnam(dirname(__FILE__) . '/TEMP', "fileconvert_");
+            $cmd1 = 'sox -q "' . $first . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $tmpfname . '.1.wav"';
+            $cmd2 = 'sox -q "' . $second . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $tmpfname . '.2.wav"';
+            if (debugExec($cmd1) != 0 || debugExec($cmd2) != 0) {
+                if (file_exists($tmpfname . '.1.wav')) {
+                    debugUnlink($tmpfname . '.1.wav');
+                }
+                if (file_exists($tmpfname . '.2.wav')) {
+                    debugUnlink($tmpfname . '.2.wav');
+                }
+                return false;
+            } else {
+                $cmd = 'sox -q -m "' . $tmpfname . '.1.wav" "' . $tmpfname . '.2.wav" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $output . '"';
+                if (debugExec($cmd) != 0) {
+                    if (file_exists($output)) {
+                        debugUnlink($output);
+                    }
+                    if (file_exists($tmpfname . '.1.wav')) {
+                        debugUnlink($tmpfname . '.1.wav');
+                    }
+                    if (file_exists($tmpfname . '.2.wav')) {
+                        debugUnlink($tmpfname . '.2.wav');
+                    }
+                    return false;
+                } else {
+                    if (file_exists($tmpfname . '.1.wav')) {
+                        debugUnlink($tmpfname . '.1.wav');
+                    }
+                    if (file_exists($tmpfname . '.2.wav')) {
+                        debugUnlink($tmpfname . '.2.wav');
+                    }
+                    return true;
+                }
+            }
         } elseif ($remove_sources == true) {
             debugUnlink($first);
             debugUnlink($second);
@@ -315,7 +382,7 @@ function getTrackLength($input)
 function convertToWavOutput($input, $output)
 {
     if (file_exists($input)) {
-        $cmd = 'sox -q "' . $input . '" -r 44100 -c 2 "' . $output . '"';
+        $cmd = 'sox -q "' . $input . '" -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
@@ -530,7 +597,7 @@ function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
     $DEBUG = true;
     $output = $output_root . $suffix;
     if (file_exists($input)) {
-        $cmd = 'ffmpeg -y -i "' . $input . '" -ac 2 -ar 44100 -ab 128k -sample_fmt s16 "' . $output . '"';
+        $cmd = 'ffmpeg -y -i "' . $input . '" -ac 2 -ar ' . $GLOBALS['RATE'] . ' -ab 128k -sample_fmt s16 "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
@@ -633,9 +700,6 @@ function debugUnlink($file)
  */
 function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0)
 {
-    if (isset($GLOBALS['DEBUG']) and $GLOBALS['DEBUG']) {
-        echo "$cmd\r\n";
-    }
     exec($cmd .' 2>&1', $result, $exit_code);
     $content = '';
     if (count($result) > 0) {
@@ -646,12 +710,11 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
             $content .= $line;
         }
     }
-    if ($exit_code > $max_acceptable_exit) {
-        if (!isset($GLOBALS['DEBUG']) or ! $GLOBALS['DEBUG']) {
-            echo "Exit status: $exit_code\r\n$content\r\n";
-        } else {
-            echo "Exit status: $exit_code\r\n";
+    if ($exit_code > $max_acceptable_exit || (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG'])) {
+        if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+        echo "Command:     $cmd\r\n";
         }
+        echo "Exit status: $exit_code\r\nOutput:      $content\r\n";
     }
     if ($return_string_anyway == true) {
         return array($exit_code, $content);
@@ -663,7 +726,9 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
 /**
  * A wrapper to the curlGetResource function for files
  *
- * @param string $url The URL to retrieve
+ * @param string  $url        The URL to retrieve
+ * @param integer $loop_count The number of times we've tried this function
+ * @param integer $loop_max   The number of times we will try this function
  *
  * @return string|boolean Either the path to the file, or false if the download failed.
  */
@@ -708,7 +773,7 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
     if ($as_file == 1) {
-        $tmpfname = tempnam(dirname(__FILE__), "/TEMP/fileget_");
+        $tmpfname = tempnam(dirname(__FILE__) . '/TEMP', "fileget_");
         $out = fopen($tmpfname, 'wb');
         if ($out == FALSE) {
             die("Unable to write to $tmpfname\r\n");

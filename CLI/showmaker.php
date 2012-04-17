@@ -24,6 +24,7 @@ $daily = true;
 $weekly = true;
 $monthly = true;
 $historic = false;
+$GLOBALS['RATE'] = 44100;
 $GLOBALS['DEBUG'] = false;
 
 $pre_sable = '<?xml version="1.0"?>
@@ -47,6 +48,9 @@ foreach ($arrUri['parameters'] as $key => $value) {
         } elseif (preg_match('/(\d\d\d\d\d\d\d\d)/', $key, $matches)) {
             $date = $matches[0];
         }
+    }
+    if ($value === '48000' || $key === '48000') {
+        $GLOBALS['RATE'] = 48000;
     }
     if ($value === 'daily' || $key === 'daily') {
         if ($daily === true && $weekly === true && $monthly === true) {
@@ -352,8 +356,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'Up first to day <BREAK LEVEL="SMALL" /> we have %1$s by %2$s',
-                            'To dayz first track is from %2$s and is called %1$s'
+                            'Up first to day <BREAK LEVEL="SMALL" /> we have %1$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" />%2$s',
+                            'To dayz first track is from %2$s <BREAK LEVEL="SMALL" /> and is called <BREAK LEVEL="SMALL" /> %1$s'
                         )
                     ),
                     $arrTrack['strTrackNameSounds'], 
@@ -364,8 +368,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'That was a %1$s licensed track called %2$s by %3$s <BREAK LEVEL="MEDIUM" /> Our last track for to day is %4$s by %5$s',
-                            'You have been listening to %3$s with their track %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> I am sad to say that this is the last track this week <BREAK LEVEL="MEDIUM" /> but not sad to say that it is %5$s with their track %4$s'
+                            'That was a %1$s licensed track called %2$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %3$s <BREAK LEVEL="MEDIUM" /> Our last track for to day is %4$s by %5$s',
+                            'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s <BREAK LEVEL="SMALL" />which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> I am sad to say that this is the last track this week <BREAK LEVEL="MEDIUM" /> but not sad to say that it is %5$s with their track %4$s'
                         )
                     ),
                     $arrLastTrack['pronouncable_enumTrackLicense'],
@@ -379,8 +383,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'That was a %1$s licensed track called %2$s by %3$s and the point where we move into the highest rated tracks from the week before this one. Up first is %4$s by %5$s',
-                            'You have been listening to %3$s with their track %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> and now lets play some tracks from the week before this. Here we have %5$s with their track %4$s',
+                            'That was a %1$s licensed track called %2$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %3$s <BREAK LEVEL="SMALL" /> and the point where we move into the highest rated tracks from the week before this one. Up first is %4$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %5$s',
+                            'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s <BREAK LEVEL="SMALL" /> which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> and now lets play some tracks from the week before this. Here we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
                     $arrLastTrack['pronouncable_enumTrackLicense'],
@@ -397,8 +401,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'That was a %1$s licensed track called %2$s by %3$s <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %6$s <BREAK LEVEL="MEDIUM" /> If you like any of these tracks <BREAK LEVEL="SMALL" /> you could vote for them at %7$s <BREAK LEVEL="MEDIUM" /> Up next is %4$s by %5$s',
-                            'You have been listening to %3$s with their track %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Remember that you can vote for any track in to dayz show by visiting %7$s <BREAK LEVEL="LARGE" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s with their track %4$s',
+                            'That was a %1$s licensed track called %2$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %3$s <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %6$s <BREAK LEVEL="MEDIUM" /> If you like any of these tracks <BREAK LEVEL="SMALL" /> you could vote for them at %7$s <BREAK LEVEL="MEDIUM" /> Up next is %4$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %5$s',
+                            'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Remember that you can vote for any track in to dayz show by visiting %7$s <BREAK LEVEL="LARGE" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
                     $arrLastTrack['pronouncable_enumTrackLicense'],
@@ -414,8 +418,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'That was a %1$s licensed track called %2$s by %3$s <BREAK LEVEL="MEDIUM" /> Up next is %4$s by %5$s',
-                            'You have been listening to %3$s with their track %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s with their track %4$s',
+                            'That was a %1$s licensed track called %2$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %3$s <BREAK LEVEL="MEDIUM" /> Up next is %4$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %5$s',
+                            'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
                     $arrLastTrack['pronouncable_enumTrackLicense'],
@@ -440,8 +444,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 echo "WARNING: Failed to concatenate existing show to date with the new track bumper\r\n";
             }
 
-            $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplusbumper.wav'), $arrTrack['intTrackID']);            
-            
+            $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplusbumper.wav'), $arrTrack['intTrackID']);
+
             echo "Downloading and merging audio file ($intTrackID)\r\n";
             $track = downloadFile($arrTrack['localSource']);
             if ($track === false) {
@@ -509,14 +513,14 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         if ( ! overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav')) {
             echo "WARNING: Failed to overlay showend_rev.wav with outro_rev.wav\r\n";
         }
-        if ( ! reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/run.wav')) {
+        if ( ! reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/outro_run.wav')) {
             echo "WARNING: Failed to reverse run_rev.wav into run.wav\r\n";
         }
 
-        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/weekly.wav')) {
+        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/outro_run.wav', Configuration::getWorkingDir() . '/weekly.wav')) {
             echo "WARNING: Failed to concatenate runplustrack.wav with run.wav\r\n";
         }
-        $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/daily.wav'), 'end');
+        $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/weekly.wav'), 'end');
 
         $arrRunningOrder = makeArrayFromObjects(json_decode($running_order));
 
@@ -709,9 +713,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         reverseTrackAudio(Configuration::getStaticDir() . '/outro.wav', Configuration::getWorkingDir() . '/outro_rev.wav', false);
 
         overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav');
-        reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/run.wav');
+        reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/outro_run.wav');
 
-        concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/monthly.wav');
+        concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/outro_run.wav', Configuration::getWorkingDir() . '/monthly.wav');
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/monthly.wav'), 'end');
 
         $arrRunningOrder = makeArrayFromObjects(json_decode($running_order));
@@ -773,4 +777,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         );
         echo "Done.\r\n\r\n";
     }
+} else {
+    echo "No data received from $get : ";
+    var_dump($data);
 }
