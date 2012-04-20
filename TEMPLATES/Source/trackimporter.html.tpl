@@ -24,7 +24,7 @@
 		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
                         <select name="intArtistID">
 {foreach $artists item=artist}
-                            <option value="{$artist.intArtistID}">"{$artist.strArtistName}" from {$artist.strArtistUrl}</option>
+                            <option value="{$artist.intArtistID}">({$artist.intArtistID}) "{$artist.strArtistName}" from {$artist.strArtistUrl}</option>
 {/foreach} 
                         </select>
 			<input type="submit" value="Select this Artist" />

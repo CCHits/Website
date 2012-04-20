@@ -9,7 +9,7 @@
 	<body>
                 <h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
-		<h3><a href="{$show.intShowID}">{$show.strShowName}</a></h3>
+		<h3><a href="{$show.strShowUrl}">{$show.strShowName}</a></h3>
 {if isset($playlist.player_data.mp3) or isset($playlist.player_data.oga) or isset($playlist.player_data.m4a)}{include file="player.html.tpl" player_id=$show.intShowID playlist=$show}{/if}
 {if isset($show.arrTracks) and count($show.arrTracks) > 0}
 {foreach from=$show.arrTracks item=track}
