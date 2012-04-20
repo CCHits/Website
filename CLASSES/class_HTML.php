@@ -113,8 +113,10 @@ class HTML
                 $object[3] = $this->arrUri['path_items'][3];
             }
             switch($this->arrUri['path_items'][0]) {
-            case 'track':
             case 't':
+                UI::Redirect("track/" . $object[1]);
+                break;
+            case 'track':
                 $this->result['user'] = UserBroker::getUser()->getSelf();
                 if ($this->format == 'rss') {
                     $this->change($object[1]);
@@ -122,8 +124,10 @@ class HTML
                     $this->track($object[1]);
                 }
                 break;
-            case 'show':
             case 's':
+                UI::Redirect("show/" . $object[1]);
+                break;
+            case 'show':
                 $this->result['user'] = UserBroker::getUser()->getSelf();
                 $this->show($object[1]);
                 break;
