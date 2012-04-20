@@ -461,10 +461,17 @@ class TrackObject extends GenericObject
      */
     function set_isNSFW($isNSFW = false)
     {
-        if ($this->isNSFW != $isNSFW) {
-            $this->isNSFW = $isNSFW;
+        if ($isNSFW == "false" || $isNSFW == "0" || $isNSFW == "no") {
+            $isNSFW = false;
+        } elseif ($isNSFW == "true" || $isNSFW == "1" || $isNSFW == "yes") {
+            $isNSFW = true;
+        }
+        if ($this->isNSFW == true && $isNSFW === false) {
+            $this->isNSFW = false;
             $this->arrChanges['isNSFW'] = true;
-            $this->verify_isNSFW();
+        } elseif ($this->isNSFW == false && $isNSFW === true) {
+            $this->isNSFW = true;
+            $this->arrChanges['isNSFW'] = true;
         }
     }
 
