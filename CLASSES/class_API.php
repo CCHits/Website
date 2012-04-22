@@ -423,13 +423,14 @@ class API
                         $this->result = true;
                         $show->set_strCommentUrl($arrUri['parameters']['comment']);
                     }
+                    if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
+                        $this->result = true;
+                        $show->storeFiles($arrUri['parameters']['_FILES']);
+                    }
                     if ($this->result == true) {
                         $show->write();
                     } else {
                         UI::sendHttpResponse(417);
-                    }
-                    if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
-                        $show->storeFiles($arrUri['parameters']['_FILES']);
                     }
                     $this->render();
                 }

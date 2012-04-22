@@ -511,14 +511,17 @@ class ShowObject extends GenericObject
                 case 'audio/mpeg3':
                 case 'audio/mp3':
                     $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                    move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 case 'audio/mp4':
                 case 'audio/m4a':
                     $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                    move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 case 'audio/ogg':
                 case 'audio/oga':
                     $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                    move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 }
             }
