@@ -238,7 +238,7 @@ class ShowObject extends GenericObject
     {
         if ($this->strShowName != $strShowName) {
             $this->strShowName = $strShowName;
-            $arrChanges[] = 'strShowName';
+            $this->arrChanges['strShowName'] = true;
         }
     }
 
@@ -253,7 +253,7 @@ class ShowObject extends GenericObject
     {
         if ($this->strShowUrl != $strShowUrl) {
             $this->strShowUrl = $strShowUrl;
-            $arrChanges[] = 'strShowUrl';
+            $this->arrChanges['strShowUrl'] = true;
         }
     }
 
@@ -270,7 +270,7 @@ class ShowObject extends GenericObject
     {
         if ($this->intShowUrl != $intShowUrl) {
             $this->intShowUrl = $intShowUrl;
-            $arrChanges[] = 'intShowUrl';
+            $this->arrChanges['intShowUrl'] = true;
         }
     }
 
@@ -287,7 +287,7 @@ class ShowObject extends GenericObject
     {
         if ($this->enumShowType != $enumShowType) {
             $this->enumShowType = $enumShowType;
-            $arrChanges[] = 'enumShowType';
+            $this->arrChanges['enumShowType'] = true;
         }
     }
 
@@ -302,7 +302,7 @@ class ShowObject extends GenericObject
     {
         if ($this->intUserID != $intUserID) {
             $this->intUserID = $intUserID;
-            $arrChanges[] = 'intUserID';
+            $this->arrChanges['intUserID'] = true;
         }
     }
 
@@ -317,7 +317,7 @@ class ShowObject extends GenericObject
     {
         if ($this->timeLength != $timeLength) {
             $this->timeLength = $timeLength;
-            $arrChanges[] = 'timeLength';
+            $this->arrChanges['timeLength'] = true;
         }
     }
 
@@ -332,7 +332,7 @@ class ShowObject extends GenericObject
     {
         if ($this->shaHash != $shaHash) {
             $this->shaHash = $shaHash;
-            $arrChanges[] = 'shaHash';
+            $this->arrChanges['shaHash'] = true;
         }
     }
 
@@ -347,7 +347,7 @@ class ShowObject extends GenericObject
     {
         if ($this->strCommentUrl != $strCommentUrl) {
             $this->strCommentUrl = $strCommentUrl;
-            $arrChanges[] = 'strCommentUrl';
+            $this->arrChanges['strCommentUrl'] = true;
         }
     }
 
@@ -366,7 +366,7 @@ class ShowObject extends GenericObject
     {
         if ($this->jsonAudioLayout != $jsonAudioLayout) {
             $this->jsonAudioLayout = $jsonAudioLayout;
-            $arrChanges[] = 'jsonAudioLayout';
+            $this->arrChanges['jsonAudioLayout'] = true;
         }
     }
 
@@ -381,7 +381,7 @@ class ShowObject extends GenericObject
     {
         if ($this->datDateAdded != $datDateAdded) {
             $this->datDateAdded = $datDateAdded;
-            $arrChanges[] = 'datDateAdded';
+            $this->arrChanges['datDateAdded'] = true;
         }
     }
 
@@ -511,17 +511,14 @@ class ShowObject extends GenericObject
                 case 'audio/mpeg3':
                 case 'audio/mp3':
                     $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
-                    error_log('mp3: from ' . $file['tmp_name'] . ' to ' . $filename . ' state: ' . move_uploaded_file($file['tmp_name'], $filename));
                     break;
                 case 'audio/mp4':
                 case 'audio/m4a':
                     $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
-                    error_log('m4a: from ' . $file['tmp_name'] . ' to ' . $filename . ' state: ' . move_uploaded_file($file['tmp_name'], $filename));
                     break;
                 case 'audio/ogg':
                 case 'audio/oga':
                     $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
-                    error_log('ogg: from ' . $file['tmp_name'] . ' to ' . $filename . ' state: ' . move_uploaded_file($file['tmp_name'], $filename));
                     break;
                 }
             }

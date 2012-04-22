@@ -105,7 +105,7 @@ class VoteObject extends GenericObject
     {
         if ($this->intTrackID != $intTrackID and 0 + $intTrackID > 0) {
             $this->intTrackID = $intTrackID;
-            $arrChanges[] = 'intTrackID';
+            $this->arrChanges['intTrackID'] = true;
         }
     }
 
@@ -120,7 +120,7 @@ class VoteObject extends GenericObject
     {
         if ($this->intShowID != $intShowID and 0 + $intShowID > 0) {
             $this->intShowID = $intShowID;
-            $arrChanges[] = 'intShowID';
+            $this->arrChanges['intShowID'] = true;
         }
     }
 
@@ -135,7 +135,7 @@ class VoteObject extends GenericObject
     {
         if ($objUser != null and $objUser != false and is_object($objUser)) {
             $this->intUserID = $objUser->get_intUserID();
-            $arrChanges[] = 'intUserID';
+            $this->arrChanges['intUserID'] = true;
         }
     }
 
