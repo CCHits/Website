@@ -26,6 +26,7 @@ $monthly = true;
 $historic = false;
 $GLOBALS['RATE'] = 44100;
 $GLOBALS['DEBUG'] = false;
+$GLOBALS['NODELETEFILES'] = false;
 
 $pre_sable = '<?xml version="1.0"?>
 <!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN" "Sable.v0_2.dtd" []>
@@ -78,6 +79,9 @@ foreach ($arrUri['parameters'] as $key => $value) {
     }
     if ($value === 'debug' || $key === 'debug') {
         $GLOBALS['DEBUG'] = true;
+    }
+    if ($value === 'nodeletefiles' || $key === 'nodeletefiles') {
+        $GLOBALS['NODELETEFILES'] = true;
     }
     if ($value === 'historic' || $key === 'historic') {
         $historic = true;

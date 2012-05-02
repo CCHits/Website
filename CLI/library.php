@@ -682,7 +682,7 @@ function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
  */
 function debugUnlink($file)
 {
-    if (!isset($GLOBALS['DEBUG']) or ! $GLOBALS['DEBUG']) {
+    if (!isset($GLOBALS['NODELETEFILES']) or ! $GLOBALS['NODELETEFILES']) {
         unlink($file);
     } else {
         echo "Would be deleting $file now\r\n";
