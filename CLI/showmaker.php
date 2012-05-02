@@ -292,7 +292,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     )
                 )
             ),
-            json_encode($arrRunningOrder_final);
+            json_encode($arrRunningOrder_final)
         );
         echo "Done.\r\n\r\n";
     }
@@ -583,7 +583,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' weekly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
                 )
             ),
-            json_encode($arrRunningOrder_final);
+            json_encode($arrRunningOrder_final)
         );
         echo "Done.\r\n\r\n";
     }
@@ -780,7 +780,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
                 )
             ),
-            json_encode($arrRunningOrder_final);
+            json_encode($arrRunningOrder_final)
         );
         echo "Done.\r\n\r\n";
     }
