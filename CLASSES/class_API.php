@@ -476,13 +476,10 @@ class API
             case 'getunplayedtracks':
                 $temp = TracksBroker::getUnplayedTracks();
                 if ($temp != false) {
-                    foreach ($temp as $track) {
-                        if ($this->format == 'shell') {
-                            $this->result_list['unplayed_' . $track->get_intTrackID()] = $track->get_strTrackName() . ' by ' . $track->get_strArtistName();
-                        } else {
-                            $this->result_array['unplayed'][$track->get_intTrackID()] = $track;
-                        }
-                    }
+                  foreach($temp as $objTrack) {
+                    $arrTrack = $objTrack->getSelf();
+                    $this->result_list[$arrTrack['intTrackID']] = $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
+                  }
                 }
                 $this->render();
                 break;
