@@ -527,4 +527,75 @@ class ShowObject extends GenericObject
             }
         }
     }
+
+    /**
+     * This function handles the uploaded files which are too large to handle as one item.
+     * 
+     * @param array   $array This is the $_FILES array of data.
+     * @param integer $part  The uploaded part number
+     * @param integer $size  The total size of the uploaded collection
+     * 
+     * @return void
+     */
+    function storeSplitFiles($array, $part, $size)
+    {
+        foreach ($array as $file) {
+            if ($file['error'] == 0) {
+                switch($file['type']) {
+                case 'audio/mpeg':
+                case 'audio/mpeg3':
+                case 'audio/mp3':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3.' . $part;
+                    move_uploaded_file($file['tmp_name'], $filename);
+                    break;
+                case 'audio/mp4':
+                case 'audio/m4a':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a.' . $part;
+                    move_uploaded_file($file['tmp_name'], $filename);
+                    break;
+                case 'audio/ogg':
+                case 'audio/oga':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga.' . $part;
+                    move_uploaded_file($file['tmp_name'], $filename);
+                    break;
+                }
+            }
+        }
+        if ($part == $size) {
+            $process = true;
+            for ($partno = 1; $partno <=$size; $partno++) {
+                switch($file['type']) {
+                case 'audio/mpeg':
+                case 'audio/mpeg3':
+                case 'audio/mp3':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3.' . $partno;
+                    break;
+                case 'audio/mp4':
+                case 'audio/m4a':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a.' . $partno;
+                    break;
+                case 'audio/ogg':
+                case 'audio/oga':
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga.' . $partno;
+                    break;
+                }
+                if (! file_exists($filename)) {
+                    $process = false;
+                } else {
+                    $arrFiles[] = $filename;
+                }
+            }
+            if ($process == true) {
+                $cmd = 'cat ';
+                foreach ($arrFiles as $file) {
+                    $cmd .= $file;
+                }
+                $cmd .= ' > ' . substr($filename, 0, -2);
+                shell_exec($cmd);
+                foreach ($arrFiles as $file) {
+                    unlink($file);
+                }
+            }
+        }
+    }
 }

@@ -30,29 +30,123 @@
 function finalize($show_id, $show_root, $comment_url)
 {
     $array = array('hash' => '', 'time' => '', 'comment' => '');
+    $success = true;
+    $finalize_url = Configuration::getAPI() . '/finalize/';
+    $split_url = Configuration::getAPI() . '/split/';
     if (file_exists($show_root . 'mp3')) {
         $array['hash'] .= 'mp3:' . md5_file($show_root . 'mp3');
-        $array['file_mp3'] = '@' . $show_root . 'mp3;type=audio/mpeg';
+        $array['file'] = '@' . $show_root . 'mp3;type=audio/mpeg';
         $array['time'] = getTrackLength($show_root . 'mp3');
+        $data = curlPostRequest($finalize_url . $show_id, $array);
+        if ($data[0] == false) {
+            echo "Failed to upload MP3 file. Trying to upload split files.\r\n";
+            $cmd = 'split -b50M ' . $show_root . 'mp3 ' . $show_root . 'mp3.';
+            debugExec($cmd);
+            $parts = array();
+            switch (true) {
+                case file_exists($show_root . 'mp3.af'):
+                    break;
+                case file_exists($show_root . 'mp3.ae'):
+                    $parts[5] = $show_root . 'mp3.ae';
+                case file_exists($show_root . 'mp3.ad'):
+                    $parts[4] = $show_root . 'mp3.ad';
+                case file_exists($show_root . 'mp3.ac'):
+                    $parts[3] = $show_root . 'mp3.ac';
+                case file_exists($show_root . 'mp3.ab'):
+                    $parts[2] = $show_root . 'mp3.ab';
+                case file_exists($show_root . 'mp3.aa'):
+                    $parts[1] = $show_root . 'mp3.aa';
+            }
+            ksort($parts);
+            foreach ($parts as $partno => $part) {
+                $array['file'] = '@' . $part . ';type=audio/mp3';
+                $array['part'] = $partno;
+                $array['size'] = count($parts);
+                $data = curlPostRequest($split_url . $show_id, $array);
+                if ($data[0] == false) {
+                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                }
+            }
+        }
     }
     if (file_exists($show_root . 'oga')) {
         $array['hash'] .= 'oga:' . md5_file($show_root . 'oga');
-        $array['file_oga'] = '@' . $show_root . 'oga;type=audio/ogg';
+        $array['file'] = '@' . $show_root . 'oga;type=audio/ogg';
         if ($array['time'] == '') {
             // Why we don't have the time set after the MP3 file is done, I don't know
             // but just to be on the safe side...
             $array['time'] = getTrackLength($show_root . 'oga');
         }
+        $data = curlPostRequest($finalize_url . $show_id, $array);
+        if ($data[0] == false) {
+            echo "Failed to upload OGA file. Trying to upload split files.\r\n";
+            $cmd = 'split -b50M ' . $show_root . 'oga ' . $show_root . 'oga.';
+            debugExec($cmd);
+            $parts = array();
+            switch (true) {
+                case file_exists($show_root . 'oga.af'):
+                    break;
+                case file_exists($show_root . 'oga.ae'):
+                    $parts[5] = $show_root . 'oga.ae';
+                case file_exists($show_root . 'oga.ad'):
+                    $parts[4] = $show_root . 'oga.ad';
+                case file_exists($show_root . 'oga.ac'):
+                    $parts[3] = $show_root . 'oga.ac';
+                case file_exists($show_root . 'oga.ab'):
+                    $parts[2] = $show_root . 'oga.ab';
+                case file_exists($show_root . 'oga.aa'):
+                    $parts[1] = $show_root . 'oga.aa';
+            }
+            ksort($parts);
+            foreach ($parts as $partno => $part) {
+                $array['file'] = '@' . $part . ';type=audio/ogg';
+                $array['part'] = $partno;
+                $array['size'] = count($parts);
+                $data = curlPostRequest($split_url . $show_id, $array);
+                if ($data[0] == false) {
+                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                }
+            }
+        }
     }
     if (file_exists($show_root . 'm4a')) {
         $array['hash'] .= 'm4a:' . md5_file($show_root . 'm4a');
-        $array['file_m4a'] = '@' . $show_root . 'm4a;type=audio/mp4';
+        $array['file'] = '@' . $show_root . 'm4a;type=audio/mp4';
         // I can't recall whether soxi will get m4a track lengths. To be on the safe side
         // don't bother. It should have been picked up in the mp3 and oga files anyway.
+        $data = curlPostRequest($finalize_url . $show_id, $array);
+        if ($data[0] == false) {
+            echo "Failed to upload M4A file. Trying to upload split files.\r\n";
+            $cmd = 'split -b50M ' . $show_root . 'm4a ' . $show_root . 'm4a.';
+            debugExec($cmd);
+            $parts = array();
+            switch (true) {
+                case file_exists($show_root . 'm4a.af'):
+                    break;
+                case file_exists($show_root . 'm4a.ae'):
+                    $parts[5] = $show_root . 'm4a.ae';
+                case file_exists($show_root . 'm4a.ad'):
+                    $parts[4] = $show_root . 'm4a.ad';
+                case file_exists($show_root . 'm4a.ac'):
+                    $parts[3] = $show_root . 'm4a.ac';
+                case file_exists($show_root . 'm4a.ab'):
+                    $parts[2] = $show_root . 'm4a.ab';
+                case file_exists($show_root . 'm4a.aa'):
+                    $parts[1] = $show_root . 'm4a.aa';
+            }
+            ksort($parts);
+            foreach ($parts as $partno => $part) {
+                $array['file'] = '@' . $part . ';type=audio/mp4';
+                $array['part'] = $partno;
+                $array['size'] = count($parts);
+                $data = curlPostRequest($split_url . $show_id, $array);
+                if ($data[0] == false) {
+                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                }
+            }
+        }
     }
-    $array['comment'] = $comment_url;
-    $data = curlPostRequest(Configuration::getAPI() . '/finalize/' . $show_id, $array);
-    return $data;
+    return $success;
 }
 
 /**
