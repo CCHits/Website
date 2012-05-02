@@ -712,7 +712,7 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
     }
     if ($exit_code > $max_acceptable_exit || (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG'])) {
         if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
-        echo "Command:     $cmd\r\n";
+            echo "Command:     $cmd\r\n";
         }
         echo "Exit status: $exit_code\r\nOutput:      $content\r\n";
     }
@@ -785,6 +785,7 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     $response = curl_getinfo($ch);
     if (curl_errno($ch)) {
         $error_text = curl_error($ch);
+        echo "Unable to retrieve $url due to $error_text\r\n";
         $error = 1;
     }
     curl_close($ch);
@@ -801,18 +802,24 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
         if ($headers != false) {
             foreach ($headers as $value) {
                 if (substr(strtolower($value), 0, 9) == "location:") {
-                    return get_url(trim(substr($value, 9, strlen($value))), $as_file);
+                    return curlGetResource(trim(substr($value, 9, strlen($value))), $as_file);
                 }
             }
         }
     }
 
     if ($as_file == 0 and (preg_match("/>[[:space:]]+window\.location\.replace\('(.*)'\)/i", $content, $value) or preg_match("/>[[:space:]]+window\.location\=\"(.*)\"/i", $content, $value)) and $javascript_loop < $max_loop) {
-        return get_url($value[1], 0, $javascript_loop+1, $max_loop);
+        return curlGetResource($value[1], 0, $javascript_loop+1, $max_loop);
     } else {
         if ($as_file == 1) {
+            if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+                echo "Got $url as file $tmpfname with response as follows:\r\n" . print_r($response, true);
+            }
             return array($tmpfname, $response);
         } else {
+            if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+                echo "Got $url as\r\n" . substr($content, 0, 60) . "\r\ncURL data as follows:\r\n" . print_r($response, true);
+            }
             return array($content, $response);
         }
     }
@@ -841,11 +848,22 @@ function curlPostRequest($url, $arrPost)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $arrPost);
     $result = curl_exec($ch);
     $response = curl_getinfo($ch);
+    if (curl_errno($ch)) {
+        $error_text = curl_error($ch);
+        echo "Unable to retrieve $url due to $error_text\r\n";
+        $error = 1;
+    }
     curl_close($ch);
-    if ($response['http_code'] != 200) {
+    if ($response['http_code'] != 200 || isset($error)) {
         $state = false;
     } else {
         $state = true;
+    }
+    if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+        if ($state == false) {
+            echo "Not ";
+        }
+        echo "Got $url with data:\r\n" . print_r($arrPost, true) . "\r\nas\r\n$result\r\ncURL data as follows:\r\n" . print_r($response, true);
     }
     return array($state, $result, $response);
 }
