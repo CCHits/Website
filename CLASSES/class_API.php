@@ -423,6 +423,10 @@ class API
                         $this->result = true;
                         $show->set_strCommentUrl($arrUri['parameters']['comment']);
                     }
+                    if (isset($arrUri['parameters']['jsonAudioLayout']) and $arrUri['parameters']['jsonAudioLayout'] != '') {
+                        $this->result = true;
+                        $show->set_jsonAudioLayout($arrUri['parameters']['jsonAudioLayout']);
+                    }
                     if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
                         $this->result = true;
                         $show->storeFiles($arrUri['parameters']['_FILES']);
@@ -453,6 +457,10 @@ class API
                     if (isset($arrUri['parameters']['comment']) and $arrUri['parameters']['comment'] != '') {
                         $this->result = true;
                         $show->set_strCommentUrl($arrUri['parameters']['comment']);
+                    }
+                    if (isset($arrUri['parameters']['json_layout']) and $arrUri['parameters']['json_layout'] != '') {
+                        $this->result = true;
+                        $show->set_jsonLayout($arrUri['parameters']['json_layout']);
                     }
                     if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
                         $this->result = true;

@@ -27,9 +27,9 @@
  *
  * @return void
  */
-function finalize($show_id, $show_root, $comment_url)
+function finalize($show_id, $show_root, $comment_url, $json_layout)
 {
-    $array = array('hash' => '', 'time' => '', 'comment' => '');
+    $array = array('hash' => '', 'time' => '', 'comment' => $comment_url, 'jsonAudioLayout' => $json_layout);
     $success = true;
     $finalize_url = Configuration::getAPI() . '/finalize/';
     $split_url = Configuration::getAPI() . '/split/';
