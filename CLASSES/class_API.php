@@ -423,6 +423,10 @@ class API
                         $this->result = true;
                         $show->set_strCommentUrl($arrUri['parameters']['comment']);
                     }
+                    if (isset($arrUri['parameters']['jsonAudioLayout']) and $arrUri['parameters']['jsonAudioLayout'] != '') {
+                        $this->result = true;
+                        $show->set_jsonAudioLayout($arrUri['parameters']['jsonAudioLayout']);
+                    }
                     if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
                         $this->result = true;
                         $show->storeFiles($arrUri['parameters']['_FILES']);
@@ -435,6 +439,40 @@ class API
                     $this->render();
                 }
                 break;
+            case 'split':
+                if (isset($arrUri['path_items'][2]) and 0 + $arrUri['path_items'][2] > 0) {
+                    $this->result = false;
+                    $show = ShowBroker::getShowByID($arrUri['path_items'][2]);
+                    if ($show == false) {
+                        $this->render();
+                    }
+                    if (isset($arrUri['parameters']['hash']) and $arrUri['parameters']['hash'] != '') {
+                        $this->result = true;
+                        $show->set_shaHash($arrUri['parameters']['hash']);
+                    }
+                    if (isset($arrUri['parameters']['time']) and $arrUri['parameters']['time'] != '') {
+                        $this->result = true;
+                        $show->set_timeLength($arrUri['parameters']['time']);
+                    }
+                    if (isset($arrUri['parameters']['comment']) and $arrUri['parameters']['comment'] != '') {
+                        $this->result = true;
+                        $show->set_strCommentUrl($arrUri['parameters']['comment']);
+                    }
+                    if (isset($arrUri['parameters']['json_layout']) and $arrUri['parameters']['json_layout'] != '') {
+                        $this->result = true;
+                        $show->set_jsonLayout($arrUri['parameters']['json_layout']);
+                    }
+                    if (isset($arrUri['parameters']['_FILES']) and $arrUri['parameters']['_FILES'] != null) {
+                        $this->result = true;
+                        $show->storeSplitFiles($arrUri['parameters']['_FILES'], $arrUri['parameters']['part'], $arrUri['parameters']['split']);
+                    }
+                    if ($this->result == true) {
+                        $show->write();
+                    } else {
+                        UI::sendHttpResponse(417);
+                    }
+                    $this->render();
+                }
             case 'getunplayedtracks':
                 $temp = TracksBroker::getUnplayedTracks();
                 if ($temp != false) {

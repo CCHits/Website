@@ -26,6 +26,7 @@ $monthly = true;
 $historic = false;
 $GLOBALS['RATE'] = 44100;
 $GLOBALS['DEBUG'] = false;
+$GLOBALS['NODELETEFILES'] = false;
 
 $pre_sable = '<?xml version="1.0"?>
 <!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN" "Sable.v0_2.dtd" []>
@@ -78,6 +79,9 @@ foreach ($arrUri['parameters'] as $key => $value) {
     }
     if ($value === 'debug' || $key === 'debug') {
         $GLOBALS['DEBUG'] = true;
+    }
+    if ($value === 'nodeletefiles' || $key === 'nodeletefiles') {
+        $GLOBALS['NODELETEFILES'] = true;
     }
     if ($value === 'historic' || $key === 'historic') {
         $historic = true;
@@ -287,7 +291,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                         $show_data['arrTracks'][1]['strArtistName']
                     )
                 )
-            )
+            ),
+            json_encode($arrRunningOrder_final);
         );
         echo "Done.\r\n\r\n";
     }
@@ -577,7 +582,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     randomTextSelect(array('A new !weekly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' weekly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
                 )
-            )
+            ),
+            json_encode($arrRunningOrder_final);
         );
         echo "Done.\r\n\r\n";
     }
@@ -773,7 +779,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     randomTextSelect(array('A new !monthly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '. Get it from ' . $show_data['shorturl'])),
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
                 )
-            )
+            ),
+            json_encode($arrRunningOrder_final);
         );
         echo "Done.\r\n\r\n";
     }

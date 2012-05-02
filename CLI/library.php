@@ -27,32 +27,126 @@
  *
  * @return void
  */
-function finalize($show_id, $show_root, $comment_url)
+function finalize($show_id, $show_root, $comment_url, $json_layout)
 {
-    $array = array('hash' => '', 'time' => '', 'comment' => '');
+    $array = array('hash' => '', 'time' => '', 'comment' => $comment_url, 'jsonAudioLayout' => $json_layout);
+    $success = true;
+    $finalize_url = Configuration::getAPI() . '/finalize/';
+    $split_url = Configuration::getAPI() . '/split/';
     if (file_exists($show_root . 'mp3')) {
         $array['hash'] .= 'mp3:' . md5_file($show_root . 'mp3');
-        $array['file_mp3'] = '@' . $show_root . 'mp3;type=audio/mpeg';
+        $array['file'] = '@' . $show_root . 'mp3;type=audio/mpeg';
         $array['time'] = getTrackLength($show_root . 'mp3');
+        $data = curlPostRequest($finalize_url . $show_id, $array);
+        if ($data[0] == false) {
+            echo "Failed to upload MP3 file. Trying to upload split files.\r\n";
+            $cmd = 'split -b50M ' . $show_root . 'mp3 ' . $show_root . 'mp3.';
+            debugExec($cmd);
+            $parts = array();
+            switch (true) {
+                case file_exists($show_root . 'mp3.af'):
+                    break;
+                case file_exists($show_root . 'mp3.ae'):
+                    $parts[5] = $show_root . 'mp3.ae';
+                case file_exists($show_root . 'mp3.ad'):
+                    $parts[4] = $show_root . 'mp3.ad';
+                case file_exists($show_root . 'mp3.ac'):
+                    $parts[3] = $show_root . 'mp3.ac';
+                case file_exists($show_root . 'mp3.ab'):
+                    $parts[2] = $show_root . 'mp3.ab';
+                case file_exists($show_root . 'mp3.aa'):
+                    $parts[1] = $show_root . 'mp3.aa';
+            }
+            ksort($parts);
+            foreach ($parts as $partno => $part) {
+                $array['file'] = '@' . $part . ';type=audio/mp3';
+                $array['part'] = $partno;
+                $array['size'] = count($parts);
+                $data = curlPostRequest($split_url . $show_id, $array);
+                if ($data[0] == false) {
+                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                }
+            }
+        }
     }
     if (file_exists($show_root . 'oga')) {
         $array['hash'] .= 'oga:' . md5_file($show_root . 'oga');
-        $array['file_oga'] = '@' . $show_root . 'oga;type=audio/ogg';
+        $array['file'] = '@' . $show_root . 'oga;type=audio/ogg';
         if ($array['time'] == '') {
             // Why we don't have the time set after the MP3 file is done, I don't know
             // but just to be on the safe side...
             $array['time'] = getTrackLength($show_root . 'oga');
         }
+        $data = curlPostRequest($finalize_url . $show_id, $array);
+        if ($data[0] == false) {
+            echo "Failed to upload OGA file. Trying to upload split files.\r\n";
+            $cmd = 'split -b50M ' . $show_root . 'oga ' . $show_root . 'oga.';
+            debugExec($cmd);
+            $parts = array();
+            switch (true) {
+                case file_exists($show_root . 'oga.af'):
+                    break;
+                case file_exists($show_root . 'oga.ae'):
+                    $parts[5] = $show_root . 'oga.ae';
+                case file_exists($show_root . 'oga.ad'):
+                    $parts[4] = $show_root . 'oga.ad';
+                case file_exists($show_root . 'oga.ac'):
+                    $parts[3] = $show_root . 'oga.ac';
+                case file_exists($show_root . 'oga.ab'):
+                    $parts[2] = $show_root . 'oga.ab';
+                case file_exists($show_root . 'oga.aa'):
+                    $parts[1] = $show_root . 'oga.aa';
+            }
+            ksort($parts);
+            foreach ($parts as $partno => $part) {
+                $array['file'] = '@' . $part . ';type=audio/ogg';
+                $array['part'] = $partno;
+                $array['size'] = count($parts);
+                $data = curlPostRequest($split_url . $show_id, $array);
+                if ($data[0] == false) {
+                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                }
+            }
+        }
     }
     if (file_exists($show_root . 'm4a')) {
         $array['hash'] .= 'm4a:' . md5_file($show_root . 'm4a');
-        $array['file_m4a'] = '@' . $show_root . 'm4a;type=audio/mp4';
+        $array['file'] = '@' . $show_root . 'm4a;type=audio/mp4';
         // I can't recall whether soxi will get m4a track lengths. To be on the safe side
         // don't bother. It should have been picked up in the mp3 and oga files anyway.
+        $data = curlPostRequest($finalize_url . $show_id, $array);
+        if ($data[0] == false) {
+            echo "Failed to upload M4A file. Trying to upload split files.\r\n";
+            $cmd = 'split -b50M ' . $show_root . 'm4a ' . $show_root . 'm4a.';
+            debugExec($cmd);
+            $parts = array();
+            switch (true) {
+                case file_exists($show_root . 'm4a.af'):
+                    break;
+                case file_exists($show_root . 'm4a.ae'):
+                    $parts[5] = $show_root . 'm4a.ae';
+                case file_exists($show_root . 'm4a.ad'):
+                    $parts[4] = $show_root . 'm4a.ad';
+                case file_exists($show_root . 'm4a.ac'):
+                    $parts[3] = $show_root . 'm4a.ac';
+                case file_exists($show_root . 'm4a.ab'):
+                    $parts[2] = $show_root . 'm4a.ab';
+                case file_exists($show_root . 'm4a.aa'):
+                    $parts[1] = $show_root . 'm4a.aa';
+            }
+            ksort($parts);
+            foreach ($parts as $partno => $part) {
+                $array['file'] = '@' . $part . ';type=audio/mp4';
+                $array['part'] = $partno;
+                $array['size'] = count($parts);
+                $data = curlPostRequest($split_url . $show_id, $array);
+                if ($data[0] == false) {
+                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                }
+            }
+        }
     }
-    $array['comment'] = $comment_url;
-    $data = curlPostRequest(Configuration::getAPI() . '/finalize/' . $show_id, $array);
-    return $data;
+    return $success;
 }
 
 /**
@@ -682,7 +776,7 @@ function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
  */
 function debugUnlink($file)
 {
-    if (!isset($GLOBALS['DEBUG']) or ! $GLOBALS['DEBUG']) {
+    if (!isset($GLOBALS['NODELETEFILES']) or ! $GLOBALS['NODELETEFILES']) {
         unlink($file);
     } else {
         echo "Would be deleting $file now\r\n";
@@ -712,7 +806,7 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
     }
     if ($exit_code > $max_acceptable_exit || (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG'])) {
         if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
-        echo "Command:     $cmd\r\n";
+            echo "Command:     $cmd\r\n";
         }
         echo "Exit status: $exit_code\r\nOutput:      $content\r\n";
     }
@@ -785,6 +879,7 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     $response = curl_getinfo($ch);
     if (curl_errno($ch)) {
         $error_text = curl_error($ch);
+        echo "Unable to retrieve $url due to $error_text\r\n";
         $error = 1;
     }
     curl_close($ch);
@@ -801,18 +896,24 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
         if ($headers != false) {
             foreach ($headers as $value) {
                 if (substr(strtolower($value), 0, 9) == "location:") {
-                    return get_url(trim(substr($value, 9, strlen($value))), $as_file);
+                    return curlGetResource(trim(substr($value, 9, strlen($value))), $as_file);
                 }
             }
         }
     }
 
     if ($as_file == 0 and (preg_match("/>[[:space:]]+window\.location\.replace\('(.*)'\)/i", $content, $value) or preg_match("/>[[:space:]]+window\.location\=\"(.*)\"/i", $content, $value)) and $javascript_loop < $max_loop) {
-        return get_url($value[1], 0, $javascript_loop+1, $max_loop);
+        return curlGetResource($value[1], 0, $javascript_loop+1, $max_loop);
     } else {
         if ($as_file == 1) {
+            if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+                echo "Got $url as file $tmpfname with response as follows:\r\n" . print_r($response, true);
+            }
             return array($tmpfname, $response);
         } else {
+            if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+                echo "Got $url as\r\n" . substr($content, 0, 60) . "\r\ncURL data as follows:\r\n" . print_r($response, true);
+            }
             return array($content, $response);
         }
     }
@@ -841,11 +942,22 @@ function curlPostRequest($url, $arrPost)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $arrPost);
     $result = curl_exec($ch);
     $response = curl_getinfo($ch);
+    if (curl_errno($ch)) {
+        $error_text = curl_error($ch);
+        echo "Unable to retrieve $url due to $error_text\r\n";
+        $error = 1;
+    }
     curl_close($ch);
-    if ($response['http_code'] != 200) {
+    if ($response['http_code'] != 200 || isset($error)) {
         $state = false;
     } else {
         $state = true;
+    }
+    if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+        if ($state == false) {
+            echo "Not ";
+        }
+        echo "Got $url with data:\r\n" . print_r($arrPost, true) . "\r\nas\r\n$result\r\ncURL data as follows:\r\n" . print_r($response, true);
     }
     return array($state, $result, $response);
 }
