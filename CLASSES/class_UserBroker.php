@@ -64,7 +64,7 @@ class UserBroker
         } elseif (isset($_SESSION['OPENID_AUTH']) AND $_SESSION['OPENID_AUTH'] != false) {
             $field = "strOpenID";
             $param = $_SESSION['OPENID_AUTH']['url'];
-        } elseif ($username !== null && $password !== null) {
+        } elseif ($username !== null && $password !== null && $username != '' && $password != '') {
             $field = "sha1Pass";
             $sha1password = sha1($password);
             $param = "{$username}:{$sha1password}";
