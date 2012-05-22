@@ -602,8 +602,8 @@ class HTML
             $show = new NewExternalShowObject($showUrl, $showName);
             if (is_object($show)) {
                 $intShowID = $show->get_intShowID();
-                if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '') {                
-                  $temp = new NewShowTrackObject($this->arrUri['parameters']['intTrackID'], $show->get_intShowID());
+                if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '') {
+                    $temp = new NewShowTrackObject($this->arrUri['parameters']['intTrackID'], $show->get_intShowID());
                 }
                 UI::Redirect('admin/show/' . $intShowID);
             } else {
@@ -707,7 +707,8 @@ class HTML
     {
         $chart = ChartBroker::getChartByDate('', 0, 15);
         $this->result['chart'] = $chart['position'];
-        $this->result['daily'] = end(ShowBroker::getInternalShowByType('daily', 1))->getSelf();
+        $show = end(ShowBroker::getInternalShowByType('daily', 1));
+        $this->result['daily'] = $show->getSelf();
         $this->result['weekly'] = end(ShowBroker::getInternalShowByType('weekly', 1))->getSelf();
         $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1))->getSelf();
         if ($this->render()) {
@@ -800,7 +801,7 @@ class HTML
             UI::sendHttpResponse(404);
         }
         if (isset($this->arrUri['parameters']['go']) or VoteBroker::hasMyUserIDVotedForThisTrack($track)) {
-            new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show));
+            $vote = new NewVoteObject(UI::getLongNumber($track), UI::getLongNumber($show));
             if ($this->render()) {
                 $objTrack->set_full(true);
                 $this->result['track'] = $objTrack->getSelf();
