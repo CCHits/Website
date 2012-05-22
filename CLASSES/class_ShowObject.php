@@ -207,7 +207,7 @@ class ShowObject extends GenericObject
             } else {
                 $return['player_data']['m4a_len'] = 0;
             }
-            $arrShowLayout = (array) json_decode($this->jsonAudioLayout);
+/*            $arrShowLayout = (array) json_decode($this->jsonAudioLayout);
             if (count($arrShowLayout) > 0) {
                 foreach ($arrShowLayout as $track=>$arrPositions) {
                     $arrPositions = (array) $arrPositions;
@@ -216,7 +216,7 @@ class ShowObject extends GenericObject
                     $showLayout[$track]['stop'] = $arrPositions['stop'];
                 }
                 $return['arrShowLayout'] = $showLayout;
-            }
+            }*/
         }
         $return['datDateAdded'] = date('r', strtotime($this->datDateAdded));
         $return['strShowNameSpoken'] = $this->strShowNameSpoken;
