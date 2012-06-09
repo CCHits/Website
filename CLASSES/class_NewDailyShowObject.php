@@ -45,7 +45,7 @@ class NewDailyShowObject extends NewInternalShowObject
         if ($query->errorCode() != 0) {
             throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>'daily', 'error'=>$query->errorInfo()), true), 1);
         }
-        $history = $query->fetch(PDO::FETCH_ASSOC);
+        $history = $query->fetchAll(PDO::FETCH_ASSOC);
         $strQry = '';
         $arrArtists = array();
         $arrArtistIDs = array();
@@ -63,8 +63,11 @@ class NewDailyShowObject extends NewInternalShowObject
         }
 
         $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 AND showtrack.intTrackID IS NULL ";
+        foreach($arrArtists as $intArtistID) {
+            $sql .= " AND tracks.intArtistID != '$intArtistID'";
+        }
         if ($boolLongTrack) {
-            $sql .= " AND timeLength < '00:08:00'";
+            $sql .= " AND tracks.timeLength < '00:08:00'";
         }
         $sql .= " ORDER BY RAND() LIMIT 0,1 ";
         $query = $db->prepare($sql);

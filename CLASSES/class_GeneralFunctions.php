@@ -29,6 +29,14 @@
 class GeneralFunctions
 {
     /**
+     * This function replaces the standard error logging, as it's not working on this dreamhost instance!
+     */
+    function error_log($message = null)
+    {
+        error_log($message, 3, dirname(__FILE__) . '/../../php.log');
+    }
+
+    /**
      * This function looks for a value within an array or an object, and returns it if it's there. If it isn't it
      * returns the default value.
      *
@@ -132,7 +140,14 @@ class GeneralFunctions
      */
     function getFileLengthString($filename = '')
     {
-        return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00');
+        $time = GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00');
+        preg_match('/(\d\d):(\d\d):(\d\d)/', $time, $matches);
+        if ($matches[1] > 0 && $matches[3] == 0) {
+            $time = '00:' . $matches[1] . ':' . $matches[2];
+        } else {
+            $time = $matches[1] . ':' . $matches[2] . ':' . $matches[3];
+        }
+        return $time;
     }
 
     /**
