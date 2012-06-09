@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /vote/ # Otherwise the votes get all skewey!
+Disallow: /api/ # This is where the API plays - no spider needs to see this. Move along.
+Disallow: /about/source/scripts.git/
+Disallow: /about/source/website.git/
+Disallow: /about/database/export/
