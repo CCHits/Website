@@ -1,0 +1,13 @@
+<?php header("Content-type: text/html; charset=utf-8"); ?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><?php echo $_CONFIG['Site Name']; ?> - Vote successful</title>
+</head>
+<body>
+<p>Thanks for your vote for <?php echo '"' . $track['track']['name'] . '" by "' . $track['artist']['name'] . '"'; ?>, it now has <?php echo $track['votes']; ?> votes. You can only vote once per track.</p>
+<?php if(isset($referrer)) { ?>
+<p>Please click <?php echo '<a href="' . $referrer . '">here</a>'; ?> to go back to the page you came from. If that page is already open, either in another tab or another window, you only need close this tab or window. If this text is a part of the referring page, then you will not need to do anything.</p>
+<?php } ?>
+</body>
+</html>

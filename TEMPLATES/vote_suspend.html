@@ -1,0 +1,13 @@
+<?php header("Content-type: text/html; charset=utf-8"); ?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><?php echo $_CONFIG['Site Name']; ?> - Confirm your vote</title>
+</head>
+<body>
+<p>To ensure your vote was intended, please can you confirm your vote for <?php echo '"' . $track['track']['name'] . '" by "' . $track['artist']['name'] . '"'; ?>.</p>
+<form action="?go" method="post">
+  <input type="submit" name="Confirm" value="Confirm" />
+</form>
+</body>
+</html>

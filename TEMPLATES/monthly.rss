@@ -1,0 +1,72 @@
+<?php header("Content-Type: application/rss+xml; charset=utf-8");
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\r"; ?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title><?php echo $_CONFIG['Site Name'] . ' ' . $_CONFIG['Monthly Show Name']; ?></title>
+    <description><?php echo $_CONFIG['About The Site']; ?></description>
+    <link><?php echo $_CONFIG['Base URL'] . $_CONFIG['fileBaseMonthly']; ?></link>
+    <atom:link href="<?php echo $_CONFIG['Base URL'] . $_CONFIG['fileBaseMonthly'] . '/rss'; ?>" rel="self" type="application/rss+xml" />
+    <language>en-gb</language>
+    <copyright><?php echo $_CONFIG['System License']; ?></copyright>
+    <lastBuildDate><?php echo date("r"); ?></lastBuildDate>
+    <pubDate><?php echo date("r"); ?></pubDate>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <webMaster><?php echo $_CONFIG['Contact EMail'] . " (" . $_CONFIG['Contact Name'] . ")"; ?></webMaster>
+    <itunes:author><?php echo $_CONFIG['Contact EMail'] . " (" . $_CONFIG['Contact Name'] . ")"; ?></itunes:author>
+    <itunes:summary><?php echo $_CONFIG['About The Site']; ?></itunes:summary>
+    <itunes:owner>
+      <itunes:name><?php echo $_CONFIG['Contact Name']; ?></itunes:name>
+      <itunes:email><?php echo $_CONFIG['Contact EMail']; ?></itunes:email>
+    </itunes:owner>
+    <itunes:explicit>Yes</itunes:explicit>
+    <itunes:image href="<?php echo $_CONFIG['Base URL']; ?>/images/cchits_coverart.png"/>
+    <itunes:category text="Music" />
+<?php foreach($data as $show) { 
+  $text = '';
+  $nsfw = 0;
+  $nsfw_text = '';
+  $keywords = 'Creative Commons, Music';
+  foreach($show['arrTracks'] as $track) {
+    if($track['isnsfw']==1) {
+      $nsfw = 1;
+    }
+    if(strlen($keywords . ', ' . $track['track']['name'] . ', ' . $track['artist']['name']) <= 255) {
+      if($keywords != '') {$keywords .= ', ';}
+      $keywords .= $track['track']['name'] . ', ' . $track['artist']['name'];
+    }
+    $text .= "<p>
+                \"<a href=\"{$track['track']['url']}\">
+                  {$track['track']['name']}
+                </a>\" 
+                by 
+                \"<a href=\"{$track['artist']['url']}\">
+                  {$track['artist']['name']}
+                </a>\"
+              </p>\r\n
+              <p>It is licensed under a Creative Commons {$track['licensetext']} license.</p>\r\n
+              <p>
+                <form action=\"{$_CONFIG['Base URL']}/vote/{$track['intTrackID']}/{$track['intShowID']}\" method=\"post\">
+                  <input type=\"submit\" name=\"go\" value=\"I like it!\" />
+                </form>
+              </p>\r\n";
+  }
+  if(isset($nsfw) and $nsfw == 1) {$nsfw_text = "<p><b>This show may not be suitable for family or workplace listening.</b></p>\r\n";}
+  $text = '<![CDATA[' . $nsfw_text . '<p>This month, the following tracks are on the show:' . "</p>\r\n$text]]>";
+?>
+    <item>
+      <title><?php echo $_CONFIG['Monthly Show Name'] . ' for ' . substr($show['date'], 0, 4) . '-' . substr($show['date'], 4, 2) . ' - ' . $_CONFIG['Site Name']; ?></title>
+      <link><?php echo $_CONFIG['Base URL'] . $_CONFIG['fileBaseMonthly'] . '/' . $show['date']; ?></link>
+      <guid><?php echo $_CONFIG['Base URL'] . $_CONFIG['fileBaseMonthly'] . '/' . $show['date']; ?></guid>
+      <description><?php echo $text; ?></description>
+      <enclosure url="<?php echo $_CONFIG['Base Media URL'] . $_CONFIG['fileBaseMonthly'] . '/' . $show['date'] . '.mp3'; ?>" length="<?php echo filesize(dirname(__FILE__) . '/../media/' . $_CONFIG['fileBaseMonthly'] . '/' . $show['date'] . '.mp3'); ?>" type="audio/mpeg" />
+      <category>Music</category>
+      <pubDate><?php echo date("r", strtotime(substr($show['date'], 0, 4) . '-' . (substr($show['date'], 4, 2)+1) . '-00 00:00:00')); ?></pubDate>
+      <author><?php echo $_CONFIG['Contact EMail'] . " (" . $_CONFIG['Contact Name'] . ")"; ?></author>
+      <itunes:author><?php echo $_CONFIG['Contact EMail'] . " (" . $_CONFIG['Contact Name'] . ")"; ?></itunes:author>
+      <itunes:explicit><?php if($nsfw==1) {echo "Yes";} else {echo "No";} ?></itunes:explicit>
+      <itunes:subtitle><?php echo 'This is a ' . $_CONFIG['Monthly Show Name']; ?></itunes:subtitle>
+      <itunes:keywords><?php echo htmlspecialchars($keywords); ?></itunes:keywords>
+    </item>
+<?php } ?>
+  </channel>
+</rss>

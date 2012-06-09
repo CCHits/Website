@@ -1,0 +1,42 @@
+<?php header("Content-type: text/html; charset=utf-8"); ?>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="alternate" type="application/rss+xml" href="http://cchits.net/daily/rss/" title="A feed of the daily exposure show tracks" />
+  <title><?php echo $_CONFIG['Daily Show Name'];
+if(isset($data['date'])) {
+  echo ' for ' . substr($data['date'], 0, 4) . '-' . substr($data['date'], 4, 2) . '-' . substr($data['date'], 6, 2);
+} else {
+  $start = reset($data);
+  $last = end($data);
+  echo 's between ' . substr($last['date'], 0, 4) . '-' . substr($last['date'], 4, 2) . '-' . substr($last['date'], 6, 2) . ' and ' . substr($start['date'], 0, 4) . '-' . substr($start['date'], 4, 2) . '-' . substr($start['date'], 6, 2);
+}
+echo ' - ' . $_CONFIG['Site Name']; ?></title>
+  <script type="text/javascript" src="http://mediaplayer.yahoo.com/js"></script>
+</head>
+<body>
+<?php 
+if(isset($breadcrumbs) and $breadcrumbs != '') {
+  echo "<div class=\"breadcrumbs\">$breadcrumbs</div>\r\n";
+}
+echo "<h1>{$_CONFIG['Daily Show Name']}  <a href=\"/daily/rss\"><img src=\"/images/feed.png\" alt=\"RSS Feed\" /></a></h1>\r\n";
+if(isset($data) and is_array($data) and count($data) > 3 and !isset($data['trackid'])) {
+  echo "<p>This is a list of the last " . count($data) . " daily shows.</p>";
+  $counter = 0;
+  $arrData = $data;
+  foreach($arrData as $trackid => $data) {
+    echo '<h2>Show for ' . substr($data['date'], 0, 4) . '-' . substr($data['date'], 4, 2) . '-' . substr($data['date'], 6, 2)  . "</h2>\r\n";
+    echo '<div class="player"><a href="' . $_CONFIG['Base Media URL'] . $_CONFIG['fileBaseDaily'] . '/' . $data['date'] . '.mp3" class="htrack" tabindex="1" title="' . $_CONFIG['Site Name'] . ' show for ' . substr($data['date'], 0, 4) . '-' . substr($data['date'], 4, 2) . '-' . substr($data['date'], 6, 2)  . '" type="audio/mpeg">' . "Play Show</a></div>\r\n";
+    require(dirname(__FILE__) . "/track_template.html");
+    if(++$counter < count($arrData)) {
+      echo "<hr />\r\n";
+    }
+  }
+} else {
+  echo '<h2>Show for ' . substr($data['date'], 0, 4) . '-' . substr($data['date'], 4, 2) . '-' . substr($data['date'], 6, 2)  . "</h2>\r\n";
+  echo '<div class="player"><a href="' . $_CONFIG['Base Media URL'] . $_CONFIG['fileBaseDaily'] . '/' . $data['date'] . '.mp3" class="htrack" tabindex="1" title="' . $_CONFIG['Site Name'] . ' show for ' . substr($data['date'], 0, 4) . '-' . substr($data['date'], 4, 2) . '-' . substr($data['date'], 6, 2)  . '" type="audio/mpeg">' . "Play Show</a></div>\r\n";
+  require(dirname(__FILE__) . "/track_template.html");
+}
+?>
+</body>
+</html>

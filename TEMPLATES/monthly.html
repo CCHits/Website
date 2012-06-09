@@ -1,0 +1,58 @@
+<?php header("Content-type: text/html; charset=utf-8"); ?>
+<?php 
+if(isset($data['tracks'])) {
+  $feed[] = array('arrTracks' => $data['tracks'], 'date' => $data['showid']);
+  $range = ' for ' . substr($data['showid'], 0, 4) . '-' . substr($data['showid'], 4, 2) . '-' . substr($data['showid'], 6, 2);
+  $data = $feed;
+} elseif(count($data) == 1) {
+  foreach($data as $show) {}
+  $range = ' for ' . substr($show['date'], 0, 4) . '-' . substr($show['date'], 4, 2) . '-' . substr($show['date'], 6, 2);
+} else {
+  $shows_start = 0;
+  $shows_end = 0;
+  foreach($data as $show) {
+    if($show['date'] < $shows_start or $shows_start == 0) {$shows_start = $show['date'];}
+    if($show['date'] > $shows_end) {$shows_end = $show['date'];}
+  }
+  $range = ' between ' . substr($shows_start, 0, 4) . '-' . substr($shows_start, 4, 2) . '-' . substr($shows_start, 6, 2) . ' to ' . substr($shows_end, 0, 4) . '-' . substr($shows_end, 4, 2) . '-' . substr($shows_end, 6, 2);
+}
+$shows = $data;
+?>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="alternate" type="application/rss+xml" href="http://cchits.net/monthly/rss/" title="The monthly review show" />
+  <title><?php echo $_CONFIG['Monthly Show Name'] . $range . ' - ' . $_CONFIG['Site Name']; ?></title>
+  <script type="text/javascript" src="http://mediaplayer.yahoo.com/js"></script>
+</head>
+<body>
+<?php
+if(isset($breadcrumbs) and $breadcrumbs != '') {
+  echo "<div class=\"breadcrumbs\">$breadcrumbs</div>\r\n";
+}
+echo "<h1>{$_CONFIG['Monthly Show Name']} <a href=\"/monthly/rss\"><img src=\"/images/feed.png\" alt=\"RSS Feed\" /></a></h1>\r\n";
+if(count($data) > 1) {
+  echo "<p>This is a list of the last " . count($data) . " monthly shows.</p>";
+}
+$show_id = 0;
+foreach($shows as $show) {
+  if($show_id++ > 1) {echo "<hr />\r\n";}
+  $intShowID = getShowID('monthly', $show['date'], FALSE);
+  echo "<div id=\"Show_$intShowID\">\r\n";
+  echo '<h2>Show for month ' . substr($show['date'], 0, 4) . '-' . substr($show['date'], 4, 2) . "</h2>\r\n";
+  echo '<div class="player"><a href="' . $_CONFIG['Base Media URL'] . $_CONFIG['fileBaseMonthly'] . '/' . $show['date'] . '.mp3" class="htrack" tabindex="1" title="' . $_CONFIG['Site Name'] . ' show for the month ending ' . substr($show['date'], 0, 4) . '-' . substr($show['date'], 4, 2) . '-' . substr($show['date'], 6, 2)  . '" type="audio/mpeg">' . "Play Show</a></div>\r\n";
+  $place = 0;
+  $votes = 0;
+  foreach($show['arrTracks'] as $data['track']) {
+    $place++;
+    echo '<div id="Place"><span class="Label">Track number:</span> <span class="Data">' . $place . "</span></div>\r\n";
+    require("track_template.html");
+    $votes = $votes + $data['track']['votesadj'];
+    echo "<br />\r\n";
+  }
+  echo '<a href="/about/voteadjust">Vote average for the show</a>: ' . (intval(($votes / $place) * 10) / 10) . ' (Calculated as ' . $votes . ' votes over ' . $place . " tracks)\r\n";
+  echo "</div>\r\n";
+}
+?>
+</body>
+</html>
