@@ -135,9 +135,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                      '%1$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %2$s',
                     ' a track by %2$s <BREAK LEVEL="SMALL" /> called <BREAK LEVEL="SMALL" /> %1$s'
                 )
-            ), 
-            $show_data['arrTracks'][1]['strTrackNameSounds'], 
-            $show_data['arrTracks'][1]['strArtistNameSounds']
+            ),
+            preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['strTrackNameSounds']),
+            preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['strArtistNameSounds'])
         );
         $intro .= "\r\n$post_sable";
         if ( ! convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav')) {
@@ -180,9 +180,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     'You were listening to a %3$s licensed track by %2$s <BREAK LEVEL="SMALL" /> called <BREAK LEVEL="SMALL" /> %1$s'
                 )
             ),
-            $show_data['arrTracks'][1]['strTrackNameSounds'],
-            $show_data['arrTracks'][1]['strArtistNameSounds'],
-            $show_data['arrTracks'][1]['pronouncable_enumTrackLicense']
+            preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['strTrackNameSounds']),
+            preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['strArtistNameSounds']),
+            preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['pronouncable_enumTrackLicense'])
         );
         $outro .= sprintf(
             randomTextSelect(
@@ -365,8 +365,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                             'To dayz first track is from %2$s <BREAK LEVEL="SMALL" /> and is called <BREAK LEVEL="SMALL" /> %1$s'
                         )
                     ),
-                    $arrTrack['strTrackNameSounds'], 
-                    $arrTrack['strArtistNameSounds']
+                    preg_replace('/\&/', ' and ', $arrTrack['strTrackNameSounds']), 
+                    preg_replace('/\&/', ' and ', $arrTrack['strArtistNameSounds'])
                 );
                 break;
             case count($show_data['arrTracks']):
@@ -377,11 +377,11 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                             'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s <BREAK LEVEL="SMALL" />which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> I am sad to say that this is the last track this week <BREAK LEVEL="MEDIUM" /> but not sad to say that it is %5$s with their track %4$s'
                         )
                     ),
-                    $arrLastTrack['pronouncable_enumTrackLicense'],
-                    $arrLastTrack['strTrackNameSounds'],
-                    $arrLastTrack['strArtistNameSounds'],
-                    $arrTrack['strTrackNameSounds'], 
-                    $arrTrack['strArtistNameSounds']
+                    preg_replace('/\&/', ' and ', $arrLastTrack['pronouncable_enumTrackLicense']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strArtistNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strArtistNameSounds'])
                 );
                 break;
             case 8:
@@ -392,11 +392,11 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                             'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s <BREAK LEVEL="SMALL" /> which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> and now lets play some tracks from the week before this. Here we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
-                    $arrLastTrack['pronouncable_enumTrackLicense'],
-                    $arrLastTrack['strTrackNameSounds'],
-                    $arrLastTrack['strArtistNameSounds'],
-                    $arrTrack['strTrackNameSounds'], 
-                    $arrTrack['strArtistNameSounds']
+                    preg_replace('/\&/', ' and ', $arrLastTrack['pronouncable_enumTrackLicense']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strArtistNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strArtistNameSounds'])
                 );
                 break;
             case 3:
@@ -410,13 +410,13 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                             'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Remember that you can vote for any track in to dayz show by visiting %7$s <BREAK LEVEL="LARGE" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
-                    $arrLastTrack['pronouncable_enumTrackLicense'],
-                    $arrLastTrack['strTrackNameSounds'],
-                    $arrLastTrack['strArtistNameSounds'],
-                    $arrTrack['strTrackNameSounds'], 
-                    $arrTrack['strArtistNameSounds'],
-                    $show_data['strSiteNameSpoken'],
-                    $show_data['strShowUrlSpoken']
+                    preg_replace('/\&/', ' and ', $arrLastTrack['pronouncable_enumTrackLicense']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strArtistNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strArtistNameSounds']),
+                    preg_replace('/\&/', ' and ', $show_data['strSiteNameSpoken']),
+                    preg_replace('/\&/', ' and ', $show_data['strShowUrlSpoken'])
                 );
                 break;
             default:
@@ -427,11 +427,11 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                             'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
-                    $arrLastTrack['pronouncable_enumTrackLicense'],
-                    $arrLastTrack['strTrackNameSounds'],
-                    $arrLastTrack['strArtistNameSounds'],
-                    $arrTrack['strTrackNameSounds'], 
-                    $arrTrack['strArtistNameSounds']
+                    preg_replace('/\&/', ' and ', $arrLastTrack['pronouncable_enumTrackLicense']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrLastTrack['strArtistNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strTrackNameSounds']),
+                    preg_replace('/\&/', ' and ', $arrTrack['strArtistNameSounds'])
                 );
                 break;
             }
@@ -478,9 +478,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     'You were listening to a %3$s licensed track by %2$s <BREAK LEVEL="SMALL" /> called <BREAK LEVEL="SMALL" /> %1$s'
                 )
             ),
-            $arrLastTrack['strTrackNameSounds'],
-            $arrLastTrack['strArtistNameSounds'],
-            $arrLastTrack['pronouncable_enumTrackLicense']
+            preg_replace('/\&/', ' and ', $arrLastTrack['strTrackNameSounds']),
+            preg_replace('/\&/', ' and ', $arrLastTrack['strArtistNameSounds']),
+            preg_replace('/\&/', ' and ', $arrLastTrack['pronouncable_enumTrackLicense'])
         );
         $outro .= sprintf(
             randomTextSelect(
@@ -673,7 +673,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             if ($arrTrack['isNSFW'] != 0) {
                 $bumper .= randomTextSelect($track_nsfw);
             }
-
+            $bumper = preg_replace('/\&/', ' and ', $bumper);
             $bumper .= "\r\n$post_sable";
             $arrLastTrack = $arrTrack;
             convertSableXmlToWav($bumper, Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
@@ -712,7 +712,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         );
         $outro .= ' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit Cee-Cee-Hits dot net slash theem' . "\r\n" . $post_sable;
 
-        convertSableXmlToWav($outro, Configuration::getWorkingDir() . '/outro.wav');
+        convertSableXmlToWav(preg_replace('/\&/', ' and ', $outro), Configuration::getWorkingDir() . '/outro.wav');
         generateSilenceWav(34, Configuration::getWorkingDir() . '/post-show-silence.wav');
         concatenateTracks(Configuration::getWorkingDir() . '/outro.wav', Configuration::getWorkingDir() . '/post-show-silence.wav', Configuration::getWorkingDir() . '/showend.wav');
         reverseTrackAudio(Configuration::getWorkingDir() . '/showend.wav', Configuration::getWorkingDir() . '/showend_rev.wav');
