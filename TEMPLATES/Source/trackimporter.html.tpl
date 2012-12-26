@@ -20,7 +20,7 @@
 {/if}
 {if $track.intArtistID == 0}
 {if count($artists) > 0}
-                <p>Is this previously created artist the creator of this work?</p>
+                <p>Is this previously created artist the creator of this work? Note, if you have a conflict because the artist name as supplied conflicts with another in the site, add something to the conflicting field (artist name or URL) and then edit it once you've selected the artist. This is a bit of a work-around for a flagged issue. It will be picked up in a near-future release.</p>
 		<form method="post" action="{$baseURL}admin/addtrack/{$track.intProcessingID}">
                         <select name="intArtistID">
 {foreach $artists item=artist}

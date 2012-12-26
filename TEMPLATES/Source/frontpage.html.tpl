@@ -21,6 +21,7 @@
 	<body>
 		<h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
 		<h2>{$Slogan}</h2>
+<div id="about"><a href="/about">About CCHits</a></div>
 		<div id="chart">
 			<h3>The Chart</h3>
 			<table>
