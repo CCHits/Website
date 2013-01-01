@@ -877,6 +877,11 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
 
     $content = curl_exec($ch);
     $response = curl_getinfo($ch);
+    if (curl_errno($ch) == 56) {
+        echo "Connection reset trying to get $url. Sleeping 120 seconds, and then treating this as a redirect.\r\n";
+        sleep(120);
+        return curlGetResource($url, $as_file, $javascript_loop+1, $max_loop);
+    }
     if (curl_errno($ch)) {
         $error_text = curl_error($ch);
         echo "Unable to retrieve $url due to $error_text\r\n";
