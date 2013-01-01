@@ -98,6 +98,8 @@ if ($historic) {
     $get .= '?historic=true';
 }
 $data = curlGetResource($get, 0);
+// Hacky work around to stop error messages!
+$data = curlGetResource($get, 0);
 if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     $json_data = makeArrayFromObjects(json_decode($data[0]));
     $f = fopen(Configuration::getWorkingDir() . '/showmaker.json', 'w');
@@ -296,6 +298,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         );
         echo "Done.\r\n\r\n";
     }
+    $track_nsfw = array(' a track which may not be considered work or family safe <BREAK LEVEL="MEDIUM" />');
     if (isset($json_data['weekly_show']) && $weekly) {
         $show_data = makeArrayFromObjects($json_data['weekly_show']);
 
