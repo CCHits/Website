@@ -21,7 +21,6 @@ $generator = microtime(true);
 
 $arrUri = UI::getUri();
 $content = null;
-
 try {
     if (is_array($arrUri)
         and isset($arrUri['path_items'])
@@ -46,7 +45,7 @@ try {
             }
             $file .= $arrUri['path_items'][2] . '.' . $arrUri['format'];
             if (!file_exists($file)) {
-                error_log("Could not find $file");
+                error_log("Could not find $file", 3, dirname(__FILE__) . '/../php.log');
                 UI::sendHttpResponse(404);
             } else {
                 if ($arrUri['path_items'][1] == 'track' and TrackBroker::getTrackByID($arrUri['path_items'][2])->get_isApproved() == false and UserBroker::getUser()->get_isAdmin()) {
@@ -81,6 +80,6 @@ try {
         $content = new HTML();
     }
 } catch(Exception $e) {
-    error_log($e);
+    error_log($e, 3, dirname(__FILE__) . '/../php.log');
     die("An error occurred - we are looking into it.");
 }
