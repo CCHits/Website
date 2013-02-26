@@ -44,6 +44,7 @@ class API
         if (GeneralFunctions::getValue(GeneralFunctions::getValue($arrUri, 'path_items', array()), 0, '') != 'api') {
             throw new API_NotApiCall();
         } else {
+            header("Access-Control-Allow-Origin: *");
             switch($arrUri['format']) {
             case 'xml':
                 $this->format = 'xml';
