@@ -68,7 +68,7 @@ class TrendBroker
                 }
                 $strTrendDate = $query->fetchColumn();
             } else {
-                $strTrendDate = getLongDate($strTrendDate);
+                $strTrendDate = UI::getLongDate($strTrendDate);
             }
 
             $start_date = date('Y-m-d', strtotime('-7 days', strtotime($strTrendDate)));
