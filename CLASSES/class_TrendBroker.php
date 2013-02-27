@@ -74,7 +74,7 @@ class TrendBroker
             $start_date = date('Y-m-d', strtotime('-7 days', strtotime($strTrendDate)));
             $end_date = date('Y-m-d', strtotime($strTrendDate));
 
-            $sql = "SELECT intTrackID, datTrendDay, intVotes FROM trends WHERE datTrendDay => ? AND datTrendDay <= ?";
+            $sql = "SELECT intTrackID, datTrendDay, intVotes FROM trends WHERE datTrendDay >= ? AND datTrendDay <= ?";
             $pagestart = ($intPage * $intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array($start_date, $end_date));
