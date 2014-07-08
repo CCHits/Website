@@ -691,7 +691,7 @@ function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
     $DEBUG = true;
     $output = $output_root . $suffix;
     if (file_exists($input)) {
-        $cmd = 'ffmpeg -y -i "' . $input . '" -ac 2 -ar ' . $GLOBALS['RATE'] . ' -ab 128k -sample_fmt s16 "' . $output . '"';
+        $cmd = 'avconv -y -i "' . $input . '" -ac 2 -ar ' . $GLOBALS['RATE'] . ' -ab 128k -sample_fmt s16 -strict experimental "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
