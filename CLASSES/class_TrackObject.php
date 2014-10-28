@@ -581,6 +581,22 @@ class TrackObject extends GenericObject
     }
 
     /**
+     * Set the current chart place (really only used in the duplicate track tool)
+     * 
+     * @param string $intChartPlace The chart place
+     * 
+     * @return void
+     */
+    function set_intChartPlace($intChartPlace = 0)
+    {
+        if ($this->intChartPlace != $intChartPlace) {
+            $this->intChartPlace = $intChartPlace;
+            $this->arrChanges['intChartPlace'] = true;
+        }
+    }
+
+
+    /**
      * Set the number of the track which this is a duplicate of
      *
      * @param integer $intDuplicateID The Track number this track is a duplicate of
