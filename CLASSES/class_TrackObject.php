@@ -566,6 +566,21 @@ class TrackObject extends GenericObject
     }
 
     /**
+     * Set the daily show (really only used in the duplicate track tool)
+     * 
+     * @param string $datDailyShow The date we're setting
+     * 
+     * @return void
+     */
+    function set_datDailyShow($datDailyShow = "")
+    {
+        if ($this->datDailyShow != $datDailyShow) {
+            $this->datDailyShow = $datDailyshow;
+            $this->arrChanges['datDailyShow'] = true;
+        }
+    }
+
+    /**
      * Set the number of the track which this is a duplicate of
      *
      * @param integer $intDuplicateID The Track number this track is a duplicate of
