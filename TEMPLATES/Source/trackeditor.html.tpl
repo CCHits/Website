@@ -1,5 +1,6 @@
 <html>
 	<head>
+    <meta name=viewport content="width=device-width, initial-scale=1">
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<title>Track Editor: {$ServiceName} - {$Slogan}</title>
 		<link rel="stylesheet" type="text/css" href="{$baseURL}STYLE/site.css" />	

@@ -1,6 +1,7 @@
 {assign var='realshow' value=$show}
 <html>
 	<head>
+    <meta name=viewport content="width=device-width, initial-scale=1">
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
 		<script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY.SPARKLINE/{$jquerysparkline}/jquery.sparkline.min.js"></script>
 		<title>{$ServiceName}</title>
