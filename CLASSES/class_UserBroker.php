@@ -50,7 +50,7 @@ class UserBroker
      *
      * @return object|false User object or false if the authentication failed
      */
-    function getUser()
+    public static function getUser()
     {
         $objSelf = self::getHandler();
         if ($objSelf->thisUser != null) {
@@ -62,8 +62,13 @@ class UserBroker
             $field = "strCookieID";
             $param = $_SESSION['cookie'];
         } elseif (isset($_SESSION['OPENID_AUTH']) AND $_SESSION['OPENID_AUTH'] != false) {
-            $field = "strOpenID";
-            $param = $_SESSION['OPENID_AUTH']['url'];
+            if (isset($_SESSION['OPENID_AUTH']['url'])) {
+                $field = "strOpenID";
+                $param = $_SESSION['OPENID_AUTH']['url'];
+            } elseif (isset($_SESSION['OPENID_AUTH']['email'])) {
+                $field = "strEMail";
+                $param = $_SESSION['OPENID_AUTH']['email'];
+            }
         } elseif ($username !== null && $password !== null && $username != '' && $password != '') {
             $field = "sha1Pass";
             $sha1password = sha1($password);

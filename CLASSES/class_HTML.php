@@ -731,10 +731,13 @@ class HTML
     {
         $chart = ChartBroker::getChartByDate('', 0, 15);
         $this->result['chart'] = $chart['position'];
-        $show = end(ShowBroker::getInternalShowByType('daily', 1));
+        $internal_show = ShowBroker::getInternalShowByType('daily', 1);
+        $show = end($internal_show);
         $this->result['daily'] = $show->getSelf();
-        $this->result['weekly'] = end(ShowBroker::getInternalShowByType('weekly', 1))->getSelf();
-        $this->result['monthly'] = end(ShowBroker::getInternalShowByType('monthly', 1))->getSelf();
+        $internal_show = ShowBroker::getInternalShowByType('weekly', 1);
+        $this->result['weekly'] = end($internal_show)->getSelf();
+        $internal_show = ShowBroker::getInternalShowByType('monthly', 1);
+        $this->result['monthly'] = end($internal_show)->getSelf();
         if ($this->render()) {
             if ($this->format == 'html') {
                 $this->result['daily_player_json'] = json_encode(array($this->result['daily']['player_data']));

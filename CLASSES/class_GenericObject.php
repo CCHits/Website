@@ -186,7 +186,7 @@ class GenericObject
      *
      * @return boolean Result
      */
-    function asBoolean($check)
+    public static function asBoolean($check)
     {
         switch((string) $check) {
         case 'no':

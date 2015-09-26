@@ -35,7 +35,7 @@ class ChartBroker
      *
      * @return integer The peak
      */
-    function getTrackPeak($intTrackID = 0)
+    public static function getTrackPeak($intTrackID = 0)
     {
         $db = Database::getConnection();
         try {
@@ -61,7 +61,7 @@ class ChartBroker
      *
      * @return Array|false Data from the cart or false because there is no data
      */
-    function getLastSixtyDaysOfChartDataForOneTrack($intTrackID = 0)
+    public static function getLastSixtyDaysOfChartDataForOneTrack($intTrackID = 0)
     {
         $db = Database::getConnection();
         try {
@@ -97,7 +97,7 @@ class ChartBroker
      *
      * @return array|false An array of the Tracks, or false if the operation fails.
      */
-    function getChartByDate(
+    public static function getChartByDate(
         $strChartDate = '',
         $intPage = null,
         $intSize = null

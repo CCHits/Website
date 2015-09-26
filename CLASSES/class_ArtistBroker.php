@@ -36,7 +36,7 @@ class ArtistBroker
      *
      * @return object|false ArtistObject or false if not existing
      */
-    public function getArtistByID($intArtistID = 0)
+    public static function getArtistByID($intArtistID = 0)
     {
         $db = Database::getConnection();
         try {

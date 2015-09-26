@@ -47,7 +47,7 @@ class GeneralFunctions
      *
      * @return mixed The value found, or the default if not.
      */
-    function getValue($haystack = null, $needle = null, $default = false, $emptyisfalse = false)
+    public static function getValue($haystack = null, $needle = null, $default = false, $emptyisfalse = false)
     {
         if ($haystack != null && $needle !== null) {
             if (is_array($haystack) && count($haystack) > 0 && isset($haystack[$needle])) {

@@ -50,7 +50,7 @@ class ConfigBroker
      *
      * @return array Configuration values stored in an array($key=>$value) format
      */
-    public function getAllConfig()
+    public static function getAllConfig()
     {
         $handler = self::getHandler();
         if (!is_array($handler->arrConfig) or (is_array($handler->arrConfig) and count($handler->arrConfig) == 0)) {
@@ -80,7 +80,7 @@ class ConfigBroker
      *
      * @return array Configuration values stored in an array($key=>$value) format
      */
-    public function getAllAppConfig()
+    public static function getAllAppConfig()
     {
         $handler = self::getHandler();
         if (!is_array($handler->arrLocalConfig) or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)) {
@@ -104,7 +104,7 @@ class ConfigBroker
      *
      * @return string The value we're searching for, or the default if not found.
      */
-    public function getConfig($strKey = "", $strDefault = "")
+    public static function getConfig($strKey = "", $strDefault = "")
     {
         $config = self::getAllConfig();
         if ($config == false) {
@@ -124,7 +124,7 @@ class ConfigBroker
      *
      * @return string The value we're searching for, or the default if not found.
      */
-    public function getAppConfig($strKey = "", $strDefault = "")
+    public static function getAppConfig($strKey = "", $strDefault = "")
     {
         $config = self::getAllAppConfig();
         if ($config == false) {

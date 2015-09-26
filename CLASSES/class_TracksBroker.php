@@ -105,7 +105,7 @@ class TracksBroker
      *
      * @return array|false An array of the Tracks, or false if the operation fails.
      */
-    function getTracksByShowIDOrderedByPartID($intShowID = 0)
+    public static function getTracksByShowIDOrderedByPartID($intShowID = 0)
     {
         $return = array();
         $db = Database::getConnection();

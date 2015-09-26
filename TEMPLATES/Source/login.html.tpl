@@ -28,9 +28,8 @@
 		<table>
 			<tr>
 				<td>
-					<form method="post" action="{$baseURL}openid/">
-						<input type="hidden" name="id" value="http://www.google.com/accounts/o8/id" />
-						<input type="submit" value="Login with your Google Account" />
+					<form method="post" action="{$baseURL}google/">
+						<input type="submit" value="Login with you Google Account (OpenID Connect)" />
 					</form>
 				</td>
 				<td>
