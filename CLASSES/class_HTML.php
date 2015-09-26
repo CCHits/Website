@@ -960,7 +960,6 @@ class HTML
         foreach ($shows as $intShowID=>$show) {
             $this->result['shows'][$intShowID] = $show->getSelf();
             $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
-            error_log("checkpoint 2");
         }
         if ($this->render()) {
             $this->result['playlist_json'] = json_encode($playlist);

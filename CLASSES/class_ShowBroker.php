@@ -453,12 +453,10 @@ class ShowBroker
                         $handler->arrShows[$item->get_intShowID()] = $item;
                         if ((integer) $item->get_intShowUrl() > 0) {
                             $handler->arrDates[$item->get_intShowUrl()][$item->get_enumShowType()] = $item;
-                            error_log("checkpoint");
                         }
                     }
                     $item = $query->fetchObject('ShowObject');
                 }
-                error_log("return");
                 return $return;
             }
         } catch(Exception $e) {

@@ -107,8 +107,6 @@ class ShowObject extends GenericObject
      */
     function getSelf()
     {
-        error_log("entering ShowObject::getSelf");
-        error_log("intShowUrl : " . $this->intShowUrl);
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
                 $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
@@ -123,9 +121,6 @@ class ShowObject extends GenericObject
                     $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
-            error_log("strShowUrl : " . $this->strShowUrl);
-            error_log("strShowUrlSpoken : " . $this->strShowUrlSpoken);
-            error_log("strShowFileMP3 : " . $this->strShowFileMP3);
 
             if ($this->strShowName == "") {
                 switch($this->enumShowType) {
@@ -162,23 +157,17 @@ class ShowObject extends GenericObject
                 }
             }
         }
-        error_log("strShowName : " . $this->strShowName);
-        error_log("strShowNameSpoken : " . $this->strShowNameSpoken);
 
         $return = parent::getSelf();
-        error_log("checkpoint return");
         $counter = 0;
         $showname = $this->strShowName;
         $first = true;
-        error_log("booleanFull : " . $this->booleanFull);
         if ($this->booleanFull == true) {
             $this->get_arrTracks();
-            error_log("checkpoint get_arrTracks");
             $showname .= ' featuring ';
             $showname_tracks = '';
             $return['isNSFW'] = false;
             $this->get_arrTracks();
-            error_log("checkpoint get_arrTracks 2");
             foreach ($this->arrTracks as $objTrack) {
                 $return['arrTracks'][++$counter] = $objTrack->getSelf();
                 if ($this->asBoolean($objTrack->get_isNSFW())) {
@@ -236,7 +225,6 @@ class ShowObject extends GenericObject
         $return['strSiteNameSpoken'] = ConfigBroker::getConfig("Spoken Site Name", "Cee Cee Hits dot net");
         $return['qrcode'] = UI::InsertQRCode('/show/' . $this->intShowID);
         $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/s/' . UI::setLongNumber($this->intShowID);
-        error_log("exiting ShowObject::getSelf");
         return $return;
     }
 
