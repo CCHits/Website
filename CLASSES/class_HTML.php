@@ -932,6 +932,10 @@ class HTML
         }
         if ($this->render()) {
             $this->result['playlist_json'] = json_encode($playlist);
+            /*
+            var_dump($playlist);
+            die();
+            */
             UI::SmartyTemplate("shows.{$this->format}", $this->result);
         }
     }
@@ -956,6 +960,7 @@ class HTML
         foreach ($shows as $intShowID=>$show) {
             $this->result['shows'][$intShowID] = $show->getSelf();
             $playlist[$intShowID] = $this->result['shows'][$intShowID]['player_data'];
+            error_log("checkpoint 2");
         }
         if ($this->render()) {
             $this->result['playlist_json'] = json_encode($playlist);

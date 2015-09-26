@@ -378,7 +378,7 @@ class UI
      *
      * @link http://www.php.net/manual/en/function.fread.php#84115
      */
-    function dl_file_resumable($file, $is_resume=TRUE)
+    public static function dl_file_resumable($file, $is_resume=TRUE)
     {
         //First, see if the file exists
         if (!is_file($file)) {
