@@ -19,7 +19,7 @@
  *
  * @category Default
  * @package  Utilities
- * @author   Jon Spriggs <jon@sprig.gs>
+ * @author   Yannick Mauray <yannick.mauray@euterpia-radio.fr>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
  * @link     http://code.cchits.net Developers Web Site
