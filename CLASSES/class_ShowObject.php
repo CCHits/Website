@@ -121,6 +121,7 @@ class ShowObject extends GenericObject
                     $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
+
             if ($this->strShowName == "") {
                 switch($this->enumShowType) {
                 case 'monthly':

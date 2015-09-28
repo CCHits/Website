@@ -94,7 +94,7 @@ class UI
      * @return array[0] URI
      * @return array[1] Query values
      */
-    function getPath()
+    public static function getPath()
     {
         $handler = self::getHandler();
         if ($handler->arrUri != null) {
@@ -159,7 +159,7 @@ class UI
      *
      * @return array URI
      */
-    function getUri()
+    public static function getUri()
     {
         list($uri, $data) = self::getPath();
         $arrUrl = parse_url($uri);
@@ -228,7 +228,7 @@ class UI
      *
      * @return array The username and password provided by authentication, or nulls for both.
      */
-    function getAuth()
+    public static function getAuth()
     {
         $username = null;
         $password = null;
@@ -378,7 +378,7 @@ class UI
      *
      * @link http://www.php.net/manual/en/function.fread.php#84115
      */
-    function dl_file_resumable($file, $is_resume=TRUE)
+    public static function dl_file_resumable($file, $is_resume=TRUE)
     {
         //First, see if the file exists
         if (!is_file($file)) {
@@ -587,7 +587,7 @@ class UI
      *
      * @return string The resulting ID
      */
-    function setLongNumber($intID = 0)
+    public static function setLongNumber($intID = 0)
     {
         return 'x' . strtoupper(base_convert($intID, 10, 36));
     }
@@ -599,7 +599,7 @@ class UI
      *
      * @return string The license terms in non-abbreviated language.
      */
-    function get_enumTrackLicenseFull($license = '')
+    public static function get_enumTrackLicenseFull($license = '')
     {
         $cc = "Creative Commons";
         $by = "By Attribution";
@@ -618,7 +618,7 @@ class UI
      *
      * @return string The license terms, non-abbreviated, in spoken format.
      */
-    function get_enumTrackLicensePronouncable($license = '')
+    public static function get_enumTrackLicensePronouncable($license = '')
     {
         $cc = "Creative Commons";
         $by = "By At-trib-ution";
@@ -644,7 +644,7 @@ class UI
      *
      * @return string License terms as per the function logic
      */
-    protected function get_enumTrackLicenseSolve(
+    protected static function get_enumTrackLicenseSolve(
         $license = '',
         $cc = "Creative Commons",
         $by = "By Attribution",
@@ -695,7 +695,7 @@ class UI
      *
      * @return string The most appropriate license URL
      */
-    function resolveLicenseUrl($license = '')
+    public static function resolveLicenseUrl($license = '')
     {
         switch($license) {
         case 'cc-sa':
@@ -727,7 +727,7 @@ class UI
      *
      * @return string the date in Y-m-d format
      */
-    function getLongDate($date)
+    public static function getLongDate($date)
     {
         if (preg_match('/(\d\d\d\d)(\d\d)(\d\d)/', $date, $matches) == 1) {
             return $matches[1] . '-' . $matches[2] . '-' . $matches[3];
@@ -745,7 +745,7 @@ class UI
      *
      * @return integer The date in Ymd format
      */
-    function getShortDate($date)
+    public static function getShortDate($date)
     {
         if (preg_match('/(\d\d\d\d)-(\d\d)-(\d\d)/', $date, $matches) == 1) {
             return $matches[1] . $matches[2] . $matches[3];
@@ -764,7 +764,7 @@ class UI
      *
      * @return string The date, in an easily parsible, spoken format.
      */
-    function getPronouncableDate($date = '0')
+    public static function getPronouncableDate($date = '0')
     {
         $return = '';
         if (preg_match('/(\d\d)(\d\d)(\d\d)(\d\d)|(\d\d)(\d\d)(\d\d)|(\d\d)(\d\d)/', $date, $matches) == 1) {
@@ -885,7 +885,7 @@ class UI
      *
      * @return void
      */
-    function Redirect($new_page = '')
+    public static function Redirect($new_page = '')
     {
         $arrUri = self::getUri();
         if (substr($new_page, 0, 1) != '/') {
@@ -908,7 +908,7 @@ class UI
      *
      * @return void
      */
-    function SmartyTemplate($template = '', $arrAssignments = array())
+    public static function SmartyTemplate($template = '', $arrAssignments = array())
     {
         $handler = self::getHandler();
         if ($handler->arrLibs == null) {
@@ -944,7 +944,7 @@ class UI
      *
      * @return void
      */
-    function start_session()
+    public static function start_session()
     {
         if (session_id()==='') {
             // 604800 is 7 Days in seconds
@@ -962,7 +962,7 @@ class UI
      *
      * @return string The URL of the QR Code to return
      */
-    function InsertQRCode($file = '')
+    public static function InsertQRCode($file = '')
     {
         $arrUri = UI::getUri();
         $basePath = $arrUri['basePath'];

@@ -50,7 +50,7 @@ class Database
      *
      * @return object PDO A PDO instance for the query.
      */
-    public function getConnection($RequireWrite = false)
+    public static function getConnection($RequireWrite = false)
     {
         $self = self::getHandler();
         if (($RequireWrite == true AND $self->rw_db != null) OR ($RequireWrite == false AND $self->ro_db != null)) {

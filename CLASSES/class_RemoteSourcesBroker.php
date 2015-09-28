@@ -59,7 +59,7 @@ class RemoteSourcesBroker
      *
      * @return false|array False if there's an error or no entries, array of RemoteSources if there is data to process.
      */
-    public function getRemoteSourcesByUserID()
+    public static function getRemoteSourcesByUserID()
     {
         $db = Database::getConnection();
         try {

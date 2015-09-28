@@ -52,7 +52,7 @@ class ShowBroker
      *
      * @return object|false ShowObject or false if not existing
      */
-    public function getShowByID($intShowID = 0)
+    public static function getShowByID($intShowID = 0)
     {
         $handler = self::getHandler();
         if (isset($handler->arrShows[$intShowID]) and $handler->arrShows[$intShowID] != false) {
@@ -153,7 +153,7 @@ class ShowBroker
      *
      * @return array|false An array of ShowObject or false if not existing
      */
-    public function getShowByUserID(
+    public static function getShowByUserID(
         $intUserID = 0,
         $intPage = null,
         $intSize = null
@@ -214,7 +214,7 @@ class ShowBroker
      *
      * @return integer Total number of tracks
      */
-    function getTotalShowsByUserID($intUserID = 0)
+    public static function getTotalShowsByUserID($intUserID = 0)
     {
         if (is_object($intUserID)) {
             $intUserID = $intUserID->get_intUserID();
@@ -418,7 +418,7 @@ class ShowBroker
      *
      * @return object ShowObject
      */
-    function getInternalShowByType($enumShowType = '', $intQuantity = 25)
+    public static function getInternalShowByType($enumShowType = '', $intQuantity = 25)
     {
         switch ($enumShowType) {
         case 'daily':
@@ -473,7 +473,7 @@ class ShowBroker
      *
      * @return object ShowObject
      */
-    function getInternalShowByDate($enumShowType = '', $intShowUrl = '')
+    public static function getInternalShowByDate($enumShowType = '', $intShowUrl = '')
     {
         switch ($enumShowType) {
         case 'daily':

@@ -104,7 +104,7 @@ class OpenID
      *
      * @return void
      */
-    function request($id = '', $base = '', $success = '', $fail = '')
+    public static function request($id = '', $base = '', $success = '', $fail = '')
     {
         $handler = self::getHandler();
         $auth = $handler->consumer->begin($id);

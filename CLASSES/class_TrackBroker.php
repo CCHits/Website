@@ -50,7 +50,7 @@ class TrackBroker
      *
      * @return integer Total number of tracks
      */
-    function getTotalTracks()
+    public static function getTotalTracks()
     {
         $th = self::getHandler();
         if (isset($th->intTotalTracks) and $th->intTotalTracks != 0) {
@@ -81,7 +81,7 @@ class TrackBroker
      *
      * @return object|false TrackObject or false if not existing
      */
-    public function getTrackByID($intTrackID = 0)
+    public static function getTrackByID($intTrackID = 0)
     {
         $handler = self::getHandler();
         if (isset($handler->arrTracks[$intTrackID]) and $handler->arrTracks[$intTrackID] != false) {
