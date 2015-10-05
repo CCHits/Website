@@ -35,7 +35,7 @@ class LicenseSelector
      *
      * @return string Recognised strings.
      */
-    function validateLicense($strLicense = "")
+    public static function validateLicense($strLicense = "")
     {
         switch($strLicense)
         {

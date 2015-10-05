@@ -282,7 +282,7 @@ class UI
      *
      * @return void
      */
-    function sendHttpResponse($status = 200, $body = null, $content_type = 'text/html', $extra = '')
+    public static function sendHttpResponse($status = 200, $body = null, $content_type = 'text/html', $extra = '')
     {
         header('HTTP/1.1 ' . $status . ' ' . self::$http_status_codes[$status]);
         header('Content-type: ' . $content_type);

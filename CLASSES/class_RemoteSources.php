@@ -824,6 +824,7 @@ class RemoteSources extends GenericObject
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+        //curl_setopt($ch, CURLOPT_VERBOSE, true);
 
         if ($as_file == 1) {
             $tempname = GeneralFunctions::getTempFileName(dirname(__FILE__) . '/../upload/');
