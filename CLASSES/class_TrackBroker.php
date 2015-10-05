@@ -116,7 +116,7 @@ class TrackBroker
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist
      */
-    public function getTrackByExactName(
+    public static function getTrackByExactName(
         $strTrackName = "",
         $intPage = null,
         $intSize = null
@@ -333,7 +333,7 @@ class TrackBroker
      *
      * @return array|false An array of TrackObject or false if the item doesn't exist
      */
-    public function getTrackByExactUrl($strTrackUrl = "")
+    public static function getTrackByExactUrl($strTrackUrl = "")
     {
         $db = Database::getConnection();
         try {

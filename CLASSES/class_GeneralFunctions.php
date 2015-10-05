@@ -77,7 +77,7 @@ class GeneralFunctions
      *
      * @return string The full pathname to the file to use.
      */
-    function getTempFileName($dirname = '')
+    public static function getTempFileName($dirname = '')
     {
         $here = dirname(__FILE__);
         if ($dirname == '') {
@@ -114,7 +114,7 @@ class GeneralFunctions
      *
      * @return string File format.
      */
-    function getFileFormat($filename = '')
+    public static function getFileFormat($filename = '')
     {
         return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'fileformat', '');
     }
@@ -126,7 +126,7 @@ class GeneralFunctions
      * 
      * @return long The length in seconds
      */
-    function getFileLengthInSeconds($filename = '')
+    public static function getFileLengthInSeconds($filename = '')
     {
         return GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_seconds', '0.000');
     }
@@ -138,7 +138,7 @@ class GeneralFunctions
      *
      * @return time The time in HH:MM:SS
      */
-    function getFileLengthString($filename = '')
+    public static function getFileLengthString($filename = '')
     {
         $time = GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00');
         preg_match('/(\d\d):(\d\d):(\d\d)/', $time, $matches);
@@ -157,7 +157,7 @@ class GeneralFunctions
      * 
      * @return array The media attributes parsed by the id3lib library.
      */
-    function getMediaAttributes($filename)
+    public static function getMediaAttributes($filename)
     {
         $arrLibs = new ExternalLibraryLoader();
         $GETID3 = $arrLibs->getVersion("GETID3");

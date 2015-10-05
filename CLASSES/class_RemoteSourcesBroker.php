@@ -35,7 +35,7 @@ class RemoteSourcesBroker
      *
      * @return object|false RemoteSources or false if not existing
      */
-    public function getRemoteSourceByID($intSourceID = 0)
+    public static function getRemoteSourceByID($intSourceID = 0)
     {
         $db = Database::getConnection();
         try {
@@ -100,7 +100,7 @@ class RemoteSourcesBroker
      * the supplied data (to be used as an HTTP Error Status), or false if
      * no URL was supplied.
      */
-    public function newTrackRouter($url = '')
+    public static function newTrackRouter($url = '')
     {
         if ($url != '') {
             if (preg_match('/^http[s]*:\/\/([^\/]+)/', $url, $matches) > 0) {

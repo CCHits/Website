@@ -150,7 +150,7 @@ class ArtistBroker
      *
      * @return array|false An array of ArtistObject or false if not existing
      */
-    public function getArtistByPartialName(
+    public static function getArtistByPartialName(
         $strArtistName = "",
         $intPage = null,
         $intSize = null
@@ -229,7 +229,7 @@ class ArtistBroker
      *
      * @return array|false An array of ArtistObject or false if the item doesn't exist
      */
-    public function getArtistByPartialUrl(
+    public static function getArtistByPartialUrl(
         $strArtistUrl = "",
         $intPage = null,
         $intSize = null
