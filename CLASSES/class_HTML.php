@@ -63,7 +63,7 @@ class HTML
                 case 'weekly':
                 case 'monthly':
                     $this->format = 'mp3.rss';
-                    if (isset($this->arrUri['ua']) and preg_match('/^iTunes\/\d+\.\d+/')) {
+                    if (isset($this->arrUri['ua']) and preg_match('/^iTunes\/\d+\.\d+/', $this->arrUri['ua'])) {
                         $this->format = 'm4a.rss';
                     }
                     break;
