@@ -90,7 +90,7 @@ class ShowBroker
      *
      * @return false|array of ShowObjects
      */
-    public function getShowsByIDs($arrShowIDs = array())
+    public static function getShowsByIDs($arrShowIDs = array())
     {
         $return = array();
         if (is_array($arrShowIDs) and count($arrShowIDs) > 0) {

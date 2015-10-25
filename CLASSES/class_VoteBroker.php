@@ -34,7 +34,7 @@ class VoteBroker
      *
      * @return false|array Either false or an array of the votes
      */
-    function getVotesForTrackByShow($intTrackID = 0)
+    public static function getVotesForTrackByShow($intTrackID = 0)
     {
         $showTracks = ShowTrackBroker::getShowTracksByTrackID($intTrackID);
         $db = Database::getConnection();
@@ -100,7 +100,7 @@ class VoteBroker
      *
      * @return boolean True if they've voted, false if they haven't.
      */
-    function hasMyUserIDVotedForThisTrack($intTrackID = 0)
+    public static function hasMyUserIDVotedForThisTrack($intTrackID = 0)
     {
         $db = Database::getConnection();
         try {

@@ -264,7 +264,7 @@ class UI
      *
      * @return void
      */
-    function requireAuth()
+    public static function requireAuth()
     {
         list($username, $password) = self::getAuth();
         if ($username == null) {
@@ -495,7 +495,7 @@ class UI
             set_time_limit(0);
             print(fread($fp, 1024*8));
             flush();
-            ob_flush();
+            //ob_flush();
         }
 
         fclose($fp);
@@ -511,7 +511,7 @@ class UI
      *
      * @link http://www.php.net/manual/en/function.json-encode.php#99837
      */
-    function utf8element($array = null)
+    public static function utf8element($array = null)
     {
         if ($array == null) {
             $array = array();
@@ -544,7 +544,7 @@ class UI
      *
      * @return string UTF8 encoded JSON string
      */
-    function utf8json($array = array())
+    public static function utf8json($array = array())
     {
         return json_encode(self::utf8element($array));
     }
@@ -571,7 +571,7 @@ class UI
      *
      * @return integer The resulting integer
      */
-    function getLongNumber($id = '')
+    public static function getLongNumber($id = '')
     {
         if (strtolower(substr($id, 0, 1)) == 'x') {
             return base_convert(strtolower(substr($id, 1)), 36, 10);
