@@ -86,7 +86,7 @@ class ShowTrackBroker
      *
      * @return Object|boolean The ShowTrack object OR false
      */
-    public function getShowTracksByShowTrackID($intShowID = 0, $intTrackID = 0)
+    public static function getShowTracksByShowTrackID($intShowID = 0, $intTrackID = 0)
     {
         $db = Database::getConnection();
         try {
@@ -112,7 +112,7 @@ class ShowTrackBroker
      *
      * @return Array|false An array of showtrack items, or false
      */
-    public function getShowTracksByTrackID($intTrackID = 0)
+    public static function getShowTracksByTrackID($intTrackID = 0)
     {
         $stb = self::getHandler();
         if (isset($stb->arrShowTracksByTrack[$intTrackID])) {

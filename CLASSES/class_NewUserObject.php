@@ -53,7 +53,9 @@ class NewUserObject extends UserObject
             } else {
                 $cookie_string = $_SERVER['REMOTE_ADDR'];
             }
-            $cookie_string .= $_SERVER['HTTP_USER_AGENT'];
+            if (isset($_SERVER['HTTP_USER_AGENT'])) {
+                $cookie_string .= $_SERVER['HTTP_USER_AGENT'];    
+            }
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
                 $cookie_string .= $_SERVER['HTTP_ACCEPT_LANGUAGE'];
             }
