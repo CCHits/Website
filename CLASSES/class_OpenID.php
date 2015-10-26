@@ -49,7 +49,7 @@ class OpenID
     protected $ax_attribute = array();
     protected $sreg_attribute = array();
 
-    protected static $consumer = null;
+    protected $consumer = null;
 
     /**
      * An internal function to make this a singleton
@@ -189,7 +189,7 @@ class OpenID
      *
      * @return void
      */
-    function response($base = '')
+    static function response($base = '')
     {
         $handler = self::getHandler();
         $response = $handler->consumer->complete($base . '?return=1');
