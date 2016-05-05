@@ -133,9 +133,30 @@ class TrackBroker
             $intSize = 25;
         }
 
+        if ($strSort == null and isset($arrUri['parameters']['sort'])) {
+            if ($arrUri['parameters']['sort'] == 'intTrackID' ||
+                $arrUri['parameters']['sort'] == 'strTrackName') {
+                $strSort = $arrUri['parameters']['sort'];
+            } else {
+                $strSort = 'intTrackID';
+            }
+        } else {
+            $strSort = 'intTrackID';
+        }
+
+        if ($strDirection == null and isset($arrUri['parameters']['direction'])) {
+            if ($arrUri['parameters']['direction'] == 'desc') {
+                $strDirection = 'DESC';
+            } else {
+                $strDirection = 'ASC';
+            }
+        } else {
+            $strDirection = 'ASC';
+        }
+
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ? OR strTrackName REGEXP ?";
+            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ? OR strTrackName REGEXP ? ORDER BY " . $strSort . " " . $strDirection;
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
@@ -215,10 +236,30 @@ class TrackBroker
         } elseif ($intSize == null) {
             $intSize = 25;
         }
+        if ($strSort == null and isset($arrUri['parameters']['sort'])) {
+            if ($arrUri['parameters']['sort'] == 'intTrackID' ||
+                $arrUri['parameters']['sort'] == 'strTrackName') {
+                $strSort = $arrUri['parameters']['sort'];
+            } else {
+                $strSort = 'intTrackID';
+            }
+        } else {
+            $strSort = 'intTrackID';
+        }
+
+        if ($strDirection == null and isset($arrUri['parameters']['direction'])) {
+            if ($arrUri['parameters']['direction'] == 'desc') {
+                $strDirection = 'DESC';
+            } else {
+                $strDirection = 'ASC';
+            }
+        } else {
+            $strDirection = 'ASC';
+        }
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ?";
+            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ? ORDER BY " . $strSort . " " . $strDirection . " "; 
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
@@ -297,9 +338,30 @@ class TrackBroker
             $intSize = 25;
         }
 
+        if ($strSort == null and isset($arrUri['parameters']['sort'])) {
+            if ($arrUri['parameters']['sort'] == 'intTrackID' ||
+                $arrUri['parameters']['sort'] == 'strTrackName') {
+                $strSort = $arrUri['parameters']['sort'];
+            } else {
+                $strSort = 'intTrackID';
+            }
+        } else {
+            $strSort = 'intTrackID';
+        }
+
+        if ($strDirection == null and isset($arrUri['parameters']['direction'])) {
+            if ($arrUri['parameters']['direction'] == 'desc') {
+                $strDirection = 'DESC';
+            } else {
+                $strDirection = 'ASC';
+            }
+        } else {
+            $strDirection = 'ASC';
+        }
+
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? or strTrackUrl LIKE ?";
+            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? or strTrackUrl LIKE ? ORDER BY " . $strSort . " " . $strDirection;
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array("\"$strTrackUrl%", "$strTrackUrl%"));
