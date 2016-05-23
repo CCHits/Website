@@ -42,9 +42,11 @@ class VoteBroker
         try {
             $voteadj = 0;
             $count = 0;
-            $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID ORDER BY intShowID";
+            //YMA $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID ORDER BY intShowID";
+            $sql = "SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? AND intShowID = 0 GROUP BY intShowID UNION SELECT IFNULL(v.intCount, 0) intCount, showtracks.intShowID FROM showtracks LEFT JOIN (SELECT count(intVoteID) as intCount, intShowID FROM votes WHERE intTrackID = ? GROUP BY intShowID) v ON v.intShowID = showtracks.intShowID WHERE showtracks.intTrackID = ? ORDER BY intShowID asc";
             $query = $db->prepare($sql);
-            $query->execute(array($intTrackID));
+            //YMA $query->execute(array($intTrackID));
+            $query->execute(array($intTrackID, $intTrackID, $intTrackID));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
