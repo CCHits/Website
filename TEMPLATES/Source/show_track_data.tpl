@@ -1,4 +1,5 @@
 				    	<td>{$position}</td>
+					<td>{$track['arrVotes']['total'] * $track['arrVotes']['adjust']}</td>
 				    	<td>{$track.strPositionYesterday}</td>
 				    	<td>{include file="sparkline.tpl"}</td>
 				    	<td><a name="{$track.intTrackID}"></a>"<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</td>

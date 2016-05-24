@@ -151,6 +151,7 @@ class ChartBroker
                     if ($temp != false) {
                         $return['position'][$track['intPositionID']] = $temp->getSelf();
                         $return['position'][$track['intPositionID']]['intChartPosition'] = $track['intPositionID'];
+                        $return['position'][$track['intPositionID']]['arrVotes'] = VoteBroker::getVotesForTrackByShow($temp->get_intTrackID());
                     }
                 }
             }
