@@ -41,10 +41,10 @@ LEFT JOIN (
   FROM showtracks AS st, shows AS s
   WHERE (
     (
-      s.enumShowType = 'weekly' AND s.intShowUrl <= '$date'
+      s.enumShowType = 'weekly' AND s.intShowUrl <= '" . $date . "'
       AND s.intShowUrl > '20000000'
     ) OR (
-      s.enumShowType = 'monthly' AND s.intShowUrl <= '{substr($date, 0, 6)}'
+      s.enumShowType = 'monthly' AND s.intShowUrl <= '" . substr($date, 0, 6) . "'
       AND s.intShowUrl > '200000'
     )
   )
@@ -59,6 +59,7 @@ WHERE t.isApproved =1
 GROUP BY t.intTrackID
 ORDER BY decVotes DESC , intTrackID ASC
 LIMIT 0 , " . $count;
+//echo $sql . "<br/>";
 $qry = mysql_query($sql);
 echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>New Chart - for review</title></head><body>";
 echo '<form action="" method="get">
