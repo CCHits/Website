@@ -91,7 +91,7 @@ if ($date === null) {
     $date = date("Ymd");
 }
 
-echo "Doing: daily ($daily) weekly ($weekly) monthly ($monthly) historic ($historic) debug({$GLOBALS['DEBUG']}) $date\r\n";
+echo "Doing: daily ($daily) weekly ($weekly) monthly ($monthly) historic ($historic) debug({$GLOBALS['DEBUG']}) $date" . PHP_EOL;
 
 $get = Configuration::getAPI() . '/runshows/' . $date;
 if ($historic) {
@@ -109,15 +109,15 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     if (isset($json_data['daily_show']) && $daily) {
         $show_data = $json_data['daily_show'];
 
-        echo "Creating Daily Show...\r\n";
-        echo sprintf('The Daily track is %1$s by %2$s ' . "\r\n", $show_data['arrTracks'][1]['strTrackName'], $show_data['arrTracks'][1]['strArtistName']);
+        echo "Creating Daily Show..." . PHP_EOL;
+        echo sprintf('The Daily track is %1$s by %2$s ' . PHP_EOL . "", $show_data['arrTracks'][1]['strTrackName'], $show_data['arrTracks'][1]['strArtistName']);
 
-        echo "Making intro bumper\r\n";
+        debugout::add("Making intro bumper");
         $running_order = addEntryToJsonArray('', 0, 'intro');
         if ( ! generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav')) {
-            echo "WARNING: Failed to create silence.\r\n";
+            debugout::dump("WARNING: Failed to create silence.");
         }
-        $intro = "$pre_sable\r\n";
+        $intro = "$pre_sable" . PHP_EOL;
         $intro .= sprintf(
             randomTextSelect(
                 array(
@@ -141,40 +141,41 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['strTrackNameSounds']),
             preg_replace('/\&/', ' and ', $show_data['arrTracks'][1]['strArtistNameSounds'])
         );
-        $intro .= "\r\n$post_sable";
+        $intro .= PHP_EOL . "$post_sable";
         if ( ! convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav')) {
-            echo "WARNING: Failed to create intro using $intro\r\n";
+            debugout::dump("WARNING: Failed to create intro using $intro");
         }
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav')) {
-            echo "WARNING: Failed to concatenate pre-show-silence with intro.wav\r\n";
+            debugout::dump("WARNING: Failed to concatenate pre-show-silence with intro.wav");
         }
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
         if ( ! overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav')) {
-            echo "WARNING: Failed to overlay showstart.wav over intro.wav\r\n";
+            debugout::dump("WARNING: Failed to overlay showstart.wav over intro.wav");
         }
         $arrTracks[$show_data['arrTracks'][1]['intTrackID']] = $show_data['arrTracks'][1];
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), $show_data['arrTracks'][1]['intTrackID']);
 
-        echo "Downloading and merging audio file\r\n";
+        debugout::add("Downloading and merging audio file");
         $track = downloadFile($show_data['arrTracks'][1]['localSource']);
         if ($track === false) {
             debugUnlink(Configuration::getWorkingDir() . '/run.wav');
-            die("The track is not currently available.\r\n");
+            debugout::dump();
+            die("The track is not currently available." . PHP_EOL);
         }
 
         copy($track, Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource']);
         debugUnlink($track);
 
         if ( ! trackTrimSilence(Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'])) {
-            echo "WARNING: Failed to trim the silence from {$show_data['arrTracks'][1]['fileSource']}\r\n";
+            debugout::dump("WARNING: Failed to trim the silence from {$show_data['arrTracks'][1]['fileSource']}");
         }
 
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'], Configuration::getWorkingDir() . '/runplustrack.wav')) {
-            echo "WARNING: Failed to concatenate run.wav with {$show_data['arrTracks'][1]['fileSource']}\r\n";
+            debugout::dump("WARNING: Failed to concatenate run.wav with {$show_data['arrTracks'][1]['fileSource']}");
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplustrack.wav'), 'outro');
 
-        $outro = "$pre_sable\r\n<BREAK LEVEL=\"LARGE\" />";
+        $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
         $outro .= sprintf( 
             randomTextSelect(
                 array(
@@ -196,38 +197,38 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $show_data['strSiteNameSpoken'],
             $show_data['strShowUrlSpoken']
         );
-        $outro .= sprintf(' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit %1$s slash theem', $show_data['strSiteNameSpoken']) . "\r\n" . $post_sable;
+        $outro .= sprintf(' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit %1$s slash theem', $show_data['strSiteNameSpoken']) . PHP_EOL . $post_sable;
 
-        echo "Making the outro bumper\r\n";
+        debugout::add("Making the outro bumper");
         if ( ! convertSableXmlToWav($outro, Configuration::getWorkingDir() . '/outro.wav')) {
-            echo "WARNING: Failed to generate the sable file or create outro.wav\r\n";
+            debugout::dump("WARNING: Failed to generate the sable file or create outro.wav");
         }
 
         if ( ! generateSilenceWav(34, Configuration::getWorkingDir() . '/post-show-silence.wav')) {
-            echo "WARNING: Failed to create silence.\r\n";
+            debugout::dump("WARNING: Failed to create silence.");
         }
 
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/outro.wav', Configuration::getWorkingDir() . '/post-show-silence.wav', Configuration::getWorkingDir() . '/showend.wav')) {
-            echo "WARNING: Failed to concatenate outro.wav with post-show-silence.wav\r\n";
+            debugout::dump("WARNING: Failed to concatenate outro.wav with post-show-silence.wav");
         }
 
         if ( ! reverseTrackAudio(Configuration::getWorkingDir() . '/showend.wav', Configuration::getWorkingDir() . '/showend_rev.wav')) {
-            echo "WARNING: Failed to reverse showend.wav into showend_rev.wav.\r\n";
+            debugout::dump("WARNING: Failed to reverse showend.wav into showend_rev.wav.");
         }
 
         if ( ! reverseTrackAudio(Configuration::getStaticDir() . '/outro.wav', Configuration::getWorkingDir() . '/outro_rev.wav', false)) {
-            echo "WARNING: Failed to reverse outro.wav into outro_rev.wav\r\n";
+            debugout::dump("WARNING: Failed to reverse outro.wav into outro_rev.wav");
         }
 
         if ( ! overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav')) {
-            echo "WARNING: Failed to overlay showend_rev.wav with outro_rev.wav\r\n";
+            debugout::dump("WARNING: Failed to overlay showend_rev.wav with outro_rev.wav");
         }
         if ( ! reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/run.wav')) {
-            echo "WARNING: Failed to reverse run_rev.wav into run.wav\r\n";
+            debugout::dump("WARNING: Failed to reverse run_rev.wav into run.wav");
         }
 
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplustrack.wav', Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/daily.wav')) {
-            echo "WARNING: Failed to concatenate runplustrack.wav with run.wav\r\n";
+            debugout::dump("WARNING: Failed to concatenate runplustrack.wav with run.wav");
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/daily.wav'), 'end');
 
@@ -241,7 +242,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
         }
 
-        echo "Getting the coverart\r\n";
+        debugout::add("Getting the coverart");
         $coverart = downloadFile($show_data['qrcode']);
         if ($coverart != false) {
             copy($coverart, Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png');
@@ -251,7 +252,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $coverart = '';
         }
 
-        echo "Converting the show to the various formats\r\n";
+        debugout::add("Converting the show to the various formats");
         generateOutputTracks(
             Configuration::getWorkingDir() . '/daily.wav',
             Configuration::getWorkingDir() . '/daily.' . $show_data['intShowUrl'] . '.',
@@ -296,13 +297,14 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             ),
             json_encode($arrRunningOrder_final)
         );
-        echo "Done.\r\n\r\n";
+        echo "Done." . PHP_EOL . PHP_EOL;
+        debugout::reset();
     }
     $track_nsfw = array(' a track which may not be considered work or family safe <BREAK LEVEL="MEDIUM" />');
     if (isset($json_data['weekly_show']) && $weekly) {
         $show_data = makeArrayFromObjects($json_data['weekly_show']);
 
-        echo "Creating Weekly Show...\r\n";
+        echo "Creating Weekly Show..." . PHP_EOL;
 
         echo "These " . count($show_data['arrTracks']) . " tracks are ";
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
@@ -311,17 +313,17 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
             echo $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
         }
-        echo "\r\n";
+        echo PHP_EOL;
         
         $running_order = addEntryToJsonArray('', 0, 'intro');
         generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
 
-        echo "Making intro bumper\r\n";
+        debugout::add("Making intro bumper" . PHP_EOL);
         $running_order = addEntryToJsonArray('', 0, 'intro');
         if ( ! generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav')) {
-            echo "WARNING: Failed to create silence.\r\n";
+            debugout::dump("WARNING: Failed to create silence." . PHP_EOL);
         }
-        $intro = "$pre_sable\r\n";
+        $intro = "$pre_sable" . PHP_EOL;
         $intro .= sprintf(
             randomTextSelect(
                 array(
@@ -335,18 +337,18 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         if ($show_data['isNSFW'] != 0) {
             $intro .= randomTextSelect($show_nsfw);
         }
-        $intro .= "\r\n$post_sable";
+        $intro .= PHP_EOL . "$post_sable";
         if ( ! convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav')) {
-            echo "WARNING: Failed to create intro using $intro\r\n";
+            debugout::dump("WARNING: Failed to create intro using $intro" . PHP_EOL);
         }
 
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav')) {
-            echo "WARNING: Failed to concatenate pre-show-silence with intro.wav\r\n";
+            debugout::dump("WARNING: Failed to concatenate pre-show-silence with intro.wav" . PHP_EOL);
         }
 
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
         if ( ! overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav')) {
-            echo "WARNING: Failed to overlay showstart.wav over intro.wav\r\n";
+            debugout::dump("WARNING: Failed to overlay showstart.wav over intro.wav" . PHP_EOL);
         }
 
         $arrLastTrack = array();
@@ -354,8 +356,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), 'Track Bumpers');
             $arrTracks[$arrTrack['intTrackID']] = $arrTrack;
 
-            echo "Making track bumper ($intTrackID)\r\n";
-            $bumper = "$pre_sable\r\n";
+            debugout::add("Making track bumper ($intTrackID)" . PHP_EOL);
+            $bumper = "$pre_sable" . PHP_EOL;
             if ($intTrackID != 1) {
                 $bumper .= '<BREAK LEVEL="LARGE" />';
             }
@@ -441,20 +443,20 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             if ($arrTrack['isNSFW'] != 0) {
                 $bumper .= randomTextSelect($track_nsfw);
             }
-            $bumper .= "\r\n$post_sable";
+            $bumper .= PHP_EOL . "$post_sable";
             $arrLastTrack = $arrTrack;
 
             if ( ! convertSableXmlToWav($bumper, Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav')) {
-                echo "WARNING: Failed to create track bumper\r\n";
+                debugout::dump("WARNING: Failed to create track bumper" . PHP_EOL);
             }
 
             if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/runplusbumper.wav')) {
-                echo "WARNING: Failed to concatenate existing show to date with the new track bumper\r\n";
+                debugout::dump("WARNING: Failed to concatenate existing show to date with the new track bumper" . PHP_EOL);
             }
 
             $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplusbumper.wav'), $arrTrack['intTrackID']);
 
-            echo "Downloading and merging audio file ($intTrackID)\r\n";
+            debugout::add("Downloading and merging audio file ($intTrackID)" . PHP_EOL);
             $track = downloadFile($arrTrack['localSource']);
             if ($track === false) {
                 debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
@@ -464,17 +466,17 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugUnlink($track);
 
             if ( ! trackTrimSilence(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'])) {
-                echo "WARNING: Failed to trim the silence from {$arrTrack['fileSource']}\r\n";
+                debugout::dump("WARNING: Failed to trim the silence from {$arrTrack['fileSource']}" . PHP_EOL);
             }
 
             if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplusbumper.wav', Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'], Configuration::getWorkingDir() . '/run.wav')) {
-                echo "WARNING: Failed to concatenate run.wav with {$arrTrack['fileSource']}\r\n";
+                debugout::dump("WARNING: Failed to concatenate run.wav with {$arrTrack['fileSource']}" . PHP_EOL);
             }
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), 'outro');
 
-        $outro = "$pre_sable\r\n<BREAK LEVEL=\"LARGE\" />";
-        $outro .= sprintf( 
+        $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
+        $outro .= sprintf(
             randomTextSelect(
                 array(
                     'That was <BREAK LEVEL="SMALL" /> %1$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %2$s <BREAK LEVEL="MEDIUM" /> It was a %3$s licensed track',
@@ -491,42 +493,42 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     ' <BREAK LEVEL="MEDIUM" /> Every track we play is selected by a listener like you <BREAK LEVEL="LARGE" /> to find out more <BREAK LEVEL="SMALL" /> go to %1$s slash <BREAK LEVEL="MEDIUM" /> eff <BREAK LEVEL="SMALL" /> ay <BREAK LEVEL="SMALL" /> queue <BREAK LEVEL="LARGE" /> If you like any of these tracks today, you can vote for them at %2$s <BREAK LEVEL="MEDIUM" /> These votes decide if each track will make it into the chart <BREAK LEVEL="MEDIUM" /> which can be found by visiting %1$s slash monthly ',
                     ' <BREAK LEVEL="MEDIUM" /> Remember, you can vote for any of these tracks by visiting %2$s <BREAK LEVEL="MEDIUM" /> Your vote will decide whether it makes it into the monthly chart show which is available from %1$s slash monthly '
                 )
-            ), 
+            ),
             $show_data['strSiteNameSpoken'],
             $show_data['strShowUrlSpoken']
         );
-        $outro .= sprintf(' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit %1$s slash theem', $show_data['strSiteNameSpoken']) . "\r\n" . $post_sable;
+        $outro .= sprintf(' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit %1$s slash theem', $show_data['strSiteNameSpoken']) . PHP_EOL . $post_sable;
 
-        echo "Making the outro bumper\r\n";
+        debugout::add("Making the outro bumper" . PHP_EOL);
         if ( ! convertSableXmlToWav($outro, Configuration::getWorkingDir() . '/outro.wav')) {
-            echo "WARNING: Failed to generate the sable file or create outro.wav\r\n";
+            debugout::dump("WARNING: Failed to generate the sable file or create outro.wav" . PHP_EOL);
         }
 
         if ( ! generateSilenceWav(34, Configuration::getWorkingDir() . '/post-show-silence.wav')) {
-            echo "WARNING: Failed to create silence.\r\n";
+            debugout::dump("WARNING: Failed to create silence." . PHP_EOL);
         }
 
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/outro.wav', Configuration::getWorkingDir() . '/post-show-silence.wav', Configuration::getWorkingDir() . '/showend.wav')) {
-            echo "WARNING: Failed to concatenate outro.wav with post-show-silence.wav\r\n";
+            debugout::dump("WARNING: Failed to concatenate outro.wav with post-show-silence.wav" . PHP_EOL);
         }
 
         if ( ! reverseTrackAudio(Configuration::getWorkingDir() . '/showend.wav', Configuration::getWorkingDir() . '/showend_rev.wav')) {
-            echo "WARNING: Failed to reverse showend.wav into showend_rev.wav.\r\n";
+            debugout::dump("WARNING: Failed to reverse showend.wav into showend_rev.wav." . PHP_EOL);
         }
 
         if ( ! reverseTrackAudio(Configuration::getStaticDir() . '/outro.wav', Configuration::getWorkingDir() . '/outro_rev.wav', false)) {
-            echo "WARNING: Failed to reverse outro.wav into outro_rev.wav\r\n";
+            debugout::dump("WARNING: Failed to reverse outro.wav into outro_rev.wav" . PHP_EOL);
         }
 
         if ( ! overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav')) {
-            echo "WARNING: Failed to overlay showend_rev.wav with outro_rev.wav\r\n";
+            debugout::dump("WARNING: Failed to overlay showend_rev.wav with outro_rev.wav" . PHP_EOL);
         }
         if ( ! reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/outro_run.wav')) {
-            echo "WARNING: Failed to reverse run_rev.wav into run.wav\r\n";
+            debugout::dump("WARNING: Failed to reverse run_rev.wav into run.wav" . PHP_EOL);
         }
 
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/outro_run.wav', Configuration::getWorkingDir() . '/weekly.wav')) {
-            echo "WARNING: Failed to concatenate runplustrack.wav with run.wav\r\n";
+            debugout::dump("WARNING: Failed to concatenate runplustrack.wav with run.wav" . PHP_EOL);
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/weekly.wav'), 'end');
 
@@ -540,7 +542,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
         }
 
-        echo "Getting the coverart\r\n";
+        debugout::add("Getting the coverart" . PHP_EOL);
         $coverart = downloadFile($show_data['qrcode']);
         if ($coverart != false) {
             copy($coverart, Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png');
@@ -550,7 +552,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $coverart = '';
         }
 
-        echo "Converting the show to the various formats\r\n";
+        debugout::add("Converting the show to the various formats" . PHP_EOL);
         generateOutputTracks(
             Configuration::getWorkingDir() . '/weekly.wav',
             Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.',
@@ -564,7 +566,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         if ($coverart != '') {
             debugUnlink($coverart);
         }
-        echo "Uploading and finalizing\r\n";
+        debugout::add("Uploading and finalizing" . PHP_EOL);
         $show_summary = '';
         $track_pointer = 0;
         foreach ($show_data['arrTracks'] as $track) {
@@ -588,16 +590,17 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             ),
             json_encode($arrRunningOrder_final)
         );
-        echo "Done.\r\n\r\n";
+        echo "Done." . PHP_EOL . PHP_EOL;
+        debugout::reset();
     }
     if (isset($json_data['monthly_show']) && $monthly) {
-        echo "Creating Monthly Show...\r\n";
+        echo "Creating Monthly Show..." . PHP_EOL;
         $show_data = $json_data['monthly_show'];
         $running_order = addEntryToJsonArray('', 0, 'intro');
         generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
 
-        echo "Making intro bumper\r\n";
-        $intro = "$pre_sable\r\n";
+        debugout::add("Making intro bumper" . PHP_EOL);
+        $intro = "$pre_sable" . PHP_EOL;
         $intro .= randomTextSelect(
             array(
                 'Hello and welcome to the ' . $show_data['strShowNameSpoken'] . ' from ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> This show plays the top rated fourty tracks across all of cee cee hits <BREAK LEVEL="MEDIUM" /> ',
@@ -607,7 +610,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         if ($show_data['isNSFW'] != 0) {
             $intro .= randomTextSelect($show_nsfw);
         }
-        $intro .= "\r\n$post_sable";
+        $intro .= PHP_EOL . "$post_sable";
         convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav');
         concatenateTracks(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav');
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
@@ -620,14 +623,14 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
             echo $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
         }
-        echo "\r\n";
+        echo PHP_EOL;
 
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
             $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), 'Track Bumpers');
             $arrTracks[$arrTrack['intTrackID']] = $arrTrack;
 
-            echo "Making track bumper ($intTrackID)\r\n";
-            $bumper = "$pre_sable\r\n";
+            debugout::add("Making track bumper ($intTrackID)" . PHP_EOL);
+            $bumper = "$pre_sable" . PHP_EOL;
             if ($intTrackID != 1) {
                 $bumper .= '<BREAK LEVEL="LARGE" />';
             }
@@ -677,17 +680,18 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= randomTextSelect($track_nsfw);
             }
             $bumper = preg_replace('/\&/', ' and ', $bumper);
-            $bumper .= "\r\n$post_sable";
+            $bumper .= PHP_EOL . "$post_sable";
             $arrLastTrack = $arrTrack;
             convertSableXmlToWav($bumper, Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
             concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/runplusbumper.wav');
 
             $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplusbumper.wav'), $arrTrack['intTrackID']);
 
-            echo "Downloading and merging audio file ($intTrackID)\r\n";
+            debugout::add("Downloading and merging audio file ($intTrackID)" . PHP_EOL);
             $track = downloadFile($arrTrack['localSource']);
             if ($track === false) {
                 debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
+                debugout::dump();
                 die("The tracks are not currently available.");
             }
             copy($track, Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
@@ -699,8 +703,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), 'outro');
 
-        echo "Making the outro bumper\r\n";
-        $outro = "$pre_sable\r\n<BREAK LEVEL=\"LARGE\" />";
+        debugout::add("Making the outro bumper" . PHP_EOL);
+        $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
         $outro .= randomTextSelect(
             array(
                 'That was <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strTrackNameSounds'] . ' <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> It was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' licensed track',
@@ -713,7 +717,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 ' <BREAK LEVEL="MEDIUM" /> Remember, you can vote for any of these tracks by visiting ' . $show_data['strShowUrlSpoken'] . ' <BREAK LEVEL="MEDIUM" /> Your votes will select the tracks in the next chart show which you can find at ' . $show_data['strSiteNameSpoken'] . ' slash monthly '
             )
         );
-        $outro .= ' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit Cee-Cee-Hits dot net slash theem' . "\r\n" . $post_sable;
+        $outro .= ' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit Cee-Cee-Hits dot net slash theem' . PHP_EOL . $post_sable;
 
         convertSableXmlToWav(preg_replace('/\&/', ' and ', $outro), Configuration::getWorkingDir() . '/outro.wav');
         generateSilenceWav(34, Configuration::getWorkingDir() . '/post-show-silence.wav');
@@ -737,7 +741,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             }
         }
 
-        echo "Getting the coverart\r\n";
+        debugout::add("Getting the coverart" . PHP_EOL);
         $coverart = downloadFile($show_data['qrcode']);
         if ($coverart != false) {
             copy($coverart, Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png');
@@ -747,7 +751,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $coverart = '';
         }
 
-        echo "Converting the show to the various formats\r\n";
+        debugout::add("Converting the show to the various formats" . PHP_EOL);
         generateOutputTracks(
             Configuration::getWorkingDir() . '/monthly.wav',
             Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.',
@@ -761,7 +765,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         if ($coverart != '') {
             debugUnlink($coverart);
         }
-        echo "Uploading and finalizing\r\n";
+        debugout::add("Uploading and finalizing" . PHP_EOL);
         $show_summary = '';
         $track_pointer = 0;
         foreach ($show_data['arrTracks'] as $track) {
@@ -785,9 +789,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             ),
             json_encode($arrRunningOrder_final)
         );
-        echo "Done.\r\n\r\n";
+        echo "Done." . PHP_EOL . PHP_EOL;
     }
 } else {
-    echo "No data received from $get : ";
+    debugout::dump("No data received from $get : ");
     var_dump($data);
 }
