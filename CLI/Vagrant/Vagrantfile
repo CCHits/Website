@@ -1,0 +1,48 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get dist-upgrade -y
+    sudo apt-get install -y festival festlex-cmu festlex-poslex festlex-oald libestools1.2 unzip mp4v2-utils vorbis-tools eyed3 git sox libsox-fmt-all libav-tools php5-cli php5-curl sendemail libio-socket-ssl-perl libnet-ssleay-perl
+    if [ ! -d /usr/share/festival/voices/english/cmu_us_clb_arctic_clunits ] ; then
+      rm -Rf /tmp/cmu_voices
+      mkdir /tmp/cmu_voices
+      cd /tmp/cmu_voices
+      wget -q -t0 http://www.speech.cs.cmu.edu/cmu_arctic/packed/cmu_us_clb_arctic-0.95-release.tar.bz2
+      tar xf cmu_us_clb_arctic-0.95-release.tar.bz2
+      rm *.bz2
+      sudo mkdir -p /usr/share/festival/voices/english
+      sudo mv * /usr/share/festival/voices/english/
+      sudo mv "/usr/share/festival/voices/english/cmu_us_clb_arctic" "/usr/share/festival/voices/english/cmu_us_clb_arctic_clunits"
+      cd /tmp
+      rm -Rf /tmp/cmu_voices
+    fi
+    if [ ! -d /tmp/Website ] ; then
+      cd /tmp
+      git clone https://github.com/CCHits/Website.git
+      cd Website/CLI
+      cp /vagrant/config_local.php .
+    fi
+  SHELL
+  config.vm.provision "shell", run: "always", inline: <<-SHELL
+    cd /tmp/Website/CLI
+    cp -f /vagrant/config_local.php .
+
+    git pull
+
+    FROM=show@cchits.net
+    TO=show@cchits.net
+    SERVER=mailserver
+    USER=admin
+    PASS=admin
+
+    if [ -f /vagrant/mailconfig ]; then
+      source /vagrant/mailconfig
+      EXECUTE="sudo php showmaker.php | sendemail -f '$FROM' -t '$TO' -u 'Running ShowMaker' -s '$SERVER' -xu '$USER' -xp '$PASS' -o timeout=0 -o tls=auto"
+    else
+      EXECUTE="sudo php showmaker.php"
+    fi
+
+    bash -c "$EXECUTE"
+  SHELL
+end

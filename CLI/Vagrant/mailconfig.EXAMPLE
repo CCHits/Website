@@ -1,0 +1,3 @@
+SERVER=mailserver
+USER=admin
+PASS=admin
