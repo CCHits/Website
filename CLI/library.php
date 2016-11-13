@@ -15,6 +15,39 @@
 * @link     http://gitorious.net/cchits-net Version Control Service
 */
 
+class debugout {
+  private static $output = "";
+  private static $dumpset = false;
+
+  public static function add($message) {
+    if (static::$output !== "") {
+      static::$output .= PHP_EOL . $message;
+    } else {
+      static::$output = $message;
+    }
+    if (static::$dumpset) {
+      static::dump();
+    }
+  }
+
+  public static function dump($message = "") {
+    static::$dumpset = true;
+    if ($message !== "") {
+      static::add($message);
+    }
+    echo static::$output . PHP_EOL;
+    static::reset(false);
+  }
+
+  public static function reset($dumpset = true) {
+    static::$output = "";
+    if ($dumpset) {
+      static::$dumpset = false;
+    }
+  }
+}
+
+
 /**
  * This function will, eventually, do things like:
  * - post to StatusNet that the show is generated
@@ -39,7 +72,7 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
         $array['time'] = getTrackLength($show_root . 'mp3');
         $data = curlPostRequest($finalize_url . $show_id, $array);
         if ($data[0] == false) {
-            echo "Failed to upload MP3 file. Trying to upload split files.\r\n";
+            debugout::dump("Failed to upload MP3 file. Trying to upload split files.");
             $cmd = 'split -b50M ' . $show_root . 'mp3 ' . $show_root . 'mp3.';
             debugExec($cmd);
             $parts = array();
@@ -64,7 +97,7 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
                 $array['size'] = count($parts);
                 $data = curlPostRequest($split_url . $show_id, $array);
                 if ($data[0] == false) {
-                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                    debugout::dump("Failed to upload part $partno of " . count($parts));
                 }
             }
         }
@@ -79,7 +112,7 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
         }
         $data = curlPostRequest($finalize_url . $show_id, $array);
         if ($data[0] == false) {
-            echo "Failed to upload OGA file. Trying to upload split files.\r\n";
+            debugout::dump("Failed to upload OGA file. Trying to upload split files.");
             $cmd = 'split -b50M ' . $show_root . 'oga ' . $show_root . 'oga.';
             debugExec($cmd);
             $parts = array();
@@ -104,7 +137,7 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
                 $array['size'] = count($parts);
                 $data = curlPostRequest($split_url . $show_id, $array);
                 if ($data[0] == false) {
-                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                    debugout::dump("Failed to upload part $partno of " . count($parts));
                 }
             }
         }
@@ -116,7 +149,7 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
         // don't bother. It should have been picked up in the mp3 and oga files anyway.
         $data = curlPostRequest($finalize_url . $show_id, $array);
         if ($data[0] == false) {
-            echo "Failed to upload M4A file. Trying to upload split files.\r\n";
+            debugout::dump("Failed to upload M4A file. Trying to upload split files.");
             $cmd = 'split -b50M ' . $show_root . 'm4a ' . $show_root . 'm4a.';
             debugExec($cmd);
             $parts = array();
@@ -141,7 +174,7 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
                 $array['size'] = count($parts);
                 $data = curlPostRequest($split_url . $show_id, $array);
                 if ($data[0] == false) {
-                    echo "Failed to upload part $partno of " . count($parts) . ".\r\n";
+                    debugout::dump("Failed to upload part $partno of " . count($parts));
                 }
             }
         }
@@ -691,7 +724,7 @@ function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
     $DEBUG = true;
     $output = $output_root . $suffix;
     if (file_exists($input)) {
-        $cmd = 'avconv -y -i "' . $input . '" -ac 2 -ar ' . $GLOBALS['RATE'] . ' -ab 128k -sample_fmt s16 -strict experimental "' . $output . '"';
+        $cmd = 'avconv -y -i "' . $input . '" -ac 2 -ar ' . $GLOBALS['RATE'] . ' -ab 128k -strict experimental "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
@@ -779,7 +812,7 @@ function debugUnlink($file)
     if (!isset($GLOBALS['NODELETEFILES']) or ! $GLOBALS['NODELETEFILES']) {
         unlink($file);
     } else {
-        echo "Would be deleting $file now\r\n";
+        debugout::dump("Would be deleting $file now");
     }
 }
 
@@ -805,10 +838,9 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
         }
     }
     if ($exit_code > $max_acceptable_exit || (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG'])) {
-        if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
-            echo "Command:     $cmd\r\n";
-        }
-        echo "Exit status: $exit_code\r\nOutput:      $content\r\n";
+        debugout::add("Command:     $cmd");
+        debugout::add("Exit status: $exit_code");
+        debugout::dump("Output:      $content");
     }
     if ($return_string_anyway == true) {
         return array($exit_code, $content);
@@ -835,7 +867,7 @@ function downloadFile($url, $loop_count = 1, $loop_max = 5)
         sleep(120);
         return downloadFile($url, $loop_count + 1);
     } else {
-        echo "Downloading file: $url\r\nDownload failed. Error code: " . $get[1]['http_code'] . "\r\n";
+        debugout::dump("Downloading file: $url\r\nDownload failed. Error code: " . $get[1]['http_code']);
         debugUnlink($get[0]);
         return false;
     }
@@ -878,13 +910,13 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     $content = curl_exec($ch);
     $response = curl_getinfo($ch);
     if (curl_errno($ch) == 56) {
-        echo "Connection reset trying to get $url. Sleeping 120 seconds, and then treating this as a redirect.\r\n";
+        debugout::add("Connection reset trying to get $url. Sleeping 120 seconds, and then treating this as a redirect.");
         sleep(120);
         return curlGetResource($url, $as_file, $javascript_loop+1, $max_loop);
     }
     if (curl_errno($ch)) {
         $error_text = curl_error($ch);
-        echo "Unable to retrieve $url due to $error_text\r\n";
+        debugout::add("Unable to retrieve $url due to $error_text");
         $error = 1;
     }
     curl_close($ch);
@@ -912,12 +944,12 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     } else {
         if ($as_file == 1) {
             if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
-                echo "Got $url as file $tmpfname with response as follows:\r\n" . print_r($response, true);
+                debugout::dump("Got $url as file $tmpfname with response as follows:\r\n" . print_r($response, true));
             }
             return array($tmpfname, $response);
         } else {
             if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
-                echo "Got $url as\r\n" . substr($content, 0, 60) . "\r\ncURL data as follows:\r\n" . print_r($response, true);
+                debugout::dump("Got $url as\r\n" . substr($content, 0, 60) . "\r\ncURL data as follows:\r\n" . print_r($response, true));
             }
             return array($content, $response);
         }
@@ -949,7 +981,7 @@ function curlPostRequest($url, $arrPost)
     $response = curl_getinfo($ch);
     if (curl_errno($ch)) {
         $error_text = curl_error($ch);
-        echo "Unable to retrieve $url due to $error_text\r\n";
+        debugout::dump("Unable to retrieve $url due to $error_text");
         $error = 1;
     }
     curl_close($ch);
@@ -959,10 +991,11 @@ function curlPostRequest($url, $arrPost)
         $state = true;
     }
     if (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+        $note = "";
         if ($state == false) {
-            echo "Not ";
+            $note = "Not ";
         }
-        echo "Got $url with data:\r\n" . print_r($arrPost, true) . "\r\nas\r\n$result\r\ncURL data as follows:\r\n" . print_r($response, true);
+        debugout::dump($note . "Got $url with data:\r\n" . print_r($arrPost, true) . "\r\nas\r\n$result\r\ncURL data as follows:\r\n" . print_r($response, true));
     }
     return array($state, $result, $response);
 }
@@ -1089,3 +1122,4 @@ function getUri()
     }
     return $arrUrl;
 }
+
