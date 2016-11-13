@@ -389,6 +389,10 @@ class HTML
                 case 'basicauth':
                     $this->basicAuth();
                     break;
+		case 'logout':
+			unset($_SESSION['OPENID_AUTH']);
+			UI::Redirect('admin');
+			break;
                 case '':
                     if ($user->get_isUploader() or $user->get_isAdmin()) {
                         UI::SmartyTemplate('admin.html', $this->result);
@@ -1174,6 +1178,7 @@ class HTML
             $this->result['baseURL'] = $this->arrUri['basePath'];
             $this->result['arrUri'] = $this->arrUri;
             $this->result['jquery'] = $this->extLib->getVersion('JQUERY');
+            $this->result['bootstrap'] = $this->extLib->getVersion('BOOTSTRAP');
             $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
             $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
             $this->result['previous_page'] = false;

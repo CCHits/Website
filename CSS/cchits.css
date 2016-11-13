@@ -1,0 +1,34 @@
+/* CSS file for CCHits.net */
+
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:400,500,700');
+
+body {
+	font-family: 'Ubuntu', 'sans-serif';
+	margin-top: 3em;
+}
+
+#admin-track-panel {
+}
+
+#admin-show-panel, #admin-account-panel {
+	display: none;
+}
+
+.panel-body .row {
+	border-top: 1px solid #ddd;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.panel-body .row:first-child {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.panel-body .row:last-child {
+	padding-bottom: 0;
+}
+
+.nav-tabs {
+	margin-bottom: 1em;
+}

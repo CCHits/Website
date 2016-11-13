@@ -5,3 +5,4 @@ Smarty: http://www.smarty.net
 phpqrcode: http://sourceforge.net/projects/phpqrcode/
 php-openid: https://github.com/openid/php-openid
 getID3: http://getid3.sourceforge.net/
+bootstrap: http://getbootstrap.com
