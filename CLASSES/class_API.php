@@ -25,6 +25,7 @@
  * @link     http://code.cchits.net Developers Web Site
  * @link     http://gitorious.net/cchits-net Version Control Service
  */
+
 class API
 {
     protected $result = null; // An object for rendering
@@ -483,6 +484,24 @@ class API
                   }
                 }
                 $this->render();
+                break;
+            case 'v2':
+                switch($arrUri['path_items'][2]) {
+                    case 'dates':
+                        $this->result_array = APIv2::getDates();
+                        $this->render();
+                        break;
+                    case 'newchart':
+                        $dates = APIv2::getDates();
+                        $weeks = GeneralFunctions::getValue($arrUri['parameters'], 'weeks', '4', true);
+                        $date = GeneralFunctions::getValue($arrUri['parameters'], 'date', $dates['Today'], true);
+                        $yearweek = APIv2::getYearWeek($date);
+                        $this->result_array = APIv2::getNewChart($yearweek, $weeks);
+                        $this->render();
+                        break;
+                    default:
+                        throw new API_NotApiCall();
+                }
                 break;
             default:
                 throw new API_NotApiCall();
