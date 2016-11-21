@@ -297,7 +297,7 @@
 										<thead>
 											<tr>
 												<th>Set default</th>
-												<th>Add new valuer</th>
+												<th>Add new value</th>
 												<th>Delete value</th>
 											</tr>
 										</thead>
