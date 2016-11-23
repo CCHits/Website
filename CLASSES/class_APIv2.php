@@ -71,7 +71,13 @@ class APIv2
 				throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);	
 			}
 			$data = $query->fetchAll(PDO::FETCH_ASSOC);
-			error_log(json_encode($data));
+			foreach ($data as $key => $row) {
+				$subsql = "SELECT * FROM artists WHERE intArtistID = ? LIMIT 1";
+				$subquery = $db->prepare($subsql);
+				$subquery->execute(array($row['intArtistID']));
+				$artist = $subquery->fetchAll(PDO::FETCH_ASSOC);
+				$data[$key]['artist'] = $artist;
+			}
 			return $data;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
