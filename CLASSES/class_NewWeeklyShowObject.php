@@ -46,30 +46,38 @@ class NewWeeklyShowObject extends NewInternalShowObject
         $arrOldTracks = array();
         $counter = 0;
         for ($date = $datLastWeekShowsUrl; $date < $intShowUrl; $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))) {
-            $show = ShowBroker::getInternalShowByDate('daily', $date);
-            if ($show != false) {
-                $track = end($show->get_arrTracks());
-                $trackID = $track->get_intTrackID();
-                $votes = VoteBroker::getVotesForTrackByShow($trackID);
-                $vote_adj = $votes['adjust'];
-                if (! isset($arrLastWeekTracks[(string) $vote_adj])) {
-                    $arrLastWeekTracks[(string) $vote_adj] = $trackID;
-                } else {
-                    $arrLastWeekTracks[(string) ($vote_adj + (++$counter / 100))] = $trackID;
+            if ($date != "") {
+                $show = ShowBroker::getInternalShowByDate('daily', $date);
+                if ($show != false) {
+                    $track = end($show->get_arrTracks());
+                    if (is_object($track)) {
+                        $trackID = $track->get_intTrackID();
+                        $votes = VoteBroker::getVotesForTrackByShow($trackID);
+                        $vote_adj = $votes['adjust'];
+                        if (! isset($arrLastWeekTracks[(string) $vote_adj])) {
+                            $arrLastWeekTracks[(string) $vote_adj] = $trackID;
+                        } else {
+                            $arrLastWeekTracks[(string) ($vote_adj + (++$counter / 100))] = $trackID;
+                        }
+                    }
                 }
             }
         }
         for ($date = $datOldShowsUrl; $date < $datLastWeekShowsUrl ; $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))) {
-            $show = ShowBroker::getInternalShowByDate('daily', $date);
-            if ($show != false) {
-                $track = end($show->get_arrTracks());
-                $trackID = $track->get_intTrackID();
-                $votes = VoteBroker::getVotesForTrackByShow($trackID);
-                $vote_adj = $votes['adjust'];
-                if (! isset($arrOldTracks[(string) $vote_adj])) {
-                    $arrOldTracks[(string) $vote_adj] = $trackID;
-                } else {
-                    $arrOldTracks[(string) ($vote_adj + (++$counter / 100))] = $trackID;
+            if ($date != "") {
+                $show = ShowBroker::getInternalShowByDate('daily', $date);
+                if ($show != false) {
+                    $track = end($show->get_arrTracks());
+                    if (is_object($track)) {
+                        $trackID = $track->get_intTrackID();
+                        $votes = VoteBroker::getVotesForTrackByShow($trackID);
+                        $vote_adj = $votes['adjust'];
+                        if (! isset($arrOldTracks[(string) $vote_adj])) {
+                            $arrOldTracks[(string) $vote_adj] = $trackID;
+                        } else {
+                            $arrOldTracks[(string) ($vote_adj + (++$counter / 100))] = $trackID;
+                        }
+                    }
                 }
             }
         }
