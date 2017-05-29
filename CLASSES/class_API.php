@@ -488,7 +488,8 @@ class API
             case 'v2':
                 switch($arrUri['path_items'][2]) {
                     case 'dates':
-                        $this->result_array = APIv2::getDates();
+                        $plusdays = GeneralFunctions::getValue($arrUri['parameters'], 'plusdays', '0', true);
+                        $this->result_array = APIv2::getDates($plusdays);
                         $this->render();
                         break;
                     case 'newchart':

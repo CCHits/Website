@@ -27,10 +27,11 @@
  */
 class APIv2
 {
-	public static function getDates() {
+	public static function getDates($plusdays) {
 		$db = Database::getConnection();
 		try {
-			$sql = "select DATE_FORMAT(NOW(), '%Y-%c-%d') Today, YEARWEEK(NOW(), 3) YearWeek, STR_TO_DATE(CONCAT(YEARWEEK(NOW(), 3),' Monday'), '%x%v %W') Monday, STR_TO_DATE(CONCAT(YEARWEEK(NOW(), 3),' Sunday'), '%x%v %W') Sunday";
+
+			$sql = "select DATE_FORMAT(DATE_ADD(NOW(), INTERVAL $plusdays DAY), '%Y-%c-%d') Today, YEARWEEK(DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3) YearWeek, STR_TO_DATE(CONCAT(YEARWEEK(DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3),' Monday'), '%x%v %W') Monday, STR_TO_DATE(CONCAT(YEARWEEK(DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3),' Sunday'), '%x%v %W') Sunday";
 			$query = $db->prepare($sql);
 			$query->execute();
 			if ($query->errorCode() != 0) {
