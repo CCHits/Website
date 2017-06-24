@@ -39,67 +39,39 @@ class RemoteSourcesJamendo extends RemoteSources
         if (preg_match('/track\/(\d+)/', $src, $match) == 0) {
             return 406;
         }
-        $url_base = "http://api.jamendo.com/get2/track_name+track_url+license_url+artist_name+artist_url/track/json/track_album+album_artist/track/?track_id=";
+        $url_base = "http://api.jamendo.com/v3.0/tracks/?client_id=" . ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&type=single%20albumtrack&id=";
         $file_contents = file_get_contents($url_base . $match[1]);
         if ($file_contents == FALSE) {
             error_log("No response when trying to retrieve $url_base{$match[1]}");
             return 406;
         }
         $json_contents = json_decode($file_contents);
-        if ($json_contents !== Array()) { // Is API v2 deprecated ?
-            if ($json_contents == FALSE) {
-                error_log("No content when trying to read $url_base{$match[1]}");
-                return 406;
-            }
-            preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);
-            $this->set_strTrackName($json_contents[0]->track_name);
-            $this->set_strArtistName($json_contents[0]->artist_name);
-            $this->set_strTrackUrl($json_contents[0]->track_url);
-            $this->set_strArtistUrl($json_contents[0]->artist_url);
-            $this->set_enumTrackLicense(LicenseSelector::validateLicense($matches[1]));
-            $arrFile = $this->curl_get("http://jamstore.radionomy.net/download/track/{$match[1]}/mp32/file.mp3", 1);
-            if ( ! is_array($arrFile) or ! isset($arrFile[1]) or ! isset($arrFile[1]['http_code']) or $arrFile[1]['http_code'] != 200) {
-                $this->set_fileUrl(download_jamendo($match[1]));
-            } else {
-                $this->set_fileName($arrFile[0]);
-            }
-            return $this->create_pull_entry();
-        } else {
-            // API v2 deprecated, let's try API v3
-            $url_base = "http://api.jamendo.com/v3.0/tracks/?client_id=" . ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&type=single%20albumtrack&id=";
-            $file_contents = file_get_contents($url_base . $match[1]);
-            if ($file_contents == FALSE) {
-                error_log("No response when trying to retrieve $url_base{$match[1]}");
-                return 406;
-            }
-            $json_contents = json_decode($file_contents);
-            if ($json_contents == FALSE) {
-                error_log("No content when trying to read $url_base{$match[1]}");
-                return 406;
-            }
-            preg_match("/licenses\/(.*)\/\d/", $json_contents->results[0]->license_ccurl, $matches);
-            $this->set_strTrackName($json_contents->results[0]->name);
-            $this->set_strTrackUrl($json_contents->results[0]->shareurl);
-            $this->set_enumTrackLicense(LicenseSelector::validateLicense($matches[1]));
-            $this->set_fileUrl(str_replace("https", "http", $json_contents->results[0]->audiodownload));
-
-            $artist_id = $json_contents->results[0]->artist_id;
-            $url_base = "http://api.jamendo.com/v3.0/artists/?client_id=" . ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&id=";
-            $file_contents = file_get_contents($url_base . $artist_id);
-            if ($file_contents == FALSE) {
-                error_log("No response when trying to retrieve $url_base{$artist_id}");
-                return 406;
-            }
-            $json_contents = json_decode($file_contents);
-            if ($json_contents == FALSE) {
-                error_log("No content when trying to read $url_base{$artist_id}");
-                return 406;
-            }
-            $this->set_strArtistName($json_contents->results[0]->name);
-            $this->set_strArtistUrl($json_contents->results[0]->shareurl);
-
-            return $this->create_pull_entry();
+        if ($json_contents == FALSE) {
+            error_log("No content when trying to read $url_base{$match[1]}");
+            return 406;
         }
+        preg_match("/licenses\/(.*)\/\d/", $json_contents->results[0]->license_ccurl, $matches);
+        $this->set_strTrackName($json_contents->results[0]->name);
+        $this->set_strTrackUrl($json_contents->results[0]->shareurl);
+        $this->set_enumTrackLicense(LicenseSelector::validateLicense($matches[1]));
+        $this->set_fileUrl(str_replace("https", "http", $json_contents->results[0]->audiodownload));
+
+        $artist_id = $json_contents->results[0]->artist_id;
+        $url_base = "http://api.jamendo.com/v3.0/artists/?client_id=" . ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&id=";
+        $file_contents = file_get_contents($url_base . $artist_id);
+        if ($file_contents == FALSE) {
+            error_log("No response when trying to retrieve $url_base{$artist_id}");
+            return 406;
+        }
+        $json_contents = json_decode($file_contents);
+        if ($json_contents == FALSE) {
+            error_log("No content when trying to read $url_base{$artist_id}");
+            return 406;
+        }
+        $this->set_strArtistName($json_contents->results[0]->name);
+        $this->set_strArtistUrl($json_contents->results[0]->shareurl);
+
+        return $this->create_pull_entry();
     }
 
     /**
