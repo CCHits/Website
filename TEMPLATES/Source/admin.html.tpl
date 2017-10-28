@@ -19,7 +19,7 @@
 							<ul class="nav nav-tabs nav-justified">
 {if $user.isUploader = 1}
 								<li role="presentation" class="active">
-									<a href="#" id="admin-track-tab" class="admin-tab-button" data-target="#admin-track-panel">Import/Retreive track</a>
+									<a href="#" id="admin-track-tab" class="admin-tab-button" data-target="#admin-track-panel">Import/Retrieve track</a>
 								</li>
 {/if}
 {if $user.isAdmin = 1}
