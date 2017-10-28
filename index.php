@@ -77,7 +77,7 @@ try {
             // Start session
             UI::start_session();
 
-            // Retreive config
+            // Retrieve config
             $client_id = GoogleConfigBroker::getClientId();
             $redirect_uri = GoogleConfigBroker::getRedirectUri();
 
@@ -97,17 +97,17 @@ try {
             // Start session
             UI::start_session();
 
-            // Retreive config
+            // Retrieve config
             $client_id = GoogleConfigBroker::getClientId();
             $client_secret = GoogleConfigBroker::getClientSecret();
             $redirect_uri = GoogleConfigBroker::getRedirectUri();
 
             // Sanity check
             if (isset($_GET['code']) && ($client_id != null) && ($client_secret != null) && ($redirect_uri != null)) {
-                // Retreive CSRF token from session
+                // Retrieve CSRF token from session
                 $csrf_token = $_SESSION['CSRF_TOKEN'];
 
-                // Retreive request parameters
+                // Retrieve request parameters
                 $state = $_REQUEST['state'];
                 $code = $_REQUEST['code'];
                 $authuser = $_REQUEST['authuser'];
