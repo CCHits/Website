@@ -37,7 +37,7 @@ try {
             case 'monthly':
             case 'extra':
                 // This handles offloading to a 3rd party media store (e.g. archive.org)
-                $remotepath = MediaRedirect::getNewUrl($arrUri['path_items'][0], $arrUri['path_items'][1], $arrUri['format']);
+                $remotepath = MediaRedirect::getNewUrl($arrUri['path_items'][1], $arrUri['path_items'][2], $arrUri['format']);
                 if ($remotepath) {
                   header("Location: $remotepath");
                   exit(0);
