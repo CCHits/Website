@@ -32,12 +32,16 @@ try {
             switch($arrUri['path_items'][1]) {
             case 'track': // MP3/OGA/M4A Audio, PNG Images
             case 'show': // PNG Images
-                $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $arrUri['path_items'][1] . '/';
-                break;
             case 'daily':
             case 'weekly':
             case 'monthly':
             case 'extra':
+                // This handles offloading to a 3rd party media store (e.g. archive.org)
+                $remotepath = MediaRedirect::getNewUrl($arrUri['path_items'][0], $arrUri['path_items'][1], $arrUri['format']);
+                if ($remotepath) {
+                  header("Location: $remotepath");
+                  exit(0);
+                }
                 $file = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $arrUri['path_items'][1] . '/';
                 break;
             default:

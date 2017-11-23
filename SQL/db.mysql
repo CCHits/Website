@@ -24,6 +24,13 @@ CREATE TABLE IF NOT EXISTS `config` (
   PRIMARY KEY (`key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `redirectmedia` (
+  `localvalue` varchar(255) NOT NULL,
+  `remotevalue` text NOT NULL,
+  `hitcount` int(255) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`localvalue`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `shows` (
   `intShowID` int(11) NOT NULL AUTO_INCREMENT,
   `intShowUrl` int(11) NOT NULL,
