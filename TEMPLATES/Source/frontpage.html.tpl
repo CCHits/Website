@@ -29,6 +29,7 @@
 				<thead>
 					<tr>
 						<th>Position</th>
+						<th>Adj. Votes</th>
 						<th>Movement</th>
 						<th>60 Days Movement</th>
 						<th>Track</th>
@@ -42,7 +43,7 @@
 				    </tr>
 {/strip}{/foreach}
 					<tr>
-						<td colspan="3"><a href="{$baseURL}chart">More...</a></td>
+						<td colspan="6"><a href="{$baseURL}chart">More...</a></td>
 					</tr>
 				</tbody>
 			</table>
