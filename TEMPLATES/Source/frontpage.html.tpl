@@ -29,6 +29,7 @@
 				<thead>
 					<tr>
 						<th>Position</th>
+						<thAdj. Votes</th>
 						<th>Movement</th>
 						<th>60 Days Movement</th>
 						<th>Track</th>
