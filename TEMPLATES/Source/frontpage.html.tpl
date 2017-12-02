@@ -43,7 +43,7 @@
 				    </tr>
 {/strip}{/foreach}
 					<tr>
-						<td colspan="3"><a href="{$baseURL}chart">More...</a></td>
+						<td colspan="6"><a href="{$baseURL}chart">More...</a></td>
 					</tr>
 				</tbody>
 			</table>
