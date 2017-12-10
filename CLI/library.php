@@ -929,7 +929,7 @@ function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10
     }
 
     if ($response['http_code'] == 301 or $response['http_code'] == 302) {
-        $headers == get_headers($response['url']);
+        $headers = get_headers($response['url']);
         if ($headers != false) {
             foreach ($headers as $value) {
                 if (substr(strtolower($value), 0, 9) == "location:") {
