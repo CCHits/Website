@@ -455,7 +455,6 @@ class HTML
                     $intTrackID = $_SESSION['intTrackID'];
                     unset($_SESSION['intTrackID']);
                     UI::Redirect("admin/track/" . $intTrackID);
-                    break;
                 }
                 UI::SmartyTemplate('trackimporter.html', $this->result);
             } elseif (is_array($arrData) and count($arrData) == 1) {
@@ -533,7 +532,6 @@ class HTML
                 $intTrackID = $_SESSION['intTrackID'];
                 unset($_SESSION['intTrackID']);
                 UI::Redirect("admin/track/" . $intTrackID);
-                break;
             }
             $this->result['track'] = $objTrack->getSelf();
             if ($objTrack->get_intArtistID() == 0) {
