@@ -1069,6 +1069,7 @@ class HTML
             $this->result['jquery3'] = $this->extLib->getVersion('JQUERY3');
             $this->result['popperjs'] = $this->extLib->getVersion('POPPERJS');
             $this->result['chartjs'] = $this->extLib->getVersion('CHARTJS');
+            $this->result['fontawesome'] = $this->extLib->getVersion('FONTAWESOME');
             $this->result['previous_page'] = false;
             UI::SmartyTemplate("about.html", $this->result);
             break;
@@ -1187,6 +1188,7 @@ class HTML
             $this->result['jquery3'] = $this->extLib->getVersion('JQUERY3');
             $this->result['popperjs'] = $this->extLib->getVersion('POPPERJS');
             $this->result['chartjs'] = $this->extLib->getVersion('CHARTJS');
+            $this->result['fontawesome'] = $this->extLib->getVersion('FONTAWESOME');
             $this->result['previous_page'] = false;
             if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
                 $this->result['previous_page'] = true;

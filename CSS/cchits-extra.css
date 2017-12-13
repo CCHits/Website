@@ -87,3 +87,20 @@ a:hover {
 .chart-track-artist {
     text-align: center;
 }
+
+.chart-progression .fa-arrow-up {
+    color: greenyellow;
+}
+
+.chart-progression .fa-arrow-right {
+    color: blue;
+}
+
+.chart-progression .fa-arrow-down {
+    color: red;
+}
+
+.chart-progression .svg-inline--fa {
+    height: 100%;
+    width: 50%;
+}

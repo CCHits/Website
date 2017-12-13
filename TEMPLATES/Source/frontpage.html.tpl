@@ -41,7 +41,15 @@
 						{foreach $chart key=position item=track}{strip} 
 						<div class="row chart-track">
 							<div class="col-1 chart-progression">
-								!
+								{if $track.strPositionYesterday == "up"}
+								<i class="fa fa-arrow-up"></i>
+								{/if}
+								{if $track.strPositionYesterday == "equal"}
+								<i class="fa fa-arrow-right"></i>
+								{/if}
+								{if $track.strPositionYesterday == "down"}
+								<i class="fa fa-arrow-down"></i>
+								{/if}
 							</div>
 							<div class="col-2 chart-position">
 								<div class="chart-position-current">{$position}</div>
@@ -73,7 +81,8 @@
 		<script src="{$baseURL}EXTERNALS/JQUERY3/{$jquery3}/jquery.js"></script>
 		<script src="{$baseURL}EXTERNALS/POPPERJS/{$popperjs}/popper.js"></script>
         <script src="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/js/bootstrap.js"></script>
-        <script src="{$baseURL}EXTERNALS/CHARTJS/{$chartjs}/Chart.bundle.js"></script>
+		<script src="{$baseURL}EXTERNALS/CHARTJS/{$chartjs}/Chart.bundle.js"></script>
+		<script src="{$baseURL}EXTERNALS/FONTAWESOME/{$fontawesome}/svg-with-js/js/fontawesome-all.js"></script>
         <script>
             $( document ).ready( function() {
                 {foreach $chart key=position item=track}{strip}                 
