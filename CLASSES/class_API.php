@@ -500,6 +500,11 @@ class API
                         $this->result_array = APIv2::getNewChart($yearweek, $weeks);
                         $this->render();
                         break;
+                    case 'getchart':
+                        $strChartDate = GeneralFunctions::getValue($arrUri['parameters'], 'strChartDate', GeneralFunctions::getValue($arrUri['path_items'], 3, date('Y-m-d'), true), true);
+                        $this->result_array = ChartBroker::getLightChartByDate($strChartDate);
+                        $this->render();
+                        break;
                     default:
                         throw new API_NotApiCall();
                 }

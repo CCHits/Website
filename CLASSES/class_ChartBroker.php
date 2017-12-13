@@ -161,4 +161,77 @@ class ChartBroker
             return false;
         }
     }
+    
+    public static function getLightChartByDate(
+        $strChartDate = '',
+        $intPage = null,
+        $intSize = null
+    ) {
+        $arrUri = UI::getUri();
+        if ($intPage == null and isset($arrUri['parameters']['page']) and $arrUri['parameters']['page'] > 0) {
+            $intPage = $arrUri['parameters']['page'];
+        } elseif ($intPage == null) {
+            $intPage = 0;
+        }
+        if ($intSize == null and isset($arrUri['parameters']['size']) and $arrUri['parameters']['size'] > 0) {
+            $intSize = $arrUri['parameters']['size'];
+        } elseif ($intSize == null) {
+            $intSize = 25;
+        }
+
+        $return = array();
+        $return[ 'intPage' ] = $intPage;
+        $return[ 'intSize' ] = $intSize;
+        $db = Database::getConnection();
+        try {
+            if ($strChartDate == '') {
+                $sql = "SELECT max(datChart) as max_datChart FROM chart LIMIT 0, 1";
+                $query = $db->prepare($sql);
+                $query->execute();
+                // This section of code, thanks to code example here:
+                // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+                if ($query->errorCode() != 0) {
+                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                }
+                $strChartDate = $query->fetchColumn();
+            }
+            if (! is_integer($strChartDate)) {
+                $return['intChartDate'] = UI::getShortDate($strChartDate);
+                $return['strChartDate'] = $strChartDate;
+            } else {
+                $return['intChartDate'] = $strChartDate;
+                $return['strChartDate'] = UI::getLongDate($strChartDate);
+            }
+            $sql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ?";
+            $pagestart = ($intPage * $intSize);
+            $query = $db->prepare($sql . " ORDER BY intPositionID ASC LIMIT " . $pagestart . ", $intSize");
+            $query->execute(array(UI::getShortDate($strChartDate)));
+            // This section of code, thanks to code example here:
+            // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>UI::getShortDate($strChartDate), 'error'=>$query->errorInfo()), true), 1);
+            }
+            $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+            if ($tracks != false and count($tracks)>0) {
+                foreach ($tracks as $track) {
+                    $temp = TrackBroker::getTrackByID($track['intTrackID']);
+                    if ($temp != false) {
+                        $t = $temp->getSelf();
+                        $return['position'][$track['intPositionID']] = [];
+                        $return['position'][$track['intPositionID']]['strPositionLastWeek'] = $t['strPositionLastWeek'];
+                        $return['position'][$track['intPositionID']]['averageLastWeek'] = $t['averageLastWeek'];
+                        $return['position'][$track['intPositionID']]['intChartPeak'] = $t['intChartPeak'];
+                        $return['position'][$track['intPositionID']]['strTrackName'] = $t['strTrackName'];
+                        $return['position'][$track['intPositionID']]['strArtistName'] = $t['strArtistName'];
+                        $return['position'][$track['intPositionID']]['intChartPosition'] = $track['intPositionID'];
+                        $return['position'][$track['intPositionID']]['arrVotes'] = [];
+                    }
+                }
+            }
+            return $return;
+        } catch (Exception $e) {
+            error_log("SQL error: " . $e);
+            return false;
+        }
+    }
 }

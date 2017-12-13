@@ -1065,6 +1065,10 @@ class HTML
             $this->result['jquery'] = $this->extLib->getVersion('JQUERY');
             $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
             $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
+            $this->result['bootstrap4'] = $this->extLib->getVersion('BOOTSTRAP4');
+            $this->result['jquery3'] = $this->extLib->getVersion('JQUERY3');
+            $this->result['popperjs'] = $this->extLib->getVersion('POPPERJS');
+            $this->result['chartjs'] = $this->extLib->getVersion('CHARTJS');
             $this->result['previous_page'] = false;
             UI::SmartyTemplate("about.html", $this->result);
             break;
@@ -1179,6 +1183,10 @@ class HTML
             $this->result['bootstrap'] = $this->extLib->getVersion('BOOTSTRAP');
             $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
             $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
+            $this->result['bootstrap4'] = $this->extLib->getVersion('BOOTSTRAP4');
+            $this->result['jquery3'] = $this->extLib->getVersion('JQUERY3');
+            $this->result['popperjs'] = $this->extLib->getVersion('POPPERJS');
+            $this->result['chartjs'] = $this->extLib->getVersion('CHARTJS');
             $this->result['previous_page'] = false;
             if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
                 $this->result['previous_page'] = true;

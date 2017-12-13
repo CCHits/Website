@@ -1,0 +1,89 @@
+body {
+	margin-top: 0;
+}
+
+a {
+    color: inherit;
+    outline: none;
+}
+
+a:hover {
+    color: #01b1e6;
+    background-color: #000011;
+    text-decoration: none;
+}
+
+#topnav {
+    background-color: black;
+    color: white;
+}
+
+#brand {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 44px;
+}
+
+#brand a:hover {
+    color: inherit;
+}
+
+#topnav .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+#topnav .shows-nav ul,
+#topnav .socials ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+#topnav .shows-nav ul li a,
+#topnav .socials ul li a {
+    line-height: 44px;
+    padding: 9px 20px;
+}
+
+#topnav .socials ul li:last-child a {
+    padding-right: 0;
+}
+
+#chart header {
+    font-size: 5.5rem;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+}
+
+.chart-track {
+    border-top: 1px solid gray;
+    padding: 5px 0;
+}
+
+.chart-position-current {
+    font-size: 2.9rem;
+    margin: -.5rem 0;
+    text-align: center;
+    font-weight: 700;
+}
+
+.chart-position-before,
+.chart-position-high-low {
+    font-size: 0.775rem;
+    color: gray;
+    text-align: center;
+}
+
+.chart-track-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.chart-track-artist {
+    text-align: center;
+}
