@@ -7,9 +7,9 @@
 		<link rel="alternate" type="application/rss+xml" href="{$baseURL}daily/rss" title="The {$ShowDaily}" />
 		<link rel="alternate" type="application/rss+xml" href="{$baseURL}weekly/rss" title="The {$ShowWeekly}" />
 		<link rel="alternate" type="application/rss+xml" href="{$baseURL}monthly/rss" title="The {$ShowMonthly}" />
-		<link rel="stylesheet" href="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/css/bootstrap.min.css">
-		<link rel="stylesheet" href="{$baseURL}CSS/cchits.css">
-		<link rel="stylesheet" href="{$baseURL}CSS/cchits-extra.css">
+		<link rel="stylesheet" href="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="{$baseURL}CSS/cchits.css" />
+		<link rel="stylesheet" href="{$baseURL}CSS/cchits-extra.css" />
 	</head>
 	<body>
 		<div class="container-fluid" id="topnav">
@@ -32,12 +32,31 @@
 			</div>
 		</div>
 		<div class="container" id="chart">
-			<div class="row">
-				<header>The Chart</header>
+			<div class="row row-header">
+				<div class="col">
+					<header>The Chart</header>
+				</div>
 			</div>
-			<div class="row">
-				<div class="col-8">
+			<div class="row" id="main">
+				<div class="col-9">
 					<div class="chart-body">
+						<div class="row chart-legend">
+							<div class="col-1 chart-progression">
+								Prog.	
+							</div>
+							<div class="col-2 chart-position">
+								Position
+							</div>
+							<div class="col-4 chart-info">
+								Track
+							</div>
+							<div class="col-3 chart-graph">
+								60 days movement
+							</div>
+							<div class="col-2 chart-licences">
+								License
+							</div>
+						</div>
 						{foreach $chart key=position item=track}{strip} 
 						<div class="row chart-track">
 							<div class="col-1 chart-progression">
@@ -66,15 +85,62 @@
                                     Highest : {$track.60dayhighest}, Lowest : {$track.60daylowest}
                                 </div>
 							</div>
-							<div class="col-5 chart-graph">
-                                <canvas id="graph-{$position}" style="height: 50px;"></canvas>
-                            </div>
-                        </div>
+							<div class="col-3 chart-graph">
+								<canvas id="graph-{$position}" style="height: 50px;"></canvas>
+							</div>
+							<div class="col-2 chart-licences">
+								<div class="license-icons">
+									<div class="license-icon license-by license-{$track.strIsByLicense} license-{$track.enumTrackLicense}"></div>
+									<div class="license-icon license-nc license-{$track.strIsNcLicense} license-{$track.enumTrackLicense}"></div>
+									<div class="license-icon license-nd license-{$track.strIsNdLicense} license-{$track.enumTrackLicense}"></div>
+									<div class="license-icon license-sa license-{$track.strIsSaLicense} license-{$track.enumTrackLicense}"></div>									
+									<div class="license-icon license-sp license-{$track.strIsSamplingPlusLicense} license-{$track.enumTrackLicense}"></div>									
+									<div class="license-icon license-ze license-{$track.strIsZeroLicense} license-{$track.enumTrackLicense}"></div>									
+								</div>
+							</div>
+						</div>
 						{/strip}{/foreach}
+						<div class="row chart-legend">
+							<div class="col-1 chart-progression">
+								Prog.	
+							</div>
+							<div class="col-2 chart-position">
+								Position
+							</div>
+							<div class="col-4 chart-info">
+								Track
+							</div>
+							<div class="col-3 chart-graph">
+								60 days movement
+							</div>
+							<div class="col-2 chart-licences">
+								License
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="col-4">
-
+				<div class="col-3">
+					<div class="row">
+						<div class="col col-player" id="daily">
+							<header>The most recent Daily Exposure show</header>
+							{include file="player2.html.tpl" player_id="1" playlist=$daily}
+							<footer><a href="{$baseURL}daily">More...</a> | <a href="{$baseURL}daily/rss">Feed</a></footer>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-player" id="weekly">
+							<header>The most recent Weekly Review show</header>
+							{include file="player2.html.tpl" player_id="2" playlist=$weekly}
+							<footer><a href="{$baseURL}weekly">More...</a> | <a href="{$baseURL}weekly/rss">Feed</a></footer>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col col-player" id="daily">
+							<header>The most recent Monthly Chart show</header>
+							{include file="player2.html.tpl" player_id="3" playlist=$monthly}
+							<footer><a href="{$baseURL}monthly">More...</a> | <a href="{$baseURL}monthly/rss">Feed</a></footer>
+						</div>						
+					</div>
 				</div>
 			</div>
 		</div>
@@ -83,62 +149,15 @@
         <script src="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/js/bootstrap.js"></script>
 		<script src="{$baseURL}EXTERNALS/CHARTJS/{$chartjs}/Chart.bundle.js"></script>
 		<script src="{$baseURL}EXTERNALS/FONTAWESOME/{$fontawesome}/svg-with-js/js/fontawesome-all.js"></script>
-        <script>
-            $( document ).ready( function() {
-                {foreach $chart key=position item=track}{strip}                 
-                var ctx = $('#graph-{$position}');
-                var myLineChart = new Chart(ctx, {
-                    type: 'line',
-                    backgroundColor: 'rgb(255, 0, 0)',
-                    data: {
-                        labels: [{foreach from=$track.arrChartData item=item name=sparkline}{if not $smarty.foreach.sparkline.first},{/if}{if $item.intPositionID != 'null'}-{/if}{$item.intPositionID}{/foreach}],
-                        datasets: [
-                            {
-                                label: "Chart {$position}", 
-                                borderColor: 'rgb(255, 99, 132)', 
-                                fill: 'bottom',
-                                borderWidth: 2,
-                                pointRadius: 0,
-                                data: [ {foreach from=$track.arrChartData item=item name=sparkline}{if not $smarty.foreach.sparkline.first},{/if} {$item.intPositionID}{/foreach} ]
-                            }
-                        ]
-                    },
-                    options: {
-                        elements: {
-                            line: {
-                                tension: 0
-                            }
-                        },
-                        maintainAspectRatio: false,
-                        animation: {
-                            duration: 0,
-                        },
-                        hover: {
-                            animationDuration: 0,
-                        },
-                        responsiveAnimationDuration: 0,
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: false
-                        },
-                        scales: {
-                            xAxes: [{
-                                display: false,
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    min: 1,
-                                    reverse: true
-                                }
-                            }]
-                        }
-                    }
-                });
-                {/strip}{/foreach}
-            } );
-        </script>
+		<script src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer/jquery.jplayer.js"></script>
+		{include file="show_chartjs.tpl"}
+		<script>
+			(function($) {
+				{include file="player2.js.tpl" player_id="1" playlist=$daily_player_json}
+				{include file="player2.js.tpl" player_id="2" playlist=$weekly_player_json}
+				{include file="player2.js.tpl" player_id="3" playlist=$monthly_player_json}
+			}(window.jQuery));
+		</script>
     </body>
 </html>
 <!--

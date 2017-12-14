@@ -52,7 +52,7 @@ a:hover {
     padding-right: 0;
 }
 
-#chart header {
+.row-header header {
     font-size: 5.5rem;
     font-weight: 700;
     text-align: center;
@@ -103,4 +103,87 @@ a:hover {
 .chart-progression .svg-inline--fa {
     height: 100%;
     width: 50%;
+}
+
+.chart-licenses {
+}
+
+.license-icons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.license-icon {
+    width: 35px;
+    height: 35px;
+    background-size: cover;
+    color: lightgray;
+    filter: opacity(.1);
+}
+
+.license-icon.license-active {
+    filter: opacity(1);
+}
+
+.license-cc {
+    background-image: url( '../images/chooser_cc.png' );
+}
+
+.license-by {
+    background-image: url( '../images/chooser_by.png' );
+}
+
+.license-nc {
+    background-image: url( '../images/chooser_nc.png' );
+}
+
+.license-nd {
+    background-image: url( '../images/chooser_nd.png' );
+}
+
+.license-sa {
+    background-image: url( '../images/chooser_sa.png' );
+}
+
+.license-sp {
+    background-image: url( '../images/chooser_sampling.png' );
+}
+
+.license-ze {
+    background-image: url( '../images/chooser_0.png' );
+}
+
+.chart-progression {
+    text-align: center;
+}
+
+.chart-legend {
+    background-color: #404040;
+    color: #FDFDFD;
+    text-align: center;
+}
+
+.chart-legend > div {
+    text-align: center;
+}
+
+#main {
+    margin-bottom: 5rem;
+}
+
+.col-player header,
+.col-player footer {
+    font-size: 1rem;
+}
+
+.jp-volume-controls,
+.jp-toggles,
+.jp-duration,
+.jp-no-solution
+ {
+    display: none;
+}
+
+.jp-audio {
+    position: relative;
 }
