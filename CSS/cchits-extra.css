@@ -104,3 +104,59 @@ a:hover {
     height: 100%;
     width: 50%;
 }
+
+.licence-icon {
+    width: 17px;
+    height: 17px;
+    background-size: cover;
+    display: none;
+}
+
+.licence-cc {
+    background-image: url( '../images/chooser_cc.png' );
+}
+
+.licence-by {
+    background-image: url( '../images/chooser_by.png' );
+}
+
+.licence-nc {
+    background-image: url( '../images/chooser_nc.png' );
+}
+
+.licence-nd {
+    background-image: url( '../images/chooser_nd.png' );
+}
+
+.licence-sa {
+    background-image: url( '../images/chooser_sa.png' );
+}
+
+.licence-cc.licence-cc-by-nc-nd,
+.licence-cc.licence-cc-by-sa,
+.licence-cc.licence-cc-by-nd,
+.licence-cc.licence-cc-by-nc-sa {
+    display: inline-block;
+}
+
+.licence-by.licence-cc-by-nc-nd,
+.licence-by.licence-cc-by-sa,
+.licence-by.licence-cc-by-nd,
+.licence-by.licence-cc-by-nc-sa {
+    display: inline-block;
+}
+
+.licence-nc.licence-cc-by-nc-nd,
+.licence-nc.licence-cc-by-nc-sa {
+    display: inline-block;
+}
+
+.licence-nd.licence-cc-by-nc-nd,
+.licence-nd.licence-cc-by-nd {
+    display: inline-block;
+}
+
+.licence-sa.licence-cc-by-sa,
+.licence-sa.licence-cc-by-nc-sa {
+    display: inline-block;
+}

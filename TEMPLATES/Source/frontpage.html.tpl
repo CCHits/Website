@@ -36,7 +36,7 @@
 				<header>The Chart</header>
 			</div>
 			<div class="row">
-				<div class="col-8">
+				<div class="col-9">
 					<div class="chart-body">
 						{foreach $chart key=position item=track}{strip} 
 						<div class="row chart-track">
@@ -66,79 +66,31 @@
                                     Highest : {$track.60dayhighest}, Lowest : {$track.60daylowest}
                                 </div>
 							</div>
-							<div class="col-5 chart-graph">
+							<div class="col-3 chart-graph">
                                 <canvas id="graph-{$position}" style="height: 50px;"></canvas>
-                            </div>
-                        </div>
+							</div>
+							<div class="col-2 chart-licence">
+									<div class="licence-icon licence-cc licence-{$track.enumTrackLicense}"></div>
+									<div class="licence-icon licence-by licence-{$track.enumTrackLicense}"></div>
+									<div class="licence-icon licence-nc licence-{$track.enumTrackLicense}"></div>
+									<div class="licence-icon licence-nd licence-{$track.enumTrackLicense}"></div>
+									<div class="licence-icon licence-sa licence-{$track.enumTrackLicense}"></div>
+								</div>
+							</div>
 						{/strip}{/foreach}
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-3">
 
 				</div>
-			</div>
+			</dv>
 		</div>
 		<script src="{$baseURL}EXTERNALS/JQUERY3/{$jquery3}/jquery.js"></script>
 		<script src="{$baseURL}EXTERNALS/POPPERJS/{$popperjs}/popper.js"></script>
         <script src="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/js/bootstrap.js"></script>
 		<script src="{$baseURL}EXTERNALS/CHARTJS/{$chartjs}/Chart.bundle.js"></script>
 		<script src="{$baseURL}EXTERNALS/FONTAWESOME/{$fontawesome}/svg-with-js/js/fontawesome-all.js"></script>
-        <script>
-            $( document ).ready( function() {
-                {foreach $chart key=position item=track}{strip}                 
-                var ctx = $('#graph-{$position}');
-                var myLineChart = new Chart(ctx, {
-                    type: 'line',
-                    backgroundColor: 'rgb(255, 0, 0)',
-                    data: {
-                        labels: [{foreach from=$track.arrChartData item=item name=sparkline}{if not $smarty.foreach.sparkline.first},{/if}{if $item.intPositionID != 'null'}-{/if}{$item.intPositionID}{/foreach}],
-                        datasets: [
-                            {
-                                label: "Chart {$position}", 
-                                borderColor: 'rgb(255, 99, 132)', 
-                                fill: 'bottom',
-                                borderWidth: 2,
-                                pointRadius: 0,
-                                data: [ {foreach from=$track.arrChartData item=item name=sparkline}{if not $smarty.foreach.sparkline.first},{/if} {$item.intPositionID}{/foreach} ]
-                            }
-                        ]
-                    },
-                    options: {
-                        elements: {
-                            line: {
-                                tension: 0
-                            }
-                        },
-                        maintainAspectRatio: false,
-                        animation: {
-                            duration: 0,
-                        },
-                        hover: {
-                            animationDuration: 0,
-                        },
-                        responsiveAnimationDuration: 0,
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: false
-                        },
-                        scales: {
-                            xAxes: [{
-                                display: false,
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    min: 1,
-                                    reverse: true
-                                }
-                            }]
-                        }
-                    }
-                });
-                {/strip}{/foreach}
-            } );
-        </script>
+		{include file="show_chartjs.tpl"}
     </body>
 </html>
 <!--
