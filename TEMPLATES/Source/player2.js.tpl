@@ -1,9 +1,14 @@
-var x = {$playlist};
-$( "#jquery_jplayer_{$player_id}" ).jPlayer( {
-    ready: function() {
-        console.log( "jPlayer {$player_id} is ready to accept media" );
-    },
+new jPlayerPlaylist({literal} {{/literal}
+    jPlayer: "#jquery_jplayer_{$player_id}",
     cssSelectorAncestor: "#jp_container_{$player_id}",
-    remainingDuraction: true,
-    toggleDuration: false
-} );
+}, {$playlist}, {literal} {{/literal}
+    swfPath: "{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer",
+    supplied: "mp3,oga",
+    wmode: "window",
+    useStateClassSkin: true,
+    autoBlur: false,
+    smoothPlayBar: true,
+    keyEnabled: true
+});
+
+    

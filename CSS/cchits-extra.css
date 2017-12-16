@@ -175,15 +175,3 @@ a:hover {
 .col-player footer {
     font-size: 1rem;
 }
-
-.jp-volume-controls,
-.jp-toggles,
-.jp-duration,
-.jp-no-solution
- {
-    display: none;
-}
-
-.jp-audio {
-    position: relative;
-}

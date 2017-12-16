@@ -187,6 +187,7 @@ class ShowObject extends GenericObject
             $return['show_summary'] = $showname_tracks;
             $return['player_data'] = array(
             	'name' => $showname,
+            	'title' => $showname,
             	'free'=>'true',
             	'link' => $this->strShowUrl
             );
