@@ -111,13 +111,28 @@ class ShowObject extends GenericObject
             if ($this->strShowUrl == "") {
                 $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
                 $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+                $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'mp3');
+                if (!empty($remotepath))
+                {
+                    $this->strShowFileMP3 = $remotepath;
+                }
+                elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
                     $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
+                $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'oga');
+                if (!empty($remotepath))
+                {
+                    $this->strShowFileOGA = $remotepath;
+                }
+                elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
                     $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
                 }
-                if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
+                $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'm4a');
+                if (!empty($remotepath))
+                {
+                    $this->strShowFileM4A = $remotepath;
+                }
+                elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
                     $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
@@ -190,19 +205,39 @@ class ShowObject extends GenericObject
             	'free'=>'true',
             	'link' => $this->strShowUrl
             );
-            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+
+            /*
+            $remotepath = MediaRedirect::getNewUrl($arrUri['path_items'][1], $arrUri['path_items'][2], $arrUri['format']);
+            $file = $arrUri['path_items'][1] . '/' . $arrUri['path_items'][2] . '.' . $arrUri['format'];
+            */
+            $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'mp3');
+            if (!empty($remotepath)) {
+                $return['player_data']['mp3'] = $this->strShowFileMP3;
+                $return['player_data']['mp3_len'] = 0;
+            }
+            elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
                 $return['player_data']['mp3'] = $this->strShowFileMP3;
                 $return['player_data']['mp3_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3');
             } else {
                 $return['player_data']['mp3_len'] = 0;
             }
-            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
+            $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'oga');
+            if (!empty($remotepath)) {
+                $return['player_data']['mp3'] = $remotepath;
+                $return['player_data']['mp3_len'] = 0;
+            }
+            elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
                 $return['player_data']['oga'] = $this->strShowFileOGA;
                 $return['player_data']['oga_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga');
             } else {
                 $return['player_data']['oga_len'] = 0;
             }
-            if (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
+            $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'm4a');
+            if (!empty($remotepath)) {
+                $return['player_data']['mp3'] = $remotepath;
+                $return['player_data']['mp3_len'] = 0;
+            }
+            elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
                 $return['player_data']['m4a'] = $this->strShowFileM4A;
                 $return['player_data']['m4a_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a');
             } else {
