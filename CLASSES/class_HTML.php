@@ -735,11 +735,16 @@ class HTML
         $this->result['chart'] = $chart['position'];
         $internal_show = ShowBroker::getInternalShowByType('daily', 1);
         $show = end($internal_show);
+        $show->set_featuring(false);
         $this->result['daily'] = $show->getSelf();
         $internal_show = ShowBroker::getInternalShowByType('weekly', 1);
-        $this->result['weekly'] = end($internal_show)->getSelf();
+        $show = end($internal_show);
+        $show->set_featuring(false);
+        $this->result['weekly'] = $show->getSelf();
         $internal_show = ShowBroker::getInternalShowByType('monthly', 1);
-        $this->result['monthly'] = end($internal_show)->getSelf();
+        $show = end($internal_show);
+        $show->set_featuring(false);
+        $this->result['monthly'] = $show->getSelf();
         if ($this->render()) {
             if ($this->format == 'html') {
                 $this->result['daily_player_json'] = json_encode(array($this->result['daily']['player_data']));
@@ -1064,7 +1069,13 @@ class HTML
             $this->result['arrUri'] = $this->arrUri;
             $this->result['jquery'] = $this->extLib->getVersion('JQUERY');
             $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
+            $this->result['jplayer29'] = $this->extLib->getVersion('JPLAYER29');
             $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
+            $this->result['bootstrap4'] = $this->extLib->getVersion('BOOTSTRAP4');
+            $this->result['jquery3'] = $this->extLib->getVersion('JQUERY3');
+            $this->result['popperjs'] = $this->extLib->getVersion('POPPERJS');
+            $this->result['chartjs'] = $this->extLib->getVersion('CHARTJS');
+            $this->result['fontawesome'] = $this->extLib->getVersion('FONTAWESOME');
             $this->result['previous_page'] = false;
             UI::SmartyTemplate("about.html", $this->result);
             break;
@@ -1178,7 +1189,13 @@ class HTML
             $this->result['jquery'] = $this->extLib->getVersion('JQUERY');
             $this->result['bootstrap'] = $this->extLib->getVersion('BOOTSTRAP');
             $this->result['jplayer'] = $this->extLib->getVersion('JPLAYER');
+            $this->result['jplayer29'] = $this->extLib->getVersion('JPLAYER29');
             $this->result['jquerysparkline'] = $this->extLib->getVersion('JQUERY.SPARKLINE');
+            $this->result['bootstrap4'] = $this->extLib->getVersion('BOOTSTRAP4');
+            $this->result['jquery3'] = $this->extLib->getVersion('JQUERY3');
+            $this->result['popperjs'] = $this->extLib->getVersion('POPPERJS');
+            $this->result['chartjs'] = $this->extLib->getVersion('CHARTJS');
+            $this->result['fontawesome'] = $this->extLib->getVersion('FONTAWESOME');
             $this->result['previous_page'] = false;
             if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
                 $this->result['previous_page'] = true;

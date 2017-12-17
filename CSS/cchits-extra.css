@@ -1,0 +1,301 @@
+body {
+	margin-top: 0;
+}
+
+a {
+    color: inherit;
+    outline: none;
+}
+
+a:hover {
+    color: #01b1e6;
+    background-color: #000011;
+    text-decoration: none;
+}
+
+#topnav {
+    background-color: black;
+    color: white;
+}
+
+#brand {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 44px;
+}
+
+#brand a:hover {
+    color: inherit;
+}
+
+#topnav .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+#topnav .shows-nav ul,
+#topnav .socials ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+#topnav .shows-nav ul li a,
+#topnav .socials ul li a {
+    line-height: 44px;
+    padding: 9px 20px;
+}
+
+#topnav .socials ul li:last-child a {
+    padding-right: 0;
+}
+
+.row-header header {
+    font-size: 5.5rem;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+}
+
+.chart-track {
+    border-top: 1px solid gray;
+    padding: 5px 0;
+}
+
+.chart-body > .chart-track {
+    border: none;
+}
+
+.chart-position-current {
+    font-size: 2.9rem;
+    margin: -.5rem 0;
+    text-align: center;
+    font-weight: 700;
+}
+
+.chart-position-before,
+.chart-position-high-low {
+    font-size: 0.775rem;
+    color: gray;
+    text-align: center;
+}
+
+.chart-track-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.chart-track-artist {
+    text-align: center;
+}
+
+.chart-progression .fa-arrow-up {
+    color: yellowgreen;
+}
+
+.chart-progression .fa-arrow-right {
+    color: blue;
+}
+
+.chart-progression .fa-arrow-down {
+    color: red;
+}
+
+.chart-progression .svg-inline--fa {
+    height: 100%;
+    width: 50%;
+}
+
+.chart-licenses {
+}
+
+.license-icons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.license-icon {
+    width: 35px;
+    height: 35px;
+    background-size: cover;
+    color: lightgray;
+    filter: opacity(.1);
+}
+
+.license-icon.license-active {
+    filter: opacity(1);
+}
+
+.license-cc {
+    background-image: url( '../images/chooser_cc.png' );
+}
+
+.license-by {
+    background-image: url( '../images/chooser_by.png' );
+}
+
+.license-nc {
+    background-image: url( '../images/chooser_nc.png' );
+}
+
+.license-nd {
+    background-image: url( '../images/chooser_nd.png' );
+}
+
+.license-sa {
+    background-image: url( '../images/chooser_sa.png' );
+}
+
+.license-sp {
+    background-image: url( '../images/chooser_sampling.png' );
+}
+
+.license-ze {
+    background-image: url( '../images/chooser_0.png' );
+}
+
+.chart-progression {
+    text-align: center;
+}
+
+.chart-legend,
+.shows-legend {
+    background-color: #404040;
+    color: #FDFDFD;
+    text-align: center;
+}
+
+.chart-legend > div {
+    text-align: center;
+}
+
+#main {
+    margin-bottom: 5rem;
+}
+
+.col-player {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.col-player a:hover {
+    padding: 3px;
+    margin: -3px;
+}
+
+.col-player header,
+.col-player footer {
+    font-size: 1rem;
+}
+
+.col-player header {
+    margin-bottom: .5rem;
+}
+
+.col-player footer {
+    margin-top: .5rem;
+    font-size: .8rem;
+}
+
+.jp-volume-controls,
+.jp-toggles {
+    display: none;
+}
+
+div[id^=jp_container_] {
+    position: relative;
+    font-size: 0.8rem;
+}
+
+.jp-play {
+
+}
+
+.jp-state-playing .jp-play {
+    display: none;
+}
+
+div[id^=jp_container_]:not([class*="jp-state-playing"]) .jp-stop {
+    display: none;
+}
+
+.jp-play,
+.jp-stop {
+    border: none;
+    background-color: #00ADF2;
+    color: white;
+    line-height: 3.125rem;
+    width: 3.125rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.jp-progress {
+    position: absolute;
+    top: 0;
+    left: 3.125rem;
+    right: 0;
+    height: 3.125rem;
+    background-color: #404040;
+}
+
+.jp-seek-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.jp-play-bar {
+    position: absolute;
+    top: 0;
+    left: 0px;
+    height: 3.125rem;
+    background-color: #0081AE;
+}
+
+.jp-current-time {
+    position: absolute;
+    left: 3.75rem;
+    top: 0;
+    color: white;
+    line-height: 3.125rem;
+}
+
+.jp-duration {
+    position: absolute;
+    right: 0.625rem;
+    top: 0;
+    color: white;
+    line-height: 3.125rem;
+}
+
+.jp-playlist ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.jp-playlist li {
+    background-color: #404040;
+    color: white;
+    padding: .5rem;
+    border-top: 1px solid #303030;
+}
+
+.jp-playlist a:hover {
+    color: inherit;
+    background-color: inherit;
+}
+
+.jp-playlist li:hover {
+    background-color: #505050;
+}
+
+.jp-free-media {
+    float: right;
+}

@@ -53,6 +53,7 @@ class ShowObject extends GenericObject
     protected $arrTracks = null;
     // Functional switches extending GenericObject
     protected $booleanFull = true;
+    protected $booleanFeaturing = true;
 
     /**
      * Delete the show if there are no tracks linked to it.
@@ -179,7 +180,9 @@ class ShowObject extends GenericObject
         $first = true;
         if ($this->booleanFull == true) {
             $this->get_arrTracks();
-            $showname .= ' featuring ';
+            if ($this->booleanFeaturing == true) {
+                $showname .= ' featuring ';
+            }
             $showname_tracks = '';
             $return['isNSFW'] = false;
             $this->get_arrTracks();
@@ -198,10 +201,13 @@ class ShowObject extends GenericObject
                     $showname_tracks .= ' and more...';
                 }
             }
-            $showname .= $showname_tracks;
+            if ($this->booleanFeaturing == true) {
+                $showname .= $showname_tracks;
+            }
             $return['show_summary'] = $showname_tracks;
             $return['player_data'] = array(
             	'name' => $showname,
+            	'title' => $showname,
             	'free'=>'true',
             	'link' => $this->strShowUrl
             );
@@ -243,16 +249,6 @@ class ShowObject extends GenericObject
             } else {
                 $return['player_data']['m4a_len'] = 0;
             }
-/*            $arrShowLayout = (array) json_decode($this->jsonAudioLayout);
-            if (count($arrShowLayout) > 0) {
-                foreach ($arrShowLayout as $track=>$arrPositions) {
-                    $arrPositions = (array) $arrPositions;
-                    $showLayout[$track] = $this->arrTracks[$track]->getSelf();
-                    $showLayout[$track]['start'] = $arrPositions['start'];
-                    $showLayout[$track]['stop'] = $arrPositions['stop'];
-                }
-                $return['arrShowLayout'] = $showLayout;
-            }*/
         }
         $return['datDateAdded'] = date('r', strtotime($this->datDateAdded));
         $return['strShowNameSpoken'] = $this->strShowNameSpoken;
@@ -634,4 +630,15 @@ class ShowObject extends GenericObject
             }
         }
     }
+
+    function set_featuring($featuring)
+    {
+        $this->booleanFeaturing = $this->asBoolean($featuring);
+    }
+
+    function get_featuring()
+    {
+        return $this->booleanFeaturing;
+    }
+
 }

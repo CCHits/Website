@@ -274,6 +274,12 @@ class TrackObject extends GenericObject
             $return['intTrend'] = $this->intTrend;
         }
         $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/t/' . UI::setLongNumber($this->intTrackID);
+        $return['strIsByLicense'] = $this->get_isByLicense() ? 'active' : 'inactive';
+        $return['strIsNcLicense'] = $this->get_isNcLicense() ? 'active' : 'inactive';
+        $return['strIsNdLicense'] = $this->get_isNdLicense() ? 'active' : 'inactive';
+        $return['strIsSaLicense'] = $this->get_isSaLicense() ? 'active' : 'inactive';
+        $return['strIsSamplingPlusLicense'] = $this->get_isSamplingPlusLicense() ? 'active' : 'inactive';
+        $return['strIsZeroLicense'] = $this->get_isZeroLicense() ? 'active' : 'inactive';
         return $return;
     }
 
@@ -729,6 +735,40 @@ class TrackObject extends GenericObject
     function get_enumTrackLicense()
     {
         return $this->enumTrackLicense;
+    }
+
+    /**
+     * TODO: cc-sampling+, cc-nc-sampling+, cc-0
+     */
+
+    function get_isByLicense()
+    {
+        return !empty(strstr($this->enumTrackLicense, "by"));
+    }
+
+    function get_isSaLicense()
+    {
+        return !empty(strstr($this->enumTrackLicense, "sa"));
+    }
+
+    function get_isNcLicense()
+    {
+        return !empty(strstr($this->enumTrackLicense, "nc"));
+    }
+
+    function get_isNdLicense()
+    {
+        return !empty(strstr($this->enumTrackLicense, "nd"));
+    }
+
+    function get_isSamplingPlusLicense()
+    {
+        return !empty(strstr($this->enumTrackLicense, "sampling+"));
+    }
+
+    function get_isZeroLicense()
+    {
+        return !empty(strstr($this->enumTrackLicense, "0"));
     }
 
     /**
