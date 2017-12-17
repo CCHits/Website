@@ -1,3 +1,23 @@
+html {
+    font-size: 12px;
+}
+
+@media screen and (min-width: 576px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+* {
+    outline: none;
+}
+
 body {
 	margin-top: 0;
 }
@@ -18,6 +38,18 @@ a:hover {
     color: white;
 }
 
+#topnav .bg-dark {
+    background-color: black !important;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: #01b1e6 !important;
+}
+
 #brand {
     font-weight: 700;
     font-size: 2rem;
@@ -26,12 +58,6 @@ a:hover {
 
 #brand a:hover {
     color: inherit;
-}
-
-#topnav .inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
 }
 
 #topnav .shows-nav ul,
@@ -53,19 +79,21 @@ a:hover {
 }
 
 .row-header header {
-    font-size: 5.5rem;
+    font-size: 4.0rem;
     font-weight: 700;
     text-align: center;
     width: 100%;
 }
 
-.chart-track {
-    border-top: 1px solid gray;
-    padding: 5px 0;
+@media screen and (min-width: 540px) {
+    .row-header header {
+        font-size: 5.5rem;
+    }
 }
 
-.chart-body > .chart-track {
-    border: none;
+.chart-track {
+    border-bottom: 1px solid gray;
+    padding: 5px 0;
 }
 
 .chart-position-current {
@@ -109,12 +137,19 @@ a:hover {
     width: 50%;
 }
 
-.chart-licenses {
+.license-icons {
+    margin: 1rem 0;
 }
 
-.license-icons {
-    display: flex;
-    flex-wrap: wrap;
+.chart-graph {
+    margin-top: 1rem;
+}
+
+@media screen and (min-width: 540px) {
+    .license-icons,
+    .chart-graph {
+        margin: 0;
+    }
 }
 
 .license-icon {
@@ -170,6 +205,13 @@ a:hover {
 
 .chart-legend > div {
     text-align: center;
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .chart-licences {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 }
 
 #main {

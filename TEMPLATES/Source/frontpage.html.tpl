@@ -13,22 +13,25 @@
 	</head>
 	<body>
 		<div class="container-fluid" id="topnav">
-			<div class="container inner">
-				<span id="brand"><a href="{$baseURL}">{$ServiceName}</a></span>
-				<div class="shows-nav">
-					<ul>
-						<li><a href="{$baseURL}about">About {$ServiceName}</a></li>
-						<li><a href="{$baseURL}daily">Daily shows</a></li>
-						<li><a href="{$baseURL}weekly">Weekly shows</a></li>
-						<li><a href="{$baseURL}monthly">Monthly shows</a></li>
-					</ul>
-				</div>
-				<div class="socials">
-					<ul>
-						<li><a href="https://twitter.com/cchits">Twitter</a></li>
-						<li><a href="https://www.facebook.com/cchits">Facebook</a></li>
-					</ul>
-				</div>
+			<div class="container">
+				<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+					<a class="navbar-brand" href="{$baseURL}">{$ServiceName}</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<div class="navbar-nav mr-auto">
+							<a class="nav-item nav-link" href="{$baseURL}about">About {$ServiceName}</a>
+							<a class="nav-item nav-link" href="{$baseURL}daily">Daily shows</a>
+							<a class="nav-item nav-link" href="{$baseURL}weekly">Weekly shows</a>
+							<a class="nav-item nav-link" href="{$baseURL}monthly">Monthly shows</a>
+						</div>
+						<div class="navbar-nav">
+							<a class="nav-item nav-link" href="https://twitter.com/cchits">Twitter</a>
+							<a class="nav-item nav-link" href="https://www.facebook.com/cchits">Facebook</a>
+						</div>
+					</div>
+				</nav>				
 			</div>
 		</div>
 		<div class="container" id="chart">
@@ -38,28 +41,28 @@
 				</div>
 			</div>
 			<div class="row" id="main">
-				<div class="col-9">
+				<div class="col-12 col-md-9">
 					<div class="chart-body">
-						<div class="row chart-legend">
-							<div class="col-1 chart-progression">
+						<div class="row chart-legend d-none d-sm-flex">
+							<div class="d-none d-sm-flex col-sm-2 col-md-2 col-lg-1 col-xl-1 chart-progression">
 								Prog.	
 							</div>
-							<div class="col-2 chart-position">
+							<div class="col-4 col-sm-2 col-md-2 col-lg-2 col-xl-2 chart-position">
 								Position
 							</div>
-							<div class="col-4 chart-info">
+							<div class="col-8 col-sm-8 col-md-8 col-lg-4 col-xl-4 chart-info">
 								Track
 							</div>
-							<div class="col-3 chart-graph">
+							<div class="col-12 col-sm-9 col-md-9 col-lg-5 col-xl-3 chart-graph">
 								60 days movement
 							</div>
-							<div class="col-2 chart-licences">
+							<div class="col-12 col-sm-3 col-md-3 col-lg-4 offset-lg-3 col-xl-2 offset-xl-0 chart-licences">
 								License
 							</div>
 						</div>
 						{foreach $chart key=position item=track}{strip} 
 						<div class="row chart-track">
-							<div class="col-1 chart-progression">
+							<div class="d-none d-sm-flex col-sm-2 col-md-2 col-lg-1 col-xl-1 chart-progression">
 								{if $track.strPositionYesterday == "up"}
 								<i class="fa fa-arrow-up"></i>
 								{/if}
@@ -70,11 +73,11 @@
 								<i class="fa fa-arrow-down"></i>
 								{/if}
 							</div>
-							<div class="col-2 chart-position">
+							<div class="col-4 col-sm-2 col-md-2 col-lg-2 col-xl-2 chart-position">
 								<div class="chart-position-current">{$position}</div>
 								<div class="chart-position-before">Yesterday : {$track['arrChartData'][1]['intPositionID']}</div>
 							</div>
-							<div class="col-4 chart-info">
+							<div class="col-8 col-sm-8 col-md-8 col-lg-4 col-xl-4 chart-info">
 								<div class="chart-track-title">
 									{$track.strTrackName}
 								</div>
@@ -85,11 +88,11 @@
                                     Highest : {$track.60dayhighest}, Lowest : {$track.60daylowest}
                                 </div>
 							</div>
-							<div class="col-3 chart-graph">
+							<div class="col-12 col-sm-9 col-md-9 col-lg-5 col-xl-3 chart-graph">
 								<canvas id="graph-{$position}" style="height: 50px;"></canvas>
 							</div>
-							<div class="col-2 chart-licences">
-								<div class="license-icons">
+							<div class="col-12 col-sm-3 col-md-3 col-lg-4 offset-lg-3 col-xl-2 offset-xl-0 chart-licences">
+								<div class="license-icons d-flex flex-wrap justify-content-center">
 									<div {if $track.strIsByLicense == "active"}title="By attribution" {/if}class="license-icon license-by license-{$track.strIsByLicense} license-{$track.enumTrackLicense}"></div>
 									<div {if $track.strIsNcLicense == "active"}title="Non commercial" {/if}class="license-icon license-nc license-{$track.strIsNcLicense} license-{$track.enumTrackLicense}"></div>
 									<div {if $track.strIsNdLicense == "active"}title="Non derivative" {/if}class="license-icon license-nd license-{$track.strIsNdLicense} license-{$track.enumTrackLicense}"></div>
@@ -100,27 +103,10 @@
 							</div>
 						</div>
 						{/strip}{/foreach}
-						<div class="row chart-legend">
-							<div class="col-1 chart-progression">
-								Prog.	
-							</div>
-							<div class="col-2 chart-position">
-								Position
-							</div>
-							<div class="col-4 chart-info">
-								Track
-							</div>
-							<div class="col-3 chart-graph">
-								60 days movement
-							</div>
-							<div class="col-2 chart-licences">
-								License
-							</div>
-						</div>
 					</div>
 				</div>
-				<div class="col-3">
-					<div class="row">
+				<div class="col-12 col-md-3">
+					<div class="row d-none d-sm-flex">
 						<div class="col">
 							<div class="shows-legend">The most recent ...</div>
 						</div>
