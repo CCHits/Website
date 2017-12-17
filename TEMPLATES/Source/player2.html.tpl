@@ -14,8 +14,8 @@
 					{if isset($playlist.player_data)}{elseif is_array($playlist)}
 					<button class="jp-previous" role="button" tabindex="0">previous</button>
 					{/if}
-					<button class="jp-play" role="button" tabindex="0">play</button>
-					<button class="jp-stop" role="button" tabindex="0">stop</button>
+					<button class="jp-play" role="button" tabindex="0"><i class="fa fa-play"></i></button>
+					<button class="jp-stop" role="button" tabindex="0"><i class="fa fa-stop"></i></button>
 					{if isset($playlist.player_data)}{elseif is_array($playlist)}
 					<button class="jp-next" role="button" tabindex="0">next</button>
 					{/if}

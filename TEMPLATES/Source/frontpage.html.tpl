@@ -8,7 +8,6 @@
 		<link rel="alternate" type="application/rss+xml" href="{$baseURL}weekly/rss" title="The {$ShowWeekly}" />
 		<link rel="alternate" type="application/rss+xml" href="{$baseURL}monthly/rss" title="The {$ShowMonthly}" />
 		<link rel="stylesheet" href="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/skin/blue.monday/css/jplayer.blue.monday.css" />
 		<link rel="stylesheet" href="{$baseURL}CSS/cchits.css" />
 		<link rel="stylesheet" href="{$baseURL}CSS/cchits-extra.css" />
 	</head>
@@ -18,10 +17,10 @@
 				<span id="brand"><a href="{$baseURL}">{$ServiceName}</a></span>
 				<div class="shows-nav">
 					<ul>
-						<li><a href="/about">About {$ServiceName}</a></li>
-						<li><a href="#">Daily shows</a></li>
-						<li><a href="#">Weekly shows</a></li>
-						<li><a href="#">Monthly shows</a></li>
+						<li><a href="{$baseURL}about">About {$ServiceName}</a></li>
+						<li><a href="{$baseURL}daily">Daily shows</a></li>
+						<li><a href="{$baseURL}weekly">Weekly shows</a></li>
+						<li><a href="{$baseURL}monthly">Monthly shows</a></li>
 					</ul>
 				</div>
 				<div class="socials">
@@ -91,12 +90,12 @@
 							</div>
 							<div class="col-2 chart-licences">
 								<div class="license-icons">
-									<div class="license-icon license-by license-{$track.strIsByLicense} license-{$track.enumTrackLicense}"></div>
-									<div class="license-icon license-nc license-{$track.strIsNcLicense} license-{$track.enumTrackLicense}"></div>
-									<div class="license-icon license-nd license-{$track.strIsNdLicense} license-{$track.enumTrackLicense}"></div>
-									<div class="license-icon license-sa license-{$track.strIsSaLicense} license-{$track.enumTrackLicense}"></div>									
-									<div class="license-icon license-sp license-{$track.strIsSamplingPlusLicense} license-{$track.enumTrackLicense}"></div>									
-									<div class="license-icon license-ze license-{$track.strIsZeroLicense} license-{$track.enumTrackLicense}"></div>									
+									<div {if $track.strIsByLicense == "active"}title="By attribution" {/if}class="license-icon license-by license-{$track.strIsByLicense} license-{$track.enumTrackLicense}"></div>
+									<div {if $track.strIsNcLicense == "active"}title="Non commercial" {/if}class="license-icon license-nc license-{$track.strIsNcLicense} license-{$track.enumTrackLicense}"></div>
+									<div {if $track.strIsNdLicense == "active"}title="Non derivative" {/if}class="license-icon license-nd license-{$track.strIsNdLicense} license-{$track.enumTrackLicense}"></div>
+									<div {if $track.strIsSaLicense == "active"}title="Share alike" {/if}class="license-icon license-sa license-{$track.strIsSaLicense} license-{$track.enumTrackLicense}"></div>									
+									<div {if $track.strIsSamplingPlusLicense == "active"}title="Sampling+" {/if}class="license-icon license-sp license-{$track.strIsSamplingPlusLicense} license-{$track.enumTrackLicense}"></div>									
+									<div {if $track.strIsZeroLicense == "active"}title="CC-0" {/if}class="license-icon license-ze license-{$track.strIsZeroLicense} license-{$track.enumTrackLicense}"></div>									
 								</div>
 							</div>
 						</div>
@@ -122,22 +121,27 @@
 				</div>
 				<div class="col-3">
 					<div class="row">
+						<div class="col">
+							<div class="shows-legend">The most recent ...</div>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col col-player" id="daily">
-							<header>The most recent Daily Exposure show</header>
+							<header>Daily Exposure show</header>
 							{include file="player2.html.tpl" player_id="1" playlist=$daily}
 							<footer><a href="{$baseURL}daily">More...</a> | <a href="{$baseURL}daily/rss">Feed</a></footer>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col col-player" id="weekly">
-							<header>The most recent Weekly Review show</header>
+							<header>Weekly Review show</header>
 							{include file="player2.html.tpl" player_id="2" playlist=$weekly}
 							<footer><a href="{$baseURL}weekly">More...</a> | <a href="{$baseURL}weekly/rss">Feed</a></footer>
 						</div>
 					</div>	
 					<div class="row">
 						<div class="col col-player" id="daily">
-							<header>The most recent Monthly Chart show</header>
+							<header>Monthly Chart show</header>
 							{include file="player2.html.tpl" player_id="3" playlist=$monthly}
 							<footer><a href="{$baseURL}monthly">More...</a> | <a href="{$baseURL}monthly/rss">Feed</a></footer>
 						</div>						
@@ -150,8 +154,8 @@
         <script src="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/js/bootstrap.js"></script>
 		<script src="{$baseURL}EXTERNALS/CHARTJS/{$chartjs}/Chart.bundle.js"></script>
 		<script src="{$baseURL}EXTERNALS/FONTAWESOME/{$fontawesome}/svg-with-js/js/fontawesome-all.js"></script>
-		<script src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer/jquery.jplayer.js"></script>
-		<script src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/add-on/jplayer.playlist.js"></script>
+		<script src="{$baseURL}EXTERNALS/JPLAYER29/{$jplayer29}/jplayer/jquery.jplayer.js"></script>
+		<script src="{$baseURL}EXTERNALS/JPLAYER29/{$jplayer29}/add-on/jplayer.playlist.js"></script>
 		{include file="show_chartjs.tpl"}
 		<script type="text/javascript">{literal}//<![CDATA[
 			$(document).ready(function() {{/literal}
@@ -162,72 +166,4 @@
 			});{/literal}//]]>
 		</script>
     </body>
-</html>
-<!--
-<html>
-       <head>
-    <meta name=viewport content="width=device-width, initial-scale=1">
-               <link rel="alternate" type="application/rss+xml" href="{$baseURL}daily/rss" title="The {$ShowDaily}" />
-               <link rel="alternate" type="application/rss+xml" href="{$baseURL}weekly/rss" title="The {$ShowWeekly}" />
-               <link rel="alternate" type="application/rss+xml" href="{$baseURL}monthly/rss" title="The {$ShowMonthly}" />
-               <script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY/{$jquery}/jquery.min.js"></script>
-               <link href="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
-               <script type="text/javascript" src="{$baseURL}EXTERNALS/JPLAYER/{$jplayer}/jquery.jplayer.min.js"></script>
-               <script type="text/javascript" src="{$baseURL}JAVASCRIPT/playlist.js"></script>
-               <script type="text/javascript" src="{$baseURL}EXTERNALS/JQUERY.SPARKLINE/{$jquerysparkline}/jquery.sparkline.min.js"></script>
-               <script type="text/javascript">{literal}//<![CDATA[
-               $(document).ready(function() {{/literal}
-                       $('.inlinesparkline').sparkline();
-{include file="player.js.tpl" player_id="1" playlist=$daily_player_json}
-{include file="player.js.tpl" player_id="2" playlist=$weekly_player_json}
-{include file="player.js.tpl" player_id="3" playlist=$monthly_player_json}
-                        {literal}
-               });{/literal}//]]></script>
-               <title>{$ServiceName}</title>
-       </head>
-       <body>
-               <h1><a href="{$baseURL}">Welcome to {$ServiceName}</a></h1>
-               <h2>{$Slogan}</h2>
-<div id="about"><a href="/about">About {$ServiceName}</a></div>
-               <div id="chart">
-                       <h3>The Chart</h3>
-                       <table>
-                               <thead>
-                                       <tr>
-                                               <th>Position</th>
-                                               <th>Adj. Votes</th>
-                                               <th>Movement</th>
-                                               <th>60 Days Movement</th>
-                                               <th>Track</th>
-                                               <th>Status</th>
-                                       </tr>
-                               </thead>
-                               <tbody>
-{foreach $chart key=position item=track}{strip} 
-                                       <tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
-{include file="show_track_data.tpl"}
-                                   </tr>
-{/strip}{/foreach}
-                                       <tr>
-                                               <td colspan="6"><a href="{$baseURL}chart">More...</a></td>
-                                       </tr>
-                               </tbody>
-                       </table>
-               </div>
-               <div id="daily">
-                       <h3>The most recent Daily Exposure show</h3>
-{include file="player.html.tpl" player_id="1" playlist=$daily}
-                       <p><a href="{$baseURL}daily">More...</a> | <a href="{$baseURL}daily/rss">Feed</a></p>
-               </div>
-               <div id="weekly">
-                       <h3>The most recent Weekly Review show</h3>
-{include file="player.html.tpl" player_id="2" playlist=$weekly}
-                       <p><a href="{$baseURL}weekly">More...</a> | <a href="{$baseURL}weekly/rss">Feed</a></p>
-               </div>
-               <div id="daily">
-                       <h3>The most recent Monthly Chart show</h3>
-{include file="player.html.tpl" player_id="3" playlist=$monthly}
-                       <p><a href="{$baseURL}monthly">More...</a> | <a href="{$baseURL}monthly/rss">Feed</a></p>
-               </div>
-       </body>
 </html>

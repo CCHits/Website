@@ -64,6 +64,10 @@ a:hover {
     padding: 5px 0;
 }
 
+.chart-body > .chart-track {
+    border: none;
+}
+
 .chart-position-current {
     font-size: 2.9rem;
     margin: -.5rem 0;
@@ -89,7 +93,7 @@ a:hover {
 }
 
 .chart-progression .fa-arrow-up {
-    color: greenyellow;
+    color: yellowgreen;
 }
 
 .chart-progression .fa-arrow-right {
@@ -157,7 +161,8 @@ a:hover {
     text-align: center;
 }
 
-.chart-legend {
+.chart-legend,
+.shows-legend {
     background-color: #404040;
     color: #FDFDFD;
     text-align: center;
@@ -171,7 +176,126 @@ a:hover {
     margin-bottom: 5rem;
 }
 
+.col-player {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.col-player a:hover {
+    padding: 3px;
+    margin: -3px;
+}
+
 .col-player header,
 .col-player footer {
     font-size: 1rem;
+}
+
+.col-player header {
+    margin-bottom: .5rem;
+}
+
+.col-player footer {
+    margin-top: .5rem;
+    font-size: .8rem;
+}
+
+.jp-volume-controls,
+.jp-toggles {
+    display: none;
+}
+
+div[id^=jp_container_] {
+    position: relative;
+    font-size: 0.8rem;
+}
+
+.jp-play {
+
+}
+
+.jp-state-playing .jp-play {
+    display: none;
+}
+
+div[id^=jp_container_]:not([class*="jp-state-playing"]) .jp-stop {
+    display: none;
+}
+
+.jp-play,
+.jp-stop {
+    border: none;
+    background-color: #00ADF2;
+    color: white;
+    line-height: 3.125rem;
+    width: 3.125rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.jp-progress {
+    position: absolute;
+    top: 0;
+    left: 3.125rem;
+    right: 0;
+    height: 3.125rem;
+    background-color: #404040;
+}
+
+.jp-seek-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.jp-play-bar {
+    position: absolute;
+    top: 0;
+    left: 0px;
+    height: 3.125rem;
+    background-color: #0081AE;
+}
+
+.jp-current-time {
+    position: absolute;
+    left: 3.75rem;
+    top: 0;
+    color: white;
+    line-height: 3.125rem;
+}
+
+.jp-duration {
+    position: absolute;
+    right: 0.625rem;
+    top: 0;
+    color: white;
+    line-height: 3.125rem;
+}
+
+.jp-playlist ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.jp-playlist li {
+    background-color: #404040;
+    color: white;
+    padding: .5rem;
+    border-top: 1px solid #303030;
+}
+
+.jp-playlist a:hover {
+    color: inherit;
+    background-color: inherit;
+}
+
+.jp-playlist li:hover {
+    background-color: #505050;
+}
+
+.jp-free-media {
+    float: right;
 }

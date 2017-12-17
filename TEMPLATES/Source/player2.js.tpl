@@ -8,7 +8,8 @@ new jPlayerPlaylist({literal} {{/literal}
     useStateClassSkin: true,
     autoBlur: false,
     smoothPlayBar: true,
-    keyEnabled: true
+    keyEnabled: true,
+    playlistOptions: {
+        displayTime: 'fast'
+    }
 });
-
-    
