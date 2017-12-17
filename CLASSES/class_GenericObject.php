@@ -55,7 +55,7 @@ class GenericObject
      */
     function get_full()
     {
-        return $this->full;
+        return $this->booleanFull;
     }
 
     /**
