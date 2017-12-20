@@ -11,9 +11,9 @@ SERVER=mailserver
 USER=admin
 PASS=admin
 
-V1=monthly
-V2=20170131
-V3=historic
+#V1=monthly
+#V2=20170131
+#V3=historic
 #V4=debug
 
 if [ -n "$1" ]; then
