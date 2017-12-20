@@ -57,10 +57,12 @@ class debugout {
  * @param integer $show_id     The ShowID to finalize
  * @param string  $show_root   The base path to the files we'll be uploading.
  * @param string  $comment_url The URL of the appropriate point to comment on this show
+ * @param string  $showtype    The type of show to upload and finalize
+ * @param integer $showdate    The date of the show to upload and finalize (as yyyymm or yyyymmdd)
  *
  * @return void
  */
-function finalize($show_id, $show_root, $comment_url, $json_layout)
+function finalize($show_id, $show_root, $comment_url, $json_layout, $showtype, $showdate)
 {
     $array = array('hash' => '', 'time' => '', 'comment' => $comment_url, 'jsonAudioLayout' => $json_layout);
     $success = true;
@@ -68,43 +70,16 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
     $split_url = Configuration::getAPI() . '/split/';
     if (file_exists($show_root . 'mp3')) {
         $array['hash'] .= 'mp3:' . md5_file($show_root . 'mp3');
-        $array['file'] = '@' . $show_root . 'mp3;type=audio/mpeg';
+        runSFTP($show_root, $showtype, $showdate, 'mp3');
         $array['time'] = getTrackLength($show_root . 'mp3');
         $data = curlPostRequest($finalize_url . $show_id, $array);
         if ($data[0] == false) {
-            debugout::dump("Failed to upload MP3 file. Trying to upload split files.");
-            $cmd = 'split -b50M ' . $show_root . 'mp3 ' . $show_root . 'mp3.';
-            debugExec($cmd);
-            $parts = array();
-            switch (true) {
-                case file_exists($show_root . 'mp3.af'):
-                    break;
-                case file_exists($show_root . 'mp3.ae'):
-                    $parts[5] = $show_root . 'mp3.ae';
-                case file_exists($show_root . 'mp3.ad'):
-                    $parts[4] = $show_root . 'mp3.ad';
-                case file_exists($show_root . 'mp3.ac'):
-                    $parts[3] = $show_root . 'mp3.ac';
-                case file_exists($show_root . 'mp3.ab'):
-                    $parts[2] = $show_root . 'mp3.ab';
-                case file_exists($show_root . 'mp3.aa'):
-                    $parts[1] = $show_root . 'mp3.aa';
-            }
-            ksort($parts);
-            foreach ($parts as $partno => $part) {
-                $array['file'] = '@' . $part . ';type=audio/mp3';
-                $array['part'] = $partno;
-                $array['size'] = count($parts);
-                $data = curlPostRequest($split_url . $show_id, $array);
-                if ($data[0] == false) {
-                    debugout::dump("Failed to upload part $partno of " . count($parts));
-                }
-            }
+            debugout::dump("Failed to finalize MP3.");
         }
     }
     if (file_exists($show_root . 'oga')) {
         $array['hash'] .= 'oga:' . md5_file($show_root . 'oga');
-        $array['file'] = '@' . $show_root . 'oga;type=audio/ogg';
+        runSFTP($show_root, $showtype, $showdate, 'oga');
         if ($array['time'] == '') {
             // Why we don't have the time set after the MP3 file is done, I don't know
             // but just to be on the safe side...
@@ -112,71 +87,17 @@ function finalize($show_id, $show_root, $comment_url, $json_layout)
         }
         $data = curlPostRequest($finalize_url . $show_id, $array);
         if ($data[0] == false) {
-            debugout::dump("Failed to upload OGA file. Trying to upload split files.");
-            $cmd = 'split -b50M ' . $show_root . 'oga ' . $show_root . 'oga.';
-            debugExec($cmd);
-            $parts = array();
-            switch (true) {
-                case file_exists($show_root . 'oga.af'):
-                    break;
-                case file_exists($show_root . 'oga.ae'):
-                    $parts[5] = $show_root . 'oga.ae';
-                case file_exists($show_root . 'oga.ad'):
-                    $parts[4] = $show_root . 'oga.ad';
-                case file_exists($show_root . 'oga.ac'):
-                    $parts[3] = $show_root . 'oga.ac';
-                case file_exists($show_root . 'oga.ab'):
-                    $parts[2] = $show_root . 'oga.ab';
-                case file_exists($show_root . 'oga.aa'):
-                    $parts[1] = $show_root . 'oga.aa';
-            }
-            ksort($parts);
-            foreach ($parts as $partno => $part) {
-                $array['file'] = '@' . $part . ';type=audio/ogg';
-                $array['part'] = $partno;
-                $array['size'] = count($parts);
-                $data = curlPostRequest($split_url . $show_id, $array);
-                if ($data[0] == false) {
-                    debugout::dump("Failed to upload part $partno of " . count($parts));
-                }
-            }
+            debugout::dump("Failed to finalize OGA.");
         }
     }
     if (file_exists($show_root . 'm4a')) {
         $array['hash'] .= 'm4a:' . md5_file($show_root . 'm4a');
-        $array['file'] = '@' . $show_root . 'm4a;type=audio/mp4';
+        runSFTP($show_root, $showtype, $showdate, 'm4a');
         // I can't recall whether soxi will get m4a track lengths. To be on the safe side
         // don't bother. It should have been picked up in the mp3 and oga files anyway.
         $data = curlPostRequest($finalize_url . $show_id, $array);
         if ($data[0] == false) {
-            debugout::dump("Failed to upload M4A file. Trying to upload split files.");
-            $cmd = 'split -b50M ' . $show_root . 'm4a ' . $show_root . 'm4a.';
-            debugExec($cmd);
-            $parts = array();
-            switch (true) {
-                case file_exists($show_root . 'm4a.af'):
-                    break;
-                case file_exists($show_root . 'm4a.ae'):
-                    $parts[5] = $show_root . 'm4a.ae';
-                case file_exists($show_root . 'm4a.ad'):
-                    $parts[4] = $show_root . 'm4a.ad';
-                case file_exists($show_root . 'm4a.ac'):
-                    $parts[3] = $show_root . 'm4a.ac';
-                case file_exists($show_root . 'm4a.ab'):
-                    $parts[2] = $show_root . 'm4a.ab';
-                case file_exists($show_root . 'm4a.aa'):
-                    $parts[1] = $show_root . 'm4a.aa';
-            }
-            ksort($parts);
-            foreach ($parts as $partno => $part) {
-                $array['file'] = '@' . $part . ';type=audio/mp4';
-                $array['part'] = $partno;
-                $array['size'] = count($parts);
-                $data = curlPostRequest($split_url . $show_id, $array);
-                if ($data[0] == false) {
-                    debugout::dump("Failed to upload part $partno of " . count($parts));
-                }
-            }
+            debugout::dump("Failed to finalize OGA.");
         }
     }
     return $success;
@@ -807,8 +728,11 @@ function generateOutputTracksAsM4a($input, $output_root, $suffix, $arrMetadata)
  *
  * @return void
  */
-function debugUnlink($file)
+function debugUnlink($file, $pointer = '')
 {
+    if ($pointer != '' && isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
+        debugout::dump("Unlinking file $file at $pointer");
+    }
     if (!isset($GLOBALS['NODELETEFILES']) or ! $GLOBALS['NODELETEFILES']) {
         unlink($file);
     } else {
@@ -822,10 +746,11 @@ function debugUnlink($file)
  * @param string  $cmd                  The command to run
  * @param boolean $return_string_anyway If this is set to true, return both the string and the exit status, instead of just the exit status
  * @param integer $max_acceptable_exit  What is considered a successful exit code from this command
+ * @param string  $mask                 Any content to hide
  *
  * @return integer|array Either the exit code and the string of data, or just the exit code
  */
-function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0)
+function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0, $mask = "")
 {
     exec($cmd .' 2>&1', $result, $exit_code);
     $content = '';
@@ -838,9 +763,15 @@ function debugExec($cmd, $return_string_anyway = false, $max_acceptable_exit = 0
         }
     }
     if ($exit_code > $max_acceptable_exit || (isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG'])) {
-        debugout::add("Command:     $cmd");
+        $debugcmd = $cmd;
+        $debugcontent = $content;
+        if ($mask != '') {
+          $debugcmd = str_replace($mask, '[REDACTED]', $cmd);
+          $debugcontent = str_replace($mask, '[REDACTED]', $content);
+        }
+        debugout::add("Command:     $debugcmd");
         debugout::add("Exit status: $exit_code");
-        debugout::dump("Output:      $content");
+        debugout::dump("Output:      $debugcontent");
     }
     if ($return_string_anyway == true) {
         return array($exit_code, $content);
@@ -1123,3 +1054,30 @@ function getUri()
     return $arrUrl;
 }
 
+/**
+ * Execute the SCP command to transfer the file to the server
+ *
+ * @param $source     string  The source file to upload
+ * @param $showtype   string  The type of file to upload
+ * @param $showdate   integer The date of the file to upload (in the format yyyymm or yyyymmdd)
+ * @param $showformat string  The file format we're uploading (e.g. mp3, oga, m4a)
+ *
+ * @return void
+ */
+function runSFTP($source, $showtype, $showdate, $showformat)
+{
+    $cmd = '';
+    if (Configuration::getSCPpassword() != "") {
+        $cmd = 'sshpass -p "' . Configuration::getSCPpassword() . '" ';;
+    }
+    $cmd .= 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ' . $source . $showformat . ' ';
+    if (Configuration::getSCPuser() != "") {
+        $cmd .= Configuration::getSCPuser() . '@';
+    }
+    $cmd .= Configuration::getSCPtarget() . ':';
+    if (Configuration::getSCPpath() != "") {
+        $cmd .= Configuration::getSCPpath() . '/';
+    }
+    $cmd .= $showtype .'/' . $showdate . '.' . $showformat;
+    debugExec($cmd, false, 0, Configuration::getSCPpassword());
+}

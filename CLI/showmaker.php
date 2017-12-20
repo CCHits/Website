@@ -295,7 +295,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     )
                 )
             ),
-            json_encode($arrRunningOrder_final)
+            json_encode($arrRunningOrder_final),
+            'daily',
+            $show_data['intShowUrl']
         );
         echo "Done." . PHP_EOL . PHP_EOL;
         debugout::reset();
@@ -588,7 +590,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' weekly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
                 )
             ),
-            json_encode($arrRunningOrder_final)
+            json_encode($arrRunningOrder_final),
+            'weekly',
+            $show_data['intShowUrl']
         );
         echo "Done." . PHP_EOL . PHP_EOL;
         debugout::reset();
@@ -787,7 +791,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
                 )
             ),
-            json_encode($arrRunningOrder_final)
+            json_encode($arrRunningOrder_final),
+            'monthly',
+            substr($show_data['intShowUrl'], 0, 6)
         );
         echo "Done." . PHP_EOL . PHP_EOL;
     }
