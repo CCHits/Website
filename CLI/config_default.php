@@ -42,6 +42,10 @@ class Configuration
     private $StatusNetUrl   = 'cchits.net/comments/api/statuses/';
     private $StatusNetUser  = '';
     private $StatusNetPass  = '';
+    private $scptarget      = 'cchits.net';
+    private $scptargetpath  = '';
+    private $scpuser        = 'admin';
+    private $scppass        = 'admin';
 
     /**
     * An internal function to make this a singleton
@@ -72,6 +76,50 @@ class Configuration
 
         $this->api = $this->protocol . '://' . $this->username . ':' . $this->password . '@' . $this->url_base;
         $this->StatusNet = $this->StatusNetProto . '://' . $this->StatusNetUser . ':' . $this->StatusNetPass . '@' . $this->StatusNetUrl;
+    }
+
+    /**
+     * Return the value of the SCP variable
+     *
+     * @return string SCP host.
+     */
+    function getSCPtarget()
+    {
+        $handler = self::getHandler();
+        return $handler->scptarget;
+    }
+
+    /**
+     * Return the value of the SCP variable
+     *
+     * @return string SCP path.
+     */
+    function getSCPpath()
+    {
+        $handler = self::getHandler();
+        return $handler->scptargetpath;
+    }
+
+    /**
+     * Return the value of the SCP variable
+     *
+     * @return string SCP username.
+     */
+    function getSCPuser()
+    {
+        $handler = self::getHandler();
+        return $handler->scpuser;
+    }
+
+    /**
+     * Return the value of the SCP variable
+     *
+     * @return string SCP password.
+     */
+    function getSCPpassword()
+    {
+        $handler = self::getHandler();
+        return $handler->scppass;
     }
 
     /**
