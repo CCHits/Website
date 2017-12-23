@@ -226,21 +226,21 @@ function generateSilenceWav($duration, $output)
  */
 function trackTrimSilence($input)
 {
-    $cmd = 'sox "' . $input . '" "' . $input . '.trim.wav" silence 1 0.1 1% reverse';
+    $cmd = 'sox "' . $input . '" "' . $input . '.trim2.wav" silence 1 0.1 1% reverse';
     if (debugExec($cmd) != 0) {
-        if (file_exists($input . '.trim.wav')) {
-            debugUnlink($input . '.trim.wav');
+        if (file_exists($input . '.trim2.wav')) {
+            debugUnlink($input . '.trim2.wav');
         }
         return false;
     } else {
-        $cmd = 'sox "' . $input . '.trim.wav" "' . $input . '" silence 1 0.1 1% reverse';
+        $cmd = 'sox -r ' . $GLOBALS['RATE'] . ' -c 2 "' . $input . '.trim2.wav" "' . $input . '.trim.wav" silence 1 0.1 1% reverse';
         if (debugExec($cmd) != 0) {
             if (file_exists($input . '.trim.wav')) {
                 debugUnlink($input . '.trim.wav');
             }
             return false;
         }
-        debugUnlink($input . '.trim.wav');
+        debugUnlink($input . '.trim2.wav');
         return true;
     }
 }
@@ -305,6 +305,55 @@ function concatenateTracks($first, $second, $output, $remove_sources = true)
         return true;
     } else {
         return false;
+    }
+}
+
+/**
+ * This function invokes SoX to place the first track before the intermediate and last tracks and return that as the output file, optionally, removing the sources once it's done
+ *
+ * @param path    $first          The first file to use
+ * @param path    $last           The last file to use
+ * @param path    $intermediate   The intermediate file - with {n} token to substitute in the cycled value of $num_tracks
+ * @param int     $num_tracks     The number of intermediate files to cycle through
+ * @param path    $output         The output location of the combined two files
+ * @param boolean $remove_sources Whether the script should remove the two source files.
+ *
+ * @return boolean Success or Failure
+ */
+function concatenateMultiTracks($first, $last, $intermediate, $num_tracks, $output, $remove_sources = true)
+{
+
+//    print ('first: ' . $first . ' : ');
+//    print ('last: ' . $last . ' : ' );
+//    print ('intermediate: ' . $intermediate . ' : ');
+//    print ('num_tracks: ' . $num_tracks . ' : ');
+//    print ('output: ' . $output );
+
+    if (file_exists($first) and file_exists($last)) {
+        $cmd = 'sox -q "' . $first . '" {multi} "' . $last . '"  "' . $output . '"';
+
+	$multi = '';
+
+	for($counter=1;$counter<=$num_tracks;$counter++) {
+            $multi .=  '"' . str_replace( '{n}', $counter, $intermediate ) . '" ';
+        }
+
+	$cmd = str_replace( '{multi}', $multi, $cmd );
+
+//	print($cmd);
+
+        if (debugExec($cmd) != 0) {
+            if (file_exists($output)) {
+                debugUnlink($output);
+            }
+        } elseif ($remove_sources == true) {
+            debugUnlink($first);
+            debugUnlink($last);
+            for($counter=1;$counter<=$num_tracks;$counter++) {
+                debugUnlink( str_replace( '{n}', $counter, $intermediate ) );
+            }
+        }
+
     }
 }
 

@@ -316,7 +316,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             echo $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
         }
         echo PHP_EOL;
-        
+
         $running_order = addEntryToJsonArray('', 0, 'intro');
         generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
 
@@ -333,7 +333,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                     'Hey there <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %2$s and this is the %1$s <BREAK LEVEL="MEDIUM" /> In this show you will hear ten great tracks that we played over the past two weeks <BREAK LEVEL="MEDIUM" /> '
                 )
             ),
-            $show_data['strShowNameSpoken'], 
+            $show_data['strShowNameSpoken'],
             $show_data['strSiteNameSpoken']
         );
         if ($show_data['isNSFW'] != 0) {
@@ -583,7 +583,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         }
         finalize(
             $show_data['intShowID'],
-            Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.', 
+            Configuration::getWorkingDir() . '/weekly.' . $show_data['intShowUrl'] . '.',
             updateStatusNet(
                 array(
                     randomTextSelect(array('A new !weekly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '-' . substr($show_data['intShowUrl'], 6, 2) . '. Get it from ' . $show_data['shorturl'])),
@@ -601,6 +601,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         echo "Creating Monthly Show..." . PHP_EOL;
         $show_data = $json_data['monthly_show'];
         $running_order = addEntryToJsonArray('', 0, 'intro');
+	$run_length = 0;
         generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
 
         debugout::add("Making intro bumper" . PHP_EOL);
@@ -618,7 +619,7 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav');
         concatenateTracks(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav');
         copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
-        overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/run.wav');
+        overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/combined.intro.wav');
 
         echo "These " . count($show_data['arrTracks']) . " tracks are ";
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
@@ -629,8 +630,10 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         }
         echo PHP_EOL;
 
+        $run_length += getTrackLength(Configuration::getWorkingDir() . '/combined.intro.wav');
+
         foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
-            $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), 'Track Bumpers');
+            $running_order = addEntryToJsonArray($running_order, $run_length, 'Track Bumpers');
             $arrTracks[$arrTrack['intTrackID']] = $arrTrack;
 
             debugout::add("Making track bumper ($intTrackID)" . PHP_EOL);
@@ -687,14 +690,14 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             $bumper .= PHP_EOL . "$post_sable";
             $arrLastTrack = $arrTrack;
             convertSableXmlToWav($bumper, Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
-            concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/runplusbumper.wav');
 
-            $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplusbumper.wav'), $arrTrack['intTrackID']);
+            $run_length += getTrackLength(Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
+            $running_order = addEntryToJsonArray($running_order, $run_length, $arrTrack['intTrackID']);
 
             debugout::add("Downloading and merging audio file ($intTrackID)" . PHP_EOL);
             $track = downloadFile($arrTrack['localSource']);
             if ($track === false) {
-                debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
+//                debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
                 debugout::dump();
                 die("The tracks are not currently available.");
             }
@@ -702,10 +705,16 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugUnlink($track);
 
             trackTrimSilence(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
+            debugUnlink(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
 
-            concatenateTracks(Configuration::getWorkingDir() . '/runplusbumper.wav', Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'], Configuration::getWorkingDir() . '/run.wav');
+            rename(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'] . '.trim.wav', Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav');
+
+            $run_length += getTrackLength(Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav');
+
+            concatenateTracks(Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/combined.' . $intTrackID . '.wav');
         }
-        $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/run.wav'), 'outro');
+
+        $running_order = addEntryToJsonArray($running_order, $run_length, 'outro');
 
         debugout::add("Making the outro bumper" . PHP_EOL);
         $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
@@ -730,10 +739,12 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         reverseTrackAudio(Configuration::getStaticDir() . '/outro.wav', Configuration::getWorkingDir() . '/outro_rev.wav', false);
 
         overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav');
-        reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/outro_run.wav');
+        reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/combined.outro.wav');
 
-        concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/outro_run.wav', Configuration::getWorkingDir() . '/monthly.wav');
-        $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/monthly.wav'), 'end');
+        $run_length += getTrackLength(Configuration::getWorkingDir() . '/combined.outro.wav');
+        $running_order = addEntryToJsonArray($running_order, $run_length, 'end');
+
+        concatenateMultiTracks( Configuration::getWorkingDir() . '/combined.intro.wav', Configuration::getWorkingDir() . '/combined.outro.wav', Configuration::getWorkingDir() . '/combined.{n}.wav', count($show_data['arrTracks']), Configuration::getWorkingDir() . '/monthly.wav', true );
 
         $arrRunningOrder = makeArrayFromObjects(json_decode($running_order));
 
