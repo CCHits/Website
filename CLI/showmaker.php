@@ -169,8 +169,10 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         if ( ! trackTrimSilence(Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'])) {
             debugout::dump("WARNING: Failed to trim the silence from {$show_data['arrTracks'][1]['fileSource']}");
         }
+        debugUnlink(Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource']);
 
-        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'], Configuration::getWorkingDir() . '/runplustrack.wav')) {
+
+        if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'] . '.trim.wav', Configuration::getWorkingDir() . '/runplustrack.wav')) {
             debugout::dump("WARNING: Failed to concatenate run.wav with {$show_data['arrTracks'][1]['fileSource']}");
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplustrack.wav'), 'outro');
@@ -470,8 +472,9 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             if ( ! trackTrimSilence(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'])) {
                 debugout::dump("WARNING: Failed to trim the silence from {$arrTrack['fileSource']}" . PHP_EOL);
             }
+            debugUnlink(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
 
-            if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplusbumper.wav', Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'], Configuration::getWorkingDir() . '/run.wav')) {
+            if ( ! concatenateTracks(Configuration::getWorkingDir() . '/runplusbumper.wav', Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'] . '.trim.wav', Configuration::getWorkingDir() . '/run.wav')) {
                 debugout::dump("WARNING: Failed to concatenate run.wav with {$arrTrack['fileSource']}" . PHP_EOL);
             }
         }
