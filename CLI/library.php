@@ -322,13 +322,6 @@ function concatenateTracks($first, $second, $output, $remove_sources = true)
  */
 function concatenateMultiTracks($first, $last, $intermediate, $num_tracks, $output, $remove_sources = true)
 {
-
-//    print ('first: ' . $first . ' : ');
-//    print ('last: ' . $last . ' : ' );
-//    print ('intermediate: ' . $intermediate . ' : ');
-//    print ('num_tracks: ' . $num_tracks . ' : ');
-//    print ('output: ' . $output );
-
     if (file_exists($first) and file_exists($last)) {
         $cmd = 'sox -q "' . $first . '" {multi} "' . $last . '"  "' . $output . '"';
 
@@ -339,8 +332,6 @@ function concatenateMultiTracks($first, $last, $intermediate, $num_tracks, $outp
         }
 
 	$cmd = str_replace( '{multi}', $multi, $cmd );
-
-//	print($cmd);
 
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {

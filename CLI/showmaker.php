@@ -171,14 +171,13 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         }
         debugUnlink(Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource']);
 
-
         if ( ! concatenateTracks(Configuration::getWorkingDir() . '/run.wav', Configuration::getWorkingDir() . '/' . $show_data['arrTracks'][1]['fileSource'] . '.trim.wav', Configuration::getWorkingDir() . '/runplustrack.wav')) {
             debugout::dump("WARNING: Failed to concatenate run.wav with {$show_data['arrTracks'][1]['fileSource']}");
         }
         $running_order = addEntryToJsonArray($running_order, getTrackLength(Configuration::getWorkingDir() . '/runplustrack.wav'), 'outro');
 
         $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
-        $outro .= sprintf( 
+        $outro .= sprintf(
             randomTextSelect(
                 array(
                     'That was <BREAK LEVEL="SMALL" /> %1$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %2$s <BREAK LEVEL="MEDIUM" /> It was a %3$s licensed track',
@@ -700,7 +699,6 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
             debugout::add("Downloading and merging audio file ($intTrackID)" . PHP_EOL);
             $track = downloadFile($arrTrack['localSource']);
             if ($track === false) {
-//                debugUnlink(Configuration::getWorkingDir() . '/runplusbumper.wav');
                 debugout::dump();
                 die("The tracks are not currently available.");
             }
