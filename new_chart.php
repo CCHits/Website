@@ -1,6 +1,7 @@
 <?php
-mysql_connect("db.cchits.net", "cchits_net", "qebHOXdiv008");
-mysql_select_db("cchits");
+require_once('CONFIG/CONFIG_DEFAULT.php');
+mysql_connect($RW_HOST, $RW_USER, $RW_PASS);
+mysql_select_db($RW_BASE);
 $period = 30;
 $count = 100;
 $aperiod = array('30' => '', '90' => '', '120' => '', '150' => '', '180' => '');
