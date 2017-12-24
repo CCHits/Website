@@ -11,8 +11,8 @@
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 /**
  * This class handles all API calls
@@ -22,8 +22,8 @@
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 
 class API
@@ -674,8 +674,8 @@ class API
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class API_NotApiCall extends CustomException
 {
