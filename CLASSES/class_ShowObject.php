@@ -229,8 +229,8 @@ class ShowObject extends GenericObject
             }
             $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'oga');
             if (!empty($remotepath)) {
-                $return['player_data']['mp3'] = $remotepath;
-                $return['player_data']['mp3_len'] = 0;
+                $return['player_data']['oga'] = $remotepath;
+                $return['player_data']['oga_len'] = 0;
             }
             elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
                 $return['player_data']['oga'] = $this->strShowFileOGA;
@@ -240,8 +240,8 @@ class ShowObject extends GenericObject
             }
             $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'm4a');
             if (!empty($remotepath)) {
-                $return['player_data']['mp3'] = $remotepath;
-                $return['player_data']['mp3_len'] = 0;
+                $return['player_data']['m4a'] = $remotepath;
+                $return['player_data']['m4a_len'] = 0;
             }
             elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
                 $return['player_data']['m4a'] = $this->strShowFileM4A;
