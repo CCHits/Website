@@ -624,7 +624,7 @@ class UI
         $by = "By At-trib-ution";
         $sa = "Share Ae-like";
         $nc = "Non Commercial";
-        $nd = "No Der-i-vat-ives";
+        $nd = "No Der-iv-uh-tivs";
         $sp = "Samp-ling plus";
         $z  = "Zero";
         return self::get_enumTrackLicenseSolve($license, $cc, $by, $sa, $nc, $nd, $sp, $z);
