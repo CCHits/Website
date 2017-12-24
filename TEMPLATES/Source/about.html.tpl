@@ -52,24 +52,24 @@
 		<div class="FAQItem">
 			<a name="source"></a>
 			<h3>Source</h3>
-			<p>The source code for everything driving this site is available in the Git Repositories at <a href="http://gitorious.org/cchits-net">Gitorious</a>. The Git Repositiories for the <a href="http://gitorious.org/cchits-net/scripts">non-website scripts</a> include the theme tune and cover art, plus the original source files (in Audacity and Gimp files). The code which drives the website is also available in a separate <a href="http://gitorious.org/cchits-net/website">Repository</a>.</p>
+			<p>The source code for everything driving this site is available in the Git Repositories at <a href="http://github.com/cchits/website">Github</a>.</p>
 			<p>Patches to either can either be e-mailed to <a href="mailto:code@cchits.net">code@cchits.net</a>, or you can clone a repository, make your changes and then raise a merge request through the site.</p>
 			<h3>Developers</h3>
-			<p>Thinking of working with the source code, API or website? Have a look at <a href="http://code.cchits.net">the development site</a>.</p>
+			<p>Thinking of working with the source code, API or website? Have a look at <a href="https://github.com/CCHits/Website/wiki">the development site</a>.</p>
 		</div>
 		<div class="FAQItem">
 			<a name="database"></a>
 			<h3>Database</h3>
 			<p>I was inspired by the <a href="http://ur1.ca">ur1.ca</a> folk, that giving away access to your database is almost as powerful as the service you're already providing. To try and achieve what they do, from this page, you can request an export of the database, albeit with one factor sanitized... the users table. There are two columns, containing the OpenID Claimed Identity page, and the Username and Password hash used to perform API calls. Both of these will be hashed before sending, to help keep user records secure.</p>
 			<form action="{$baseURL}about/database" method="post">
-	  			<input type="submit" name="go" value="Give me the database!" />
+			<input type="submit" name="go" value="Give me the database!" />
 			</form>
 			<p><b>This DATABASE and it's DATA is made available under the <a href="http://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero license</a>.</b></p>
 		</div>
 		<div class="FAQItem">
 			<a name="api"></a>
 			<h3>API</h3>
-			<p>Please see the <a href="http://code.cchits.net/index.php?title=API">full API documentation</a>.</p>
+			<p>Please see the <a href="https://github.com/CCHits/Website/wiki/Using-the-API">full API documentation</a>.</p>
 		</div>
 		<div class="FAQItem">
 			<a name="voteadjust"></a>

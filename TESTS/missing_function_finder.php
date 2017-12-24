@@ -8,7 +8,7 @@
  * @package  CCHitsTests
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 if ( ! isset($argv[1]) or $argv[1] == '') {
     showHelp("No directory specified.");

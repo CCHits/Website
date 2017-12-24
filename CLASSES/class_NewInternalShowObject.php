@@ -11,8 +11,8 @@
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 /**
  * This class extends the ShowObject class to create a new item in the database. It is specifically for internal shows.
@@ -22,8 +22,8 @@
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class NewInternalShowObject extends ShowObject
 {

@@ -11,8 +11,8 @@
  * @author   Yannick Mauray <yannick@frenchguy.ch>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 /**
  * This class handles all APIv2 calls
@@ -22,8 +22,8 @@
  * @author   Yannick Mauray <yannick@frenchguy.ch>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class APIv2
 {

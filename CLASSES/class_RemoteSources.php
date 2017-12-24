@@ -11,8 +11,8 @@
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 /**
  * This class provides the base functionality for all of the remote sources
@@ -22,8 +22,8 @@
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSources extends GenericObject
 {
@@ -897,8 +897,8 @@ class RemoteSources extends GenericObject
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoTrackName extends CustomException
 {
@@ -914,8 +914,8 @@ class RemoteSource_NoTrackName extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoTrackUrl extends CustomException
 {
@@ -931,8 +931,8 @@ class RemoteSource_NoTrackUrl extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoTrackLicense extends CustomException
 {
@@ -948,8 +948,8 @@ class RemoteSource_NoTrackLicense extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoArtist extends CustomException
 {
@@ -965,8 +965,8 @@ class RemoteSource_NoArtist extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoNSFWFlag extends CustomException
 {
@@ -982,8 +982,8 @@ class RemoteSource_NoNSFWFlag extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoFileDl extends CustomException
 {
@@ -999,8 +999,8 @@ class RemoteSource_NoFileDl extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoFileName extends CustomException
 {
@@ -1016,8 +1016,8 @@ class RemoteSource_NoFileName extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_NoFileExist extends CustomException
 {
@@ -1033,8 +1033,8 @@ class RemoteSource_NoFileExist extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_InvalidLicense extends CustomException
 {
@@ -1050,8 +1050,8 @@ class RemoteSource_InvalidLicense extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_InvalidSource extends CustomException
 {
@@ -1067,8 +1067,8 @@ class RemoteSource_InvalidSource extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_InvalidAPICode extends CustomException
 {
@@ -1084,8 +1084,8 @@ class RemoteSource_InvalidAPICode extends CustomException
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @link     http://cchits.net Actual web service
- * @link     http://code.cchits.net Developers Web Site
- * @link     http://gitorious.net/cchits-net Version Control Service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
  */
 class RemoteSource_DuplicateTrackName extends CustomException
 {
@@ -1100,8 +1100,8 @@ class RemoteSource_DuplicateTrackName extends CustomException
 * @author   Jon Spriggs <jon@sprig.gs>
 * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
 * @link     http://cchits.net Actual web service
-* @link     http://code.cchits.net Developers Web Site
-* @link     http://gitorious.net/cchits-net Version Control Service
+* @link     https://github.com/CCHits/Website/wiki Developers Web Site
+* @link     https://github.com/CCHits/Website Version Control Service
 */
 class RemoteSource_DuplicateTrackUrl extends CustomException
 {
@@ -1117,8 +1117,8 @@ class RemoteSource_DuplicateTrackUrl extends CustomException
 * @author   Jon Spriggs <jon@sprig.gs>
 * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
 * @link     http://cchits.net Actual web service
-* @link     http://code.cchits.net Developers Web Site
-* @link     http://gitorious.net/cchits-net Version Control Service
+* @link     https://github.com/CCHits/Website/wiki Developers Web Site
+* @link     https://github.com/CCHits/Website Version Control Service
 */
 class RemoteSource_DuplicateMD5 extends CustomException
 {
