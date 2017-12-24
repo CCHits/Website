@@ -42,9 +42,9 @@ class MediaRedirect
             }
             $item = $query->fetch(PDO::FETCH_ASSOC);
             if (is_array($item) && isset($item['remotevalue'])) {
-                $sql = "UPDATE redirectmedia SET hitcount = hitcount + 1 WHERE localvalue = ?";
+                $sql = "UPDATE redirectmedia SET hitcount = hitcount + 1 WHERE remotevalue = ?";
                 $query = $db->prepare($sql);
-                $query->execute(array($path.'/'.$item.'.'.$format));
+                $query->execute(array($item['remotevalue']));
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
