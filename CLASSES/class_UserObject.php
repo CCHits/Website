@@ -50,7 +50,7 @@ class UserObject extends GenericObject
     protected $isAuthorized = 0;
     protected $isUploader = 0;
     protected $isAdmin = 0;
-    protected $datLastSeen = "";
+    protected $datLastSeen = null;
     protected $strUserName = "";
 
     /**
