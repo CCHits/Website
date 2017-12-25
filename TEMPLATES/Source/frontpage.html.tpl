@@ -79,7 +79,7 @@
 							</div>
 							<div class="col-8 col-sm-8 col-md-8 col-lg-4 col-xl-4 chart-info">
 								<div class="chart-track-title">
-									{$track.strTrackName}
+									<a href="{$baseURL}track/{$track.intTrackID}">{$track.strTrackName}</a>
 								</div>
 								<div class="chart-track-artist">
 									{$track.strArtistName}

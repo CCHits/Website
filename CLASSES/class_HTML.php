@@ -134,6 +134,12 @@ class HTML
             case 'vote':
                 $this->vote($object[1], $object[2]);
                 break;
+            case 'report':
+                $this->report($object[1]);
+                break;
+            case 'review':
+                $this->review($object[1], $this->arrUri['parameters']['isNSFW']);
+                break;
             case 'chart':
                 if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
@@ -848,6 +854,58 @@ class HTML
                 UI::SmartyTemplate("vote.html", $this->result);
             }
         }
+    }
+
+    /**
+     * Report a track as not safe for familly or work.
+     *
+     * @param integer $track The reported track
+     *
+     * @return void
+     */
+    function report($track = 0)
+    {
+        if ($track == 0)
+        {
+            return;
+        }
+
+        $objTrack = TrackBroker::getTrackByID(UI::getLongNumber($track));
+
+        if ($objTrack->get_isNSFW())
+        {
+            return;
+        }
+
+        $objTrack->set_needsReview(true);
+        $objTrack->write();
+
+        UI::Redirect("track/" . $track);
+    }
+
+    /**
+     * Review a track : set the isNSFW flag.
+     *
+     * @param integer $track Track to review
+     *
+     * @return void
+     */
+    function review($track = 0, $isNSFW = false)
+    {
+        if ($track == 0)
+        {
+            return;
+        }
+
+        $objTrack = TrackBroker::getTrackByID(UI::getLongNumber($track));
+
+        $isNSFW = GenericObject::asBoolean($isNSFW);
+
+        $objTrack->set_isNSFW($isNSFW);
+        $objTrack->set_needsReview(false);
+        $objTrack->write();
+
+        UI::Redirect("track/" . $track);
     }
 
     /**

@@ -29,7 +29,7 @@
 class TrackObject extends GenericObject
 {
     // Inherited Properties
-    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'fileSource'=>true, 'timeLength'=>true, 'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
+    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'needsReview'=>true, 'fileSource'=>true, 'timeLength'=>true, 'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
     protected $strDBTable = "tracks";
     protected $strDBKeyCol = "intTrackID";
     // Local Properties
@@ -41,6 +41,7 @@ class TrackObject extends GenericObject
     protected $strTrackUrl = "";
     protected $enumTrackLicense = "";
     protected $isNSFW = false;
+    protected $needsReview = false;
     protected $fileSource = "";
     protected $timeLength = "00:00:00";
     protected $md5FileHash = "";
@@ -73,6 +74,7 @@ class TrackObject extends GenericObject
             $this->strTrackUrl = $pointer->get_strTrackUrl();
             $this->enumTrackLicense = $pointer->get_enumTrackLicense();
             $this->isNSFW = $pointer->get_isNSFW();
+            $this->needsReview = $pointer->get_needsReview();
             $this->fileSource = $pointer->get_fileSource();
             $this->timeLength = $pointer->get_timeLength();
             $this->md5FileHash = $pointer->get_md5FileHash();
@@ -83,6 +85,7 @@ class TrackObject extends GenericObject
         }
         $this->verify_objArtist();
         $this->verify_isNSFW();
+        $this->verify_needsReview();
         $this->verify_isApproved();
         $arrChartData = ChartBroker::getLastSixtyDaysOfChartDataForOneTrack($this->intTrackID);
         if ($arrChartData != false) {
@@ -145,6 +148,9 @@ class TrackObject extends GenericObject
         }
         if (isset($arrUri['parameters']['nsfw'])) {
             $this->set_isNSFW($arrUri['parameters']['nsfw']);
+        }
+        if (isset($arrUri['parameters']['needsReview'])) {
+            $this->set_needsReview($arrUri['parameters']['needsReview']);
         }
         if (isset($arrUri['parameters']['duplicate'])) {
             $this->set_intDuplicateID($arrUri['parameters']['duplicate']);
@@ -308,6 +314,15 @@ class TrackObject extends GenericObject
 
     /**
      * Depending on the value supplied, make sure the actual value in the class
+     * is right for the needsReview value
+     */
+    protected function verify_needsReview()
+    {
+        $this->needsReview = $this->asBoolean($this->needsReview);
+    }
+
+    /**
+     * Depending on the value supplied, make sure the actual value in the class
      * is right for the isApproved value.
      *
      * @return void
@@ -467,9 +482,9 @@ class TrackObject extends GenericObject
      */
     function set_isNSFW($isNSFW = false)
     {
-        if ($isNSFW == "false" || $isNSFW == "0" || $isNSFW == "no") {
+        if ($isNSFW === "false" || $isNSFW === "0" || $isNSFW === "no") {
             $isNSFW = false;
-        } elseif ($isNSFW == "true" || $isNSFW == "1" || $isNSFW == "yes") {
+        } elseif ($isNSFW === "true" || $isNSFW === "1" || $isNSFW === "yes") {
             $isNSFW = true;
         }
         if ($this->isNSFW == true && $isNSFW === false) {
@@ -478,6 +493,29 @@ class TrackObject extends GenericObject
         } elseif ($this->isNSFW == false && $isNSFW === true) {
             $this->isNSFW = true;
             $this->arrChanges['isNSFW'] = true;
+        }
+    }
+
+    /**
+     * Set the needsReview state of the track
+     *
+     * @param boolean $needsReview Whether the track needs a review.
+     *
+     * @return void
+     */
+    function set_needsReview($needsReview = false)
+    {
+        if ($needsReview === "false" || $needsReview === "0" || $needsReview === "no") {
+            $needsReview = false;
+        } elseif ($needsReview === "true" || $needsReview === "1" || $needsReview === "yes") {
+            $needsReview = true;
+        }
+        if ($this->needsReview == true && $needsReview === false) {
+            $this->needsReview = false;
+            $this->arrChanges['needsReview'] = true;
+        } elseif ($this->needsReview == false && $needsReview === true) {
+            $this->needsReview = true;
+            $this->arrChanges['needsReview'] = true;
         }
     }
 
@@ -618,6 +656,7 @@ class TrackObject extends GenericObject
             $this->set_strTrackUrl("");
             $this->set_enumTrackLicense("WIPE");
             $this->set_isNSFW(false);
+            $this->set_needsReview(false);
             $this->set_timeLength("00:00:00");
             $this->set_md5FileHash("");
             $this->set_datDailyShow("");
@@ -780,6 +819,17 @@ class TrackObject extends GenericObject
     {
         return $this->isNSFW;
     }
+
+    /**
+     * Pending review status
+     * 
+     * @return boolean Pending review status
+     */
+    function get_needsReview()
+    {
+        return $this->needsReview;
+    }
+
     /**
      * Filename
      *

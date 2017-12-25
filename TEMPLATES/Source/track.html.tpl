@@ -22,6 +22,26 @@
 		<form action="{$baseURL}vote/{$track.intTrackID}?go" method="post">
   			<input type="submit" name="go" value="I like this track!" />
 		</form>
+{if not $track.isNSFW}
+{if not $track.needsReview}
+		<form action="{$baseURL}report/{$track.intTrackID}?go" method="post">
+			<input type="submit" name="go" value="Report this track as not safe for familly or work" />
+		</form>
+{else}
+		<div><b style="color: red">This track has been reported as not safe for familly or work, it will be reviewed by a moderator.</b></div>
+{if $user.isAdmin}
+		<br/>
+		<form style="color: blue;" action="{$baseURL}review/{$track.intTrackID}?go" method="post">
+			<b>
+			Is this track safe for familly or work ?
+			<input type="radio" name="isNSFW" value="no"> Yes
+			<input type="radio" name="isNSFW" value="yes" checked> No
+			<input type="submit" name="go" value="Review this track" />
+			</b>
+		</form>
+{/if}
+{/if}
+{/if}
 		{include file="track_detail.tpl"}
 	</body>
 	<script type="text/javascript">
