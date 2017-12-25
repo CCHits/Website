@@ -105,7 +105,7 @@ class GenericObject
                     {
                         $values[$change_key] = 1;
                     }
-                    elseif ($this->change_key === false)
+                    elseif ($this->$change_key === false)
                     {
                         $values[$change_key] = 0;
                     }
