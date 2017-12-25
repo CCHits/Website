@@ -101,7 +101,18 @@ class GenericObject
                         $sql .= ", ";
                     }
                     $sql .= "$change_key = :$change_key";
-                    $values[$change_key] = $this->$change_key;
+                    if ($this->$change_key === true)
+                    {
+                        $values[$change_key] = 1;
+                    }
+                    elseif ($this->change_key === false)
+                    {
+                        $values[$change_key] = 0;
+                    }
+                    else
+                    {
+                        $values[$change_key] = $this->$change_key;
+                    }
                 }
             }
             $full_sql = "UPDATE {$this->strDBTable} SET $sql WHERE $where";
