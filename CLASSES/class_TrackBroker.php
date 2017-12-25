@@ -364,7 +364,17 @@ class TrackBroker
             $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? or strTrackUrl LIKE ? ORDER BY " . $strSort . " " . $strDirection;
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
-            $query->execute(array("\"$strTrackUrl%", "$strTrackUrl%"));
+            // For tracks have this field as a serialized json array, in which "/" are escaped with "\", 
+            // ie : {"0":"https:\/\/soundcloud.com\/the-easton-ellises\/05-endorphin",
+            // "preferred":"http:\/\/archive.org\/details\/enrmp272_the_easton_ellises_-_ep_one"}
+            // MySQL wants "\"s to be escaped, so that's "\\" for one "\". But PHP also wants "\"s to be escaped... 
+            // Hence "\\\\" : this is sent as "\\" to MySQL which then interprets that as the literal "\" character.
+            // BUT... for tracks with only one URL, it is stored as a non escaped string, ie : http://www.jamendo.com/en/track/806979
+            // Hence the "or" operator in the $sql above.
+            // Addendum : some tracks have this field stored as a JSON array, ie : ["http:\/\/www.jamendo.com\/en\/track\/1026956"].
+            // The replacement bellow will also work for those.
+            $strEscapedTrackUrl = str_replace("/", "\\\\/", $strTrackUrl);
+            $query->execute(array("%$strTrackUrl%", "%$strEscapedTrackUrl%"));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {

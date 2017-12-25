@@ -248,10 +248,20 @@ class ArtistBroker
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ?";
+            $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ? OR strArtistUrl LIKE ?";
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
-            $query->execute(array("$strArtistUrl%"));
+            // For artists with multiple URLs, this field is a serialized json array, in which "/" are escaped with "\", 
+            // ie : {"0":"http:\/\/www.jamendo.com\/artist\/joshwoodward","preferred":"http:\/\/www.jamendo.com\/en\/artist\/joshwoodward",
+            // "1":"http:\/\/www.joshwoodward.com\/","2":"http:\/\/freemusicarchive.org\/music\/Josh_Woodward\/"}
+            // MySQL wants "\"s to be escaped, so that's "\\" for one "\". But PHP also wants "\"s to be escaped... 
+            // Hence "\\\\" : this is sent as "\\" to MySQL which then interprets that as the literal "\" character.
+            // BUT... for artists with only one URL, it is stored as a non escaped string, ie : http://www.jamendo.com/en/artist/Karmafish.
+            // Hence the "or" operator in the $sql above.
+            // Addendum : some artists have this field stored as a JSON array, ie : ["http:\/\/www.jamendo.com\/artist\/504131"].
+            // The replacement bellow will also work for those.
+            $strEscapedArtistUrl = str_replace("/", "\\\\/", $strArtistUrl);
+            $query->execute(array("%$strArtistUrl%", "%$strEscapedArtistUrl%"));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
