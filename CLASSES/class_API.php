@@ -65,13 +65,13 @@ class API
                 break;
             case 'echologin':
                 UI::requireAuth();
-                $this->result = $arrUri;
+                $this->result_array = $arrUri;
                 $this->render();
                 break;
             // User Calls
             case 'getstatus':
                 $objUser = UserBroker::getUser();
-                $this->result = array(
+                $this->result_array = array(
                     'isUploader' => $objUser->get_isUploader(),
                     'isAuthorized' => $objUser->get_isAuthorized(),
                     'isAdmin' => $objUser->get_isAdmin()
@@ -88,7 +88,7 @@ class API
                             if ($artist_name != '') {
                                 $artist_name .= '/';
                             }
-                            $artist_name .= $arrUri['path_items'][$arrItem];
+                            $artist_name .= urldecode($arrUri['path_items'][$arrItem]);
                         }
                     }
                 }
@@ -109,7 +109,7 @@ class API
                             if ($artist_url != '') {
                                 $artist_url .= '/';
                             }
-                            $artist_url .= $arrUri['path_items'][$arrItem];
+                            $artist_url .= urldecode($arrUri['path_items'][$arrItem]);
                         }
                     }
                 }
@@ -122,14 +122,14 @@ class API
                 break;
             case 'searchtrackbyname':
             case 'searchtracksbyname':
-                $track_name = GeneralFunctions::getValue($arrUri['parameters'], 'strArtistName', '', true);
+                $track_name = GeneralFunctions::getValue($arrUri['parameters'], 'strTrackName', '', true);
                 if ($track_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
                         if (isset ($arrUri['path_items'][$arrItem])) {
                             if ($track_name != '') {
                                 $track_name .= '/';
                             }
-                            $track_name .= $arrUri['path_items'][$arrItem];
+                            $track_name .= urldecode($arrUri['path_items'][$arrItem]);
                         }
                     }
                 }
@@ -154,7 +154,7 @@ class API
                             if ($track_url != '') {
                                 $track_url .= '/';
                             }
-                            $track_url .= $arrUri['path_items'][$arrItem];
+                            $track_url .= urldecode($arrUri['path_items'][$arrItem]);
                         }
                     }
                 }
@@ -178,7 +178,7 @@ class API
                             if ($show_name != '') {
                                 $show_name .= '/';
                             }
-                            $show_name .= $arrUri['path_items'][$arrItem];
+                            $show_name .= urldecode($arrUri['path_items'][$arrItem]);
                         }
                     }
                 }
@@ -199,7 +199,7 @@ class API
                             if ($show_url != '') {
                                 $show_url .= '/';
                             }
-                            $show_url .= $arrUri['path_items'][$arrItem];
+                            $show_url .= urldecode($arrUri['path_items'][$arrItem]);
                         }
                     }
                 }

@@ -340,7 +340,7 @@ class ShowBroker
      *
      * @return array|false An array of ShowObject or false if not existing
      */
-    public function getShowByPartialName(
+    public static function getShowByPartialName(
         $strShowName = "",
         $intPage = null,
         $intSize = null
@@ -358,8 +358,8 @@ class ShowBroker
         }
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM shows WHERE strShowName LIKE ?";
             $pagestart = ($intPage*$intSize);
+            $sql = "SELECT * FROM shows WHERE strShowName RLIKE ?";
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
             preg_match_all('`.`u', $strShowName, $arr);
