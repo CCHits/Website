@@ -25,15 +25,15 @@
 {if not $track.isNSFW}
 {if not $track.needsReview}
 		<form action="{$baseURL}report/{$track.intTrackID}?go" method="post">
-			<input type="submit" name="go" value="Report this track as not safe for familly or work" />
+			<input type="submit" name="go" value="Report this track as not safe for family or work" />
 		</form>
 {else}
-		<div><b style="color: red">This track has been reported as not safe for familly or work, it will be reviewed by a moderator.</b></div>
+		<div><b style="color: red">This track has been reported as not safe for family or work, it will be reviewed by a moderator.</b></div>
 {if $user.isAdmin}
 		<br/>
 		<form style="color: blue;" action="{$baseURL}review/{$track.intTrackID}?go" method="post">
 			<b>
-			Is this track safe for familly or work ?
+			Is this track safe for family or work ?
 			<input type="radio" name="isNSFW" value="no"> Yes
 			<input type="radio" name="isNSFW" value="yes" checked> No
 			<input type="submit" name="go" value="Review this track" />
