@@ -96,6 +96,12 @@ a:hover {
     padding: 5px 0;
 }
 
+.chart-track a:hover {
+    background-color: inherit;
+    color: inherit;
+    border-bottom: 1px solid #404040;
+}
+
 .chart-position-current {
     font-size: 2.9rem;
     margin: -.5rem 0;

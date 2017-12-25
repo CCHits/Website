@@ -79,7 +79,7 @@ class TrackBroker
      *
      * @param integer $intTrackID Track ID to search for
      *
-     * @return object|false TrackObject or false if not existing
+     * @return TrackObject|false TrackObject or false if not existing
      */
     public static function getTrackByID($intTrackID = 0)
     {
