@@ -485,6 +485,11 @@ class API
                 }
                 $this->render();
                 break;
+            case 'stats':
+                $temp = StatsBroker::getStats()->getSelf();
+                $this->result_array = $temp;
+                $this->render();
+                break;
             case 'v2':
                 switch($arrUri['path_items'][2]) {
                     case 'dates':
