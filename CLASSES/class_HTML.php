@@ -165,6 +165,17 @@ class HTML
                 }
                 $this->change($object[1], $object[2]);
                 break;
+            case 'd':
+                if (isset($object[1]) && isset($object[2])) {
+                    UI::Redirect("daily/" . $object[1] . "/" . $object[2]);
+                }
+                elseif (isset($object[1])) {
+                    UI::Redirect("daily/" . $object[1]);
+                }
+                else {
+                    UI::Redirect("daily");
+                }
+                break;
             case 'daily':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
                     $this->format = 'mp3.rss';
@@ -181,7 +192,18 @@ class HTML
                     }
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 }
-                $this->daily($object[1]);
+                $this->daily($this->arrUri['path_items'][1]);
+                break;
+            case 'w':
+                if (isset($object[1]) && isset($object[2])) {
+                    UI::Redirect("weekly/" . $object[1] . "/" . $object[2]);
+                }
+                elseif (isset($object[1])) {
+                    UI::Redirect("weekly/" . $object[1]);
+                }
+                else {
+                    UI::Redirect("weekly");
+                }
                 break;
             case 'weekly':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
@@ -200,6 +222,17 @@ class HTML
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 }
                 $this->weekly($object[1]);
+                break;
+            case 'm':
+                if (isset($object[1]) && isset($object[2])) {
+                    UI::Redirect("monthly/" . $object[1] . "/" . $object[2]);
+                }
+                elseif (isset($object[1])) {
+                    UI::Redirect("monthly/" . $object[1]);
+                }
+                else {
+                    UI::Redirect("monthly");
+                }
                 break;
             case 'monthly':
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
