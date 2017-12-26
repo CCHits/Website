@@ -180,6 +180,7 @@ class GenericObject
      */
     function getSelf()
     {
+        $return = [];
         if ($this->strDBKeyCol != '') {
             $key = $this->strDBKeyCol;
             $return[$key] = $this->$key;

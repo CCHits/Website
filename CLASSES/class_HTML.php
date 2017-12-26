@@ -175,9 +175,9 @@ class HTML
                 }
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     if (isset($this->arrUri['path_items'][2])) {
-                      $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                        $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
-                      $this->arrUri['path_items'][1] = '';
+                        $this->arrUri['path_items'][1] = '';
                     }
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 }
@@ -193,9 +193,9 @@ class HTML
                 }
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     if (isset($this->arrUri['path_items'][2])) {
-                      $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                        $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
-                      $this->arrUri['path_items'][1] = '';
+                        $this->arrUri['path_items'][1] = '';
                     }
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 }
@@ -211,9 +211,9 @@ class HTML
                 }
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     if (isset($this->arrUri['path_items'][2])) {
-                      $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                        $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
-                      $this->arrUri['path_items'][1] = '';
+                        $this->arrUri['path_items'][1] = '';
                     }
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
                 }
@@ -229,9 +229,9 @@ class HTML
                 }
                 if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
                     if (isset($this->arrUri['path_items'][2])) {
-                      $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
+                        $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
-                      $this->arrUri['path_items'][1] = '';
+                        $this->arrUri['path_items'][1] = '';
                     }
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Extra Show Name', 'Extra Shows');
                 }
@@ -395,10 +395,10 @@ class HTML
                 case 'basicauth':
                     $this->basicAuth();
                     break;
-		case 'logout':
-			unset($_SESSION['OPENID_AUTH']);
-			UI::Redirect('admin');
-			break;
+                case 'logout':
+                    unset($_SESSION['OPENID_AUTH']);
+                    UI::Redirect('admin');
+                    break;
                 case '':
                     if ($user->get_isUploader() or $user->get_isAdmin()) {
                         UI::SmartyTemplate('admin.html', $this->result);
@@ -414,6 +414,9 @@ class HTML
                     UI::Redirect('admin');
                 }
                 break;
+            case 'stats':
+                $this->stats();
+                die();
             default:
                 $this->reset_page();
             }
@@ -762,6 +765,41 @@ class HTML
     }
 
     /**
+     * Renders the stats page
+     * 
+     * @return void
+     */
+    protected function stats()
+    {
+        $internal_show = ShowBroker::getInternalShowByType('daily', 1);
+        $show = end($internal_show);
+        $show->set_featuring(false);
+        $daily = $show->getSelf();
+        $internal_show = ShowBroker::getInternalShowByType('weekly', 1);
+        $show = end($internal_show);
+        $show->set_featuring(false);
+        $weekly = $show->getSelf();
+        $internal_show = ShowBroker::getInternalShowByType('monthly', 1);
+        $show = end($internal_show);
+        $show->set_featuring(false);
+        $monthly = $show->getSelf();
+        if ($this->render())
+        {
+            if ($this->format == 'html') 
+            {
+                $this->result['daily_player_json'] = json_encode(array($daily['player_data']));
+                $this->result['weekly_player_json'] = json_encode(array($weekly['player_data']));
+                $this->result['monthly_player_json'] = json_encode(array($monthly['player_data']));
+            }
+        }
+        $this->result['stats'] = StatsBroker::getStats()->getSelf();
+        if ($this->render())
+        {
+            UI::SmartyTemplate("stats.{$this->format}", $this->result);
+        }
+    }
+
+    /**
      * Render track data
      *
      * @param integer $track The track to return data upon
@@ -865,15 +903,13 @@ class HTML
      */
     function report($track = 0)
     {
-        if ($track == 0)
-        {
+        if ($track == 0) {
             return;
         }
 
         $objTrack = TrackBroker::getTrackByID(UI::getLongNumber($track));
 
-        if ($objTrack->get_isNSFW())
-        {
+        if ($objTrack->get_isNSFW()) {
             return;
         }
 
@@ -892,8 +928,7 @@ class HTML
      */
     function review($track = 0, $isNSFW = false)
     {
-        if ($track == 0)
-        {
+        if ($track == 0) {
             return;
         }
 
@@ -926,7 +961,7 @@ class HTML
             if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
                 $this->result['previous_page'] = true;
             }
-            if ( ! array_key_exists(TrackBroker::getTotalTracks(), $this->result['chart'])) {
+            if (! array_key_exists(TrackBroker::getTotalTracks(), $this->result['chart'])) {
                 $this->result['next_page'] = true;
             }
             UI::SmartyTemplate("chart.{$this->format}", $this->result);
@@ -951,7 +986,7 @@ class HTML
             if (isset($this->arrUri['parameters']['page']) and $this->arrUri['parameters']['page'] > 0) {
                 $this->result['previous_page'] = true;
             }
-            if ( ! array_key_exists(TrackBroker::getTotalTracks(), $this->result['trend'])) {
+            if (! array_key_exists(TrackBroker::getTotalTracks(), $this->result['trend'])) {
                 $this->result['next_page'] = true;
             }
             UI::SmartyTemplate("trend.{$this->format}", $this->result);

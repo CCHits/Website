@@ -347,3 +347,32 @@ div[id^=jp_container_]:not([class*="jp-state-playing"]) .jp-stop {
 .jp-free-media {
     float: right;
 }
+
+.stats-legend {
+    background: #404040;
+    color: white;
+    text-align: center;    
+}
+
+.stats-data {
+    text-align: center;
+    border: 1px solid #404040;
+    border-top: none;
+}
+
+.stats-body > .row {
+    margin-top: 1rem;
+}
+
+.stats-body > .row:first-child {
+    margin-top: 0;
+}
+
+.stats-body a {
+    text-decoration: underline;
+}
+
+.stats-body a:hover {
+    background-color: inherit;
+    color: inherit;
+}

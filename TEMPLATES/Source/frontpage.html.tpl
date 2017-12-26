@@ -1,39 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>{$ServiceName}</title>
-		<link rel="alternate" type="application/rss+xml" href="{$baseURL}daily/rss" title="The {$ShowDaily}" />
-		<link rel="alternate" type="application/rss+xml" href="{$baseURL}weekly/rss" title="The {$ShowWeekly}" />
-		<link rel="alternate" type="application/rss+xml" href="{$baseURL}monthly/rss" title="The {$ShowMonthly}" />
-		<link rel="stylesheet" href="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="{$baseURL}CSS/cchits.css" />
-		<link rel="stylesheet" href="{$baseURL}CSS/cchits-extra.css" />
-	</head>
-	<body>
-		<div class="container-fluid" id="topnav">
-			<div class="container">
-				<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-					<a class="navbar-brand" href="{$baseURL}">{$ServiceName}</a>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<div class="navbar-nav mr-auto">
-							<a class="nav-item nav-link" href="{$baseURL}about">About {$ServiceName}</a>
-							<a class="nav-item nav-link" href="{$baseURL}daily">Daily shows</a>
-							<a class="nav-item nav-link" href="{$baseURL}weekly">Weekly shows</a>
-							<a class="nav-item nav-link" href="{$baseURL}monthly">Monthly shows</a>
-						</div>
-						<div class="navbar-nav">
-							<a class="nav-item nav-link" href="https://twitter.com/cchits">Twitter</a>
-							<a class="nav-item nav-link" href="https://www.facebook.com/cchits">Facebook</a>
-						</div>
-					</div>
-				</nav>				
-			</div>
-		</div>
+{include file="partials/header.html.tpl"}
 		<div class="container" id="chart">
 			<div class="row row-header">
 				<div class="col">
@@ -105,43 +70,9 @@
 						{/strip}{/foreach}
 					</div>
 				</div>
-				<div class="col-12 col-md-3">
-					<div class="row d-none d-sm-flex">
-						<div class="col">
-							<div class="shows-legend">The most recent ...</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col col-player" id="daily">
-							<header>Daily Exposure show</header>
-							{include file="player2.html.tpl" player_id="1" playlist=$daily}
-							<footer><a href="{$baseURL}daily">More...</a> | <a href="{$baseURL}daily/rss">Feed</a></footer>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col col-player" id="weekly">
-							<header>Weekly Review show</header>
-							{include file="player2.html.tpl" player_id="2" playlist=$weekly}
-							<footer><a href="{$baseURL}weekly">More...</a> | <a href="{$baseURL}weekly/rss">Feed</a></footer>
-						</div>
-					</div>	
-					<div class="row">
-						<div class="col col-player" id="daily">
-							<header>Monthly Chart show</header>
-							{include file="player2.html.tpl" player_id="3" playlist=$monthly}
-							<footer><a href="{$baseURL}monthly">More...</a> | <a href="{$baseURL}monthly/rss">Feed</a></footer>
-						</div>						
-					</div>
-				</div>
+				{include file="partials/sideplayers.html.tpl"}
 			</dv>
 		</div>
-		<script src="{$baseURL}EXTERNALS/JQUERY3/{$jquery3}/jquery.js"></script>
-		<script src="{$baseURL}EXTERNALS/POPPERJS/{$popperjs}/popper.js"></script>
-        <script src="{$baseURL}EXTERNALS/BOOTSTRAP4/{$bootstrap4}/js/bootstrap.js"></script>
-		<script src="{$baseURL}EXTERNALS/CHARTJS/{$chartjs}/Chart.bundle.js"></script>
-		<script src="{$baseURL}EXTERNALS/FONTAWESOME/{$fontawesome}/svg-with-js/js/fontawesome-all.js"></script>
-		<script src="{$baseURL}EXTERNALS/JPLAYER29/{$jplayer29}/jplayer/jquery.jplayer.js"></script>
-		<script src="{$baseURL}EXTERNALS/JPLAYER29/{$jplayer29}/add-on/jplayer.playlist.js"></script>
 		{include file="show_chartjs.tpl"}
 		<script type="text/javascript">{literal}//<![CDATA[
 			$(document).ready(function() {{/literal}
@@ -151,5 +82,4 @@
 				{literal}
 			});{/literal}//]]>
 		</script>
-    </body>
-</html>
+{include file="partials/footer.html.tpl"}
