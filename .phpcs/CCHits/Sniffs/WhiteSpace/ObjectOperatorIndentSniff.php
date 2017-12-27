@@ -1,44 +1,36 @@
 <?php
 /**
- * CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff.
+ * Checks that object operators are indented correctly.
  *
- * PHP version 5
- *
- * @category  PHP
- * @package   PHP_CodeSniffer
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   CVS: $Id: ObjectOperatorIndentSniff.php 301632 2010-07-28 01:57:56Z squiz $
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
-/**
- * CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff.
- *
- * Checks that object operators are indented 4 spaces if they are the first
- * thing on a line.
- *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.3.0
- * @link      http://pear.php.net/package/PHP_CodeSniffer
- */
-class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSniffer_Sniff
+namespace PHP_CodeSniffer\Standards\CCHits\Sniffs\WhiteSpace;
+
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Files\File;
+
+class ObjectOperatorIndentSniff implements Sniff
 {
+
+    /**
+     * The number of spaces code should be indented.
+     *
+     * @var integer
+     */
+    public $indent = 4;
 
 
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return int[]
      */
     public function register()
     {
-        return array(T_OBJECT_OPERATOR);
+        return [T_OBJECT_OPERATOR];
 
     }//end register()
 
@@ -46,13 +38,13 @@ class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSnif
     /**
      * Processes this test, when one of its tokens is encountered.
      *
-     * @param PHP_CodeSniffer_File $phpcsFile All the tokens found in the document.
-     * @param int                  $stackPtr  The position of the current token
-     *                                        in the stack passed in $tokens.
+     * @param \PHP_CodeSniffer\Files\File $phpcsFile All the tokens found in the document.
+     * @param int                         $stackPtr  The position of the current token
+     *                                               in the stack passed in $tokens.
      *
      * @return void
      */
-    public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -90,7 +82,7 @@ class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSnif
             $requiredIndent = strlen($tokens[$i]['content']);
         }
 
-        $requiredIndent += 4;
+        $requiredIndent += $this->indent;
 
         // Determine the scope of the original object operator.
         $origBrackets = null;
@@ -111,7 +103,7 @@ class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSnif
         }
 
         while ($next !== false) {
-            // Make sure it is in the same scope, otherwise dont check indent.
+            // Make sure it is in the same scope, otherwise don't check indent.
             $brackets = null;
             if (isset($tokens[$next]['nested_parenthesis']) === true) {
                 $brackets = $tokens[$next]['nested_parenthesis'];
@@ -124,8 +116,11 @@ class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSnif
 
             if ($origBrackets === $brackets && $origConditions === $conditions) {
                 // Make sure it starts a line, otherwise dont check indent.
+                $prev   = $phpcsFile->findPrevious(T_WHITESPACE, ($next - 1), $stackPtr, true);
                 $indent = $tokens[($next - 1)];
-                if ($indent['code'] === T_WHITESPACE) {
+                if ($tokens[$prev]['line'] !== $tokens[$next]['line']
+                    && $indent['code'] === T_WHITESPACE
+                ) {
                     if ($indent['line'] === $tokens[$next]['line']) {
                         $foundIndent = strlen($indent['content']);
                     } else {
@@ -134,19 +129,37 @@ class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSnif
 
                     if ($foundIndent !== $requiredIndent) {
                         $error = 'Object operator not indented correctly; expected %s spaces but found %s';
-                        $data  = array(
-                                  $requiredIndent,
-                                  $foundIndent,
-                                 );
-                        $phpcsFile->addError($error, $next, 'Incorrect', $data);
+                        $data  = [
+                            $requiredIndent,
+                            $foundIndent,
+                        ];
+
+                        $fix = $phpcsFile->addFixableError($error, $next, 'Incorrect', $data);
+                        if ($fix === true) {
+                            $spaces = str_repeat(' ', $requiredIndent);
+                            if ($foundIndent === 0) {
+                                $phpcsFile->fixer->addContentBefore($next, $spaces);
+                            } else {
+                                $phpcsFile->fixer->replaceToken(($next - 1), $spaces);
+                            }
+                        }
                     }
-                }
+                }//end if
 
                 // It cant be the last thing on the line either.
                 $content = $phpcsFile->findNext(T_WHITESPACE, ($next + 1), null, true);
                 if ($tokens[$content]['line'] !== $tokens[$next]['line']) {
                     $error = 'Object operator must be at the start of the line, not the end';
-                    $phpcsFile->addError($error, $next, 'StartOfLine');
+                    $fix   = $phpcsFile->addFixableError($error, $next, 'StartOfLine');
+                    if ($fix === true) {
+                        $phpcsFile->fixer->beginChangeset();
+                        for ($x = ($next + 1); $x < $content; $x++) {
+                            $phpcsFile->fixer->replaceToken($x, '');
+                        }
+
+                        $phpcsFile->fixer->addNewlineBefore($next);
+                        $phpcsFile->fixer->endChangeset();
+                    }
                 }
             }//end if
 
@@ -164,5 +177,3 @@ class CCHits_Sniffs_WhiteSpace_ObjectOperatorIndentSniff implements PHP_CodeSnif
 
 
 }//end class
-
-?>

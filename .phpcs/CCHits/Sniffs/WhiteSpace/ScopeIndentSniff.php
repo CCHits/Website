@@ -1,49 +1,24 @@
 <?php
 /**
- * CCHits_Sniffs_Whitespace_ScopeIndentSniff.
+ * Checks that control structures are structured and indented correctly.
  *
- * PHP version 5
- *
- * @category  PHP
- * @package   PHP_CodeSniffer
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   CVS: $Id: ScopeIndentSniff.php 254092 2008-03-03 02:51:39Z squiz $
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
-if (class_exists('Generic_Sniffs_WhiteSpace_ScopeIndentSniff', true) === false) {
-    $error = 'Class Generic_Sniffs_WhiteSpace_ScopeIndentSniff not found';
-    throw new PHP_CodeSniffer_Exception($error);
-}
+namespace PHP_CodeSniffer\Standards\CCHits\Sniffs\WhiteSpace;
 
-/**
- * CCHits_Sniffs_Whitespace_ScopeIndentSniff.
- *
- * Checks that control structures are structured correctly, and their content
- * is indented correctly.
- *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.3.0
- * @link      http://pear.php.net/package/PHP_CodeSniffer
- */
-class CCHits_Sniffs_WhiteSpace_ScopeIndentSniff extends Generic_Sniffs_WhiteSpace_ScopeIndentSniff
+use PHP_CodeSniffer\Standards\Generic\Sniffs\WhiteSpace\ScopeIndentSniff as GenericScopeIndentSniff;
+
+class ScopeIndentSniff extends GenericScopeIndentSniff
 {
 
     /**
      * Any scope openers that should not cause an indent.
      *
-     * @var array(int)
+     * @var int[]
      */
-    protected $nonIndentingScopes = array(T_SWITCH);
+    protected $nonIndentingScopes = [T_SWITCH];
 
 }//end class
-
-?>
