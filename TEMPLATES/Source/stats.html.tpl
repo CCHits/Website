@@ -125,7 +125,7 @@
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
                         <div class="stats-data">
-                            -BY : {$stats.numberOfTracs - $stats.numberOfTracksPerLicenseCriteria["nc"]}
+                            -BY : {$stats.numberOfTracks - $stats.numberOfTracksPerLicenseCriteria["nc"]}
                         </div>
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
@@ -135,7 +135,7 @@
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
                         <div class="stats-data">
-                            -NC : {$stats.numberOfTracs - $stats.numberOfTracksPerLicenseCriteria["nc"]}
+                            -NC : {$stats.numberOfTracks - $stats.numberOfTracksPerLicenseCriteria["nc"]}
                         </div>
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
@@ -145,7 +145,7 @@
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
                         <div class="stats-data">
-                            -ND : {$stats.numberOfTracs - $stats.numberOfTracksPerLicenseCriteria["nd"]}
+                            -ND : {$stats.numberOfTracks - $stats.numberOfTracksPerLicenseCriteria["nd"]}
                         </div>
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
@@ -155,7 +155,7 @@
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
                         <div class="stats-data">
-                            -SA : {$stats.numberOfTracs - $stats.numberOfTracksPerLicenseCriteria["sa"]}
+                            -SA : {$stats.numberOfTracks - $stats.numberOfTracksPerLicenseCriteria["sa"]}
                         </div>
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
@@ -165,7 +165,7 @@
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
                         <div class="stats-data">
-                            -SAMPLING+ : {$stats.numberOfTracs - $stats.numberOfTracksPerLicenseCriteria["sampling+"]}
+                            -SAMPLING+ : {$stats.numberOfTracks - $stats.numberOfTracksPerLicenseCriteria["sampling+"]}
                         </div>
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
@@ -175,7 +175,7 @@
                     </div>
                     <div class="col-6 col-sm-3 col-lg-3">
                         <div class="stats-data">
-                            -0 : {$stats.numberOfTracs - $stats.numberOfTracksPerLicenseCriteria["0"]}
+                            -0 : {$stats.numberOfTracks - $stats.numberOfTracksPerLicenseCriteria["0"]}
                         </div>
                     </div>
                 </div>

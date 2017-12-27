@@ -447,7 +447,7 @@ class HTML
                     UI::Redirect('admin');
                 }
                 break;
-            case 'stats':
+            case 'statistics':
                 $this->stats();
                 die();
             default:
