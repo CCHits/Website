@@ -1,33 +1,26 @@
 <?php
 /**
- * CCHits_Sniffs_Functions_FunctionDeclarationSniff.
- *
- * PHP version 5
- *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   CVS: $Id: MultiLineAssignmentSniff.php 301632 2010-07-28 01:57:56Z squiz $
- * @link      http://pear.php.net/package/PHP_CodeSniffer
- */
-
-/**
- * CCHits_Sniffs_Formatting_MultiLineAssignmentSniff.
- *
  * If an assignment goes over two lines, ensure the equal sign is indented.
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.3.0
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-class CCHits_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniffer_Sniff
+
+namespace PHP_CodeSniffer\Standards\CCHits\Sniffs\Formatting;
+
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Files\File;
+
+class MultiLineAssignmentSniff implements Sniff
 {
+
+    /**
+     * The number of spaces code should be indented.
+     *
+     * @var integer
+     */
+    public $indent = 4;
 
 
     /**
@@ -37,7 +30,7 @@ class CCHits_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniff
      */
     public function register()
     {
-        return array(T_EQUAL);
+        return [T_EQUAL];
 
     }//end register()
 
@@ -45,13 +38,13 @@ class CCHits_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniff
     /**
      * Processes this test, when one of its tokens is encountered.
      *
-     * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-     * @param int                  $stackPtr  The position of the current token
-     *                                        in the stack passed in $tokens.
+     * @param \PHP_CodeSniffer\Files\File $phpcsFile The file being scanned.
+     * @param int                         $stackPtr  The position of the current token
+     *                                               in the stack passed in $tokens.
      *
      * @return void
      */
-    public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -96,19 +89,18 @@ class CCHits_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniff
         // Find the actual indent.
         $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1));
 
-        $expectedIndent = ($assignmentIndent + 4);
+        $expectedIndent = ($assignmentIndent + $this->indent);
         $foundIndent    = strlen($tokens[$prev]['content']);
         if ($foundIndent !== $expectedIndent) {
             $error = 'Multi-line assignment not indented correctly; expected %s spaces but found %s';
-            $data  = array(
-                      $expectedIndent,
-                      $foundIndent,
-                     );
+            $data  = [
+                $expectedIndent,
+                $foundIndent,
+            ];
             $phpcsFile->addError($error, $stackPtr, 'Indent', $data);
         }
 
     }//end process()
 
-}//end class
 
-?>
+}//end class
