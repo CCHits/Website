@@ -33,7 +33,7 @@ class Configuration
     private $username       = 'admin';
     private $password       = 'admin';
     private $url_base       = 'cchits.net/api';
-    private $protocol       = 'http';
+    private $protocol       = 'https';
     private $api            = '';
     private $WorkingDir     = '';
     private $StaticDir      = '';
