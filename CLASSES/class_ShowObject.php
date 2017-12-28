@@ -10,7 +10,7 @@
  * @package  CCHitsClass
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
- * @link     http://cchits.net Actual web service
+ * @link     https://cchits.net Actual web service
  * @link     https://github.com/CCHits/Website/wiki Developers Web Site
  * @link     https://github.com/CCHits/Website Version Control Service
  */
@@ -23,7 +23,7 @@
  * @package  Objects
  * @author   Jon Spriggs <jon@sprig.gs>
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
- * @link     http://cchits.net Actual web service
+ * @link     https://cchits.net Actual web service
  * @link     https://github.com/CCHits/Website/wiki Developers Web Site
  * @link     https://github.com/CCHits/Website Version Control Service
  */
@@ -110,7 +110,7 @@ class ShowObject extends GenericObject
     {
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
-                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
+                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
                 $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
                 $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'mp3');
                 if (!empty($remotepath))
@@ -118,7 +118,7 @@ class ShowObject extends GenericObject
                     $this->strShowFileMP3 = $remotepath;
                 }
                 elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
-                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
                 $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'oga');
                 if (!empty($remotepath))
@@ -126,7 +126,7 @@ class ShowObject extends GenericObject
                     $this->strShowFileOGA = $remotepath;
                 }
                 elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
-                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
                 }
                 $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'm4a');
                 if (!empty($remotepath))
@@ -134,7 +134,7 @@ class ShowObject extends GenericObject
                     $this->strShowFileM4A = $remotepath;
                 }
                 elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
-                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
 
@@ -255,7 +255,8 @@ class ShowObject extends GenericObject
         $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
         $return['strSiteNameSpoken'] = ConfigBroker::getConfig("Spoken Site Name", "Cee Cee Hits dot net");
         $return['qrcode'] = UI::InsertQRCode('/show/' . $this->intShowID);
-        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/s/' . UI::setLongNumber($this->intShowID);
+        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/s/' . UI::setLongNumber($this->intShowID);
+        $return['strGuid'] = str_replace("https", "http", $return['strShowUrl']);
         return $return;
     }
 

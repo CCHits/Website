@@ -31,7 +31,7 @@
 	<item>
 		<title>{$daily.strShowName}</title>
 		<link>{$daily.strShowUrl}</link>
-		<guid>{$daily.strShowUrl}</guid>
+		<guid>{$daily.strGuid}</guid>
 		<description><![CDATA[<h1>{$daily.strShowName}</h1>
 {foreach from=$daily.arrTracks item=track}
 		<form action="{$baseURL}vote/{$track.intTrackID}/{$daily.intShowID}?go" method="post">
