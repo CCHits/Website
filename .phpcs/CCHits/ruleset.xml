@@ -2,6 +2,14 @@
 <ruleset name="CCHits">
  <description>The CCHits coding standard.</description>
 
+ <!--
+    Include all sniffs in the PEAR standard. Note that the
+    path to the standard does not have to be specified as the
+    PEAR standard exists inside the PHP_CodeSniffer install
+    directory.
+ -->
+ <rule ref="PEAR"/> 
+
  <!-- Include some additional sniffs from the Generic standard -->
  <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
  <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
