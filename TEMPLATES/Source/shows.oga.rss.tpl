@@ -32,7 +32,7 @@
 	<item>
 		<title>{$show.strShowName}</title>
 		<link>{$show.strShowUrl}</link>
-		<guid>{$show.strShowUrl}</guid>
+		<guid>{$show.strGuid}</guid>
 		<description><![CDATA[<h1>{$show.strShowName}</h1>
 {foreach from=$show.arrTracks item=track}
 		<form action="{$baseURL}vote/{$track.intTrackID}/{$show.intShowID}?go" method="post">
