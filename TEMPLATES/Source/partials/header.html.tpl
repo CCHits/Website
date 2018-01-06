@@ -27,6 +27,7 @@
 							<a class="nav-item nav-link" href="{$baseURL}weekly">Weekly shows</a>
 							<a class="nav-item nav-link" href="{$baseURL}monthly">Monthly shows</a>
 							<a class="nav-item nav-link" href="{$baseURL}statistics">Stats</a>
+							<a class="nav-item nav-link" href="{$baseURL}developer">Developer</a>
 						</div>
 						<div class="navbar-nav">
 							<a class="nav-item nav-link" href="https://twitter.com/cchits">Twitter</a>

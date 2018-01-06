@@ -158,6 +158,9 @@ try {
                 header("Location: $adminUrl");
             }
             break;
+        case 'developer':
+            $content = new Developer();
+            break;
         default:
             $content = new HTML();
         }
