@@ -513,14 +513,14 @@ class UI
      */
     public static function utf8element($array = null)
     {
-        if ($array == null) {
+        if ($array === null) {
             $array = array();
         }
         $newArray = array();
         if (is_object($array)) {
             $array = (array) $array;
         }
-        if ($array == null) {
+        if ($array === null) {
             return null;
         }
         foreach ($array as $key=>$val) {
@@ -528,7 +528,7 @@ class UI
                 $newArray[utf8_encode($key)] = self::utf8element($val);
             } elseif (is_object($val)) {
                 $newArray[utf8_encode($key)] = self::utf8element((array) $val);
-            } elseif ($val == false) {
+            } elseif ($val === false) {
                 $newArray[utf8_encode($key)] = '0';
             } else {
                 $newArray[utf8_encode($key)] = utf8_encode($val);

@@ -227,19 +227,19 @@ class GenericObject
         if (count($arrJson) > 1) {
             foreach ($arrJson as $key=>$value) {
                 if ($key == 'preferred') {
-                    return $value;
+                    return trim($value);
                 }
             }
             // We didn't find a preferred value, so just return the first one as being "preferred"
             foreach ($arrJson as $value) {
-                return $value;
+                return trim($value);
             }
         } elseif (is_array($arrJson) and count($arrJson) == 1) {
             foreach ($arrJson as $value) {
-                return $value;
+                return trim($value);
             }
         } else {
-            return $strJson;
+            return trim($strJson);
         }
     }
 
@@ -370,7 +370,7 @@ class GenericObject
     {
         $arrJson = (array) json_decode($strJson);
         if (count($arrJson) == 0) {
-            $arrJson[] = $strJson;
+            $arrJson[] = trim($strJson);
         }
         $arrJson = $this->deobjectify_array($arrJson);
         return $arrJson;
@@ -390,7 +390,7 @@ class GenericObject
             if (is_object($value)) {
                 $return[$key] = $this->deobjectify_array($value);
             } else {
-                $return[$key] = $value;
+                $return[$key] = trim($value);
             }
         }
         return $return;
