@@ -143,8 +143,9 @@ class Developer
                     if (isset($this->arrUri["parameters"]) && is_array($this->arrUri["parameters"]) && (count($this->arrUri["parameters"]) > 0)) {
                         $p = $this->arrUri["parameters"];
                         if (isset($p['name']) && isset($p['description'])) {
-                            ApplicationBroker::createApplication($_SESSION['intDeveloperID'], $p['name'], $p['description'], $p['url']);
+                            $sharedSecret = ApplicationBroker::createApplication($_SESSION['intDeveloperID'], $p['name'], $p['description'], $p['url']);
                             $_SESSION['message'] = "Application created successfully";
+                            $_SESSION['alert'] = "Shared secret : " . $sharedSecret . "<br/>Please save this somewhere safe, you won't be able to see it again.";
                             UI::Redirect("developer/applications");
                             break;
                         }
@@ -222,6 +223,10 @@ class Developer
         if (isset($_SESSION['message'])) {
             $this->result['message'] = $_SESSION['message'];
             unset($_SESSION['message']);
+        }
+        if (isset($_SESSION['alert'])) {
+            $this->result['alert'] = $_SESSION['alert'];
+            unset($_SESSION['alert']);
         }
         return true;
     }

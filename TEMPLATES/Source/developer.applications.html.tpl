@@ -19,6 +19,11 @@
                 {$message}
             </div>
             {/if}
+            {if isset($alert)}
+            <div class="alert alert-danger" role="alert">
+                {$alert}
+            </div>
+            {/if}
             <p>
                 <a href="{$baseURL}developer/new" class="btn btn-primary">Create new application</a>
             </p>

@@ -68,11 +68,15 @@ class ApplicationBroker
         $clientID = dechex($t);
         $clientID = substr($clientID, strlen($clientID) - 4, 4);
         $clientID = strrev($clientID) . dechex(rand(0, 255)) . dechex(rand(0, 255));
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45);// "-"
+        $shareSecret = substr($charid, 0, 8) . $hyphen . substr($charid, 8, 4) . $hyphen . substr($charid, 12, 4) 
+            . $hyphen . substr($charid, 16, 4) . $hyphen . substr($charid, 20, 12);
         $db = Database::getConnection();
         $sql = "INSERT INTO applications(intDeveloperID, strApplicationName, strApplicationDescription, " .
-        "strApplicationURL, strApplicationClientID) VALUES(?, ?, ?, ?, ?)";
+        "strApplicationURL, strApplicationClientID, strSharedSecret) VALUES(?, ?, ?, ?, ?, ?)";
         $query = $db->prepare($sql);
-        $values = [$intDeveloperID, $strName, $strDescription, $strUrl, $clientID];
+        $values = [$intDeveloperID, $strName, $strDescription, $strUrl, $clientID, $shareSecret];
         $query->execute($values);
         // This section of code, thanks to code example here:
         // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
@@ -81,5 +85,7 @@ class ApplicationBroker
                 "SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$values, 'error'=>$query->errorInfo()), true), 1
             );
         }
+
+        return $shareSecret;
     }
 }
