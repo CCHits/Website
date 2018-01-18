@@ -37,7 +37,7 @@ class TrackBroker
      *
      * @return object This class by itself.
      */
-    private static function getHandler()
+    private static function _getHandler()
     {
         if (self::$handler == null) {
             self::$handler = new self();
@@ -52,7 +52,7 @@ class TrackBroker
      */
     public static function getTotalTracks()
     {
-        $th = self::getHandler();
+        $th = self::_getHandler();
         if (isset($th->intTotalTracks) and $th->intTotalTracks != 0) {
             return $th->intTotalTracks;
         }
@@ -83,7 +83,7 @@ class TrackBroker
      */
     public static function getTrackByID($intTrackID = 0)
     {
-        $handler = self::getHandler();
+        $handler = self::_getHandler();
         if (isset($handler->arrTracks[$intTrackID]) and $handler->arrTracks[$intTrackID] != false) {
             return $handler->arrTracks[$intTrackID];
         }
@@ -95,7 +95,11 @@ class TrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $handler->arrTracks[$intTrackID] = $query->fetchObject('TrackObject');
             return $handler->arrTracks[$intTrackID];
@@ -133,9 +137,8 @@ class TrackBroker
             $intSize = 25;
         }
 
-        if ($strSort == null and isset($arrUri['parameters']['sort'])) {
-            if ($arrUri['parameters']['sort'] == 'intTrackID' ||
-                $arrUri['parameters']['sort'] == 'strTrackName') {
+        if ((!isset($strSort) or ($strSort == null)) and isset($arrUri['parameters']['sort'])) {
+            if ($arrUri['parameters']['sort'] == 'intTrackID' || $arrUri['parameters']['sort'] == 'strTrackName') {
                 $strSort = $arrUri['parameters']['sort'];
             } else {
                 $strSort = 'intTrackID';
@@ -144,7 +147,7 @@ class TrackBroker
             $strSort = 'intTrackID';
         }
 
-        if ($strDirection == null and isset($arrUri['parameters']['direction'])) {
+        if ((!isset($strDirection) or ($strDirection == null)) and isset($arrUri['parameters']['direction'])) {
             if ($arrUri['parameters']['direction'] == 'desc') {
                 $strDirection = 'DESC';
             } else {
@@ -156,7 +159,8 @@ class TrackBroker
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ? OR strTrackName REGEXP ? ORDER BY " . $strSort . " " . $strDirection;
+            $sql = "SELECT * FROM tracks WHERE strTrackName REGEXP ? "
+                . "OR strTrackName REGEXP ? ORDER BY " . $strSort . " " . $strDirection;
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // This snippet from http://www.php.net/manual/en/function.str-split.php
@@ -189,9 +193,18 @@ class TrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array("\"{$strTrackName}[[:space:]]*\"", "{$strTrackName}[[:space:]]*"), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql, 
+                            'values'=>array("\"{$strTrackName}[[:space:]]*\"",
+                            "{$strTrackName}[[:space:]]*"),
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
-            $handler = self::getHandler();
+            $handler = self::_getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
@@ -237,8 +250,7 @@ class TrackBroker
             $intSize = 25;
         }
         if ($strSort == null and isset($arrUri['parameters']['sort'])) {
-            if ($arrUri['parameters']['sort'] == 'intTrackID' ||
-                $arrUri['parameters']['sort'] == 'strTrackName') {
+            if ($arrUri['parameters']['sort'] == 'intTrackID' || $arrUri['parameters']['sort'] == 'strTrackName') {
                 $strSort = $arrUri['parameters']['sort'];
             } else {
                 $strSort = 'intTrackID';
@@ -292,9 +304,17 @@ class TrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>".*{$strTrackName}[[:space:]]*.*", 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql,
+                            'values'=>".*{$strTrackName}[[:space:]]*.*",
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
-            $handler = self::getHandler();
+            $handler = self::_getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
@@ -339,8 +359,7 @@ class TrackBroker
         }
 
         if ($strSort == null and isset($arrUri['parameters']['sort'])) {
-            if ($arrUri['parameters']['sort'] == 'intTrackID' ||
-                $arrUri['parameters']['sort'] == 'strTrackName') {
+            if ($arrUri['parameters']['sort'] == 'intTrackID' || $arrUri['parameters']['sort'] == 'strTrackName') {
                 $strSort = $arrUri['parameters']['sort'];
             } else {
                 $strSort = 'intTrackID';
@@ -361,7 +380,8 @@ class TrackBroker
 
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? or strTrackUrl LIKE ? ORDER BY " . $strSort . " " . $strDirection;
+            $sql = "SELECT * FROM tracks WHERE strTrackUrl LIKE ? or strTrackUrl LIKE ? ORDER BY " 
+                . $strSort . " " . $strDirection;
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             // For tracks have this field as a serialized json array, in which "/" are escaped with "\", 
@@ -369,18 +389,28 @@ class TrackBroker
             // "preferred":"http:\/\/archive.org\/details\/enrmp272_the_easton_ellises_-_ep_one"}
             // MySQL wants "\"s to be escaped, so that's "\\" for one "\". But PHP also wants "\"s to be escaped... 
             // Hence "\\\\" : this is sent as "\\" to MySQL which then interprets that as the literal "\" character.
-            // BUT... for tracks with only one URL, it is stored as a non escaped string, ie : http://www.jamendo.com/en/track/806979
+            // BUT... for tracks with only one URL, it is stored as a non escaped string, 
+            // ie : http://www.jamendo.com/en/track/806979
             // Hence the "or" operator in the $sql above.
-            // Addendum : some tracks have this field stored as a JSON array, ie : ["http:\/\/www.jamendo.com\/en\/track\/1026956"].
+            // Addendum : some tracks have this field stored as a JSON array, 
+            // ie : ["http:\/\/www.jamendo.com\/en\/track\/1026956"].
             // The replacement bellow will also work for those.
             $strEscapedTrackUrl = str_replace("/", "\\\\/", $strTrackUrl);
             $query->execute(array("%$strTrackUrl%", "%$strEscapedTrackUrl%"));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array("\"$strTrackUrl%", $strTrackUrl . '%'), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql,
+                            'values'=>array("\"$strTrackUrl%", $strTrackUrl . '%'),
+                            'error'=>$query->errorInfo()),
+                        true
+                    ), 1
+                );
             }
-            $handler = self::getHandler();
+            $handler = self::_getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
@@ -415,9 +445,19 @@ class TrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array('%"' . $strTrackUrl . '"%', $strTrackUrl), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql,
+                            'values'=>array('%"' . $strTrackUrl . '"%', $strTrackUrl),
+                            'error'=>$query->errorInfo()
+                        ),
+                        true
+                    ),
+                    1
+                );
             }
-            $handler = self::getHandler();
+            $handler = self::_getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;
@@ -452,9 +492,13 @@ class TrackBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$md5FileHash, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$md5FileHash, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
-            $handler = self::getHandler();
+            $handler = self::_getHandler();
             $item = $query->fetchObject('TrackObject');
             if ($item == false) {
                 return false;

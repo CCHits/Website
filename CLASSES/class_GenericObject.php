@@ -101,16 +101,11 @@ class GenericObject
                         $sql .= ", ";
                     }
                     $sql .= "$change_key = :$change_key";
-                    if ($this->$change_key === true)
-                    {
+                    if ($this->$change_key === true) {
                         $values[$change_key] = 1;
-                    }
-                    elseif ($this->$change_key === false)
-                    {
+                    } elseif ($this->$change_key === false) {
                         $values[$change_key] = 0;
-                    }
-                    else
-                    {
+                    } else {
                         $values[$change_key] = $this->$change_key;
                     }
                 }
@@ -123,7 +118,11 @@ class GenericObject
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$full_sql, 'values'=>$values, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array('sql'=>$full_sql, 'values'=>$values, 'error'=>$query->errorInfo()), true
+                        ), 1
+                    );
                 }
                 return true;
             } catch(Exception $e) {
@@ -150,7 +149,11 @@ class GenericObject
             }
             $keys .= $field_name;
             $key_place .= ":$field_name";
-            $values[$field_name] = $this->$field_name;
+            if (is_bool($this->$field_name)) {
+                $values[$field_name] = (int) $this->$field_name;
+            } else {
+                $values[$field_name] = $this->$field_name;
+            }
         }
         $full_sql = "INSERT INTO {$this->strDBTable} ($keys) VALUES ($key_place)";
         try {
@@ -160,7 +163,11 @@ class GenericObject
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$full_sql, 'values'=>$values, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$full_sql, 'values'=>$values, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             if ($this->strDBKeyCol != '') {
                 $key = $this->strDBKeyCol;
