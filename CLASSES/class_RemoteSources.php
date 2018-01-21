@@ -827,7 +827,7 @@ class RemoteSources extends GenericObject
         //curl_setopt($ch, CURLOPT_VERBOSE, true);
 
         if ($as_file == 1) {
-            $tempname = GeneralFunctions::getTempFileName(dirname(__FILE__) . '/../upload/');
+            $tempname = GeneralFunctions::getTempFileName(ConfigBroker::getConfig('uploadBase', dirname(__FILE__) . '/../upload/'));
             if ($tempname == false) {
                 error_log("Wasn't able to create a temporary file for uploading");
                 unlink($cookie);
