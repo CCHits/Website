@@ -50,6 +50,10 @@ class RemoteSourcesJamendo extends RemoteSources
             error_log("No content when trying to read $url_base{$match[1]}");
             return 406;
         }
+        if ($json_contents->headers->results_count == 0) {
+            error_log("Jamendo API returned an empty result when retrieving $url_base{$match[1]}");
+            return 406;
+        }
         preg_match("/licenses\/(.*)\/\d/", $json_contents->results[0]->license_ccurl, $matches);
         $this->set_strTrackName($json_contents->results[0]->name);
         $this->set_strTrackUrl($json_contents->results[0]->shareurl);
