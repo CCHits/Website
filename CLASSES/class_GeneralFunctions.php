@@ -141,12 +141,8 @@ class GeneralFunctions
     public static function getFileLengthString($filename = '')
     {
         $time = GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00');
-        preg_match('/(\d\d):(\d\d):(\d\d)/', $time, $matches);
-        if ($matches[1] > 0 && $matches[3] == 0) {
-            $time = '00:' . $matches[1] . ':' . $matches[2];
-        } else {
-            $time = $matches[1] . ':' . $matches[2] . ':' . $matches[3];
-        }
+        preg_match('/((\d?\d):)?(\d?\d):(\d\d)/', $time, $matches);
+        $time = substr('00' . $matches[2], -2) . ':' . substr('00' . $matches[3], -2) . ':' . substr('00' . $matches[4], -2);
         return $time;
     }
 
