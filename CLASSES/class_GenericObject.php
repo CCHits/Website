@@ -151,6 +151,8 @@ class GenericObject
             $key_place .= ":$field_name";
             if (is_bool($this->$field_name)) {
                 $values[$field_name] = (int) $this->$field_name;
+            } elseif (is_string($this->$field_name)) {
+                $values[$field_name] = $this->preferredJson($this->$field_name);
             } else {
                 $values[$field_name] = $this->$field_name;
             }
