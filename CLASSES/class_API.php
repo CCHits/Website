@@ -285,9 +285,9 @@ class API
                 }
                 try{
                     $objSource->amendRecord();
-                    $this->result = array('intTrackID'=>$objSource->get_intTrackID());
+                    $this->result_array = array('intTrackID'=>$objSource->get_intTrackID());
                 } catch (Exception $e) {
-                    $this->result = array('Incomplete'=>$e->getMessage());
+                    $this->result_array = array('Incomplete'=>$e->getMessage());
                     if (isset($objSource->duplicateTracks)) {
                         $this->result['DuplicateTracks'] = $objSource->duplicateTracks;
                     }
