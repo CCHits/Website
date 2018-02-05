@@ -84,7 +84,7 @@ class API
                 $artist_name = GeneralFunctions::getValue($arrUri['parameters'], 'strArtistName', '', true);
                 if ($artist_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($artist_name != '') {
                                 $artist_name .= '/';
                             }
@@ -105,7 +105,7 @@ class API
                 $artist_url = GeneralFunctions::getValue($arrUri['parameters'], 'strArtistUrl', '', true);
                 if ($artist_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($artist_url != '') {
                                 $artist_url .= '/';
                             }
@@ -125,7 +125,7 @@ class API
                 $track_name = GeneralFunctions::getValue($arrUri['parameters'], 'strTrackName', '', true);
                 if ($track_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($track_name != '') {
                                 $track_name .= '/';
                             }
@@ -150,7 +150,7 @@ class API
                 $track_url = GeneralFunctions::getValue($arrUri['parameters'], 'strTrackUrl', '', true);
                 if ($track_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($track_url != '') {
                                 $track_url .= '/';
                             }
@@ -174,7 +174,7 @@ class API
                 $show_name = GeneralFunctions::getValue($arrUri['parameters'], 'strShowName', '', true);
                 if ($show_name == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($show_name != '') {
                                 $show_name .= '/';
                             }
@@ -195,7 +195,7 @@ class API
                 $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
                 if ($show_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($show_url != '') {
                                 $show_url .= '/';
                             }
@@ -231,7 +231,7 @@ class API
                     $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
                     if ($show_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                         for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                            if (isset ($arrUri['path_items'][$arrItem])) {
+                            if (isset($arrUri['path_items'][$arrItem])) {
                                 if ($show_url != '') {
                                     $show_url .= '/';
                                 }
@@ -298,7 +298,7 @@ class API
                 $show_url = GeneralFunctions::getValue($arrUri['parameters'], 'strShowUrl', '', true);
                 if ($show_url == '' && GeneralFunctions::getValue($arrUri['path_items'], 2, false, true)) {
                     for ($arrItem = 2; $arrItem <= count($arrUri['path_items']); $arrItem++) {
-                        if (isset ($arrUri['path_items'][$arrItem])) {
+                        if (isset($arrUri['path_items'][$arrItem])) {
                             if ($show_url != '') {
                                 $show_url .= '/';
                             }
@@ -478,10 +478,10 @@ class API
             case 'getunplayedtracks':
                 $temp = TracksBroker::getUnplayedTracks();
                 if ($temp != false) {
-                  foreach($temp as $objTrack) {
-                    $arrTrack = $objTrack->getSelf();
-                    $this->result_list[$arrTrack['intTrackID']] = $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
-                  }
+                    foreach ($temp as $objTrack) {
+                        $arrTrack = $objTrack->getSelf();
+                        $this->result_list[$arrTrack['intTrackID']] = $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
+                    }
                 }
                 $this->render();
                 break;
@@ -492,26 +492,26 @@ class API
                 break;
             case 'v2':
                 switch($arrUri['path_items'][2]) {
-                    case 'dates':
-                        $plusdays = GeneralFunctions::getValue($arrUri['parameters'], 'plusdays', '0', true);
-                        $this->result_array = APIv2::getDates($plusdays);
-                        $this->render();
-                        break;
-                    case 'newchart':
-                        $dates = APIv2::getDates();
-                        $weeks = GeneralFunctions::getValue($arrUri['parameters'], 'weeks', '4', true);
-                        $date = GeneralFunctions::getValue($arrUri['parameters'], 'date', $dates['Today'], true);
-                        $yearweek = APIv2::getYearWeek($date);
-                        $this->result_array = APIv2::getNewChart($yearweek, $weeks);
-                        $this->render();
-                        break;
-                    case 'getchart':
-                        $strChartDate = GeneralFunctions::getValue($arrUri['parameters'], 'strChartDate', GeneralFunctions::getValue($arrUri['path_items'], 3, date('Y-m-d'), true), true);
-                        $this->result_array = ChartBroker::getLightChartByDate($strChartDate);
-                        $this->render();
-                        break;
-                    default:
-                        throw new API_NotApiCall();
+                case 'dates':
+                    $plusdays = GeneralFunctions::getValue($arrUri['parameters'], 'plusdays', '0', true);
+                    $this->result_array = APIv2::getDates($plusdays);
+                    $this->render();
+                    break;
+                case 'newchart':
+                    $dates = APIv2::getDates();
+                    $weeks = GeneralFunctions::getValue($arrUri['parameters'], 'weeks', '4', true);
+                    $date = GeneralFunctions::getValue($arrUri['parameters'], 'date', $dates['Today'], true);
+                    $yearweek = APIv2::getYearWeek($date);
+                    $this->result_array = APIv2::getNewChart($yearweek, $weeks);
+                    $this->render();
+                    break;
+                case 'getchart':
+                    $strChartDate = GeneralFunctions::getValue($arrUri['parameters'], 'strChartDate', GeneralFunctions::getValue($arrUri['path_items'], 3, date('Y-m-d'), true), true);
+                    $this->result_array = ChartBroker::getLightChartByDate($strChartDate);
+                    $this->render();
+                    break;
+                default:
+                    throw new API_NotApiCall();
                 }
                 break;
             default:
