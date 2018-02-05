@@ -27,62 +27,95 @@
  */
 class APIv2
 {
-	public static function getDates($plusdays) {
-		$db = Database::getConnection();
-		try {
+    /**
+     * Get dates.
+     * 
+     * @param int $plusdays number of days to add.
+     * 
+     * @return array|false
+     */
+    public static function getDates($plusdays) 
+    {
+        $db = Database::getConnection();
+        try {
 
-			$sql = "select DATE_FORMAT(DATE_ADD(NOW(), INTERVAL $plusdays DAY), '%Y-%c-%d') Today, YEARWEEK(DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3) YearWeek, STR_TO_DATE(CONCAT(YEARWEEK(DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3),' Monday'), '%x%v %W') Monday, STR_TO_DATE(CONCAT(YEARWEEK(DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3),' Sunday'), '%x%v %W') Sunday";
-			$query = $db->prepare($sql);
-			$query->execute();
-			if ($query->errorCode() != 0) {
-				throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
-			}
-			$data = $query->fetchAll(PDO::FETCH_ASSOC)[0];
-			return $data;
+            $sql = "select DATE_FORMAT(DATE_ADD(NOW(), INTERVAL $plusdays DAY), '%Y-%c-%d') Today, YEARWEEK(" . 
+            "DATE_ADD(NOW(), INTERVAL $plusdays DAY), 3) YearWeek, STR_TO_DATE(CONCAT(YEARWEEK(DATE_ADD(NOW(), " . 
+            "INTERVAL $plusdays DAY), 3),' Monday'), '%x%v %W') Monday, STR_TO_DATE(CONCAT(YEARWEEK(DATE_ADD(NOW(), " .
+            "INTERVAL $plusdays DAY), 3),' Sunday'), '%x%v %W') Sunday";
+            $query = $db->prepare($sql);
+            $query->execute();
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+            }
+            $data = $query->fetchAll(PDO::FETCH_ASSOC)[0];
+            return $data;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
         }
-	}
+    }
 
-	public static function getYearWeek($date) {
-		$db = Database::getConnection();
-		try {
-			$sql = "SELECT YEARWEEK(STR_TO_DATE('" . $date . "', '%Y-%c-%d'), 3) YearWeek";
-			$query = $db->prepare($sql);
-			$query->execute();
-			if ($query->errorCode() != 0) {
-				throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);	
-			}
-			$data = $query->fetchAll(PDO::FETCH_ASSOC);
-			return $data[0]['YearWeek'];
+    /**
+     * Get the week of the year.
+     * 
+     * @param string $date the date.
+     * 
+     * @return array|false;
+     */
+    public static function getYearWeek($date)
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT YEARWEEK(STR_TO_DATE('" . $date . "', '%Y-%c-%d'), 3) YearWeek";
+            $query = $db->prepare($sql);
+            $query->execute();
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+            }
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $data[0]['YearWeek'];
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
-		}
-	}
+        }
+    }
 
-	public static function getNewChart($yearweek, $weeks) {
-		$db = Database::getConnection();
-		try {
-			$sql = "SELECT SUM(S.SCORE) intRank, T.* FROM ( SELECT SUM( " . $weeks . " +( YEARWEEK(v.datTimestamp) - " . $yearweek . " ) ) SCORE, v.intTrackID TRACK, YEARWEEK(v.datTimestamp) YEARWEEK FROM votes v WHERE YEARWEEK(v.datTimestamp) <= " . $yearweek . " AND YEARWEEK(v.datTimestamp) > " . $yearweek . " - " . $weeks . " GROUP BY v.intTrackID, YEARWEEK(v.datTimestamp) ORDER BY YEARWEEK DESC, v.intTrackID ASC ) S LEFT JOIN tracks T ON T.intTrackID = S.TRACK GROUP BY S.TRACK ORDER BY intRank DESC";
-			$query = $db->prepare($sql);
-			$query->execute();
-			if ($query->errorCode() != 0) {
-				throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);	
-			}
-			$data = $query->fetchAll(PDO::FETCH_ASSOC);
-			foreach ($data as $key => $row) {
-				$subsql = "SELECT * FROM artists WHERE intArtistID = ? LIMIT 1";
-				$subquery = $db->prepare($subsql);
-				$subquery->execute(array($row['intArtistID']));
-				$artist = $subquery->fetchAll(PDO::FETCH_ASSOC);
-				$data[$key]['artist'] = $artist;
-			}
-			return $data;
+    /**
+     * Get new chart.
+     * 
+     * @param int $yearweek the week of the year.
+     * @param int $weeks    the number of weeks for calculations.
+     * 
+     * @return array|false
+     */
+    public static function getNewChart($yearweek, $weeks)
+    {
+        $db = Database::getConnection();
+        try {
+            $sql = "SELECT SUM(S.SCORE) intRank, T.* FROM ( SELECT SUM( " . $weeks . 
+            " +( YEARWEEK(v.datTimestamp) - " . $yearweek . " ) ) SCORE, v.intTrackID TRACK, " .
+            "YEARWEEK(v.datTimestamp) YEARWEEK FROM votes v WHERE YEARWEEK(v.datTimestamp) <= " . $yearweek . " AND " .
+            "YEARWEEK(v.datTimestamp) > " . $yearweek . " - " . $weeks . " GROUP BY v.intTrackID, " .
+            "YEARWEEK(v.datTimestamp) ORDER BY YEARWEEK DESC, v.intTrackID ASC ) S LEFT JOIN tracks T ON " .
+            "T.intTrackID = S.TRACK GROUP BY S.TRACK ORDER BY intRank DESC";
+            $query = $db->prepare($sql);
+            $query->execute();
+            if ($query->errorCode() != 0) {
+                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+            }
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($data as $key => $row) {
+                $subsql = "SELECT * FROM artists WHERE intArtistID = ? LIMIT 1";
+                $subquery = $db->prepare($subsql);
+                $subquery->execute(array($row['intArtistID']));
+                $artist = $subquery->fetchAll(PDO::FETCH_ASSOC);
+                $data[$key]['artist'] = $artist;
+            }
+            return $data;
         } catch(Exception $e) {
             error_log("SQL Died: " . $e->getMessage());
             return false;
-		}
-	}
+        }
+    }
 }

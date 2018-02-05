@@ -45,7 +45,11 @@ class ChartBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             return $query->fetchColumn();
         } catch(Exception $e) {
@@ -71,7 +75,11 @@ class ChartBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$intTrackID, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $return = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($return != false and count($return) < 60) {
@@ -124,7 +132,9 @@ class ChartBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1
+                    );
                 }
                 $strChartDate = $query->fetchColumn();
             }
@@ -142,7 +152,15 @@ class ChartBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>UI::getShortDate($strChartDate), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql, 
+                            'values'=>UI::getShortDate($strChartDate), 
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
@@ -151,7 +169,8 @@ class ChartBroker
                     if ($temp != false) {
                         $return['position'][$track['intPositionID']] = $temp->getSelf();
                         $return['position'][$track['intPositionID']]['intChartPosition'] = $track['intPositionID'];
-                        $return['position'][$track['intPositionID']]['arrVotes'] = VoteBroker::getVotesForTrackByShow($temp->get_intTrackID());
+                        $return['position'][$track['intPositionID']]['arrVotes'] 
+                            = VoteBroker::getVotesForTrackByShow($temp->get_intTrackID());
                     }
                 }
             }
@@ -162,6 +181,15 @@ class ChartBroker
         }
     }
     
+    /**
+     * Returns a light version of the chart, by date.
+     * 
+     * @param string $strChartDate date
+     * @param int    $intPage      page
+     * @param int    $intSize      size
+     * 
+     * @return array|false
+     */
     public static function getLightChartByDate(
         $strChartDate = '',
         $intPage = null,
@@ -191,7 +219,9 @@ class ChartBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1
+                    );
                 }
                 $strChartDate = $query->fetchColumn();
             }
@@ -209,7 +239,15 @@ class ChartBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>UI::getShortDate($strChartDate), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql,
+                            'values'=>UI::getShortDate($strChartDate), 
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {

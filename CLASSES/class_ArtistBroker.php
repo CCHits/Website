@@ -46,7 +46,11 @@ class ArtistBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intArtistID, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$intArtistID, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             return $query->fetchObject('ArtistObject');
         } catch(Exception $e) {
@@ -120,7 +124,11 @@ class ArtistBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$strArtistName . '[[:space:]]*', 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$strArtistName . '[[:space:]]*', 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $item = $query->fetchObject('ArtistObject');
             if ($item == false) {
@@ -202,7 +210,13 @@ class ArtistBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>".*{$strArtistName}[[:space:]]*.*", 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql, 'values'=>".*{$strArtistName}[[:space:]]*.*", 'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             $item = $query->fetchObject('ArtistObject');
             if ($item == false) {
@@ -251,21 +265,28 @@ class ArtistBroker
             $sql = "SELECT * FROM artists WHERE strArtistUrl LIKE ? OR strArtistUrl LIKE ?";
             $pagestart = ($intPage*$intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
-            // For artists with multiple URLs, this field is a serialized json array, in which "/" are escaped with "\", 
+            // For artists with multiple URLs, this field is a serialized json array, in which "/" 
+            // are escaped with "\", 
             // ie : {"0":"http:\/\/www.jamendo.com\/artist\/joshwoodward","preferred":"http:\/\/www.jamendo.com\/en\/artist\/joshwoodward",
             // "1":"http:\/\/www.joshwoodward.com\/","2":"http:\/\/freemusicarchive.org\/music\/Josh_Woodward\/"}
             // MySQL wants "\"s to be escaped, so that's "\\" for one "\". But PHP also wants "\"s to be escaped... 
             // Hence "\\\\" : this is sent as "\\" to MySQL which then interprets that as the literal "\" character.
-            // BUT... for artists with only one URL, it is stored as a non escaped string, ie : http://www.jamendo.com/en/artist/Karmafish.
+            // BUT... for artists with only one URL, it is stored as a non escaped string, 
+            // ie : http://www.jamendo.com/en/artist/Karmafish.
             // Hence the "or" operator in the $sql above.
-            // Addendum : some artists have this field stored as a JSON array, ie : ["http:\/\/www.jamendo.com\/artist\/504131"].
+            // Addendum : some artists have this field stored as a JSON array, 
+            // ie : ["http:\/\/www.jamendo.com\/artist\/504131"].
             // The replacement bellow will also work for those.
             $strEscapedArtistUrl = str_replace("/", "\\\\/", $strArtistUrl);
             $query->execute(array("%$strArtistUrl%", "%$strEscapedArtistUrl%"));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$strArtistUrl . '%', 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$strArtistUrl . '%', 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $item = $query->fetchObject('ArtistObject');
             if ($item == false) {

@@ -55,18 +55,23 @@ class ChangeBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1
+                    );
                 }
                 $strChangeDate = $query->fetchColumn();
             }
             if ($strPriorDate == '') {
-                $sql = "SELECT datChart FROM chart WHERE datChart < '$strChangeDate' GROUP BY datChart ORDER BY datChart DESC LIMIT 0, 1";
+                $sql = "SELECT datChart FROM chart WHERE datChart < '$strChangeDate' GROUP BY datChart ORDER BY " .
+                "datChart DESC LIMIT 0, 1";
                 $query = $db->prepare($sql);
                 $query->execute();
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1
+                    );
                 }
                 $strPriorDate = $query->fetchColumn();
             }
@@ -74,16 +79,24 @@ class ChangeBroker
             $return['strChangeDate'] = $strChangeDate;
 
             if ($intTrackID != 0) {
-                $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? AND intTrackID = ? ORDER BY intPositionID ASC";
-                $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? AND intTrackID = ? GROUP BY intTrackID";
-                $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID AND st.intTrackID = ? GROUP BY st.intTrackID";
+                $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? AND intTrackID = ? " .
+                "ORDER BY intPositionID ASC";
+                $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp " .
+                "< ? AND datTimestamp >= ? AND intTrackID = ? GROUP BY intTrackID";
+                $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, " .
+                "showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID " .
+                "AND st.intTrackID = ? GROUP BY st.intTrackID";
                 $values1 = array(UI::getShortDate($strChangeDate), $intTrackID);
                 $values2 = array(UI::getShortDate($strPriorDate), $intTrackID);
                 $values3 = array(UI::getShortDate($strChangeDate), UI::getShortDate($strPriorDate), $intTrackID);
             } else {
-                $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? ORDER BY intPositionID ASC";
-                $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp < ? AND datTimestamp >= ? GROUP BY intTrackID";
-                $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID GROUP BY st.intTrackID";
+                $positionsql = "SELECT intPositionID, intTrackID FROM chart WHERE datChart = ? ORDER BY " .
+                "intPositionID ASC";
+                $votessql = "SELECT count(intTrackID) AS count_intTrackID, intTrackID FROM votes WHERE datTimestamp " .
+                "< ? AND datTimestamp >= ? GROUP BY intTrackID";
+                $showsql = "SELECT count(st.intTrackID) AS count_intTrackID, st.intTrackID FROM shows AS s, " .
+                "showtracks AS st WHERE s.datDateAdded < ? AND s.datDateAdded >= ? AND s.intShowID = st.intShowID " .
+                "GROUP BY st.intTrackID";
                 $values1 = array(UI::getShortDate($strChangeDate));
                 $values2 = array(UI::getShortDate($strPriorDate));
                 $values3 = array(UI::getShortDate($strChangeDate), UI::getShortDate($strPriorDate));
@@ -93,14 +106,22 @@ class ChangeBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$positionsql, 'values'=>$values1, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$positionsql, 'values'=>$values1, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             $query->execute($values2);
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$positionsql, 'values'=>$values2, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$positionsql, 'values'=>$values2, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $tracks2 = $query->fetchAll(PDO::FETCH_ASSOC);
             $query = $db->prepare($votessql);
@@ -108,7 +129,11 @@ class ChangeBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$votessql, 'values'=>$values3, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$votessql, 'values'=>$values3, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $votes = $query->fetchAll(PDO::FETCH_ASSOC);
             $query = $db->prepare($showsql);
@@ -116,7 +141,11 @@ class ChangeBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$showsql, 'values'=>$values3, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$showsql, 'values'=>$values3, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $shows = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -126,7 +155,10 @@ class ChangeBroker
 
             foreach ($tracks2 as $yesterdaytrack) {
                 if ($todayT[$yesterdaytrack['intTrackID']] != $yesterdaytrack['intPositionID']) {
-                    $diff[$yesterdaytrack['intTrackID']]['move'] = array('from' => $yesterdaytrack['intPositionID'], 'to' => $todayT[$yesterdaytrack['intTrackID']]);
+                    $diff[$yesterdaytrack['intTrackID']]['move'] = array(
+                        'from' => $yesterdaytrack['intPositionID'], 
+                        'to' => $todayT[$yesterdaytrack['intTrackID']]
+                    );
                 }
             }
 
