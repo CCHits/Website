@@ -144,7 +144,8 @@ class HTML
                 if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
                     $object[1] = $object[2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Chart', 'Current Chart Places');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
+                        ConfigBroker::getConfig('Chart', 'Current Chart Places');
                 }
                 $this->chart($object[1]);
                 break;
@@ -152,7 +153,8 @@ class HTML
                 if (isset($this->arrUri['path_items'][1]) and $this->arrUri['path_items'][1] == 'rss') {
                     $this->format = 'rss';
                     $object[1] = $object[2];
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Chart', 'Current Trend Details');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
+                        ConfigBroker::getConfig('Chart', 'Current Trend Details');
                 }
                 $this->trend($object[1]);
                 break;
@@ -161,112 +163,163 @@ class HTML
                     $object[1] = $object[2];
                     $object[2] = $object[3];
                     $this->format = 'rss';
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Change Log', 'Change Log');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
+                        ConfigBroker::getConfig('Change Log', 'Change Log');
                 }
                 $this->change($object[1], $object[2]);
                 break;
             case 'd':
                 if (isset($object[1]) && isset($object[2])) {
                     UI::Redirect("daily/" . $object[1] . "/" . $object[2]);
-                }
-                elseif (isset($object[1])) {
+                } elseif (isset($object[1])) {
                     UI::Redirect("daily/" . $object[1]);
-                }
-                else {
+                } else {
                     UI::Redirect("daily");
                 }
                 break;
             case 'daily':
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')
+                ) {
                     $this->format = 'mp3.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')
+                ) {
                     $this->format = 'oga.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     $this->format = 'm4a.rss';
                 }
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' 
+                    or $this->arrUri['path_items'][1] == 'rss' 
+                    or $this->arrUri['path_items'][1] == 'oga' 
+                    or $this->arrUri['path_items'][1] == 'ogg' 
+                    or $this->arrUri['path_items'][1] == 'm4a' 
+                    or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     if (isset($this->arrUri['path_items'][2])) {
                         $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
                         $this->arrUri['path_items'][1] = '';
                     }
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
+                        ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 }
                 $this->daily($this->arrUri['path_items'][1]);
                 break;
             case 'w':
                 if (isset($object[1]) && isset($object[2])) {
                     UI::Redirect("weekly/" . $object[1] . "/" . $object[2]);
-                }
-                elseif (isset($object[1])) {
+                } elseif (isset($object[1])) {
                     UI::Redirect("weekly/" . $object[1]);
-                }
-                else {
+                } else {
                     UI::Redirect("weekly");
                 }
                 break;
             case 'weekly':
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')
+                ) {
                     $this->format = 'mp3.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')
+                ) {
                     $this->format = 'oga.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     $this->format = 'm4a.rss';
                 }
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' 
+                    or $this->arrUri['path_items'][1] == 'rss' 
+                    or $this->arrUri['path_items'][1] == 'oga' 
+                    or $this->arrUri['path_items'][1] == 'ogg' 
+                    or $this->arrUri['path_items'][1] == 'm4a' 
+                    or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     if (isset($this->arrUri['path_items'][2])) {
                         $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
                         $this->arrUri['path_items'][1] = '';
                     }
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
+                        ConfigBroker::getConfig('Weekly Show Name', 'Weekly Review Show');
                 }
                 $this->weekly($object[1]);
                 break;
             case 'm':
                 if (isset($object[1]) && isset($object[2])) {
                     UI::Redirect("monthly/" . $object[1] . "/" . $object[2]);
-                }
-                elseif (isset($object[1])) {
+                } elseif (isset($object[1])) {
                     UI::Redirect("monthly/" . $object[1]);
-                }
-                else {
+                } else {
                     UI::Redirect("monthly");
                 }
                 break;
             case 'monthly':
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')
+                ) {
                     $this->format = 'mp3.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')
+                ) {
                     $this->format = 'oga.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     $this->format = 'm4a.rss';
                 }
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' 
+                    or $this->arrUri['path_items'][1] == 'rss' 
+                    or $this->arrUri['path_items'][1] == 'oga' 
+                    or $this->arrUri['path_items'][1] == 'ogg' 
+                    or $this->arrUri['path_items'][1] == 'm4a' 
+                    or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     if (isset($this->arrUri['path_items'][2])) {
                         $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
                         $this->arrUri['path_items'][1] = '';
                     }
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' .
+                        ConfigBroker::getConfig('Monthly Show Name', 'Monthly Chart Show');
                 }
                 $this->monthly($object[1]);
                 break;
             case 'extra':
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss')
+                ) {
                     $this->format = 'mp3.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg')
+                ) {
                     $this->format = 'oga.rss';
-                } elseif (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                } elseif (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     $this->format = 'm4a.rss';
                 }
-                if (isset($this->arrUri['path_items'][1]) and ($this->arrUri['path_items'][1] == 'mp3' or $this->arrUri['path_items'][1] == 'rss' or $this->arrUri['path_items'][1] == 'oga' or $this->arrUri['path_items'][1] == 'ogg' or $this->arrUri['path_items'][1] == 'm4a' or $this->arrUri['path_items'][1] == 'mp4')) {
+                if (isset($this->arrUri['path_items'][1]) 
+                    and ($this->arrUri['path_items'][1] == 'mp3' 
+                    or $this->arrUri['path_items'][1] == 'rss' 
+                    or $this->arrUri['path_items'][1] == 'oga' 
+                    or $this->arrUri['path_items'][1] == 'ogg' 
+                    or $this->arrUri['path_items'][1] == 'm4a' 
+                    or $this->arrUri['path_items'][1] == 'mp4')
+                ) {
                     if (isset($this->arrUri['path_items'][2])) {
                         $this->arrUri['path_items'][1] = $this->arrUri['path_items'][2];
                     } else {
                         $this->arrUri['path_items'][1] = '';
                     }
-                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . ConfigBroker::getConfig('Extra Show Name', 'Extra Shows');
+                    $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
+                        ConfigBroker::getConfig('Extra Show Name', 'Extra Shows');
                 }
                 $this->extra($object[1]);
                 break;
@@ -304,7 +357,9 @@ class HTML
                     $objShow = ShowBroker::getShowByID($object[2]);
                     if ($object[2] == '' and $user->get_isAdmin()) {
                         $this->addTrackToShow();
-                    } elseif ($objShow != false and $user->get_isAdmin() and $objShow->get_intUserID() == $user->get_intUserID()) {
+                    } elseif ($objShow != false 
+                        and $user->get_isAdmin() and $objShow->get_intUserID() == $user->get_intUserID()
+                    ) {
                         $this->editShow($objShow);
                     } elseif ($objShow->get_intUserID() != $user->get_intUserID()) {
                         $this->result['notyourshow'] = true;
@@ -335,7 +390,9 @@ class HTML
                         break;
                     }
                     $objTrack = RemoteSourcesBroker::getRemoteSourceByID($object[2]);
-                    if (($object[2] == '' or $objTrack != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
+                    if (($object[2] == '' or $objTrack != false) 
+                        and ($user->get_isUploader() or $user->get_isAdmin())
+                    ) {
                         $this->addTrack($objTrack);
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
@@ -349,7 +406,9 @@ class HTML
                     break;
                 case 'addartist':
                     $objArtist = ArtistBroker::getArtistByID($object[2]);
-                    if (($object[2] == '' or $objArtist != false) and ($user->get_isUploader() or $user->get_isAdmin())) {
+                    if (($object[2] == '' or $objArtist != false) 
+                        and ($user->get_isUploader() or $user->get_isAdmin())
+                    ) {
                         $this->addArtist($objArtist);
                     } elseif ($objTrack == false) {
                         UI::sendHttpResponse(404);
@@ -419,7 +478,8 @@ class HTML
                         $this->result['previous_page'] = true;
                     }
                     $total_tracks = ShowBroker::getTotalShowsByUserID($user);
-                    $current_tracks = (GeneralFunctions::getValue($this->arrUri['parameters'], 'page', 0, true) + 1) * GeneralFunctions::getValue($this->arrUri['parameters'], 'size', 25, true);
+                    $current_tracks = (GeneralFunctions::getValue($this->arrUri['parameters'], 'page', 0, true) + 1) * 
+                        GeneralFunctions::getValue($this->arrUri['parameters'], 'size', 25, true);
                     if ($total_tracks > $current_tracks) {
                         $this->result['next_page'] = true;
                     }
@@ -436,7 +496,9 @@ class HTML
                     if ($user->get_isUploader() or $user->get_isAdmin()) {
                         UI::SmartyTemplate('admin.html', $this->result);
                     } else {
-                        if (isset($_SESSION['OPENID_AUTH']) and is_array($_SESSION['OPENID_AUTH']) and count($_SESSION['OPENID_AUTH']) > 0) {
+                        if (isset($_SESSION['OPENID_AUTH']) 
+                            and is_array($_SESSION['OPENID_AUTH']) and count($_SESSION['OPENID_AUTH']) > 0
+                        ) {
                             $this->result['notuploader'] = true;
                             $this->result['notadmin'] = true;
                         }
@@ -475,7 +537,9 @@ class HTML
                 if ($arrData->get_intArtistID() == 0) {
                     $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
                 } else {
-                    $artists = array($arrData->get_intArtistID() => ArtistBroker::getArtistByID($arrData->get_intArtistID()));
+                    $artists = array(
+                        $arrData->get_intArtistID() => ArtistBroker::getArtistByID($arrData->get_intArtistID())
+                    );
                 }
                 if (!is_array($artists)) {
                     $artists = array();
@@ -519,9 +583,13 @@ class HTML
                     $objTrack = RemoteSourcesBroker::getRemoteSourceByID($key);
                     $this->result['track'] = $objTrack->getSelf();
                     if ($objTrack->get_intArtistID() == 0) {
-                        $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
+                        $artists = ArtistBroker::getArtistByPartialUrl(
+                            $this->result['track']['strArtistUrl'], 0, 10000
+                        );
                     } else {
-                        $artists = array($objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID()));
+                        $artists = array(
+                            $objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID())
+                        );
                     }
                     if (!is_array($artists)) {
                         $artists = array();
@@ -530,7 +598,9 @@ class HTML
                             $this->result['artists'][] = $artist->getSelf();
                         }
                     }
-                    $new_artists = ArtistBroker::getArtistByPartialName($this->result['track']['strArtistName'], 0, 10000);
+                    $new_artists = ArtistBroker::getArtistByPartialName(
+                        $this->result['track']['strArtistName'], 0, 10000
+                    );
                     if (is_array($new_artists)) {
                         foreach ($new_artists as $artist) {
                             $this->result['artists'][] = $artist->getSelf();
@@ -579,7 +649,9 @@ class HTML
             if ($objTrack->get_intArtistID() == 0) {
                 $artists = ArtistBroker::getArtistByPartialUrl($this->result['track']['strArtistUrl'], 0, 10000);
             } else {
-                $artists = array($objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID()));
+                $artists = array(
+                    $objTrack->get_intArtistID() => ArtistBroker::getArtistByID($objTrack->get_intArtistID())
+                );
             }
             if (!is_array($artists)) {
                 $artists = array();
@@ -611,7 +683,11 @@ class HTML
     protected function addArtist($objArtist = null)
     {
         if ($objArtist == false) {
-            $arrData = new NewArtistObject($this->arrUri['parameters']['artistname'], $this->arrUri['parameters']['artistnamesounds'], $this->arrUri['parameters']['artisturl']);
+            $arrData = new NewArtistObject(
+                $this->arrUri['parameters']['artistname'],
+                $this->arrUri['parameters']['artistnamesounds'],
+                $this->arrUri['parameters']['artisturl']
+            );
             if (is_object($arrData) and $arrData->get_intArtistID() > 0) {
                 $this->result['artist'] = $arrData->getSelf();
                 $this->result['postimport'] = true;
@@ -641,7 +717,9 @@ class HTML
     protected function addTrackToShow()
     {
         $this->result['track'] = TrackBroker::getTrackByID($this->arrUri['parameters']['intTrackID']);
-        if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '' and $this->result['track'] != false) {
+        if (isset($this->arrUri['parameters']['intTrackID']) 
+            and $this->arrUri['parameters']['intTrackID'] != '' and $this->result['track'] != false
+        ) {
             $_SESSION['addtracktoshow'] = $this->arrUri['parameters']['intTrackID'];
             $this->result['track'] = $this->result['track']->getSelf();
             $shows = ShowBroker::getShowByUserID(UserBroker::getUser()->get_intUserID(), 0, 100);
@@ -664,13 +742,17 @@ class HTML
         if (isset($this->arrUri['parameters']['strShowUrl']) and $this->arrUri['parameters']['strShowUrl'] != '') {
             $showUrl = $this->arrUri['parameters']['strShowUrl'];
             $showName = $this->arrUri['parameters']['strShowUrl'];
-            if (isset($this->arrUri['parameters']['strShowName']) and $this->arrUri['parameters']['strShowName'] != '') {
+            if (isset($this->arrUri['parameters']['strShowName']) 
+                and $this->arrUri['parameters']['strShowName'] != ''
+            ) {
                 $showName = $this->arrUri['parameters']['strShowName'];
             }
             $show = new NewExternalShowObject($showUrl, $showName);
             if (is_object($show)) {
                 $intShowID = $show->get_intShowID();
-                if (isset($this->arrUri['parameters']['intTrackID']) and $this->arrUri['parameters']['intTrackID'] != '') {
+                if (isset($this->arrUri['parameters']['intTrackID']) 
+                    and $this->arrUri['parameters']['intTrackID'] != ''
+                ) {
                     $temp = new NewShowTrackObject($this->arrUri['parameters']['intTrackID'], $show->get_intShowID());
                 }
                 UI::Redirect('admin/show/' . $intShowID);
@@ -710,10 +792,14 @@ class HTML
                 $temp = new NewShowTrackObject($_SESSION['intTrackID'], $objShow->get_intShowID());
                 unset($_SESSION['intTrackID']);
             }
-            if (isset($this->arrUri['parameters']['intTrackID']) and TrackBroker::getTrackByID($this->arrUri['parameters']['intTrackID']) != false) {
+            if (isset($this->arrUri['parameters']['intTrackID']) 
+                and TrackBroker::getTrackByID($this->arrUri['parameters']['intTrackID']) != false
+            ) {
                 $temp = new NewShowTrackObject($this->arrUri['parameters']['intTrackID'], $objShow->get_intShowID());
             }
-            if (isset($this->arrUri['parameters']['strShowName']) and $this->arrUri['parameters']['strShowName'] != "") {
+            if (isset($this->arrUri['parameters']['strShowName']) 
+                and $this->arrUri['parameters']['strShowName'] != ""
+            ) {
                 $objShow->set_strShowName($this->arrUri['parameters']['strShowName']);
                 $objShow->write();
             }
@@ -721,13 +807,19 @@ class HTML
                 $objShow->set_strShowUrl($this->arrUri['parameters']['strShowUrl']);
                 $objShow->write();
             }
-            if (isset($this->arrUri['parameters']['moveup']) and TrackBroker::getTrackByID($this->arrUri['parameters']['moveup']) != false) {
+            if (isset($this->arrUri['parameters']['moveup']) 
+                and TrackBroker::getTrackByID($this->arrUri['parameters']['moveup']) != false
+            ) {
                 ShowTrackBroker::MoveShowTrackUp($objShow, $this->arrUri['parameters']['moveup']);
             }
-            if (isset($this->arrUri['parameters']['movedown']) and TrackBroker::getTrackByID($this->arrUri['parameters']['movedown']) != false) {
+            if (isset($this->arrUri['parameters']['movedown']) 
+                and TrackBroker::getTrackByID($this->arrUri['parameters']['movedown']) != false
+            ) {
                 ShowTrackBroker::MoveShowTrackDown($objShow, $this->arrUri['parameters']['movedown']);
             }
-            if (isset($this->arrUri['parameters']['remove']) and TrackBroker::getTrackByID($this->arrUri['parameters']['remove']) != false) {
+            if (isset($this->arrUri['parameters']['remove']) 
+                and TrackBroker::getTrackByID($this->arrUri['parameters']['remove']) != false
+            ) {
                 ShowTrackBroker::RemoveShowTrack($objShow, $this->arrUri['parameters']['remove']);
             }
         }
@@ -745,8 +837,13 @@ class HTML
     {
         $user = UserBroker::getUser();
         $this->result['error'] = false;
-        if (isset($this->arrUri['parameters']['strUsername']) and isset($this->arrUri['parameters']['strPassword']) and $this->arrUri['parameters']['strUsername'] != '' and $this->arrUri['parameters']['strPassword'] != '' ) {
-            $newCredentials = "{$this->arrUri['parameters']['strUsername']}:" . sha1($this->arrUri['parameters']['strPassword']);
+        if (isset($this->arrUri['parameters']['strUsername']) 
+            and isset($this->arrUri['parameters']['strPassword']) 
+            and $this->arrUri['parameters']['strUsername'] != '' 
+            and $this->arrUri['parameters']['strPassword'] != ''
+        ) {
+            $newCredentials = "{$this->arrUri['parameters']['strUsername']}:" . 
+                sha1($this->arrUri['parameters']['strPassword']);
             $user->set_sha1Pass($newCredentials);
             if ($user->write()) {
                 UI::Redirect('admin');
@@ -816,18 +913,15 @@ class HTML
         $show = end($internal_show);
         $show->set_featuring(false);
         $monthly = $show->getSelf();
-        if ($this->render())
-        {
-            if ($this->format == 'html') 
-            {
+        if ($this->render()) {
+            if ($this->format == 'html') {
                 $this->result['daily_player_json'] = json_encode(array($daily['player_data']));
                 $this->result['weekly_player_json'] = json_encode(array($weekly['player_data']));
                 $this->result['monthly_player_json'] = json_encode(array($monthly['player_data']));
             }
         }
         $this->result['stats'] = StatsBroker::getStats()->getSelf();
-        if ($this->render())
-        {
+        if ($this->render()) {
             UI::SmartyTemplate("stats.{$this->format}", $this->result);
         }
     }
@@ -955,7 +1049,8 @@ class HTML
     /**
      * Review a track : set the isNSFW flag.
      *
-     * @param integer $track Track to review
+     * @param integer $track  Track to review
+     * @param bool    $isNSFW sets the "isNSFW" flag.
      *
      * @return void
      */
@@ -1209,7 +1304,8 @@ class HTML
     }
 
     /**
-     * Return an export of the whole database. Yehr, I know it's using MySQL libraries, rather than PDO, but frankly, I couldn't figure out how to do this in PDO.
+     * Return an export of the whole database. Yehr, I know it's using MySQL libraries, rather than PDO, but frankly, 
+     * I couldn't figure out how to do this in PDO.
      *
      * @return void
      */
@@ -1219,7 +1315,8 @@ class HTML
         header('Content-type: text/plain');
         header('Content-Disposition: attachment; filename="cchits.' . date("Y-m-d_Hi") . '.sql"');
 
-        echo "/* This DATABASE and it's DATA is made available under a Creative Commons Zero license: http://creativecommons.org/publicdomain/zero/1.0/ */". "\r\n\r\n";
+        echo "/* This DATABASE and it's DATA is made available under a Creative Commons Zero license: " .
+            "http://creativecommons.org/publicdomain/zero/1.0/ */". "\r\n\r\n";
 
         include dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
         if ($SPLIT_RO_RW == false) {
@@ -1262,7 +1359,9 @@ class HTML
                             } else {
                                 if (($key == 'strOpenID' or $key == 'sha1Pass') and $value != '') {
                                     echo "'" . mysql_real_escape_string(sha1($value)) . "'";
-                                } elseif ($key == 'value' and ($last_val == 'CronTab User' or $last_val == 'CronTab Pass')) {
+                                } elseif ($key == 'value' 
+                                    and ($last_val == 'CronTab User' or $last_val == 'CronTab Pass')
+                                ) {
                                     echo "'" . mysql_real_escape_string(sha1($value)) . "'";
                                 } else {
                                     echo "'" . mysql_real_escape_string($value) . "'";
@@ -1339,14 +1438,26 @@ class HTML
         case 'mp3.rss':
         case 'm4a.rss':
             $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net');
-            $this->result['feedDescription'] = ConfigBroker::getConfig('About The Site', 'CCHits.net is designed to provide a Chart for Creative Commons Music, in a way that is easily able to be integrated into other music shows that play Creative Commons Music. CCHits.net has a daily exposure podcast, playing one new track every day, a weekly podcast, playing the last week of tracks played on the podcast, plus the top rated three tracks from the previous week. There is also a monthly podcast which features the top rated tracks over the whole system.');
+            $this->result['feedDescription'] = ConfigBroker::getConfig(
+                'About The Site', 'CCHits.net is designed to provide a Chart for Creative Commons Music, in a way ' .
+                'that is easily able to be integrated into other music shows that play Creative Commons Music. ' .
+                'CCHits.net has a daily exposure podcast, playing one new track every day, a weekly podcast, ' .
+                'playing the last week of tracks played on the podcast, plus the top rated three tracks from the ' .
+                'previous week. There is also a monthly podcast which features the top rated tracks over the whole ' .
+                'system.'
+            );
             $this->result['feedWhen'] = $this->arrUri['path_items'][0];
             $this->result['showsLink'] = $this->arrUri['basePath'] . $this->arrUri['path_items'][0];
             $this->result['feedLink'] = $this->arrUri['basePath'] . $this->arrUri['path_items'][0] . '/rss';
-            $this->result['siteCopyright'] = ConfigBroker::getConfig('System License', 'The content created by this site is generated by a script which is licensed under the Affero General Public License version 3 (AGPL3). The generated content is released under a Creative Commons By-Attribution License.');
+            $this->result['siteCopyright'] = ConfigBroker::getConfig(
+                'System License', 'The content created by this site is generated by a script which is licensed under ' .
+                'the Affero General Public License version 3 (AGPL3). The generated content is released under a ' .
+                'Creative Commons By-Attribution License.'
+            );
             $this->result['feedDate'] = date('r', strtotime(date('Y-m-d') . ' 00:00:00'));
             $this->result['baseURL'] = $this->arrUri['basePath'];
-            $this->result['feedOwner'] = ConfigBroker::getConfig('Contact EMail', 'show@cchits.net') . ' (' . ConfigBroker::getConfig('Contact Name', 'CCHits.net Show Admin') . ')';
+            $this->result['feedOwner'] = ConfigBroker::getConfig('Contact EMail', 'show@cchits.net') . ' (' . 
+                ConfigBroker::getConfig('Contact Name', 'CCHits.net Show Admin') . ')';
             $this->result['contactName'] = ConfigBroker::getConfig('Contact Name', 'CCHits.net Show Admin');
             $this->result['contactEmail'] = ConfigBroker::getConfig('Contact EMail', 'show@cchits.net');
             header("Content-Type: application/rss+xml");

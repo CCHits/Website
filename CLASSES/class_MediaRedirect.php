@@ -28,6 +28,15 @@
 
 class MediaRedirect
 {
+    /**
+     * Get new URL.
+     * 
+     * @param string $path   The path
+     * @param string $item   The item
+     * @param string $format The output format.
+     * 
+     * @return int|false
+     */
     public static function getNewUrl($path, $item, $format)
     {
         $db = Database::getConnection();
@@ -38,7 +47,11 @@ class MediaRedirect
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$path.'/'.$item.'.'.$format, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$path.'/'.$item.'.'.$format, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $item = $query->fetch(PDO::FETCH_ASSOC);
             if (is_array($item) && isset($item['remotevalue'])) {
@@ -48,7 +61,15 @@ class MediaRedirect
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$path.'/'.$item.'.'.$format, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array(
+                                'sql'=>$sql,
+                                'values'=>$path.'/'.$item.'.'.$format,
+                                'error'=>$query->errorInfo()
+                            ), true
+                        ), 1
+                    );
                 }
                 return $item['remotevalue'];
             }
