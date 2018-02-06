@@ -67,10 +67,18 @@ class Database
                     $self->ro_db = &$self->rw_db;
                 }
                 if ($RequireWrite == true) {
-                    $self->rw_db = new PDO($RW_DSN['string'], $RW_DSN['user'], $RW_DSN['pass'], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+                    $self->rw_db = new PDO(
+                        $RW_DSN['string'], $RW_DSN['user'], $RW_DSN['pass'], array(
+                            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+                        )
+                    );
                     return $self->rw_db;
                 } else {
-                    $self->ro_db = new PDO($RO_DSN['string'], $RO_DSN['user'], $RO_DSN['pass'], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+                    $self->ro_db = new PDO(
+                        $RO_DSN['string'], $RO_DSN['user'], $RO_DSN['pass'], array(
+                            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+                        )
+                    );
                     return $self->ro_db;
                 }
             } catch (Exception $e) {

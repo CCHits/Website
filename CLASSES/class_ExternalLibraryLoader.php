@@ -68,7 +68,9 @@ class ExternalLibraryLoader
      */
     function getVersion($library = '')
     {
-        if (isset($this->libs[$library]) and file_exists($this->externalsDir . '/' . $library . '/' . $this->libs[$library])) {
+        if (isset($this->libs[$library]) 
+            and file_exists($this->externalsDir . '/' . $library . '/' . $this->libs[$library])
+        ) {
             return $this->libs[$library];
         } else {
             if (file_exists($this->externalsDir . '/libraries.json')) {
@@ -76,7 +78,9 @@ class ExternalLibraryLoader
             }
             $this->libs = array();
             $this->__construct();
-            if (isset($this->libs[$library]) and file_exists($this->externalsDir . '/' . $library . '/' . $this->libs[$library])) {
+            if (isset($this->libs[$library]) 
+                and file_exists($this->externalsDir . '/' . $library . '/' . $this->libs[$library])
+            ) {
                 return $this->libs[$library];
             } else {
                 return false;
