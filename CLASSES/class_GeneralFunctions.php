@@ -30,6 +30,10 @@ class GeneralFunctions
 {
     /**
      * This function replaces the standard error logging, as it's not working on this dreamhost instance!
+     * 
+     * @param string $message The message.
+     * 
+     * @return void
      */
     function error_log($message = null)
     {
@@ -43,7 +47,8 @@ class GeneralFunctions
      * @param mixed   $haystack     The object or array to check within
      * @param string  $needle       The key or property to look for
      * @param mixed   $default      The value to return if the key or property doesn't exist
-     * @param boolean $emptyisfalse If true, and the result of the check returns an empty string, return the default value
+     * @param boolean $emptyisfalse If true, and the result of the check returns an empty string, return the 
+     *                              default value
      *
      * @return mixed The value found, or the default if not.
      */
@@ -94,11 +99,12 @@ class GeneralFunctions
                 die("Error handling temporary files. Please contact an administrator.");
             }
         }
-        if ( ! is_writable($dirname)) {
+        if (! is_writable($dirname)) {
             error_log("Unable to write to $dirname");
             die("Error handling temporary files. Please contact an administrator.");
         }
-        // This, apparently, may help to prevent race conditions: http://www.php.net/manual/en/function.tempnam.php#98232
+        // This, apparently, may help to prevent race 
+        // conditions: http://www.php.net/manual/en/function.tempnam.php#98232
         do {
             $file = $dirname . '/' . mt_rand();
             $fp = @fopen($file, 'x');
@@ -140,9 +146,12 @@ class GeneralFunctions
      */
     public static function getFileLengthString($filename = '')
     {
-        $time = GeneralFunctions::getValue(GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00');
+        $time = GeneralFunctions::getValue(
+            GeneralFunctions::getMediaAttributes($filename), 'playtime_string', '00:00:00'
+        );
         preg_match('/((\d?\d):)?(\d?\d):(\d\d)/', $time, $matches);
-        $time = substr('00' . $matches[2], -2) . ':' . substr('00' . $matches[3], -2) . ':' . substr('00' . $matches[4], -2);
+        $time = substr('00' . $matches[2], -2) . ':' . substr('00' . $matches[3], -2) .
+            ':' . substr('00' . $matches[4], -2);
         return $time;
     }
 

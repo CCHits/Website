@@ -26,59 +26,117 @@
  * @link     https://github.com/CCHits/Website Version Control Service
  */
 
-class CURL {
+class CURL
+{
 
-	const FORM_URLENCODED = "application/x-www-form-urlencoded";
+    const FORM_URLENCODED = "application/x-www-form-urlencoded";
 
-	private $curl = null;
+    private $_curl = null;
 
-	public static function init($url = "") {
-		return new CURL($url);
-	}
+    /**
+     * Init.
+     * 
+     * @param string $url The url.
+     * 
+     * @return CURL
+     */
+    public static function init($url = "") 
+    {
+        return new CURL($url);
+    }
 
-	public function __construct($url) {
-        $this->curl = curl_init($url);
-        curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);  
-	}
+    /**
+     * Constructor.
+     * 
+     * @param string $url The url.
+     */
+    public function __construct($url) 
+    {
+        $this->_curl = curl_init($url);
+        curl_setopt($this->_curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($this->_curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($this->_curl, CURLOPT_RETURNTRANSFER, true);  
+    }
 
-	private function exec() {
-		$response = curl_exec($this->curl);
-		curl_close($this->curl);
-		return $response;
-	}
-
-	public function get() {
-		$this->setPost(false);
-		$response = $this->exec();
-		return $response;
-	}
-
-	public function post($params = array()) {
-		$query = "";
-		foreach ($params as $key => $value) {
-			if ($query != "") $query .= "&";
-			$query .= $key . "=" . $value;
-		}
-		if ($query != "") {
-        	curl_setopt($this->curl, CURLOPT_POSTFIELDS, $query);
-        }
-		$this->setPost(true);
-        $response = $this->exec($this->curl);
+    /**
+     * Exec call.
+     * 
+     * @return mixed
+     */
+    private function exec() 
+    {
+        $response = curl_exec($this->_curl);
+        curl_close($this->_curl);
         return $response;
-	}
+    }
 
-	public function setPost($post = true) {
-		curl_setopt($this->curl, CURLOPT_POST, $post);
-	}
+    /**
+     * Get.
+     * 
+     * @return mixed
+     */
+    public function get() 
+    {
+        $this->setPost(false);
+        $response = $this->exec();
+        return $response;
+    }
 
-	public function setContentType($contentType) {
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array("Content-Type: " . $contentType));
-	}
+    /**
+     * Post.
+     * 
+     * @param array $params the post parameters.
+     * 
+     * @return mixed
+     */
+    public function post($params = array()) 
+    {
+        $query = "";
+        foreach ($params as $key => $value) {
+            if ($query != "") {
+                $query .= "&";
+            }
+            $query .= $key . "=" . $value;
+        }
+        if ($query != "") {
+            curl_setopt($this->_curl, CURLOPT_POSTFIELDS, $query);
+        }
+        $this->setPost(true);
+        $response = $this->exec($this->_curl);
+        return $response;
+    }
 
-	public function setContentTypeFormUrlEncoded() {
-		$this->setContentType(self::FORM_URLENCODED);
-	}
+    /**
+     * Set the "post" option.
+     * 
+     * @param bool $post whether to set (true) or reset (false) the "post" option.
+     * 
+     * @return void
+     */
+    public function setPost($post = true) 
+    {
+        curl_setopt($this->_curl, CURLOPT_POST, $post);
+    }
 
+    /**
+     * Set the content type
+     * 
+     * @param string $contentType the mime type.
+     * 
+     * @return void
+     */
+    public function setContentType($contentType) 
+    {
+        curl_setopt($this->_curl, CURLOPT_HTTPHEADER, array("Content-Type: " . $contentType));
+    }
+
+    /**
+     * Forces the content type to 'application/x-www-form-urlencoded'
+     * 
+     * @return void
+     */
+    public function setContentTypeFormUrlEncoded() 
+    {
+        $this->setContentType(self::FORM_URLENCODED);
+    }
 }

@@ -126,7 +126,11 @@ class ArtistBroker
             if ($query->errorCode() != 0) {
                 throw new Exception(
                     "SQL Error: " . print_r(
-                        array('sql'=>$sql, 'values'=>$strArtistName . '[[:space:]]*', 'error'=>$query->errorInfo()), true
+                        array(
+                            'sql'=>$sql, 
+                            'values'=>$strArtistName . '[[:space:]]*', 
+                            'error'=>$query->errorInfo()
+                        ), true
                     ), 1
                 );
             }

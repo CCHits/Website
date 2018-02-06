@@ -62,7 +62,9 @@ class ConfigBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1
+                    );
                 }
                 $handler->arrConfig = $query->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_GROUP);
                 return $handler->arrConfig;
@@ -83,7 +85,9 @@ class ConfigBroker
     public static function getAllAppConfig()
     {
         $handler = self::getHandler();
-        if (!is_array($handler->arrLocalConfig) or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)) {
+        if (!is_array($handler->arrLocalConfig) 
+            or (is_array($handler->arrLocalConfig) and count($handler->arrLocalConfig) == 0)
+        ) {
             include dirname(__FILE__) . '/../CONFIG/CONFIG_DEFAULT.php';
             if (isset($APPCONFIG)) {
                 $handler->arrLocalConfig = $APPCONFIG;

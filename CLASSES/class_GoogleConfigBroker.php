@@ -28,40 +28,79 @@
 
 class GoogleConfigBroker
 {
+    /**
+     * Get the client id.
+     * 
+     * @return int
+     */
+    public static function getClientId() 
+    {
+        return ConfigBroker::getConfig('googleClientId', null);
+    }
 
-	public static function getClientId() {
-		return ConfigBroker::getConfig('googleClientId', null);
-	}
+    /**
+     * Get the client secret.
+     * 
+     * @return string
+     */
+    public static function getClientSecret() 
+    {
+        return ConfigBroker::getConfig('googleClientSecret', null);
+    }
 
-	public static function getClientSecret() {
-		return ConfigBroker::getConfig('googleClientSecret', null);
-	}
+    /**
+     * Get the "redirect url".
+     * 
+     * @return string
+     */
+    public static function getRedirectUri() 
+    {
+        return ConfigBroker::getConfig('googleRedirectUri', null);
+    }
 
-	public static function getRedirectUri() {
-		return ConfigBroker::getConfig('googleRedirectUri', null);
-	}
+    /**
+     * Get the authorization endpoint
+     * 
+     * @return string
+     */
+    public static function getAuthorizationEndpoint() 
+    {
+        $discovery_document = self::getDiscoveryDocument();
+        return $discovery_document->authorization_endpoint;
+    }
 
-	public static function getAuthorizationEndpoint() {
-		$discovery_document = self::getDiscoveryDocument();
-		return $discovery_document->authorization_endpoint;
-	}
+    /**
+     * Get the token endpoint.
+     * 
+     * @return string
+     */
+    public static function getTokenEndpoint() 
+    {
+        $discovery_document = self::getDiscoveryDocument();
+        return $discovery_document->token_endpoint;
+    }
 
-	public static function getTokenEndpoint() {
-		$discovery_document = self::getDiscoveryDocument();
-		return $discovery_document->token_endpoint;
-	}
+    /**
+     * Get the userinfo endpoint
+     * 
+     * @return string
+     */
+    public static function getUserinfoEndpoint() 
+    {
+        $discovery_document = self::getDiscoveryDocument();
+        return $discovery_document->userinfo_endpoint;
+    }
 
-	public static function getUserinfoEndpoint() {
-		$discovery_document = self::getDiscoveryDocument();
-		return $discovery_document->userinfo_endpoint;
-	}
-
-	// -- Private functions
-
-	private static function getDiscoveryDocument() {
-		$curl = CURL::init("https://accounts.google.com/.well-known/openid-configuration");
+    /**
+     * Get the discovery document.
+     * 
+     * @return string
+     */
+    private static function getDiscoveryDocument() 
+    {
+        $curl = CURL::init("https://accounts.google.com/.well-known/openid-configuration");
         $json_response = $curl->get();
         $discovery_doc = json_decode($json_response);
         return $discovery_doc;
-	}
+    }
 }
