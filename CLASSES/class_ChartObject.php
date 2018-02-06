@@ -47,28 +47,49 @@ class ChartObject
         // This section of code, thanks to code example here:
         // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
         if ($query->errorCode() != 0) {
-            throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$date, 'error'=>$query->errorInfo()), true), 1);
+            throw new Exception(
+                "SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$date, 'error'=>$query->errorInfo()), true), 1
+            );
         }
         if ($query->fetch() || 0 + $date < 20000000) {
             return false;
         }
         $chartdate = UI::getLongDate($date);
         $trenddate = date("Y-m-d", strtotime("-1 day", strtotime($chartdate)));
-        $sql = "SELECT t.intTrackID, t.intChartPlace, count(t.intTrackID) * ((100-(IFNULL(MAX(intShowCount),0)*5))/100) AS decVotes
-                FROM tracks AS t
-    	        LEFT JOIN (SELECT vt.intTrackID FROM votes as vt WHERE vt.datTimeStamp <= $date) as v on v.intTrackID = t.intTrackID
+        $sql = "SELECT 
+                    t.intTrackID, 
+                    t.intChartPlace, 
+                    count(t.intTrackID) * ((100-(IFNULL(MAX(intShowCount),0)*5))/100) AS decVotes
+                FROM 
+                    tracks AS t
+    	        LEFT JOIN (
+                    SELECT 
+                        vt.intTrackID 
+                    FROM 
+                        votes as vt
+                    WHERE 
+                        vt.datTimeStamp <= $date
+                ) as v on v.intTrackID = t.intTrackID
         	    LEFT JOIN (
-            	    SELECT st.intTrackID, count(st.intTrackID) AS intShowCount
-                    FROM showtracks as st, shows AS s
+            	    SELECT
+                        st.intTrackID,
+                        count(st.intTrackID) AS intShowCount
+                    FROM
+                        showtracks as st,
+                        shows AS s
                     WHERE (
         					(s.enumShowType = 'weekly' AND s.intShowUrl <= '$date' AND s.intShowUrl > '20000000') OR
         					(s.enumShowType = 'monthly' AND s.intShowUrl <= '" . substr($date, 0, 6) . "' AND s.intShowUrl > '200000')
     					  ) AND s.intShowID = st.intShowID
                     GROUP BY intTrackID
 	            ) AS s ON s.intTrackID = t.intTrackID
-    	        WHERE t.isApproved = 1
-        	    GROUP BY t.intTrackID
-            	ORDER BY decVotes DESC, intTrackID ASC";
+                WHERE
+                    t.isApproved = 1
+                GROUP BY
+                    t.intTrackID
+                ORDER BY
+                    decVotes DESC,
+                    intTrackID ASC";
         $chart_sql = "INSERT INTO chart (datChart, intPositionID, intTrackID) VALUES (?, ?, ?)";
         $chartsql = $db->prepare($chart_sql);
         $update_sql = "UPDATE tracks SET intChartPlace = ? WHERE intTrackID = ?";
@@ -80,14 +101,30 @@ class ChartObject
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($chartsql->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$chart_sql, 'values'=>array($chartdate, $counter, $data['intTrackID']), 'error'=>$chartsql->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$chart_sql,
+                            'values'=>array($chartdate, $counter, $data['intTrackID']),
+                            'error'=>$chartsql->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             if ($data['intChartPlace'] != $counter) {
                 $update->execute(array($counter, $data['intTrackID']));
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($update->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$update_sql, 'values'=>array($counter, $data['intTrackID']), 'error'=>$update->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array(
+                                'sql'=>$update_sql,
+                                'values'=>array($counter, $data['intTrackID']),
+                                'error'=>$update->errorInfo()
+                            ), true
+                        ), 1
+                    );
                 }
 
             }
@@ -104,7 +141,15 @@ class ChartObject
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($trend->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$trend_sql, 'values'=>array($trenddate, $data['intTrackID'], $data['intVoteCount']), 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array(
+                                'sql'=>$trend_sql,
+                                'values'=>array($trenddate, $data['intTrackID'],
+                                $data['intVoteCount']), 'error'=>$query->errorInfo()
+                            ), true
+                        ), 1
+                    );
                 }
             }
         }
