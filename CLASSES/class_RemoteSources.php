@@ -28,22 +28,22 @@
 class RemoteSources extends GenericObject
 {
     protected $arrDBItems = array(
-    	'strTrackName'=>true,
-    	'strTrackNameSounds'=>true,
-    	'strTrackUrl'=>true,
-    	'enumTrackLicense'=>true,
-    	'intArtistID'=>true,
-    	'strArtistName'=>true,
-    	'strArtistNameSounds'=>true,
-    	'strArtistUrl'=>true,
-    	'isNSFW'=>true,
-    	'fileUrl'=>true,
-    	'fileName'=>true,
-    	'intUserID'=>true,
-    	'fileMD5'=>true,
-    	'forceMD5Duplicate'=>true,
-    	'forceTrackNameDuplicate'=>true,
-    	'forceTrackUrlDuplicate'=>true
+        'strTrackName'=>true,
+        'strTrackNameSounds'=>true,
+        'strTrackUrl'=>true,
+        'enumTrackLicense'=>true,
+        'intArtistID'=>true,
+        'strArtistName'=>true,
+        'strArtistNameSounds'=>true,
+        'strArtistUrl'=>true,
+        'isNSFW'=>true,
+        'fileUrl'=>true,
+        'fileName'=>true,
+        'intUserID'=>true,
+        'fileMD5'=>true,
+        'forceMD5Duplicate'=>true,
+        'forceTrackNameDuplicate'=>true,
+        'forceTrackUrlDuplicate'=>true
     );
     protected $strDBTable = "processing";
     protected $strDBKeyCol = "intProcessingID";
@@ -85,7 +85,11 @@ class RemoteSources extends GenericObject
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$this->intProcessingID, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$this->intProcessingID, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             return true;
         } catch(Exception $e) {
@@ -107,7 +111,9 @@ class RemoteSources extends GenericObject
         $return['strTrackName'] = $this->preferredJson($this->strTrackName);
         $return['strTrackUrl'] = $this->preferredJson($this->strTrackUrl);
         $return['arrTrackUrl'] = $this->getJson($this->strTrackUrl);
-        if (isset($this->intArtistID) and $this->intArtistID > 0 and ArtistBroker::getArtistByID($this->intArtistID) != false) {
+        if (isset($this->intArtistID) and $this->intArtistID > 0 
+            and ArtistBroker::getArtistByID($this->intArtistID) != false
+        ) {
             $objArtist = ArtistBroker::getArtistByID($this->intArtistID);
             $arrArtist = $objArtist->getSelf();
             $return['strArtistName'] = $arrArtist['strArtistName'];
@@ -142,7 +148,7 @@ class RemoteSources extends GenericObject
                     if ($error === UPLOAD_ERR_OK) {
                         $tmp_name = $arrUri['parameters']['_FILES'][$variable]['tmp_name'][$key];
                         $file = GeneralFunctions::getTempFileName($upload_dir);
-                        if ( ! move_uploaded_file($tmp_name, $file)) {
+                        if (! move_uploaded_file($tmp_name, $file)) {
                             error_log("Unable to move the uploaded file to $file.");
                             die("Error handling uploaded file. Please speak to an administrator.");
                         }
@@ -160,10 +166,14 @@ class RemoteSources extends GenericObject
         if (isset($arrUri['parameters']['forceMD5Duplicate'])) {
             $this->set_forceMD5Duplicate($arrUri['parameters']['forceMD5Duplicate']);
         }
-        if (isset($arrUri['parameters']['strTrackName_preferred']) and $arrUri['parameters']['strTrackName_preferred'] != '') {
+        if (isset($arrUri['parameters']['strTrackName_preferred'])
+            and $arrUri['parameters']['strTrackName_preferred'] != ''
+        ) {
             $this->setpreferred_strTrackName($arrUri['parameters']['strTrackName_preferred']);
         }
-        if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] != '') {
+        if (isset($arrUri['parameters']['strTrackName']) 
+            and $arrUri['parameters']['strTrackName'] != ''
+        ) {
             $this->set_strTrackName($arrUri['parameters']['strTrackName']);
         }
         if (isset($arrUri['parameters']['del_strTrackName']) and $arrUri['parameters']['del_strTrackName'] != '') {
@@ -172,7 +182,9 @@ class RemoteSources extends GenericObject
         if (isset($arrUri['parameters']['strTrackNameSounds']) and $arrUri['parameters']['strTrackNameSounds'] != '') {
             $this->set_strTrackNameSounds($arrUri['parameters']['strTrackNameSounds']);
         }
-        if (isset($arrUri['parameters']['strTrackUrl_preferred']) and $arrUri['parameters']['strTrackUrl_preferred'] != '') {
+        if (isset($arrUri['parameters']['strTrackUrl_preferred'])
+            and $arrUri['parameters']['strTrackUrl_preferred'] != ''
+        ) {
             $this->setpreferred_strTrackUrl($arrUri['parameters']['strTrackUrl_preferred']);
         }
         if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] != '') {
@@ -194,7 +206,9 @@ class RemoteSources extends GenericObject
         if (isset($arrUri['parameters']['intArtistID']) and $arrUri['parameters']['intArtistID'] != '') {
             $this->set_intArtistID($arrUri['parameters']['intArtistID']);
         }
-        if (isset($arrUri['parameters']['strArtistName_preferred']) and $arrUri['parameters']['strArtistName_preferred'] != '') {
+        if (isset($arrUri['parameters']['strArtistName_preferred']) 
+            and $arrUri['parameters']['strArtistName_preferred'] != ''
+        ) {
             $this->setpreferred_strArtistName($arrUri['parameters']['strArtistName_preferred']);
         }
         if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] != '') {
@@ -203,10 +217,14 @@ class RemoteSources extends GenericObject
         if (isset($arrUri['parameters']['del_strArtistName']) and $arrUri['parameters']['del_strArtistName'] != '') {
             $this->del_strArtistName($arrUri['parameters']['del_strArtistName']);
         }
-        if (isset($arrUri['parameters']['strArtistNameSounds']) and $arrUri['parameters']['strArtistNameSounds'] != '') {
+        if (isset($arrUri['parameters']['strArtistNameSounds']) 
+            and $arrUri['parameters']['strArtistNameSounds'] != ''
+        ) {
             $this->set_strArtistNameSounds($arrUri['parameters']['strArtistNameSounds']);
         }
-        if (isset($arrUri['parameters']['strArtistUrl_preferred']) and $arrUri['parameters']['strArtistUrl_preferred'] != '') {
+        if (isset($arrUri['parameters']['strArtistUrl_preferred']) 
+            and $arrUri['parameters']['strArtistUrl_preferred'] != ''
+        ) {
             $this->setpreferred_strArtistUrl($arrUri['parameters']['strArtistUrl_preferred']);
         }
         if (isset($arrUri['parameters']['strArtistUrl']) and $arrUri['parameters']['strArtistUrl'] != '') {
@@ -302,7 +320,7 @@ class RemoteSources extends GenericObject
      */
     function set_strTrackName($strTrackName = "")
     {
-        if ( ! $this->inJson($this->strTrackName, $strTrackName)) {
+        if (! $this->inJson($this->strTrackName, $strTrackName)) {
             $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName);
             $this->arrChanges['strTrackName'] = true;
         }
@@ -360,7 +378,7 @@ class RemoteSources extends GenericObject
      */
     function set_strTrackUrl($strTrackUrl = "")
     {
-        if ( ! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
+        if (! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
             $this->arrChanges['strTrackUrl'] = true;
         }
@@ -451,7 +469,7 @@ class RemoteSources extends GenericObject
      */
     function set_strArtistName($strArtistName = "")
     {
-        if ( ! $this->inJson($this->strArtistName, $strArtistName)) {
+        if (! $this->inJson($this->strArtistName, $strArtistName)) {
             $this->strArtistName = $this->addJson($this->strArtistName, $strArtistName);
             $this->arrChanges['strArtistName'] = true;
         }
@@ -509,7 +527,7 @@ class RemoteSources extends GenericObject
      */
     function set_strArtistUrl($strArtistUrl = "")
     {
-        if ( ! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
+        if (! $this->inJson($this->strArtistUrl, $strArtistUrl)) {
             $this->strArtistUrl = $this->addJson($this->strArtistUrl, $strArtistUrl);
             $this->arrChanges['strArtistUrl'] = true;
         }
@@ -632,12 +650,12 @@ class RemoteSources extends GenericObject
     }
 
     /**
-    * Force the processing value to ignore duplicate track names
-    *
-    * @param boolean $boolean True or Force
-    *
-    * @return void
-    */
+     * Force the processing value to ignore duplicate track names
+     *
+     * @param boolean $boolean True or Force
+     *
+     * @return void
+     */
     function set_forceTrackNameDuplicate($boolean)
     {
         if ($this->forceTrackNameDuplicate != $boolean) {
@@ -647,12 +665,12 @@ class RemoteSources extends GenericObject
     }
 
     /**
-    * Force the processing value to ignore duplicate track URLs
-    *
-    * @param boolean $boolean True or Force
-    *
-    * @return void
-    */
+     * Force the processing value to ignore duplicate track URLs
+     *
+     * @param boolean $boolean True or Force
+     *
+     * @return void
+     */
     function set_forceTrackUrlDuplicate($boolean)
     {
         if ($this->forceTrackUrlDuplicate != $boolean) {
@@ -750,10 +768,14 @@ class RemoteSources extends GenericObject
                 throw new RemoteSource_DuplicateTrackUrl();
             }
         }
-        if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense) or 'None Selected' == LicenseSelector::validateLicense($this->enumTrackLicense)) {
+        if (!isset($this->enumTrackLicense) or '' == trim($this->enumTrackLicense) 
+            or 'None Selected' == LicenseSelector::validateLicense($this->enumTrackLicense)
+        ) {
             throw new RemoteSource_NoTrackLicense();
         }
-        if (isset($this->intArtistID) and $this->intArtistID != 0 and false == ArtistBroker::getArtistByID($this->intArtistID)) {
+        if (isset($this->intArtistID) and $this->intArtistID != 0 
+            and false == ArtistBroker::getArtistByID($this->intArtistID)
+        ) {
             throw new RemoteSource_NoArtist();
         } elseif ($this->intArtistID == 0) {
             throw new RemoteSource_NoArtist();
@@ -793,7 +815,8 @@ class RemoteSources extends GenericObject
     }
 
     /**
-     * Get url content and response headers (given a url, follows all redirections on it and returned content and response headers of final url)
+     * Get url content and response headers (given a url, follows all redirections on it and returned content and 
+     * response headers of final url)
      *
      * @param string  $url             The URL to retrieve
      * @param integer $as_file         Return a string (0) or a filename (1)
@@ -801,7 +824,8 @@ class RemoteSources extends GenericObject
      * @param integer $timeout         Timeout in microseconds
      * @param integer $max_loop        Number of redirections to follow
      *
-     * @return  boolean|array Boolean is state of response, while the array contains ([0] => data and [1] => response headers)
+     * @return boolean|array Boolean is state of response, while the array 
+     *                       contains ([0] => data and [1] => response headers)
      *
      * @link http://www.php.net/manual/en/ref.curl.php#93163
      */
@@ -827,7 +851,9 @@ class RemoteSources extends GenericObject
         //curl_setopt($ch, CURLOPT_VERBOSE, true);
 
         if ($as_file == 1) {
-            $tempname = GeneralFunctions::getTempFileName(ConfigBroker::getConfig('uploadBase', dirname(__FILE__) . '/../upload/'));
+            $tempname = GeneralFunctions::getTempFileName(
+                ConfigBroker::getConfig('uploadBase', dirname(__FILE__) . '/../upload/')
+            );
             if ($tempname == false) {
                 error_log("Wasn't able to create a temporary file for uploading");
                 unlink($cookie);
@@ -1089,39 +1115,42 @@ class RemoteSource_InvalidAPICode extends CustomException
  */
 class RemoteSource_DuplicateTrackName extends CustomException
 {
-    protected $message = "The supplied track name already exists - please verify this track isn't a duplicate, and then set the ForceDuplicateTrackName flag for this track.";
+    protected $message = "The supplied track name already exists - please verify this track isn't a duplicate, and " .
+        "then set the ForceDuplicateTrackName flag for this track.";
     protected $code = 243;
 }
 /**
-* This class handles custom exceptions
-*
-* @category Default
-* @package  Exceptions
-* @author   Jon Spriggs <jon@sprig.gs>
-* @license  http://www.gnu.org/licenses/agpl.html AGPLv3
-* @link     http://cchits.net Actual web service
-* @link     https://github.com/CCHits/Website/wiki Developers Web Site
-* @link     https://github.com/CCHits/Website Version Control Service
-*/
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
+ */
 class RemoteSource_DuplicateTrackUrl extends CustomException
 {
-    protected $message = "The supplied track URL already exists - please verify this track isn't a duplicate, and then set the ForceDuplicateTrackUrl flag for this track.";
+    protected $message = "The supplied track URL already exists - please verify this track isn't a duplicate, and " .
+        "then set the ForceDuplicateTrackUrl flag for this track.";
     protected $code = 242;
 }
 
 /**
-* This class handles custom exceptions
-*
-* @category Default
-* @package  Exceptions
-* @author   Jon Spriggs <jon@sprig.gs>
-* @license  http://www.gnu.org/licenses/agpl.html AGPLv3
-* @link     http://cchits.net Actual web service
-* @link     https://github.com/CCHits/Website/wiki Developers Web Site
-* @link     https://github.com/CCHits/Website Version Control Service
-*/
+ * This class handles custom exceptions
+ *
+ * @category Default
+ * @package  Exceptions
+ * @author   Jon Spriggs <jon@sprig.gs>
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @link     http://cchits.net Actual web service
+ * @link     https://github.com/CCHits/Website/wiki Developers Web Site
+ * @link     https://github.com/CCHits/Website Version Control Service
+ */
 class RemoteSource_DuplicateMD5 extends CustomException
 {
-    protected $message = "A track with this exact MD5 sum already exists - please verify this track hasn't already been submitted already, and then set the ForceDuplicateMD5 flag for this track.";
+    protected $message = "A track with this exact MD5 sum already exists - please verify this track hasn't already " .
+        "been submitted already, and then set the ForceDuplicateMD5 flag for this track.";
     protected $code = 241;
 }

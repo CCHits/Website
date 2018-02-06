@@ -86,66 +86,65 @@ class StatsBroker
             $nd = 0;
             $sampling = 0;
             $cc0 = 0;
-            foreach ($numberOfTracksPerLicense as $license => $numberOfTracks)
-            {
+            foreach ($numberOfTracksPerLicense as $license => $numberOfTracks) {
                 switch ($license)
                 {
-                    case 'cc-by':
-                        $by += $numberOfTracks;
-                        break;
-                    case 'cc-by-sa':
-                        $by += $numberOfTracks;
-                        $sa += $numberOfTracks;
-                        break;
-                    case 'cc-sa':
-                        $sa += $numberOfTracks;
-                        break;
-                    case 'cc-by-nc':
-                        $by += $numberOfTracks;
-                        $nc += $numberOfTracks;
-                        break;
-                    case 'cc-nc':
-                        $nc += $numberOfTracks;
-                        break;
-                    case 'cc-by-nd':
-                        $by += $numberOfTracks;
-                        $nd += $numberOfTracks;
-                        break;
-                    case 'cc-nd':
-                        $nd += $numberOfTracks;
-                        break;
-                    case 'cc-by-nc-sa':
-                        $by += $numberOfTracks;
-                        $nc += $numberOfTracks;
-                        $sa += $numberOfTracks;
-                        break;
-                    case 'cc-nc-sa':
-                        $nc += $numberOfTracks;
-                        $sa += $numberOfTracks;
-                        break;
-                    case 'cc-by-nc-nd':
-                        $by += $numberOfTracks;
-                        $nc += $numberOfTracks;
-                        $nd += $numberOfTracks;
-                        break;
-                    case 'cc-nc-nd':
-                        $nc += $numberOfTracks;
-                        $nd += $numberOfTracks;
-                        break;
-                    case 'cc-sampling+':
-                        $sampling += $numberOfTracks;
-                        break;
-                    case 'cc-nc-sampling+':
-                        $nc += $numberOfTracks;
-                        $sampling += $numberOfTracks;
-                        break;
-                    case 'cc-0':
-                        $cc0 += $numberOfTracks;
-                        break;
-                    case 'none specified':
-                        break;
-                    default:
-                        throw new Exception("Unknown license " . $licenseStats['enumTrackLicense']);
+                case 'cc-by':
+                    $by += $numberOfTracks;
+                    break;
+                case 'cc-by-sa':
+                    $by += $numberOfTracks;
+                    $sa += $numberOfTracks;
+                    break;
+                case 'cc-sa':
+                    $sa += $numberOfTracks;
+                    break;
+                case 'cc-by-nc':
+                    $by += $numberOfTracks;
+                    $nc += $numberOfTracks;
+                    break;
+                case 'cc-nc':
+                    $nc += $numberOfTracks;
+                    break;
+                case 'cc-by-nd':
+                    $by += $numberOfTracks;
+                    $nd += $numberOfTracks;
+                    break;
+                case 'cc-nd':
+                    $nd += $numberOfTracks;
+                    break;
+                case 'cc-by-nc-sa':
+                    $by += $numberOfTracks;
+                    $nc += $numberOfTracks;
+                    $sa += $numberOfTracks;
+                    break;
+                case 'cc-nc-sa':
+                    $nc += $numberOfTracks;
+                    $sa += $numberOfTracks;
+                    break;
+                case 'cc-by-nc-nd':
+                    $by += $numberOfTracks;
+                    $nc += $numberOfTracks;
+                    $nd += $numberOfTracks;
+                    break;
+                case 'cc-nc-nd':
+                    $nc += $numberOfTracks;
+                    $nd += $numberOfTracks;
+                    break;
+                case 'cc-sampling+':
+                    $sampling += $numberOfTracks;
+                    break;
+                case 'cc-nc-sampling+':
+                    $nc += $numberOfTracks;
+                    $sampling += $numberOfTracks;
+                    break;
+                case 'cc-0':
+                    $cc0 += $numberOfTracks;
+                    break;
+                case 'none specified':
+                    break;
+                default:
+                    throw new Exception("Unknown license " . $licenseStats['enumTrackLicense']);
                 }
             }
             $statsObject->setNumberOfTracksPerLicenseCriteria(
@@ -153,12 +152,13 @@ class StatsBroker
             );
 
             $result = static::getTop10LongestRunningTracksAtNumberOnePosition();
-            $result = array_map(function($item)
-            {
-                $item['track'] = TrackBroker::getTrackByID($item['intTrackID'])->getSelf();
-                unset($item['intTrackID']);
-                return $item;
-            }, $result);
+            $result = array_map(
+                function ($item) {
+                    $item['track'] = TrackBroker::getTrackByID($item['intTrackID'])->getSelf();
+                    unset($item['intTrackID']);
+                    return $item;
+                }, $result
+            );
 
             $statsObject->setTop10LongestRunningTracksAtNumberOnePosition($result);
 
@@ -171,6 +171,15 @@ class StatsBroker
         }
     }
 
+    /**
+     * Query rows.
+     * 
+     * @param string   $getQuery      the query.
+     * @param array    $getParameters the parameters.
+     * @param callable $getResults    a function to parse the result.
+     * 
+     * @return array|bool
+     */
     private static function queryRows($getQuery, $getParameters = null, $getResults = null)
     {
         $db = Database::getConnection();
@@ -179,22 +188,17 @@ class StatsBroker
             $sql = $getQuery();
             $query = $db->prepare($sql);
             $parameters = null;
-            if ($getParameters != null)
-            {
+            if ($getParameters != null) {
                 $parameters = $getParameters();
                 $query->execute($parameters);
-            }
-            else
-            {
+            } else {
                 $query->execute();
             }
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
-            if ($query->errorCode() != 0)
-            {
+            if ($query->errorCode() != 0) {
                 $a = array('sql'=>$sql, 'error'=>$query->errorInfo());
-                if ($parameters != null)
-                {
+                if ($parameters != null) {
                     $a['values'] = $parameters;
                 }
                 throw new Exception(
@@ -202,14 +206,10 @@ class StatsBroker
                 );
             }
             $results = [];
-            while ($assoc = $query->fetch(PDO::FETCH_ASSOC))
-            {
-                if ($getResults != null)
-                {
+            while ($assoc = $query->fetch(PDO::FETCH_ASSOC)) {
+                if ($getResults != null) {
                     $results[] = $getResults($assoc);
-                }
-                else
-                {
+                } else {
                     $results[] = $assoc;
                 }
             }
@@ -222,44 +222,76 @@ class StatsBroker
         }
     }
 
+    /**
+     * Get the number of tracks.
+     * 
+     * @return int
+     */
     private static function getNumberOfTracks()
     {
-        return static::queryRows(function()
-        {
-            return "SELECT COUNT(1) AS intNumberOfTracks FROM tracks";
-        })[0]['intNumberOfTracks'];
+        return static::queryRows(
+            function () {
+                return "SELECT COUNT(1) AS intNumberOfTracks FROM tracks";
+            }
+        )[0]['intNumberOfTracks'];
     }
 
+    /**
+     * Get the number of artits.
+     * 
+     * @return int
+     */
     private static function getNumberOfArtists()
     {
-        return static::queryRows(function()
-        {
-            return "SELECT COUNT(1) AS intNumberOfArtists FROM artists";
-        })[0]['intNumberOfArtists'];
+        return static::queryRows(
+            function () {
+                return "SELECT COUNT(1) AS intNumberOfArtists FROM artists";
+            }
+        )[0]['intNumberOfArtists'];
     }
 
+    /**
+     * Get the average tracks per artits.
+     * 
+     * @return double
+     */
     private static function getAverageTracksPerArtists()
     {
-        return static::queryRows(function()
-        {
-            $innerSQL = "SELECT COUNT(1) AS intTracksPerArtist, intArtistID FROM tracks GROUP BY intArtistID";
-            return "SELECT AVG(intTracksPerArtist) dblAvgTracksPerArtist FROM (" . $innerSQL . ") tracksPerArtist";
-        })[0]['dblAvgTracksPerArtist'];
+        return static::queryRows(
+            function () {
+                $innerSQL = "SELECT COUNT(1) AS intTracksPerArtist, intArtistID FROM tracks GROUP BY intArtistID";
+                return "SELECT AVG(intTracksPerArtist) dblAvgTracksPerArtist FROM (" . $innerSQL . ") tracksPerArtist";
+            }
+        )[0]['dblAvgTracksPerArtist'];
     }
 
+    /**
+     * Get the number of tracks per license.
+     * 
+     * @return int
+     */
     private static function getNumberOfTracksPerLicense()
     {
-        return static::queryRows(function()
-        {
-            return "SELECT COUNT(1) AS intNumberOfTracksPerLicense, enumTrackLicense FROM tracks GROUP BY enumTrackLicense ORDER BY intNumberOfTracksPerLicense DESC";
-        });
+        return static::queryRows(
+            function () {
+                return "SELECT COUNT(1) AS intNumberOfTracksPerLicense, enumTrackLicense FROM tracks GROUP BY " .
+                    "enumTrackLicense ORDER BY intNumberOfTracksPerLicense DESC";
+            }
+        );
     }
 
+    /**
+     * Get the top 10 longuest running tracks at number one position.
+     * 
+     * @return int
+     */
     private static function getTop10LongestRunningTracksAtNumberOnePosition()
     {
-        return static::queryRows(function()
-        {
-            return "SELECT COUNT(1) numberOfDaysAtPosition1, intTrackID FROM chart WHERE intPositionID = 1 GROUP BY intTrackID ORDER BY numberOfDaysAtPosition1 DESC LIMIT 10";
-        });
+        return static::queryRows(
+            function () {
+                return "SELECT COUNT(1) numberOfDaysAtPosition1, intTrackID FROM chart WHERE intPositionID = 1 GROUP " .
+                    "BY intTrackID ORDER BY numberOfDaysAtPosition1 DESC LIMIT 10";
+            }
+        );
     }
 }

@@ -91,8 +91,7 @@ class UI
     /**
      * Returns the Path and query values for this script
      *
-     * @return array[0] URI
-     * @return array[1] Query values
+     * @return array [0] URI, [1] Query values
      */
     public static function getPath()
     {
@@ -100,7 +99,7 @@ class UI
         if ($handler->arrUri != null) {
             return $handler->arrUri;
         }
-        if ( ! isset($_SERVER['REQUEST_METHOD'])) {
+        if (! isset($_SERVER['REQUEST_METHOD'])) {
             if (preg_match('/\/(.*)$/', $GLOBALS['argv'][0]) == 0) {
                 $filename = trim(`pwd`) . '/' . $GLOBALS['argv'][0];
             } else {
@@ -124,7 +123,9 @@ class UI
                 $uri .= '@';
             }
             $uri .= $_SERVER['SERVER_NAME'];
-            if ((isset($_SERVER['HTTPS']) and $_SERVER['SERVER_PORT'] != 443) or ( ! isset($_SERVER['HTTPS']) and $_SERVER['SERVER_PORT'] != 80)) {
+            if ((isset($_SERVER['HTTPS']) and $_SERVER['SERVER_PORT'] != 443) or ( ! isset($_SERVER['HTTPS']) 
+                and $_SERVER['SERVER_PORT'] != 80)
+            ) {
                 $uri .= ':' . $_SERVER['SERVER_PORT'];
             }
             $uri .= $_SERVER['REQUEST_URI'];
@@ -148,7 +149,7 @@ class UI
             }
         }
         if (isset($data['__HTTP_AUTHORIZATION'])) {
-          unset($data['__HTTP_AUTHORIZATION']);
+            unset($data['__HTTP_AUTHORIZATION']);
         }
         $handler->arrUri = array($uri, $data);
         return array($uri, $data);
@@ -247,7 +248,8 @@ class UI
             $username = $auth_params[0];
             unset($auth_params[0]);
             $password = implode('', $auth_params);
-        } elseif (isset($_REQUEST['__HTTP_AUTHORIZATION'])) { // If we're having to pass it as a variable as part of the query.
+        } elseif (isset($_REQUEST['__HTTP_AUTHORIZATION'])) { 
+            // If we're having to pass it as a variable as part of the query.
             $auth_params = explode(":", base64_decode(substr($_REQUEST['__HTTP_AUTHORIZATION'], 6)));
             $username = $auth_params[0];
             unset($auth_params[0]);
@@ -320,7 +322,8 @@ class UI
                     $message_content .= "\r\n    <p>$extra</p>";
                 }
                 if (isset($GLOBALS['generator'])) {
-                    $message_content .= "\r\n    <p>This page took " . round(microtime(true) - $GLOBALS['generator'], 3) . ' seconds to complete.</p>';
+                    $message_content .= "\r\n    <p>This page took " . 
+                        round(microtime(true) - $GLOBALS['generator'], 3) . ' seconds to complete.</p>';
                 }
                 $body = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 ' .                     '<html>
@@ -378,7 +381,7 @@ class UI
      *
      * @link http://www.php.net/manual/en/function.fread.php#84115
      */
-    public static function dl_file_resumable($file, $is_resume=TRUE)
+    public static function dl_file_resumable($file, $is_resume=true)
     {
         //First, see if the file exists
         if (!is_file($file)) {
@@ -462,8 +465,9 @@ class UI
 
         //set start and end based on range (if set), else set defaults
         //also check for invalid ranges.
-        $seek_end = (empty($seek_end)) ? ($size - 1) : min(abs(intval($seek_end)),($size - 1));
-        $seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : max(abs(intval($seek_start)),0);
+        $seek_end = (empty($seek_end)) ? ($size - 1) : min(abs(intval($seek_end)), ($size - 1));
+        $seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : 
+            max(abs(intval($seek_start)), 0);
 
         //add headers if resumable
         if ($is_resume) {
@@ -949,9 +953,15 @@ class UI
         if (session_id()==='') {
             // 604800 is 7 Days in seconds
             $currentCookieParams = session_get_cookie_params();
-            session_set_cookie_params(604800, $currentCookieParams["path"], $currentCookieParams["domain"], $currentCookieParams["secure"], $currentCookieParams["httponly"]);
+            session_set_cookie_params(
+                604800, $currentCookieParams["path"], $currentCookieParams["domain"], $currentCookieParams["secure"], 
+                $currentCookieParams["httponly"]
+            );
             session_start();
-            setcookie(session_name(), session_id(), time() + 604800, $currentCookieParams["path"], $currentCookieParams["domain"]);
+            setcookie(
+                session_name(), session_id(), time() + 604800, 
+                $currentCookieParams["path"], $currentCookieParams["domain"]
+            );
         }
     }
 

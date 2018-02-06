@@ -87,7 +87,11 @@ class UserBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$param, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array('sql'=>$sql, 'values'=>$param, 'error'=>$query->errorInfo()), true
+                        ), 1
+                    );
                 }
                 $objSelf->thisUser = $query->fetchObject('UserObject');
                 if ($objSelf->thisUser == false) {
@@ -135,7 +139,11 @@ class UserBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intUserID, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array('sql'=>$sql, 'values'=>$intUserID, 'error'=>$query->errorInfo()), true
+                        ), 1
+                    );
                 }
                 $result = $query->fetchObject('UserObject');
                 $objSelf->arrUsers[$intUserID] = $result;

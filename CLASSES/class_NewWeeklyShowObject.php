@@ -45,7 +45,11 @@ class NewWeeklyShowObject extends NewInternalShowObject
         $arrLastWeekTracks = array();
         $arrOldTracks = array();
         $counter = 0;
-        for ($date = $datLastWeekShowsUrl; $date < $intShowUrl; $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))) {
+        for (
+            $date = $datLastWeekShowsUrl; 
+            $date < $intShowUrl; 
+            $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))
+        ) {
             if ($date != "") {
                 $show = ShowBroker::getInternalShowByDate('daily', $date);
                 if ($show != false) {
@@ -63,7 +67,11 @@ class NewWeeklyShowObject extends NewInternalShowObject
                 }
             }
         }
-        for ($date = $datOldShowsUrl; $date < $datLastWeekShowsUrl ; $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))) {
+        for (
+            $date = $datOldShowsUrl;
+            $date < $datLastWeekShowsUrl;
+            $date = date("Ymd", strtotime(UI::getLongDate($date) . ' + 1 days'))
+        ) {
             if ($date != "") {
                 $show = ShowBroker::getInternalShowByDate('daily', $date);
                 if ($show != false) {
