@@ -42,16 +42,17 @@ class RemoteSourcesSoundcloud extends RemoteSources
         if (preg_match('/http:\/\/soundcloud.com\/[^\/]+/.*/', $src) == 0) {
             return 406;
         }
-        $url_base = "https://api.soundcloud.com/resolve.json?consumer_key={ConfigBroker::getConfig('Soundcloud API')}&url=";
+        $url_base = "https://api.soundcloud.com/resolve.json?consumer_key=" . 
+            ConfigBroker::getConfig('Soundcloud API') . "&url=";
         $file_contents = file_get_contents($url_base . $src);
-        if ($file_contents == FALSE) {
+        if ($file_contents == false) {
             return 406;
         }
         $json_contents = json_decode($file_contents);
-        if ($json_contents == FALSE) {
+        if ($json_contents == false) {
             return 406;
         }
-        if ($json_contents->downloadable != TRUE) {
+        if ($json_contents->downloadable != true) {
             return 417;
         }
         $this->set_strTrackName($json_contents->title);

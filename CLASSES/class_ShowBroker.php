@@ -66,7 +66,11 @@ class ShowBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intShowID, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array('sql'=>$sql, 'values'=>$intShowID, 'error'=>$query->errorInfo()), true
+                        ), 1
+                    );
                 }
                 $item = $query->fetchObject('ShowObject');
                 if ($item != false) {
@@ -122,7 +126,11 @@ class ShowBroker
                         // This section of code, thanks to code example here:
                         // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                         if ($query->errorCode() != 0) {
-                            throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intShowID, 'error'=>$query->errorInfo()), true), 1);
+                            throw new Exception(
+                                "SQL Error: " . print_r(
+                                    array('sql'=>$sql, 'values'=>$intShowID, 'error'=>$query->errorInfo()), true
+                                ), 1
+                            );
                         }
                         $item = $query->fetchObject('ShowObject');
                         if ($item != false) {
@@ -176,13 +184,18 @@ class ShowBroker
         
         $db = Database::getConnection();
         try {
-            $sql = "SELECT * FROM shows WHERE intUserID = ? ORDER BY datDateAdded DESC LIMIT " . ($intPage*$intSize) . ", $intSize";
+            $sql = "SELECT * FROM shows WHERE intUserID = ? ORDER BY datDateAdded DESC LIMIT " . 
+                ($intPage*$intSize) . ", $intSize";
             $query = $db->prepare($sql);
             $query->execute(array($intUserID));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$intUserID, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$intUserID, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $item = $query->fetchObject('ShowObject');
             if ($item == false) {
@@ -254,7 +267,11 @@ class ShowBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$strShowUrl, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$strShowUrl, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $item = $query->fetchObject('ShowObject');
             if ($item != false) {
@@ -305,7 +322,11 @@ class ShowBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$strShowUrl . '%', 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$strShowUrl . '%', 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
@@ -384,7 +405,15 @@ class ShowBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>'.*' . $strShowName . '[[:space:]]*.*', 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql,
+                            'values'=>'.*' . $strShowName . '[[:space:]]*.*',
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
@@ -428,7 +457,7 @@ class ShowBroker
         default:
             return false;
         }
-        if ( ! is_integer($intQuantity) or $intQuantity < 1 or $intQuantity > 100) {
+        if (! is_integer($intQuantity) or $intQuantity < 1 or $intQuantity > 100) {
             $intQuantity = 25;
         }
         $db = Database::getConnection();
@@ -439,7 +468,11 @@ class ShowBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$enumShowType, 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>$enumShowType, 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $handler = self::getHandler();
             $item = $query->fetchObject('ShowObject');
@@ -481,7 +514,8 @@ class ShowBroker
         case 'monthly':
             break;
         case 'extra':
-            // This is actually a bit of a cludge - the extra shows get an incremented ID, rather than using a date, but the URLs work just as well.
+            // This is actually a bit of a cludge - the extra shows get an incremented ID, rather than using a date, 
+            // but the URLs work just as well.
             break;
         default:
             return false;
@@ -498,7 +532,15 @@ class ShowBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($enumShowType, $intShowUrl), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql,
+                            'values'=>array($enumShowType, $intShowUrl),
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             $item = $query->fetchObject('ShowObject');
             if ($item != false) {

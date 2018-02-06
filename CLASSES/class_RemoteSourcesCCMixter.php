@@ -28,12 +28,12 @@
 class RemoteSourcesCCMixter extends RemoteSources
 {
     /**
-    * Get all the source data we can pull from the source.
-    *
-    * @param string $src Source URL for the retriever
-    *
-    * @return const A value explaining the outcome of the fetch request
-    */
+     * Get all the source data we can pull from the source.
+     *
+     * @param string $src Source URL for the retriever
+     *
+     * @return const A value explaining the outcome of the fetch request
+     */
     function __construct($src)
     {
         if (preg_match('/(^\d+)|http:\/\/ccmixter.org\/files\/[^\/]+\/(\d+)/', $src, $match) == 0) {
@@ -45,11 +45,11 @@ class RemoteSourcesCCMixter extends RemoteSources
         $return = array();
         $url_base = 'http://ccmixter.org/api/query?f=json&ids=';
         $file_contents = file_get_contents($url_base . $match[1]);
-        if ($file_contents == FALSE) {
+        if ($file_contents == false) {
             return 406;
         }
         $json_contents = json_decode($file_contents);
-        if ($json_contents == FALSE) {
+        if ($json_contents == false) {
             return 406;
         }
         preg_match("/licenses\/(.*)\/\d/", $json_contents[0]->license_url, $matches);

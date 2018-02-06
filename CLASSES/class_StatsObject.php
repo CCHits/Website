@@ -154,7 +154,7 @@ class StatsObject extends GenericObject
     /**
      * Setter
      * 
-     * @param number $numberOfTracksPerLicenseCriteria
+     * @param number $numberOfTracksPerLicenseCriteria Number of tracks per license criteria
      * 
      * @return void
      */
@@ -176,7 +176,7 @@ class StatsObject extends GenericObject
     /**
      * Setter
      * 
-     * @param number $top10LongestRunningTracksAtNumberOnePosition
+     * @param number $top10LongestRunningTracksAtNumberOnePosition top 10 longest running tracks at number one position.
      * 
      * @return void
      */

@@ -28,15 +28,15 @@
 class RemoteSourcesFile extends RemoteSources
 {
     /**
-    * Get all the source data we can pull from the source.
-    *
-    * @param string $src The path to the uploaded file
-    *
-    * @return const A value explaining the outcome of the fetch request
-    */
+     * Get all the source data we can pull from the source.
+     *
+     * @param string $src The path to the uploaded file
+     *
+     * @return const A value explaining the outcome of the fetch request
+     */
     function __construct($src)
     {
-        if ( ! file_exists($src)) {
+        if (! file_exists($src)) {
             return 400;
         }
 

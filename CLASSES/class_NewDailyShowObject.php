@@ -37,13 +37,17 @@ class NewDailyShowObject extends NewInternalShowObject
     public function __construct($intShowUrl = 0)
     {
         $db = Database::getConnection();
-        $sql = "SELECT tracks.intArtistID, tracks.timeLength FROM tracks, shows, showtracks WHERE showtracks.intShowID=shows.intShowID AND showtracks.intTrackID=tracks.intTrackID AND shows.enumShowType = ? ORDER BY shows.intShowUrl DESC LIMIT 0,14";
+        $sql = "SELECT tracks.intArtistID, tracks.timeLength FROM tracks, shows, showtracks WHERE " .
+            "showtracks.intShowID=shows.intShowID AND showtracks.intTrackID=tracks.intTrackID AND " .
+            "shows.enumShowType = ? ORDER BY shows.intShowUrl DESC LIMIT 0,14";
         $query = $db->prepare($sql);
         $query->execute(array('daily'));
         // This section of code, thanks to code example here:
         // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
         if ($query->errorCode() != 0) {
-            throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>'daily', 'error'=>$query->errorInfo()), true), 1);
+            throw new Exception(
+                "SQL Error: " . print_r(array('sql'=>$sql, 'values'=>'daily', 'error'=>$query->errorInfo()), true), 1
+            );
         }
         $history = $query->fetchAll(PDO::FETCH_ASSOC);
         $strQry = '';
@@ -56,14 +60,17 @@ class NewDailyShowObject extends NewInternalShowObject
                 $arrArtists[] = $history_item['intArtistID'];
                 $arrArtistIDs[$history_item['intArtistID']] = true;
             }
-            $minute = intval(date('i', strtotime($history_item['timeLength']))) + (intval(date('G', strtotime($history_item['timeLength']))) * 60);
+            $minute = intval(date('i', strtotime($history_item['timeLength']))) 
+                + (intval(date('G', strtotime($history_item['timeLength']))) * 60);
             if ($minute > 8) {
                 $boolLongTrack = true;
             }
         }
 
-        $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 AND showtrack.intTrackID IS NULL ";
-        foreach($arrArtists as $intArtistID) {
+        $sql = "SELECT tracks.intTrackID FROM tracks LEFT JOIN (SELECT showtracks.intTrackID FROM showtracks, shows " .
+            "WHERE shows.enumShowType = 'daily' AND shows.intShowID = showtracks.intShowID) as showtrack ON " .
+            "showtrack.intTrackID = tracks.intTrackID WHERE tracks.isApproved = 1 AND showtrack.intTrackID IS NULL ";
+        foreach ($arrArtists as $intArtistID) {
             $sql .= " AND tracks.intArtistID != '$intArtistID'";
         }
         if ($boolLongTrack) {

@@ -30,7 +30,9 @@
 class ShowObject extends GenericObject
 {
     // Inherited Properties
-    protected $arrDBItems = array('strShowName'=>true, 'strShowUrl'=>true, 'intShowUrl'=>true, 'enumShowType'=>true, 'intUserID'=>true, 'timeLength'=>true, 'shaHash'=>true, 'strCommentUrl'=>true, 'jsonAudioLayout'=>true, 'datDateAdded'=>true);
+    protected $arrDBItems = array('strShowName'=>true, 'strShowUrl'=>true, 'intShowUrl'=>true, 'enumShowType'=>true, 
+        'intUserID'=>true, 'timeLength'=>true, 'shaHash'=>true, 'strCommentUrl'=>true, 'jsonAudioLayout'=>true, 
+        'datDateAdded'=>true);
     protected $strDBTable = "shows";
     protected $strDBKeyCol = "intShowID";
     // Local Properties
@@ -71,7 +73,11 @@ class ShowObject extends GenericObject
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>$this->intProcessingID, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array('sql'=>$sql, 'values'=>$this->intProcessingID, 'error'=>$query->errorInfo()), true
+                        ), 1
+                    );
                 }
                 return true;
             } catch(Exception $e) {
@@ -92,7 +98,9 @@ class ShowObject extends GenericObject
      */
     function get_arrTracks($reset = false)
     {
-        if (is_null($this->arrTracks) or (is_array($this->arrTracks) and count($this->arrTracks) == 0) or $reset = true) {
+        if (is_null($this->arrTracks) or (is_array($this->arrTracks) and count($this->arrTracks) == 0) 
+            or $reset = true
+        ) {
             $this->arrTracks = TracksBroker::getTracksByShowIDOrderedByPartID($this->intShowID);
         }
         if (!is_array($this->arrTracks)) {
@@ -110,31 +118,36 @@ class ShowObject extends GenericObject
     {
         if ($this->intShowUrl != 0) {
             if ($this->strShowUrl == "") {
-                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/' . $this->enumShowType . "/" . $this->intShowUrl;
-                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") . ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
+                $this->strShowUrl = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/' . 
+                    $this->enumShowType . "/" . $this->intShowUrl;
+                $this->strShowUrlSpoken = ConfigBroker::getConfig("Spoken Base URL", "Cee Cee Hits dot net") .
+                    ' slash ' . $this->enumShowType . " slash " . UI::getPronouncableDate($this->intShowUrl);
                 $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'mp3');
-                if (!empty($remotepath))
-                {
+                $mp3File = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . 
+                    $this->intShowUrl . '.mp3';
+                $ogaFile = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . 
+                    $this->intShowUrl . '.oga';
+                $m4aFile =  ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" .
+                    $this->intShowUrl . '.m4a';
+                if (!empty($remotepath)) {
                     $this->strShowFileMP3 = $remotepath;
-                }
-                elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
-                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                } elseif (file_exists($mp3File)) {
+                    $this->strShowFileMP3 = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . 
+                        $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
                 }
                 $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'oga');
-                if (!empty($remotepath))
-                {
+                if (!empty($remotepath)) {
                     $this->strShowFileOGA = $remotepath;
-                }
-                elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
-                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                } elseif (file_exists($ogaFile)) {
+                    $this->strShowFileOGA = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . 
+                        $this->enumShowType . "/" . $this->intShowUrl . '.oga';
                 }
                 $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'm4a');
-                if (!empty($remotepath))
-                {
+                if (!empty($remotepath)) {
                     $this->strShowFileM4A = $remotepath;
-                }
-                elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
-                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                } elseif (file_exists($m4aFile)) {
+                    $this->strShowFileM4A = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/media/' . 
+                        $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
                 }
             }
 
@@ -145,7 +158,8 @@ class ShowObject extends GenericObject
                     $this->strShowName .= ' ' . ConfigBroker::getConfig('Monthly Show Name', 'Monthly Top Tracks Show');
                     $this->strShowName .= ' for ';
                     $this->strShowName .= UI::getLongDate($this->intShowUrl);
-                    $this->strShowNameSpoken = ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
+                    $this->strShowNameSpoken 
+                        = ConfigBroker::getConfig('Spoken Monthly Show Name', 'Monthly Top Tracks Show');
                     $this->strShowNameSpoken .= ' for ';
                     $this->strShowNameSpoken .= date("F", strtotime(UI::getLongDate($this->intShowUrl) . '-01'));
                     $this->strShowNameSpoken .= ' ' . UI::getPronouncableDate(substr($this->intShowUrl, 0, 4));
@@ -195,7 +209,8 @@ class ShowObject extends GenericObject
                     if ($showname_tracks != '') {
                         $showname_tracks .= ', ';
                     }
-                    $showname_tracks .= $objTrack->get_strTrackName() . ' by ' . $objTrack->get_objArtist()->get_strArtistName();
+                    $showname_tracks .= $objTrack->get_strTrackName() . ' by ' . 
+                        $objTrack->get_objArtist()->get_strArtistName();
                 } elseif ($first) {
                     $first = false;
                     $showname_tracks .= ' and more...';
@@ -206,24 +221,25 @@ class ShowObject extends GenericObject
             }
             $return['show_summary'] = $showname_tracks;
             $return['player_data'] = array(
-            	'name' => $showname,
-            	'title' => $showname,
-            	'free'=>'true',
-            	'link' => $this->strShowUrl
+                'name' => $showname,
+                'title' => $showname,
+                'free'=>'true',
+                'link' => $this->strShowUrl
             );
 
-            /*
-            $remotepath = MediaRedirect::getNewUrl($arrUri['path_items'][1], $arrUri['path_items'][2], $arrUri['format']);
-            $file = $arrUri['path_items'][1] . '/' . $arrUri['path_items'][2] . '.' . $arrUri['format'];
-            */
             $remotepath = MediaRedirect::getNewUrl($this->enumShowType, $this->intShowUrl, 'mp3');
+            $mp3File = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . 
+                $this->intShowUrl . '.mp3';
+            $ogaFile = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . 
+                $this->intShowUrl . '.oga';
+            $m4aFile = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . 
+                $this->intShowUrl . '.m4a';
             if (!empty($remotepath)) {
                 $return['player_data']['mp3'] = $this->strShowFileMP3;
                 $return['player_data']['mp3_len'] = 0;
-            }
-            elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3')) {
+            } elseif (file_exists($mp3File)) {
                 $return['player_data']['mp3'] = $this->strShowFileMP3;
-                $return['player_data']['mp3_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3');
+                $return['player_data']['mp3_len'] = filesize($mp3File);
             } else {
                 $return['player_data']['mp3_len'] = 0;
             }
@@ -231,10 +247,9 @@ class ShowObject extends GenericObject
             if (!empty($remotepath)) {
                 $return['player_data']['oga'] = $remotepath;
                 $return['player_data']['oga_len'] = 0;
-            }
-            elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga')) {
+            } elseif (file_exists($ogaFile)) {
                 $return['player_data']['oga'] = $this->strShowFileOGA;
-                $return['player_data']['oga_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga');
+                $return['player_data']['oga_len'] = filesize($ogaFile);
             } else {
                 $return['player_data']['oga_len'] = 0;
             }
@@ -242,10 +257,9 @@ class ShowObject extends GenericObject
             if (!empty($remotepath)) {
                 $return['player_data']['m4a'] = $remotepath;
                 $return['player_data']['m4a_len'] = 0;
-            }
-            elseif (file_exists(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a')) {
+            } elseif (file_exists($m4aFile)) {
                 $return['player_data']['m4a'] = $this->strShowFileM4A;
-                $return['player_data']['m4a_len'] = filesize(ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a');
+                $return['player_data']['m4a_len'] = filesize($m4aFile);
             } else {
                 $return['player_data']['m4a_len'] = 0;
             }
@@ -255,7 +269,8 @@ class ShowObject extends GenericObject
         $return['strShowUrlSpoken'] = $this->strShowUrlSpoken;
         $return['strSiteNameSpoken'] = ConfigBroker::getConfig("Spoken Site Name", "Cee Cee Hits dot net");
         $return['qrcode'] = UI::InsertQRCode('/show/' . $this->intShowID);
-        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/s/' . UI::setLongNumber($this->intShowID);
+        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'https://cchits.net') . '/s/' . 
+            UI::setLongNumber($this->intShowID);
         $return['strGuid'] = str_replace("https", "http", $return['strShowUrl']);
         return $return;
     }
@@ -543,17 +558,20 @@ class ShowObject extends GenericObject
                 case 'audio/mpeg':
                 case 'audio/mpeg3':
                 case 'audio/mp3':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3';
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.mp3';
                     move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 case 'audio/mp4':
                 case 'audio/m4a':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a';
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.m4a';
                     move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 case 'audio/ogg':
                 case 'audio/oga':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga';
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.oga';
                     move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 }
@@ -578,17 +596,20 @@ class ShowObject extends GenericObject
                 case 'audio/mpeg':
                 case 'audio/mpeg3':
                 case 'audio/mp3':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3.' . $part;
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.mp3.' . $part;
                     move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 case 'audio/mp4':
                 case 'audio/m4a':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a.' . $part;
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.m4a.' . $part;
                     move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 case 'audio/ogg':
                 case 'audio/oga':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga.' . $part;
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.oga.' . $part;
                     move_uploaded_file($file['tmp_name'], $filename);
                     break;
                 }
@@ -601,15 +622,18 @@ class ShowObject extends GenericObject
                 case 'audio/mpeg':
                 case 'audio/mpeg3':
                 case 'audio/mp3':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.mp3.' . $partno;
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.mp3.' . $partno;
                     break;
                 case 'audio/mp4':
                 case 'audio/m4a':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.m4a.' . $partno;
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.m4a.' . $partno;
                     break;
                 case 'audio/ogg':
                 case 'audio/oga':
-                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . "/" . $this->intShowUrl . '.oga.' . $partno;
+                    $filename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/' . $this->enumShowType . 
+                        "/" . $this->intShowUrl . '.oga.' . $partno;
                     break;
                 }
                 if (! file_exists($filename)) {
@@ -632,11 +656,23 @@ class ShowObject extends GenericObject
         }
     }
 
+    /**
+     * Set the 'featuring' flag.
+     * 
+     * @param bool $featuring the flag.
+     * 
+     * @return void
+     */
     function set_featuring($featuring)
     {
         $this->booleanFeaturing = $this->asBoolean($featuring);
     }
 
+    /**
+     * Get the 'featuring' flag.
+     * 
+     * @return bool
+     */
     function get_featuring()
     {
         return $this->booleanFeaturing;

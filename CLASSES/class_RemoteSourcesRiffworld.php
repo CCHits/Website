@@ -29,19 +29,19 @@
 class RemoteSourcesRiffworld extends RemoteSources
 {
     /**
-    * Get all the source data we can pull from the source.
-    *
-    * @param string $src Source URL for the retriever
-    *
-    * @return const A value explaining the outcome of the fetch request
-    */
+     * Get all the source data we can pull from the source.
+     *
+     * @param string $src Source URL for the retriever
+     *
+     * @return const A value explaining the outcome of the fetch request
+     */
     function __construct($src)
     {
         if (preg_match('/http[s]*:\/\/.*riffworld.com\/[Mm]embers\/[^\/]+\/[^\/]+/', $src) == 0) {
             return 406;
         }
         $file_contents = file_get_contents($src);
-        if ($file_contents == FALSE or $file_contents == '') {
+        if ($file_contents == false or $file_contents == '') {
             return 406;
         }
         $regex_strArtistName = '/<strong>Artist:<\/strong> <span>([^<]*)<\/span>/';

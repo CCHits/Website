@@ -29,7 +29,9 @@
 class TrackObject extends GenericObject
 {
     // Inherited Properties
-    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 'strTrackUrl'=>true, 'isNSFW'=>true, 'needsReview'=>true, 'fileSource'=>true, 'timeLength'=>true, 'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
+    protected $arrDBItems = array('intArtistID'=>true, 'strTrackName'=>true, 'strTrackNameSounds'=>true, 
+        'strTrackUrl'=>true, 'isNSFW'=>true, 'needsReview'=>true, 'fileSource'=>true, 'timeLength'=>true, 
+        'md5FileHash'=>true, 'enumTrackLicense'=>true, 'isApproved'=>true, 'intDuplicateID'=>true);
     protected $strDBTable = "tracks";
     protected $strDBKeyCol = "intTrackID";
     // Local Properties
@@ -101,7 +103,9 @@ class TrackObject extends GenericObject
     public function amendRecord()
     {
         $arrUri = UI::getUri();
-        if (isset($arrUri['parameters']['strTrackName_preferred']) and $arrUri['parameters']['strTrackName_preferred'] != '') {
+        if (isset($arrUri['parameters']['strTrackName_preferred']) 
+            and $arrUri['parameters']['strTrackName_preferred'] != ''
+        ) {
             $this->setpreferred_strTrackName($arrUri['parameters']['strTrackName_preferred']);
         }
         if (isset($arrUri['parameters']['strTrackName']) and $arrUri['parameters']['strTrackName'] != '') {
@@ -113,7 +117,9 @@ class TrackObject extends GenericObject
         if (isset($arrUri['parameters']['strTrackNameSounds']) and $arrUri['parameters']['strTrackNameSounds'] != '') {
             $this->set_strTrackNameSounds($arrUri['parameters']['strTrackNameSounds']);
         }
-        if (isset($arrUri['parameters']['strTrackUrl_preferred']) and $arrUri['parameters']['strTrackUrl_preferred'] != '') {
+        if (isset($arrUri['parameters']['strTrackUrl_preferred']) 
+            and $arrUri['parameters']['strTrackUrl_preferred'] != ''
+        ) {
             $this->setpreferred_strTrackUrl($arrUri['parameters']['strTrackUrl_preferred']);
         }
         if (isset($arrUri['parameters']['strTrackUrl']) and $arrUri['parameters']['strTrackUrl'] != '') {
@@ -122,7 +128,9 @@ class TrackObject extends GenericObject
         if (isset($arrUri['parameters']['del_strTrackUrl']) and $arrUri['parameters']['del_strTrackUrl'] != '') {
             $this->del_strTrackUrl($arrUri['parameters']['del_strTrackUrl']);
         }
-        if (isset($arrUri['parameters']['strArtistName_preferred']) and $arrUri['parameters']['strArtistName_preferred'] != '') {
+        if (isset($arrUri['parameters']['strArtistName_preferred']) 
+            and $arrUri['parameters']['strArtistName_preferred'] != ''
+        ) {
             $this->get_objArtist()->setpreferred_strArtistName($arrUri['parameters']['strArtistName_preferred']);
         }
         if (isset($arrUri['parameters']['strArtistName']) and $arrUri['parameters']['strArtistName'] != '') {
@@ -131,10 +139,14 @@ class TrackObject extends GenericObject
         if (isset($arrUri['parameters']['del_strArtistName']) and $arrUri['parameters']['del_strArtistName'] != '') {
             $this->get_objArtist()->del_strArtistName($arrUri['parameters']['del_strArtistName']);
         }
-        if (isset($arrUri['parameters']['strArtistNameSounds']) and $arrUri['parameters']['strArtistNameSounds'] != '') {
+        if (isset($arrUri['parameters']['strArtistNameSounds'])
+            and $arrUri['parameters']['strArtistNameSounds'] != ''
+        ) {
             $this->get_objArtist()->set_strArtistNameSounds($arrUri['parameters']['strArtistNameSounds']);
         }
-        if (isset($arrUri['parameters']['strArtistUrl_preferred']) and $arrUri['parameters']['strArtistUrl_preferred'] != '') {
+        if (isset($arrUri['parameters']['strArtistUrl_preferred']) 
+            and $arrUri['parameters']['strArtistUrl_preferred'] != ''
+        ) {
             $this->get_objArtist()->setpreferred_strArtistUrl($arrUri['parameters']['strArtistUrl_preferred']);
         }
         if (isset($arrUri['parameters']['strArtistUrl']) and $arrUri['parameters']['strArtistUrl'] != '') {
@@ -245,8 +257,9 @@ class TrackObject extends GenericObject
                 $return['generalPosition'] = 'bottom';
             }
             $return['shows'][0] = array(
-            	'strShowName' => "Non-show votes",
-                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . '/track/' . $this->intTrackID,
+                'strShowName' => "Non-show votes",
+                'strShowUrl' => ConfigBroker::getConfig('Base URL', 'http://cchits.net') . '/track/' . 
+                    $this->intTrackID,
                 'enumShowType' => 'none'
             );
             $showtracks = ShowTrackBroker::getShowTracksByTrackID($this->intTrackID);
@@ -268,7 +281,8 @@ class TrackObject extends GenericObject
                 foreach ($return['shows'] as $intShowID=>$objShow) {
                     if (is_array($votes['shows']) and isset($votes['shows'][$intShowID])) {
                         $return['shows'][$intShowID]['intVote'] = $votes['breakdown'][$intShowID]->get_intCount();
-                        $return['shows'][$intShowID]['decVoteAdj'] = $votes['breakdown'][$intShowID]->get_intCount() * $votes['adjust'];
+                        $return['shows'][$intShowID]['decVoteAdj']
+                            = $votes['breakdown'][$intShowID]->get_intCount() * $votes['adjust'];
                     } else {
                         $return['shows'][$intShowID]['intVote'] = 0;
                         $return['shows'][$intShowID]['decVoteAdj'] = 0;
@@ -279,7 +293,8 @@ class TrackObject extends GenericObject
         if ($this->intTrend > 0) {
             $return['intTrend'] = $this->intTrend;
         }
-        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/t/' . UI::setLongNumber($this->intTrackID);
+        $return['shorturl'] = ConfigBroker::getConfig('baseURL', 'http://cchits.net') . '/t/' . 
+            UI::setLongNumber($this->intTrackID);
         $return['strIsByLicense'] = $this->get_isByLicense() ? 'active' : 'inactive';
         $return['strIsNcLicense'] = $this->get_isNcLicense() ? 'active' : 'inactive';
         $return['strIsNdLicense'] = $this->get_isNdLicense() ? 'active' : 'inactive';
@@ -315,6 +330,8 @@ class TrackObject extends GenericObject
     /**
      * Depending on the value supplied, make sure the actual value in the class
      * is right for the needsReview value
+     * 
+     * @return void
      */
     protected function verify_needsReview()
     {
@@ -356,7 +373,7 @@ class TrackObject extends GenericObject
      */
     function set_strTrackName($strTrackName = "")
     {
-        if ( ! $this->inJson($this->strTrackName, $strTrackName)) {
+        if (! $this->inJson($this->strTrackName, $strTrackName)) {
             $this->strTrackName = $this->addJson($this->strTrackName, $strTrackName);
             $this->arrChanges['strTrackName'] = true;
         }
@@ -427,7 +444,7 @@ class TrackObject extends GenericObject
      */
     function set_strTrackUrl($strTrackUrl = "")
     {
-        if ( ! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
+        if (! $this->inJson($this->strTrackUrl, $strTrackUrl)) {
             $this->strTrackUrl = $this->addJson($this->strTrackUrl, $strTrackUrl);
             $this->arrChanges['strTrackUrl'] = true;
         }
@@ -529,7 +546,8 @@ class TrackObject extends GenericObject
     function set_fileSource($fileSource = "")
     {
         $format = GeneralFunctions::getFileFormat($fileSource);
-        $newfilename = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
+        $newfilename 
+            = ConfigBroker::getConfig('fileBase', '/var/www/media') . '/track/' . $this->intTrackID . '.' . $format;
         if ($this->fileSource != $fileSource and file_exists($fileSource) and $format != '') {
             if (rename($fileSource, $newfilename)) {
                 $this->fileSource = $this->intTrackID . '.' . $format;
@@ -777,34 +795,61 @@ class TrackObject extends GenericObject
     }
 
     /**
+     * Checks wether this track is by-licensed.
      * TODO: cc-sampling+, cc-nc-sampling+, cc-0
+     * 
+     * @return bool
      */
-
     function get_isByLicense()
     {
         return !empty(strstr($this->enumTrackLicense, "by"));
     }
 
+    /**
+     * Checks wether this track is sa-licensed.
+     * 
+     * @return bool
+     */
     function get_isSaLicense()
     {
         return !empty(strstr($this->enumTrackLicense, "sa"));
     }
 
+    /**
+     * Checks wether this track is nc-licensed.
+     * 
+     * @return bool
+     */
     function get_isNcLicense()
     {
         return !empty(strstr($this->enumTrackLicense, "nc"));
     }
 
+    /**
+     * Checks wether this track is nd-licensed.
+     * 
+     * @return bool
+     */
     function get_isNdLicense()
     {
         return !empty(strstr($this->enumTrackLicense, "nd"));
     }
 
+    /**
+     * Checks wether this track is "sampling+"-licensed.
+     * 
+     * @return bool
+     */
     function get_isSamplingPlusLicense()
     {
         return !empty(strstr($this->enumTrackLicense, "sampling+"));
     }
 
+    /**
+     * Checks wether this track is 0-licensed.
+     * 
+     * @return bool
+     */
     function get_isZeroLicense()
     {
         return !empty(strstr($this->enumTrackLicense, "0"));

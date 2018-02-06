@@ -64,7 +64,11 @@ class TrendBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(
+                            array('sql'=>$sql, 'error'=>$query->errorInfo()), true
+                        ), 1
+                    );
                 }
                 $strTrendDate = $query->fetchColumn();
             } else {
@@ -81,7 +85,11 @@ class TrendBroker
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($start_date, $end_date), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array('sql'=>$sql, 'values'=>array($start_date, $end_date), 'error'=>$query->errorInfo()), true
+                    ), 1
+                );
             }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {
@@ -163,7 +171,9 @@ class TrendBroker
                 // This section of code, thanks to code example here:
                 // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
                 if ($query->errorCode() != 0) {
-                    throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1);
+                    throw new Exception(
+                        "SQL Error: " . print_r(array('sql'=>$sql, 'error'=>$query->errorInfo()), true), 1
+                    );
                 }
                 $strTrendDate = $query->fetchColumn();
             } else {
@@ -173,14 +183,23 @@ class TrendBroker
             $start_date = date('Y-m-d', strtotime('-7 days', strtotime($strTrendDate)));
             $end_date = date('Y-m-d', strtotime($strTrendDate));
 
-            $sql = "SELECT intTrackID, datTrendDay, intVotes FROM trends WHERE intTrackID = ? and datTrendDay => ? AND datTrendDay <= ?";
+            $sql = "SELECT intTrackID, datTrendDay, intVotes FROM trends WHERE intTrackID = ? and datTrendDay => ? " .
+                "AND datTrendDay <= ?";
             $pagestart = ($intPage * $intSize);
             $query = $db->prepare($sql . " LIMIT " . $pagestart . ", $intSize");
             $query->execute(array($intTrackID, $start_date, $end_date));
             // This section of code, thanks to code example here:
             // http://www.lornajane.net/posts/2011/handling-sql-errors-in-pdo
             if ($query->errorCode() != 0) {
-                throw new Exception("SQL Error: " . print_r(array('sql'=>$sql, 'values'=>array($intTrackID, $start_date, $end_date), 'error'=>$query->errorInfo()), true), 1);
+                throw new Exception(
+                    "SQL Error: " . print_r(
+                        array(
+                            'sql'=>$sql, 
+                            'values'=>array($intTrackID, $start_date, $end_date),
+                            'error'=>$query->errorInfo()
+                        ), true
+                    ), 1
+                );
             }
             $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
             if ($tracks != false and count($tracks)>0) {

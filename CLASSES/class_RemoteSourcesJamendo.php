@@ -28,25 +28,26 @@
 class RemoteSourcesJamendo extends RemoteSources
 {
     /**
-    * Get all the source data we can pull from the source.
-    *
-    * @param string $src Source URL for the retriever
-    *
-    * @return const A value explaining the outcome of the fetch request
-    */
+     * Get all the source data we can pull from the source.
+     *
+     * @param string $src Source URL for the retriever
+     *
+     * @return const A value explaining the outcome of the fetch request
+     */
     function __construct($src)
     {
         if (preg_match('/track\/(\d+)/', $src, $match) == 0) {
             return 406;
         }
-        $url_base = "http://api.jamendo.com/v3.0/tracks/?client_id=" . ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&type=single%20albumtrack&id=";
+        $url_base = "http://api.jamendo.com/v3.0/tracks/?client_id=" . 
+            ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&type=single%20albumtrack&id=";
         $file_contents = file_get_contents($url_base . $match[1]);
-        if ($file_contents == FALSE) {
+        if ($file_contents == false) {
             error_log("No response when trying to retrieve $url_base{$match[1]}");
             return 406;
         }
         $json_contents = json_decode($file_contents);
-        if ($json_contents == FALSE) {
+        if ($json_contents == false) {
             error_log("No content when trying to read $url_base{$match[1]}");
             return 406;
         }
@@ -61,14 +62,15 @@ class RemoteSourcesJamendo extends RemoteSources
         $this->set_fileUrl(str_replace("https", "http", $json_contents->results[0]->audiodownload));
 
         $artist_id = $json_contents->results[0]->artist_id;
-        $url_base = "http://api.jamendo.com/v3.0/artists/?client_id=" . ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&id=";
+        $url_base = "http://api.jamendo.com/v3.0/artists/?client_id=" . 
+            ConfigBroker::getConfig('JamendoClientID', null) . "&format=json&id=";
         $file_contents = file_get_contents($url_base . $artist_id);
-        if ($file_contents == FALSE) {
+        if ($file_contents == false) {
             error_log("No response when trying to retrieve $url_base{$artist_id}");
             return 406;
         }
         $json_contents = json_decode($file_contents);
-        if ($json_contents == FALSE) {
+        if ($json_contents == false) {
             error_log("No content when trying to read $url_base{$artist_id}");
             return 406;
         }
@@ -88,7 +90,8 @@ class RemoteSourcesJamendo extends RemoteSources
      */
     protected function find_download($track_id = "", $download_server = 0)
     {
-        // Wondering why we start at 0 and count to 50? Because this way we can easily disable the bypass to see if things have changed.
+        // Wondering why we start at 0 and count to 50? Because this way we can easily disable the bypass to see if 
+        // things have changed.
         switch($download_server) {
         case 14:
         case 25:
@@ -106,7 +109,9 @@ class RemoteSourcesJamendo extends RemoteSources
             $download_server++;
             return $this->find_download($track_id, $download_server);
         }
-        $status = $this->curl_get("http://download{$download_server}.jamendo.com/request/track/" . $track_id . "/mp32/0." . rand(), 0);
+        $status = $this->curl_get(
+            "http://download{$download_server}.jamendo.com/request/track/" . $track_id . "/mp32/0." . rand(), 0
+        );
         if (false == $status or !is_array($status) or count($status) == 0 or $status[1]['http_code'] == 404) {
             $download_server++;
             return $this->find_download($track_id, $download_server);
@@ -115,7 +120,8 @@ class RemoteSourcesJamendo extends RemoteSources
             return $this->find_download($track_id, $download_server);
         } elseif (1 == preg_match("/\('(\S+)','(\S+)'\)/", $status[0], $matches)) {
             if ($matches[1]=="ready") {
-                return "http://download{$download_server}.jamendo.com/download/track/" . $track_id . "/mp32/{$matches[2]}/file.mp3";
+                return "http://download{$download_server}.jamendo.com/download/track/" . $track_id . 
+                    "/mp32/{$matches[2]}/file.mp3";
             } else {
                 $download_server++;
                 sleep(5);
