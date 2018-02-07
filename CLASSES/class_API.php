@@ -747,6 +747,8 @@ class API
  */
 class API_NotApiCall extends CustomException
 {
-    protected $message = 'This is not an API call';
+    protected $message = 'This is not an API call. Please see ' . 
+        'https://github.com/CCHits/Website/wiki/Using-the-API ' .
+        'for details on the API';
     protected $code    = 255;
 }
