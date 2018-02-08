@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="CCHits">
+ <description>The CCHits coding standard.</description>
+
+ <!--
+    Include all sniffs in the PEAR standard. Note that the
+    path to the standard does not have to be specified as the
+    PEAR standard exists inside the PHP_CodeSniffer install
+    directory.
+ -->
+ <rule ref="PEAR">
+  <exclude name="PEAR.NamingConventions.ValidFunctionName"/>
+ </rule>
+ 
+ <!-- Include some additional sniffs from the Generic standard -->
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+ <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+ <rule ref="Generic.PHP.LowerCaseConstant"/>
+ <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+ <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+ <rule ref="Generic.Commenting.DocComment"/>
+ <rule ref="Squiz.Commenting.DocCommentAlignment"/>
+
+ <!-- Lines can be 120 chars long, but never show errors -->
+ <rule ref="Generic.Files.LineLength">
+  <properties>
+   <property name="lineLimit" value="120"/>
+   <property name="absoluteLineLimit" value="0"/>
+  </properties>
+ </rule>
+
+ <!-- Use Unix newlines -->
+ <rule ref="Generic.Files.LineEndings">
+  <properties>
+   <property name="eolChar" value="\n"/>
+  </properties>
+ </rule>
+
+ <!-- This message is not required as spaces are allowed for alignment -->
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma">
+  <severity>0</severity>
+ </rule>
+
+ <!-- Use warnings for inline control structures -->
+ <rule ref="Generic.ControlStructures.InlineControlStructure">
+  <properties>
+   <property name="error" value="false"/>
+  </properties>
+ </rule>
+
+</ruleset>
