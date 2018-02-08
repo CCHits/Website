@@ -47,6 +47,7 @@ class RemoteSourcesFMA extends RemoteSources
         $regex_strTrackName = '/&ldquo;(.*)&rdquo;/';
         $regex_strArtistUrl = '/\s+<span class="subh1">\(by <a href="(\S+)">.*<\/a>\)<\/span>/';
         $regex_fileUrl = '/\s+<a href="(\S+)" class="icn-arrow" title="Download"><\/a>/';
+        // phpcs:ignore
         $regex_isNSFW = '/\s+<div class="sbar-stat-auto">\n*\s+<span class="lf120 stathd">Explicit<\/span>\n*\s+<div class="stat-item">(.*)<\/div>\n*\s+<div class="cf"><\/div>\n*\s+<\/div>/m';
         $regex_enumTrackLicense = '/licenses\/(.*)\/[0-9].*>\S/';
         $this->set_strTrackUrl($src);
