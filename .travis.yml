@@ -3,4 +3,6 @@ sudo: required
 language: php
 php:
   - 5.6
-script: phpunit --bootstrap CLASSES/autoloader.php TESTS/
+script:
+- php ci/phpcs/phpcs.phar --standard=ci/phpcs CLASSES/
+- phpunit --bootstrap CLASSES/autoloader.php TESTS/
