@@ -15,6 +15,8 @@
  * @link     https://github.com/CCHits/Website Version Control Service
  */
 
+require 'GenericDatabaseTestCase.php';
+
 /**
  * This class is a dummy unit test to check if the system works.
  *
@@ -27,8 +29,18 @@
  * @link     https://github.com/CCHits/Website Version Control Service
  */
 
-final class DummyTest extends PHPUnit_Framework_TestCase
+final class DummyDatabaseTest extends GenericDatabaseTestCase
 {
+    /**
+     * Returns the dataset needed for this test.
+     * 
+     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     */
+    public function getDataSet()
+    {
+        return $this->createMySQLXMLDataSet(dirname(__FILE__) . '/_files/dummy-seed.xml');
+    }
+
     /**
      * Dummy test.
      * 
@@ -36,6 +48,7 @@ final class DummyTest extends PHPUnit_Framework_TestCase
      */
     public function testDummy()
     {
-        $this->assertTrue(true);
+        $db = Database::getConnection();
+        $this->assertEquals(3, $this->getConnection()->getRowCount('artists'));
     }
 }

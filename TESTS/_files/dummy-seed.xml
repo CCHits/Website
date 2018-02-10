@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="cchits">
+	<table_data name="applications">
+	</table_data>
+	<table_data name="artists">
+	<row>
+		<field name="intArtistID">1</field>
+		<field name="strArtistName">{&quot;0&quot;:&quot;nocreeps&quot;,&quot;preferred&quot;:&quot;Starlight Girls&quot;}</field>
+		<field name="strArtistNameSounds"></field>
+		<field name="strArtistUrl">http://www.nocreeps.de</field>
+	</row>
+	<row>
+		<field name="intArtistID">2</field>
+		<field name="strArtistName">Predator</field>
+		<field name="strArtistNameSounds">predator</field>
+		<field name="strArtistUrl">http://predatorsvenskpunk.dinstudio.se/text1_1.html</field>
+	</row>
+	<row>
+		<field name="intArtistID">3</field>
+		<field name="strArtistName">Krayne</field>
+		<field name="strArtistNameSounds">crane</field>
+		<field name="strArtistUrl">http://krayne.org</field>
+	</row>
+    </table_data>
+</database>
+</mysqldump>
