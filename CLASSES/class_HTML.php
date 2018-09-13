@@ -207,7 +207,12 @@ class HTML
                     $this->result['feedName'] = ConfigBroker::getConfig('Site Name', 'CCHits.net') . ' - ' . 
                         ConfigBroker::getConfig('Daily Show Name', 'Daily Exposure Show');
                 }
-                $this->daily($this->arrUri['path_items'][1]);
+                if (array_key_exists(1, $this->arrUri['path_items'])) {
+                    $this->daily($this->arrUri['path_items'][1]);
+                } else {
+                    $this->daily();
+                }
+
                 break;
             case 'w':
                 if (isset($object[1]) && isset($object[2])) {
