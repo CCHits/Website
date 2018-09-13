@@ -86,7 +86,7 @@ class ChartBroker
                 $date = $return[count($return) - 1]['datChart'];
                 for ($count = count($return); $count < 60; $count++) {
                     $date = date('-1 day', strtotime($date));
-                    $return[$count] = array('intPositionID' => "null", 'datChart'=>$date);
+                    $return[$count] = array('intPositionID' => null, 'datChart'=>$date);
                 }
             }
             return $return;

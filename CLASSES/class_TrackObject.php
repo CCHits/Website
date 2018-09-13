@@ -216,7 +216,7 @@ class TrackObject extends GenericObject
             if ($return['60daylowest'] == 'null') {
                 $return['60daylowest'] = TrackBroker::getTotalTracks();
             }
-            if (isset($this->arrChartData[13])) {
+            if (isset($this->arrChartData[13]['intPositionID'])) {
                 $averageThisWeek = (
                     $this->arrChartData[0]['intPositionID'] +
                     $this->arrChartData[1]['intPositionID'] +
