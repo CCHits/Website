@@ -14,3 +14,4 @@ TEMPLATES/Source/_save/
 patch
 .vscode/
 Website.iml
+php.log
