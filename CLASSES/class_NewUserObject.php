@@ -41,6 +41,7 @@ class NewUserObject extends UserObject
      */
     public function __construct($data = "")
     {
+        $this->set_datLastSeen((new \DateTime())->format("Y-m-d h:i:s"));
         if (strpos($data, "http://") !== false or strpos($data, "https://") !== false) {
             $this->set_strOpenID($data);
             $this->create();

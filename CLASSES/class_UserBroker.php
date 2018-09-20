@@ -95,7 +95,11 @@ class UserBroker
                 }
                 $objSelf->thisUser = $query->fetchObject('UserObject');
                 if ($objSelf->thisUser == false) {
-                    $objSelf->thisUser = new NewUserObject($param);
+                    if ($field == "strCookieID") {
+                        $objSelf->thisUser = new NewUserObject();
+                    } else {
+                        $objSelf->thisUser = new NewUserObject($param);
+                    }
                     if (isset($_SESSION['OPENID_AUTH']['email'])) {
                         $objSelf->thisUser->set_strEMail($_SESSION['OPENID_AUTH']['email']);
                         $objSelf->thisUser->write();

@@ -178,6 +178,10 @@ class GenericObject
             return true;
         } catch(Exception $e) {
             error_log("Error creating: " . $e->getMessage());
+            ob_start();
+            debug_print_backtrace();
+            error_log("Call stack: " . ob_get_contents());
+            ob_end_clean();
             return false;
         }
     }
