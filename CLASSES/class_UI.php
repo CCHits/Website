@@ -231,6 +231,7 @@ class UI
      */
     public static function getAuth()
     {
+        $isApache = function_exists('apache_get_version');
         $username = null;
         $password = null;
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) { // If the server is passing an environment variable
@@ -243,7 +244,7 @@ class UI
             $username = $auth_params[0];
             unset($auth_params[0]);
             $password = implode('', $auth_params);
-        } elseif (apache_getenv('HTTP_AUTHORIZATION')) {
+        } elseif ($isApache && apache_getenv('HTTP_AUTHORIZATION')) {
             $auth_params = explode(":", base64_decode(substr(apache_getenv('HTTP_AUTHORIZATION'), 6)));
             $username = $auth_params[0];
             unset($auth_params[0]);
