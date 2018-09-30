@@ -15,5 +15,6 @@ patch
 .vscode/
 Website.iml
 php.log
-
+/media/track/*.png
+/media/show/*.png
 /vendor/
