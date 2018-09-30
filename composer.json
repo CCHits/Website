@@ -1,0 +1,12 @@
+{
+    "name": "cchits/website",
+    "description": "CCHits website",
+    "type": "project",
+    "license": "AGPLv3",
+    "support": {
+        "email": "code@cchits.net",
+        "issues": "https://github.com/CCHits/Website/issues",
+        "wiki": "https://github.com/CCHits/Website/wiki",
+        "source": "https://github.com/CCHits/Website"
+    }
+}

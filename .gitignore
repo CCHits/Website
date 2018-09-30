@@ -15,3 +15,5 @@ patch
 .vscode/
 Website.iml
 php.log
+
+/vendor/
