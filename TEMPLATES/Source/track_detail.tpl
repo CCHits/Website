@@ -6,7 +6,7 @@
 {if isset($track.shows) and count($track.shows) > 0}
 		<div class="showplays">
 			<p>This track has also been played on the following shows:</p>
-			<table class="table">
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>Show</th>
