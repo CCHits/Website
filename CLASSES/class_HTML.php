@@ -946,6 +946,16 @@ class HTML
                 $track->set_full(true);
                 $this->result['track'] = $track->getSelf();
                 if ($this->render()) {
+                    $show = [
+                        "name" => $this->result['track']['strArtistName'],
+                        "title" => $this->result['track']['strTrackName'],
+                        "free" => "true",
+                        "link" => $this->result['track']['localSource'],
+                        "mp3_len" => 0,
+                        "oga_len" => 0,
+                        "m4a_len" => 0,
+                    ];
+                    $this->result['single_player_json'] = json_encode(array($show));
                     UI::SmartyTemplate("track.{$this->format}", $this->result);
                 }
             } else {
