@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>{$ServiceName}</title>
+		<title>{block name=title}{$ServiceName}{/block}</title>
 		{if isset($ShowDaily)}
 			<link rel="alternate" type="application/rss+xml" href="{$baseURL}daily/rss" title="The {$ShowDaily}" />
 		{/if}
@@ -44,3 +44,8 @@
 				</nav>				
 			</div>
 		</div>
+        <div class="container">
+            {block name=content}{/block}
+        </div>
+    </body>
+</html>
