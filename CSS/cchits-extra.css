@@ -96,10 +96,13 @@ a:hover {
     padding: 5px 0;
 }
 
+.chart-track a {
+    border-bottom: 1px solid #404040;
+}
+
 .chart-track a:hover {
     background-color: inherit;
     color: inherit;
-    border-bottom: 1px solid #404040;
 }
 
 .chart-position-current {
@@ -131,7 +134,7 @@ a:hover {
 }
 
 .chart-progression .fa-arrow-right {
-    color: blue;
+    color: gray;
 }
 
 .chart-progression .fa-arrow-down {
