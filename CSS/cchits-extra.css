@@ -95,7 +95,7 @@ a:hover {
     border-bottom: 1px solid gray;
     padding: 5px 0;
 }
-
+.container a,
 .chart-track a {
     border-bottom: 1px solid #404040;
 }
