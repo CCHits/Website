@@ -78,7 +78,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore -->
 <table>
   <tr>
-    <td align="center"><a href="https://thelovebug.org/"><img src="https://avatars0.githubusercontent.com/u/2915687?v=4" width="100px;" alt="Dave Lee"/><br /><sub><b>Dave Lee</b></sub></a><br /><a href="#ideas-thelovebug" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/CCHits/Website/issues?q=author%3Athelovebug" title="Bug reports">🐛</a> <a href="#question-thelovebug" title="Answering Questions">💬</a> <a href="#review-thelovebug" title="Reviewed Pull Requests">👀</a> <a href="#userTesting-thelovebug" title="User Testing">📓</a> <a href="#talk-thelovebug" title="Talks">📢</a></td>
+    <td align="center"><a href="https://thelovebug.org/"><img src="https://avatars0.githubusercontent.com/u/2915687?v=4" width="100px;" alt="Dave Lee"/><br /><sub><b>Dave Lee</b></sub></a><br /><a href="#ideas-thelovebug" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/CCHits/Website/issues?q=author%3Athelovebug" title="Bug reports">🐛</a> <a href="#question-thelovebug" title="Answering Questions">💬</a> <a href="#review-thelovebug" title="Reviewed Pull Requests">👀</a> <a href="#userTesting-thelovebug" title="User Testing">📓</a> <a href="#talk-thelovebug" title="Talks">📢</a> <a href="https://github.com/CCHits/Website/commits?author=thelovebug" title="Code">💻</a></td>
   </tr>
 </table>
 
