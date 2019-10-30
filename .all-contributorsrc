@@ -6,6 +6,22 @@
   "commit": false,
   "contributors": [
     {
+      "login": "ymauray",
+      "name": "Yannick Mauray",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2527227?v=4",
+      "profile": "https://frenchguy.ch",
+      "contributions": [
+        "ideas",
+        "bug",
+        "code",
+        "question",
+        "review",
+        "userTesting",
+        "test",
+        "maintenance"
+      ]
+    },
+    {
       "login": "thelovebug",
       "name": "Dave Lee",
       "avatar_url": "https://avatars0.githubusercontent.com/u/2915687?v=4",
@@ -18,6 +34,33 @@
         "userTesting",
         "talk",
         "code"
+      ]
+    },
+    {
+      "login": "JonTheNiceGuy",
+      "name": "Jon \"The Nice Guy\" Spriggs",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/228671?v=4",
+      "profile": "http://jon.sprig.gs",
+      "contributions": [
+        "code",
+        "ideas",
+        "content",
+        "doc",
+        "infra",
+        "review",
+        "tool",
+        "talk"
+      ]
+    },
+    {
+      "login": "computamike",
+      "name": "Mike Hingley",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/464876?v=4",
+      "profile": "https://github.com/computamike",
+      "contributions": [
+        "code",
+        "ideas",
+        "userTesting"
       ]
     }
   ],
