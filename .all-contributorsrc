@@ -34,6 +34,22 @@
         "userTesting",
         "talk"
       ]
+    },
+    {
+      "login": "JonTheNiceGuy",
+      "name": "Jon \"The Nice Guy\" Spriggs",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/228671?v=4",
+      "profile": "http://jon.sprig.gs",
+      "contributions": [
+        "code",
+        "ideas",
+        "content",
+        "doc",
+        "infra",
+        "review",
+        "tool",
+        "talk"
+      ]
     }
   ],
   "contributorsPerLine": 7,
