@@ -1,4 +1,5 @@
 # Welcome to CCHits
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 Where *you* make the charts
 
@@ -69,3 +70,18 @@ As this project was originally supposed to create audio to be used at events, I 
 * The track does not advocate crime or gun use (which is a criminal act in some countries).
 
 Obviously, not everyone agrees with this definition, and I don't upload every track. Some people will mark a track as being non-work-safe if it contains language they don't understand (in case it breaches one of the recommendations), or will mark a track as being work-or-family safe even if it breaches one of the above recommendations. If you disagree with how the track is marked, please feel free to contact show@cchits.net and I'll re-listen to the track, and possibly change it's flag, if I think it's appropriate.
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="https://frenchguy.ch"><img src="https://avatars3.githubusercontent.com/u/2527227?v=4" width="100px;" alt="Yannick Mauray"/><br /><sub><b>Yannick Mauray</b></sub></a><br /><a href="#ideas-ymauray" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/CCHits/Website/issues?q=author%3Aymauray" title="Bug reports">🐛</a> <a href="https://github.com/CCHits/Website/commits?author=ymauray" title="Code">💻</a> <a href="#question-ymauray" title="Answering Questions">💬</a> <a href="#review-ymauray" title="Reviewed Pull Requests">👀</a> <a href="#userTesting-ymauray" title="User Testing">📓</a> <a href="https://github.com/CCHits/Website/commits?author=ymauray" title="Tests">⚠️</a> <a href="#maintenance-ymauray" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
