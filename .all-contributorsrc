@@ -20,6 +20,20 @@
         "test",
         "maintenance"
       ]
+    },
+    {
+      "login": "thelovebug",
+      "name": "Dave Lee",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2915687?v=4",
+      "profile": "https://thelovebug.org/",
+      "contributions": [
+        "ideas",
+        "bug",
+        "question",
+        "review",
+        "userTesting",
+        "talk"
+      ]
     }
   ],
   "contributorsPerLine": 7,
