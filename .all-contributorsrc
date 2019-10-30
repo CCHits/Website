@@ -1,0 +1,28 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "thelovebug",
+      "name": "Dave Lee",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2915687?v=4",
+      "profile": "https://thelovebug.org/",
+      "contributions": [
+        "ideas",
+        "bug",
+        "question",
+        "review",
+        "userTesting",
+        "talk"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Website",
+  "projectOwner": "CCHits",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
