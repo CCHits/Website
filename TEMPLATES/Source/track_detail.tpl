@@ -18,7 +18,7 @@
 {strip} 
 					<tr class="shows {cycle values="row_odd,row_even"}{if not $smarty.foreach.shows.first and $smarty.foreach.shows.iteration <= $smarty.foreach.shows.total - 3} more_rows{/if}">
 				    	<td>{if isset($showData.intShowID)}<a href="{$baseURL}show/{$showData.intShowID}">{/if}<span class="{$showData.enumShowType}">{$showData.strShowName}</span>{if isset($showData.intShowID)}</a>{/if}</td>
-				    	<td>{$showData.decVoteAdj} (<a href="{$baseURL}about#voteadj">{$track.decAdj * 100}% of</a> {$showData.intVote})</td>
+				    	<td>{$showData.decVoteAdj} (<a href="{$baseURL}about#voteadjust">{$track.decAdj * 100}% of</a> {$showData.intVote})</td>
 				    </tr>
 {/strip}
 {/foreach}
