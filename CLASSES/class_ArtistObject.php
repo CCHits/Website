@@ -111,7 +111,7 @@ class ArtistObject extends GenericObject
      */
     function get_strArtistName()
     {
-        return $this->strArtistName;
+        return $this->preferredJson($this->strArtistName);
     }
 
     /**
