@@ -761,7 +761,7 @@ class TrackObject extends GenericObject
      */
     function get_strTrackName()
     {
-        return $this->strTrackName;
+        return $this->preferredJson($this->strTrackName);
     }
 
     /**
