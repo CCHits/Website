@@ -5,7 +5,7 @@ Where *you* make the charts
 
 # Project status
 
-[![Build Status](https://travis-ci.org/CCHits/Website.svg?branch=master)](https://travis-ci.org/CCHits/Website)
+![Build Status](https://github.com/CCHits/Website/actions/workflows/default.yml/badge.svg)
 
 # Goals
 
