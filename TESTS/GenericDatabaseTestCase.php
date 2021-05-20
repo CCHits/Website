@@ -27,7 +27,10 @@
  * @link     https://github.com/CCHits/Website/wiki Developers Web Site
  * @link     https://github.com/CCHits/Website Version Control Service
  */
-abstract class GenericDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
+
+require_once dirname( __FILE__ ) . '/../CLASSES/class_Database.php';
+
+abstract class GenericDatabaseTestCase extends PHPUnit\DbUnit\TestCase
 {
     /**
      * Only instantiate pdo once for test clean-up/fixture load

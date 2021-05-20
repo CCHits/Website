@@ -27,7 +27,7 @@
  * @link     https://github.com/CCHits/Website Version Control Service
  */
 
-final class DummyTest extends PHPUnit_Framework_TestCase
+final class DummyTest extends PHPUnit\Framework\TestCase
 {
     /**
      * Dummy test.
