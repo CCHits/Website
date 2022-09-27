@@ -16,13 +16,7 @@
 							<h4>{$Slogan}</h4>
 						</div><!-- .panel-heading -->
 						<div class="panel-body">
-							<p>Do you like <strong>{$track.strTrackName}</strong> by <strong>{$track.strArtistName}</strong> ?</p>
-{if $show != false}
-							<p>You're voting on it from when it was on "<strong>{$show.strShowName}</strong>".</p>
-{/if}
-							<form action="?go" method="post">
-					  			<input type="submit" class="btn btn-primary" style="width: 100%;" name="go" value="I like it!" />
-							</form>
+							<p>Sorry, voting has been demised. CCHits is starting to wrap up. Please get in touch on <a href="https://twitter.com/cchits">twitter</a> or by <a href="mailto:show@cchits.net">email</a>.</p>
 						</div><!-- .panel-body -->
 					</div><!-- .panel .panel-default -->
 				</div><!-- .col-md-8 .col-md-offset-2 .col-xs-12 -->
