@@ -20,9 +20,7 @@
 		{foreach from=$shows key=id item=show}
 		<h3><a href="{$baseURL}show/{$show.intShowID}">{$show.strShowName}</a></h3>
 		{foreach from=$show.arrTracks item=track}
-		<form action="{$baseURL}vote/{$track.intTrackID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
-		</form>
+		<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</p>
 		{/foreach}
 		{/foreach}
 	</body>

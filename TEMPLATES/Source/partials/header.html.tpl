@@ -31,8 +31,13 @@
 						<div class="navbar-nav">
 							<a class="nav-item nav-link" href="https://twitter.com/cchits">Twitter</a>
 							<a class="nav-item nav-link" href="https://www.facebook.com/cchits">Facebook</a>
+							<a class="nav-item nav-link" href="mailto:show@cchits.net">EMail</a>
 						</div>
 					</div>
 				</nav>				
 			</div>
+		</div>
+		<div>
+			<h1>CCHits is wrapping up</h1>
+			<p>After nearly 12 years of daily, weekly, and sometimes even monthly shows, CCHits is finally starting to wrap up. Please feel free to let us know how you feel on <a href="https://twitter.com/cchits">Twitter</a>, <a href="https://www.facebook.com/cchits">Facebook</a> or by <a href="mailto:show@cchits.net">EMail</a>.</p>
 		</div>

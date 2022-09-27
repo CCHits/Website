@@ -35,10 +35,7 @@
 		<guid>{$show.strGuid}</guid>
 		<description><![CDATA[<h1>{$show.strShowName}</h1>
 {foreach from=$show.arrTracks item=track}
-		<form action="{$baseURL}vote/{$track.intTrackID}/{$show.intShowID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
-		</form>
-		<p>Don't see the vote button above? <a href="{$baseURL}vote/{$track.intTrackID}/{$show.intShowID}">Click here</a> to vote.</p>
+		<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</p>
 {/foreach}
 ]]></description>
 {if isset($show.player_data.oga)}

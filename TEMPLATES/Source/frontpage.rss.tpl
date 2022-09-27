@@ -34,9 +34,7 @@
 		<guid>{$daily.strGuid}</guid>
 		<description><![CDATA[<h1>{$daily.strShowName}</h1>
 {foreach from=$daily.arrTracks item=track}
-		<form action="{$baseURL}vote/{$track.intTrackID}/{$daily.intShowID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
-		</form>
+		<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</p>
 {/foreach}
 ]]></description>
 		<enclosure url="{$daily.player_data.mp3}" length="{$daily.player_data.mp3_len}" type="audio/mpeg" />
@@ -71,9 +69,7 @@
 		<guid>{$weekly.strShowUrl}</guid>
 		<description><![CDATA[<h1>{$weekly.strShowName}</h1>
 {foreach from=$weekly.arrTracks item=track}
-		<form action="{$baseURL}vote/{$track.intTrackID}/{$weekly.intShowID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
-		</form>
+		<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</p>
 {/foreach}
 ]]></description>
 		<enclosure url="{$weekly.player_data.mp3}" length="{$weekly.player_data.mp3_len}" type="audio/mpeg" />
@@ -108,9 +104,7 @@
 		<guid>{$monthly.strShowUrl}</guid>
 		<description><![CDATA[<h1>{$monthly.strShowName}</h1>
 {foreach from=$monthly.arrTracks item=track}
-		<form action="{$baseURL}vote/{$track.intTrackID}/{$monthly.intShowID}?go" method="post">
-			<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>" <input type="submit" name="go" value="I like this track!" /></p>
-		</form>
+		<p><img src="{$track.qrcode}" alt="QR Code for this page" /> "<a href="{$track.strTrackUrl}">{$track.strTrackName}</a>" by "<a href="{$track.strArtistUrl}">{$track.strArtistName}</a>"</p>
 {/foreach}
 ]]></description>
 		<enclosure url="{$monthly.player_data.mp3}" length="{$monthly.player_data.mp3_len}" type="audio/mpeg" />

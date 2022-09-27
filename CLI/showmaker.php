@@ -191,13 +191,13 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $outro .= sprintf(
             randomTextSelect(
                 array(
-                    ' <BREAK LEVEL="MEDIUM" /> Every track we play is selected by a listener like you <BREAK LEVEL="LARGE" /> to find out more <BREAK LEVEL="SMALL" /> please visit %1$s slash <BREAK LEVEL="MEDIUM" /> eff <BREAK LEVEL="SMALL" /> ay <BREAK LEVEL="SMALL" /> queue <BREAK LEVEL="LARGE" /> If you liked to dayz track, you can vote for it at %2$s <BREAK LEVEL="MEDIUM" /> These votes decide whether this track will be on the weekly show and eventually if it will make it into the chart <BREAK LEVEL="MEDIUM" /> both of these can be found by visiting %1$s ',
-                    ' <BREAK LEVEL="MEDIUM" /> Remember, you can vote for this track by visiting %2$s <BREAK LEVEL="MEDIUM" /> Your vote will decide whether it makes it into the best-of-the-week <BREAK LEVEL="SMALL" /> weekly show which is available from %1$s slash weekly '
+                    ' <BREAK LEVEL="MEDIUM" /> for more details on this track <BREAK LEVEL="MEDIUM"> please visit %1$s ',
+                    ' <BREAK LEVEL="MEDIUM" /> to find out more <BREAK LEVEL="MEDIUM"> go to %1$s '
                 )
             ), 
-            $show_data['strSiteNameSpoken'],
             $show_data['strShowUrlSpoken']
         );
+        $outro .= ' <BREAK LEVEL="MEDIUM" /> cee cee hits is starting to wind down <BREAK LEVEL="MEDIUM" /> and will soon finish producing shows <BREAK LEVEL="LARGE" /> please feel free to contact us at twitter dot com slash cee cee hitz or by ee mailing show at cee cee hitz dot net ';
         $outro .= sprintf(' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit %1$s slash theem', $show_data['strSiteNameSpoken']) . PHP_EOL . $post_sable;
 
         debugout::add("Making the outro bumper");
@@ -414,8 +414,8 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
                 $bumper .= sprintf(
                     randomTextSelect(
                         array(
-                            'That was a %1$s licensed track called %2$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %3$s <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %6$s <BREAK LEVEL="MEDIUM" /> If you like any of these tracks <BREAK LEVEL="SMALL" /> you could vote for them at %7$s <BREAK LEVEL="MEDIUM" /> Up next is %4$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %5$s',
-                            'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> Remember that you can vote for any track in to dayz show by visiting %7$s <BREAK LEVEL="LARGE" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
+                            'That was a %1$s licensed track called %2$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %3$s <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %6$s <BREAK LEVEL="MEDIUM" /> If you like any of these tracks <BREAK LEVEL="SMALL" /> you can find out more at %7$s <BREAK LEVEL="MEDIUM" /> Up next is %4$s <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> %5$s',
+                            'You have been listening to %3$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %2$s which is released under a %1$s license <BREAK LEVEL="MEDIUM" /> to find out more <BREAK LEVEL="SMALL" /> go to %7$s <BREAK LEVEL="LARGE" /> Moving on <BREAK LEVEL="SMALL" /> we have %5$s <BREAK LEVEL="SMALL" /> with their track <BREAK LEVEL="SMALL" /> %4$s',
                         )
                     ),
                     preg_replace('/\&/', ' and ', $arrLastTrack['pronouncable_enumTrackLicense']),
@@ -494,13 +494,14 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
         $outro .= sprintf(
             randomTextSelect(
                 array(
-                    ' <BREAK LEVEL="MEDIUM" /> Every track we play is selected by a listener like you <BREAK LEVEL="LARGE" /> to find out more <BREAK LEVEL="SMALL" /> go to %1$s slash <BREAK LEVEL="MEDIUM" /> eff <BREAK LEVEL="SMALL" /> ay <BREAK LEVEL="SMALL" /> queue <BREAK LEVEL="LARGE" /> If you like any of these tracks today, you can vote for them at %2$s <BREAK LEVEL="MEDIUM" /> These votes decide if each track will make it into the chart <BREAK LEVEL="MEDIUM" /> which can be found by visiting %1$s slash monthly ',
-                    ' <BREAK LEVEL="MEDIUM" /> Remember, you can vote for any of these tracks by visiting %2$s <BREAK LEVEL="MEDIUM" /> Your vote will decide whether it makes it into the monthly chart show which is available from %1$s slash monthly '
+                    ' <BREAK LEVEL="MEDIUM" /> Every track we play was selected by a listener like you <BREAK LEVEL="LARGE" /> to find out more <BREAK LEVEL="SMALL" /> go to %1$s slash <BREAK LEVEL="MEDIUM" /> eff <BREAK LEVEL="SMALL" /> ay <BREAK LEVEL="SMALL" /> queue <BREAK LEVEL="LARGE" /> If you want to know more about any of these tracks <BREAK LEVEL="SMALL" /> please visit %2$s <BREAK LEVEL="MEDIUM" /> These votes decide if each track will make it into the chart <BREAK LEVEL="MEDIUM" /> which can be found by visiting %1$s slash monthly ',
+                    ' <BREAK LEVEL="MEDIUM" /> To find out more about any of the tracks played on todayz show <BREAK LEVEL="SMALL" /> please go to %2$s '
                 )
             ),
             $show_data['strSiteNameSpoken'],
             $show_data['strShowUrlSpoken']
         );
+        $outro .= ' <BREAK LEVEL="MEDIUM" /> cee cee hits is starting to wind down <BREAK LEVEL="MEDIUM" /> and will soon finish producing shows <BREAK LEVEL="LARGE" /> please feel free to contact us at twitter dot com slash cee cee hitz or by ee mailing show at cee cee hitz dot net ';
         $outro .= sprintf(' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit %1$s slash theem', $show_data['strSiteNameSpoken']) . PHP_EOL . $post_sable;
 
         debugout::add("Making the outro bumper" . PHP_EOL);
@@ -601,212 +602,212 @@ if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     }
     if (isset($json_data['monthly_show']) && $monthly) {
         echo "Creating Monthly Show..." . PHP_EOL;
-        $show_data = $json_data['monthly_show'];
-        $running_order = addEntryToJsonArray('', 0, 'intro');
-	$run_length = 0;
-        generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
+    //     $show_data = $json_data['monthly_show'];
+    //     $running_order = addEntryToJsonArray('', 0, 'intro');
+	// $run_length = 0;
+    //     generateSilenceWav(7, Configuration::getWorkingDir() . '/pre-show-silence.wav');
 
-        debugout::add("Making intro bumper" . PHP_EOL);
-        $intro = "$pre_sable" . PHP_EOL;
-        $intro .= randomTextSelect(
-            array(
-                'Hello and welcome to the ' . $show_data['strShowNameSpoken'] . ' from ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> This show plays the top rated fourty tracks across all of cee cee hits <BREAK LEVEL="MEDIUM" /> ',
-                'Your listening to a feed from ' . $show_data['strSiteNameSpoken'] . ' and this is the ' . $show_data['strShowNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> In this show you will hear the top four-tee tracks that you have been voting for at ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> '
-            )
-        );
-        if ($show_data['isNSFW'] != 0) {
-            $intro .= randomTextSelect($show_nsfw);
-        }
-        $intro .= PHP_EOL . "$post_sable";
-        convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav');
-        concatenateTracks(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav');
-        copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
-        overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/combined.intro.wav');
+    //     debugout::add("Making intro bumper" . PHP_EOL);
+    //     $intro = "$pre_sable" . PHP_EOL;
+    //     $intro .= randomTextSelect(
+    //         array(
+    //             'Hello and welcome to the ' . $show_data['strShowNameSpoken'] . ' from ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> This show plays the top rated fourty tracks across all of cee cee hits <BREAK LEVEL="MEDIUM" /> ',
+    //             'Your listening to a feed from ' . $show_data['strSiteNameSpoken'] . ' and this is the ' . $show_data['strShowNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> In this show you will hear the top four-tee tracks that you have been voting for at ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> '
+    //         )
+    //     );
+    //     if ($show_data['isNSFW'] != 0) {
+    //         $intro .= randomTextSelect($show_nsfw);
+    //     }
+    //     $intro .= PHP_EOL . "$post_sable";
+    //     convertSableXmlToWav($intro, Configuration::getWorkingDir() . '/intro.wav');
+    //     concatenateTracks(Configuration::getWorkingDir() . '/pre-show-silence.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/showstart.wav');
+    //     copy(Configuration::getStaticDir() . '/intro.wav', Configuration::getWorkingDir() . '/intro.wav');
+    //     overlayAudioTracks(Configuration::getWorkingDir() . '/showstart.wav', Configuration::getWorkingDir() . '/intro.wav', Configuration::getWorkingDir() . '/combined.intro.wav');
 
-        echo "These " . count($show_data['arrTracks']) . " tracks are ";
-        foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
-            if ($intTrackID > 1) {
-                echo ", ";
-            }
-            echo $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
-        }
-        echo PHP_EOL;
+    //     echo "These " . count($show_data['arrTracks']) . " tracks are ";
+    //     foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
+    //         if ($intTrackID > 1) {
+    //             echo ", ";
+    //         }
+    //         echo $arrTrack['strTrackName'] . ' by ' . $arrTrack['strArtistName'];
+    //     }
+    //     echo PHP_EOL;
 
-        $run_length += getTrackLength(Configuration::getWorkingDir() . '/combined.intro.wav');
+    //     $run_length += getTrackLength(Configuration::getWorkingDir() . '/combined.intro.wav');
 
-        foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
-            $running_order = addEntryToJsonArray($running_order, $run_length, 'Track Bumpers');
-            $arrTracks[$arrTrack['intTrackID']] = $arrTrack;
+    //     foreach ($show_data['arrTracks'] as $intTrackID => $arrTrack) {
+    //         $running_order = addEntryToJsonArray($running_order, $run_length, 'Track Bumpers');
+    //         $arrTracks[$arrTrack['intTrackID']] = $arrTrack;
 
-            debugout::add("Making track bumper ($intTrackID)" . PHP_EOL);
-            $bumper = "$pre_sable" . PHP_EOL;
-            if ($intTrackID != 1) {
-                $bumper .= '<BREAK LEVEL="LARGE" />';
-            }
-            switch($intTrackID) {
-            case 1:
-                $bumper .= randomTextSelect(
-                    array(
-                        'The first track, at number ' . count($show_data['arrTracks']) . ' is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
-                        'lets start to dayz show with ' . $arrTrack['strArtistNameSounds'] . ' and is called ' . $arrTrack['strTrackNameSounds']
-                    )
-                );
-                break;
-            case count($show_data['arrTracks']):
-                $bumper .= randomTextSelect(
-                    array(
-                        'That was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] .' licensed track called ' . $arrLastTrack['strTrackNameSounds'] . ' by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> Our last track and top rated track for to day is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
-                        'You have been listening to ' . $arrLastTrack['strArtistNameSounds'] . ' with their track '  . $arrLastTrack['strTrackNameSounds'] . ' which is released under a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' license <BREAK LEVEL="MEDIUM" /> At number one <BREAK LEVEL="SMALL" /> our final track today is ' . $arrTrack['strArtistNameSounds'] . ' with '  . $arrTrack['strTrackNameSounds'],
-                    )
-                );
-                break;
-            case 4:
-            case 8:
-            case 12:
-            case 16:
-            case 20:
-            case 24:
-            case 28:
-            case 32:
-            case 36:
-                $bumper .= randomTextSelect(
-                    array(
-                        'That was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] .' licensed track called ' . $arrLastTrack['strTrackNameSounds'] . ' by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> You are listening to a feed from ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> If you like any of these tracks <BREAK LEVEL="SMALL" /> you could vote for them at ' . $show_data['strShowUrlSpoken'] . '<BREAK LEVEL="MEDIUM" /> Up next, at number ' . ((1 + count($show_data['arrTracks']) ) - $intTrackID) . ' is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
-                        'The last track you were listening to was ' . $arrLastTrack['strArtistNameSounds'] . ' with their track '  . $arrLastTrack['strTrackNameSounds'] . ' which is released under a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' license <BREAK LEVEL="LARGE" /> Remember that you can vote for any track in this show by visiting ' . $show_data['strShowUrlSpoken'] . ' Moving on <BREAK LEVEL="SMALL" /> we have ' . $arrTrack['strArtistNameSounds'] . ' with their track '  . $arrTrack['strTrackNameSounds'],
-                    )
-                );
-                break;
-            default:
-                $bumper .= randomTextSelect(
-                    array(
-                        'That was ' . $arrLastTrack['strTrackNameSounds'] . ' by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> Up next at number ' .  ((1 + count($show_data['arrTracks']) ) - $intTrackID) . ' is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
-                        'You have been listening to ' . $arrLastTrack['strArtistNameSounds'] . ' with their track '  . $arrLastTrack['strTrackNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> Now, at number ' .  ((1 + count($show_data['arrTracks']) ) - $intTrackID) . ', we have ' . $arrTrack['strArtistNameSounds'] . ' with their track '  . $arrTrack['strTrackNameSounds'],
-                    )
-                );
-                break;
-            }
-            if ($arrTrack['isNSFW'] != 0) {
-                $bumper .= randomTextSelect($track_nsfw);
-            }
-            $bumper = preg_replace('/\&/', ' and ', $bumper);
-            $bumper .= PHP_EOL . "$post_sable";
-            $arrLastTrack = $arrTrack;
-            convertSableXmlToWav($bumper, Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
+    //         debugout::add("Making track bumper ($intTrackID)" . PHP_EOL);
+    //         $bumper = "$pre_sable" . PHP_EOL;
+    //         if ($intTrackID != 1) {
+    //             $bumper .= '<BREAK LEVEL="LARGE" />';
+    //         }
+    //         switch($intTrackID) {
+    //         case 1:
+    //             $bumper .= randomTextSelect(
+    //                 array(
+    //                     'The first track, at number ' . count($show_data['arrTracks']) . ' is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
+    //                     'lets start to dayz show with ' . $arrTrack['strArtistNameSounds'] . ' and is called ' . $arrTrack['strTrackNameSounds']
+    //                 )
+    //             );
+    //             break;
+    //         case count($show_data['arrTracks']):
+    //             $bumper .= randomTextSelect(
+    //                 array(
+    //                     'That was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] .' licensed track called ' . $arrLastTrack['strTrackNameSounds'] . ' by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> Our last track and top rated track for to day is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
+    //                     'You have been listening to ' . $arrLastTrack['strArtistNameSounds'] . ' with their track '  . $arrLastTrack['strTrackNameSounds'] . ' which is released under a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' license <BREAK LEVEL="MEDIUM" /> At number one <BREAK LEVEL="SMALL" /> our final track today is ' . $arrTrack['strArtistNameSounds'] . ' with '  . $arrTrack['strTrackNameSounds'],
+    //                 )
+    //             );
+    //             break;
+    //         case 4:
+    //         case 8:
+    //         case 12:
+    //         case 16:
+    //         case 20:
+    //         case 24:
+    //         case 28:
+    //         case 32:
+    //         case 36:
+    //             $bumper .= randomTextSelect(
+    //                 array(
+    //                     'That was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] .' licensed track called ' . $arrLastTrack['strTrackNameSounds'] . ' by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> You are listening to a feed from ' . $show_data['strSiteNameSpoken'] . ' <BREAK LEVEL="MEDIUM" /> If you like any of these tracks <BREAK LEVEL="SMALL" /> you could vote for them at ' . $show_data['strShowUrlSpoken'] . '<BREAK LEVEL="MEDIUM" /> Up next, at number ' . ((1 + count($show_data['arrTracks']) ) - $intTrackID) . ' is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
+    //                     'The last track you were listening to was ' . $arrLastTrack['strArtistNameSounds'] . ' with their track '  . $arrLastTrack['strTrackNameSounds'] . ' which is released under a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' license <BREAK LEVEL="LARGE" /> Remember that you can vote for any track in this show by visiting ' . $show_data['strShowUrlSpoken'] . ' Moving on <BREAK LEVEL="SMALL" /> we have ' . $arrTrack['strArtistNameSounds'] . ' with their track '  . $arrTrack['strTrackNameSounds'],
+    //                 )
+    //             );
+    //             break;
+    //         default:
+    //             $bumper .= randomTextSelect(
+    //                 array(
+    //                     'That was ' . $arrLastTrack['strTrackNameSounds'] . ' by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> Up next at number ' .  ((1 + count($show_data['arrTracks']) ) - $intTrackID) . ' is ' . $arrTrack['strTrackNameSounds'] . ' by ' . $arrTrack['strArtistNameSounds'],
+    //                     'You have been listening to ' . $arrLastTrack['strArtistNameSounds'] . ' with their track '  . $arrLastTrack['strTrackNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> Now, at number ' .  ((1 + count($show_data['arrTracks']) ) - $intTrackID) . ', we have ' . $arrTrack['strArtistNameSounds'] . ' with their track '  . $arrTrack['strTrackNameSounds'],
+    //                 )
+    //             );
+    //             break;
+    //         }
+    //         if ($arrTrack['isNSFW'] != 0) {
+    //             $bumper .= randomTextSelect($track_nsfw);
+    //         }
+    //         $bumper = preg_replace('/\&/', ' and ', $bumper);
+    //         $bumper .= PHP_EOL . "$post_sable";
+    //         $arrLastTrack = $arrTrack;
+    //         convertSableXmlToWav($bumper, Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
 
-            $run_length += getTrackLength(Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
-            $running_order = addEntryToJsonArray($running_order, $run_length, $arrTrack['intTrackID']);
+    //         $run_length += getTrackLength(Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav');
+    //         $running_order = addEntryToJsonArray($running_order, $run_length, $arrTrack['intTrackID']);
 
-            debugout::add("Downloading and merging audio file ($intTrackID)" . PHP_EOL);
-            $track = downloadFile($arrTrack['localSource']);
-            if ($track === false) {
-                debugout::dump();
-                die("The tracks are not currently available.");
-            }
-            copy($track, Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
-            debugUnlink($track);
+    //         debugout::add("Downloading and merging audio file ($intTrackID)" . PHP_EOL);
+    //         $track = downloadFile($arrTrack['localSource']);
+    //         if ($track === false) {
+    //             debugout::dump();
+    //             die("The tracks are not currently available.");
+    //         }
+    //         copy($track, Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
+    //         debugUnlink($track);
 
-            trackTrimSilence(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
-            debugUnlink(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
+    //         trackTrimSilence(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
+    //         debugUnlink(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource']);
 
-            rename(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'] . '.trim.wav', Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav');
+    //         rename(Configuration::getWorkingDir() . '/' . $arrTrack['fileSource'] . '.trim.wav', Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav');
 
-            $run_length += getTrackLength(Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav');
+    //         $run_length += getTrackLength(Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav');
 
-            concatenateTracks(Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/combined.' . $intTrackID . '.wav');
-        }
+    //         concatenateTracks(Configuration::getWorkingDir() . '/bumper.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/track.' . $intTrackID . '.wav', Configuration::getWorkingDir() . '/combined.' . $intTrackID . '.wav');
+    //     }
 
-        $running_order = addEntryToJsonArray($running_order, $run_length, 'outro');
+    //     $running_order = addEntryToJsonArray($running_order, $run_length, 'outro');
 
-        debugout::add("Making the outro bumper" . PHP_EOL);
-        $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
-        $outro .= randomTextSelect(
-            array(
-                'That was <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strTrackNameSounds'] . ' <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> It was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' licensed track',
-                'You were listening to a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' licensed track by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="SMALL" /> called <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strTrackNameSounds']
-            )
-        );
-        $outro .= randomTextSelect(
-            array(
-                ' <BREAK LEVEL="MEDIUM" /> Every track we play are selected by listeners like you <BREAK LEVEL="MEDIUM" /> to find out more, go to ' . $show_data['strSiteNameSpoken'] . ' slash eff ay queue <BREAK LEVEL="LARGE" /> If you liked any of these tracks, you can vote for them at ' . $show_data['strShowUrlSpoken'] . ' <BREAK LEVEL="MEDIUM" /> You have just listened to the chart for this month but your votes for these and other tracks will decide the state of the chart for next month <BREAK LEVEL="MEDIUM" /> which can be found by visiting ' . $show_data['strSiteNameSpoken'] . ' slash monthly ',
-                ' <BREAK LEVEL="MEDIUM" /> Remember, you can vote for any of these tracks by visiting ' . $show_data['strShowUrlSpoken'] . ' <BREAK LEVEL="MEDIUM" /> Your votes will select the tracks in the next chart show which you can find at ' . $show_data['strSiteNameSpoken'] . ' slash monthly '
-            )
-        );
-        $outro .= ' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit Cee-Cee-Hits dot net slash theem' . PHP_EOL . $post_sable;
+    //     debugout::add("Making the outro bumper" . PHP_EOL);
+    //     $outro = "$pre_sable" . PHP_EOL . "<BREAK LEVEL=\"LARGE\" />";
+    //     $outro .= randomTextSelect(
+    //         array(
+    //             'That was <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strTrackNameSounds'] . ' <BREAK LEVEL="SMALL" /> by <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="MEDIUM" /> It was a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' licensed track',
+    //             'You were listening to a ' . $arrLastTrack['pronouncable_enumTrackLicense'] . ' licensed track by ' . $arrLastTrack['strArtistNameSounds'] . ' <BREAK LEVEL="SMALL" /> called <BREAK LEVEL="SMALL" /> ' . $arrLastTrack['strTrackNameSounds']
+    //         )
+    //     );
+    //     $outro .= randomTextSelect(
+    //         array(
+    //             ' <BREAK LEVEL="MEDIUM" /> Every track we play are selected by listeners like you <BREAK LEVEL="MEDIUM" /> to find out more, go to ' . $show_data['strSiteNameSpoken'] . ' slash eff ay queue <BREAK LEVEL="LARGE" /> If you liked any of these tracks, you can vote for them at ' . $show_data['strShowUrlSpoken'] . ' <BREAK LEVEL="MEDIUM" /> You have just listened to the chart for this month but your votes for these and other tracks will decide the state of the chart for next month <BREAK LEVEL="MEDIUM" /> which can be found by visiting ' . $show_data['strSiteNameSpoken'] . ' slash monthly ',
+    //             ' <BREAK LEVEL="MEDIUM" /> Remember, you can vote for any of these tracks by visiting ' . $show_data['strShowUrlSpoken'] . ' <BREAK LEVEL="MEDIUM" /> Your votes will select the tracks in the next chart show which you can find at ' . $show_data['strSiteNameSpoken'] . ' slash monthly '
+    //         )
+    //     );
+    //     $outro .= ' <BREAK LEVEL="LARGE" /> The theem is an exerpt from Gee Em Zed By Scott All-tim <BREAK LEVEL="SMALL" />for details, please visit Cee-Cee-Hits dot net slash theem' . PHP_EOL . $post_sable;
 
-        convertSableXmlToWav(preg_replace('/\&/', ' and ', $outro), Configuration::getWorkingDir() . '/outro.wav');
-        generateSilenceWav(34, Configuration::getWorkingDir() . '/post-show-silence.wav');
-        concatenateTracks(Configuration::getWorkingDir() . '/outro.wav', Configuration::getWorkingDir() . '/post-show-silence.wav', Configuration::getWorkingDir() . '/showend.wav');
-        reverseTrackAudio(Configuration::getWorkingDir() . '/showend.wav', Configuration::getWorkingDir() . '/showend_rev.wav');
-        reverseTrackAudio(Configuration::getStaticDir() . '/outro.wav', Configuration::getWorkingDir() . '/outro_rev.wav', false);
+    //     convertSableXmlToWav(preg_replace('/\&/', ' and ', $outro), Configuration::getWorkingDir() . '/outro.wav');
+    //     generateSilenceWav(34, Configuration::getWorkingDir() . '/post-show-silence.wav');
+    //     concatenateTracks(Configuration::getWorkingDir() . '/outro.wav', Configuration::getWorkingDir() . '/post-show-silence.wav', Configuration::getWorkingDir() . '/showend.wav');
+    //     reverseTrackAudio(Configuration::getWorkingDir() . '/showend.wav', Configuration::getWorkingDir() . '/showend_rev.wav');
+    //     reverseTrackAudio(Configuration::getStaticDir() . '/outro.wav', Configuration::getWorkingDir() . '/outro_rev.wav', false);
 
-        overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav');
-        reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/combined.outro.wav');
+    //     overlayAudioTracks(Configuration::getWorkingDir() . '/showend_rev.wav', Configuration::getWorkingDir() . '/outro_rev.wav', Configuration::getWorkingDir() . '/run_rev.wav');
+    //     reverseTrackAudio(Configuration::getWorkingDir() . '/run_rev.wav', Configuration::getWorkingDir() . '/combined.outro.wav');
 
-        $run_length += getTrackLength(Configuration::getWorkingDir() . '/combined.outro.wav');
-        $running_order = addEntryToJsonArray($running_order, $run_length, 'end');
+    //     $run_length += getTrackLength(Configuration::getWorkingDir() . '/combined.outro.wav');
+    //     $running_order = addEntryToJsonArray($running_order, $run_length, 'end');
 
-        concatenateMultiTracks( Configuration::getWorkingDir() . '/combined.intro.wav', Configuration::getWorkingDir() . '/combined.outro.wav', Configuration::getWorkingDir() . '/combined.{n}.wav', count($show_data['arrTracks']), Configuration::getWorkingDir() . '/monthly.wav', true );
+    //     concatenateMultiTracks( Configuration::getWorkingDir() . '/combined.intro.wav', Configuration::getWorkingDir() . '/combined.outro.wav', Configuration::getWorkingDir() . '/combined.{n}.wav', count($show_data['arrTracks']), Configuration::getWorkingDir() . '/monthly.wav', true );
 
-        $arrRunningOrder = makeArrayFromObjects(json_decode($running_order));
+    //     $arrRunningOrder = makeArrayFromObjects(json_decode($running_order));
 
-        foreach ($arrRunningOrder as $timestamp => $entry) {
-            if (0 + $entry > 0) {
-                $arrRunningOrder_final[(string) $timestamp] = $arrTracks[$entry];
-            } else {
-                $arrRunningOrder_final[(string) $timestamp] = $entry;
-            }
-        }
+    //     foreach ($arrRunningOrder as $timestamp => $entry) {
+    //         if (0 + $entry > 0) {
+    //             $arrRunningOrder_final[(string) $timestamp] = $arrTracks[$entry];
+    //         } else {
+    //             $arrRunningOrder_final[(string) $timestamp] = $entry;
+    //         }
+    //     }
 
-        debugout::add("Getting the coverart" . PHP_EOL);
-        $coverart = downloadFile($show_data['qrcode']);
-        if ($coverart != false) {
-            copy($coverart, Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png');
-            debugUnlink($coverart);
-            $coverart = Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png';
-        } else {
-            $coverart = '';
-        }
+    //     debugout::add("Getting the coverart" . PHP_EOL);
+    //     $coverart = downloadFile($show_data['qrcode']);
+    //     if ($coverart != false) {
+    //         copy($coverart, Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png');
+    //         debugUnlink($coverart);
+    //         $coverart = Configuration::getWorkingDir() . '/' . $show_data['intShowID'] . '.png';
+    //     } else {
+    //         $coverart = '';
+    //     }
 
-        debugout::add("Converting the show to the various formats" . PHP_EOL);
-        generateOutputTracks(
-            Configuration::getWorkingDir() . '/monthly.wav',
-            Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.',
-            array(
-                'Title' => $show_data['strShowName'],
-                'Artist' => 'CCHits.net',
-                'AlbumArt' => $coverart,
-                'RunningOrder' => $arrRunningOrder_final
-            )
-        );
-        if ($coverart != '') {
-            debugUnlink($coverart);
-        }
-        debugout::add("Uploading and finalizing" . PHP_EOL);
-        $show_summary = '';
-        $track_pointer = 0;
-        foreach ($show_data['arrTracks'] as $track) {
-            if ($show_summary != '') {
-                if (++$track_pointer === count($show_data['arrTracks'])) {
-                    $show_summary .= ' and ';
-                } else {
-                    $show_summary .= ', ';
-                }
-            }
-            $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
-        }
-        finalize(
-            $show_data['intShowID'],
-            Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.', 
-            updateStatusNet(
-                array(
-                    randomTextSelect(array('A new !monthly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '. Get it from ' . $show_data['shorturl'])),
-                    randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
-                )
-            ),
-            json_encode($arrRunningOrder_final),
-            'monthly',
-            substr($show_data['intShowUrl'], 0, 6)
-        );
+    //     debugout::add("Converting the show to the various formats" . PHP_EOL);
+    //     generateOutputTracks(
+    //         Configuration::getWorkingDir() . '/monthly.wav',
+    //         Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.',
+    //         array(
+    //             'Title' => $show_data['strShowName'],
+    //             'Artist' => 'CCHits.net',
+    //             'AlbumArt' => $coverart,
+    //             'RunningOrder' => $arrRunningOrder_final
+    //         )
+    //     );
+    //     if ($coverart != '') {
+    //         debugUnlink($coverart);
+    //     }
+    //     debugout::add("Uploading and finalizing" . PHP_EOL);
+    //     $show_summary = '';
+    //     $track_pointer = 0;
+    //     foreach ($show_data['arrTracks'] as $track) {
+    //         if ($show_summary != '') {
+    //             if (++$track_pointer === count($show_data['arrTracks'])) {
+    //                 $show_summary .= ' and ';
+    //             } else {
+    //                 $show_summary .= ', ';
+    //             }
+    //         }
+    //         $show_summary .= '"' . $track['strTrackName'] . '" by "' . $track['strArtistName'] . '"';
+    //     }
+    //     finalize(
+    //         $show_data['intShowID'],
+    //         Configuration::getWorkingDir() . '/monthly.' . $show_data['intShowUrl'] . '.', 
+    //         updateStatusNet(
+    //             array(
+    //                 randomTextSelect(array('A new !monthly show has been created for ' . substr($show_data['intShowUrl'], 0, 4) . '-' . substr($show_data['intShowUrl'], 4, 2) . '. Get it from ' . $show_data['shorturl'])),
+    //                 randomTextSelect(array('The @' . Configuration::getStatusNetUser() . ' monthly show (' . $show_data['shorturl'] . ') features ' . $show_summary))
+    //             )
+    //         ),
+    //         json_encode($arrRunningOrder_final),
+    //         'monthly',
+    //         substr($show_data['intShowUrl'], 0, 6)
+    //     );
         echo "Done." . PHP_EOL . PHP_EOL;
     }
 } else {
